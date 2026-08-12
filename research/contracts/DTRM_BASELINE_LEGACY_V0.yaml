@@ -1,0 +1,48 @@
+stage:
+  id: DTRM_BASELINE_LEGACY_V0
+  status: reconstruction
+  purpose: reproduce the historical DTRM model before improving it
+
+objective:
+  - reproduce legacy temporal behavior
+  - reproduce legacy target construction
+  - establish deterministic tests
+  - create a frozen reference for future challengers
+
+legacy_definition:
+  cohort_start: "2025-01-01"
+  horizon_days: 60
+  asof_tolerance_days: 5
+  embargo_extra_days: 5
+  embargo_days: 70
+  validation_days: 30
+  test_days: 30
+  target_window: centered
+  target_start: "t-60"
+  target_end: "t+60"
+
+must_preserve:
+  - historical cohort dates
+  - temporal ordering
+  - legacy target definition
+  - transaction cost assumptions
+  - historical results
+
+forbidden:
+  - rewriting historical results
+  - using test data for tuning
+  - silently replacing legacy target with forward target
+  - introducing future information into new ex-ante features
+
+required_tests:
+  - time_window_parity
+  - target_math
+  - legacy_target_window
+  - temporal_integrity
+  - reproducibility
+
+future_challenger:
+  id: DTRM_BASELINE_EXANTE_V0
+  target_window: forward
+  target_start: "t"
+  target_end: "t+60"
