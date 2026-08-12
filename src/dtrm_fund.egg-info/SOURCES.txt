@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/dtrm/__init__.py
+src/dtrm/time_windows.py
+src/dtrm_fund.egg-info/PKG-INFO
+src/dtrm_fund.egg-info/SOURCES.txt
+src/dtrm_fund.egg-info/dependency_links.txt
+src/dtrm_fund.egg-info/top_level.txt
+tests/test_time_windows.py
