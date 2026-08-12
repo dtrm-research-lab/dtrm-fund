@@ -17,6 +17,11 @@ target:
 features:
   market_feature_mode: legacy_ret_spy_evt
 
+beta:
+  lookback_days: 252
+  min_observations: 60
+  tolerance_days: 20
+
 model:
   type: xgboost
 
