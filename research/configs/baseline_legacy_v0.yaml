@@ -1,0 +1,24 @@
+experiment:
+  id: DTRM_BASELINE_LEGACY_V0
+  random_seed: 42
+
+temporal:
+  cohort_start: "2025-01-01"
+  horizon_days: 60
+  asof_tolerance_days: 5
+  embargo_extra_days: 5
+  validation_days: 30
+  test_days: 30
+
+target:
+  mode: legacy_centered
+  horizon_days: 60
+
+features:
+  market_feature_mode: legacy_ret_spy_evt
+
+model:
+  type: xgboost
+
+evaluation:
+  transaction_costs_required: true
