@@ -98,7 +98,3 @@ def build_time_windows(
         "test_end": test_end,
         "embargo_days": embargo_days,
     }
-
-windows = build_time_windows("2026-07-05")
-
-print(windows)
