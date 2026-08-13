@@ -1,0 +1,41 @@
+experiment:
+  id: DTRM_BASELINE_LEGACY_V0
+  source: trumpDataModel_v4.ipynb
+  as_of_date: "2026-07-05"
+
+windows:
+  cohort_start: "2025-01-01"
+  cohort_end: "2026-05-01"
+  train_end: "2025-10-15"
+  valid_start: "2025-12-24"
+  valid_end: "2026-01-22"
+  test_start: "2026-04-02"
+  test_end: "2026-05-01"
+  embargo_days: 70
+
+dataset:
+  unique_news: 37657
+  raw_pairs: 224825
+  valid_returns: 224466
+  excess_beta_pairs: 224454
+  tickers: 174
+  beta_tickers: 173
+  beta_rows: 91895
+
+splits:
+  train_rows: 75828
+  valid_rows: 19880
+  test_rows: 25919
+  train_news_ids: 14817
+  valid_news_ids: 3165
+  test_news_ids: 4383
+
+target_preprocessing:
+  clip_q_low: 0.01
+  clip_q_high: 0.99
+  clip_lower: -0.2740
+  clip_upper: 0.6543
+  train_tickers: 171
+
+features:
+  count: 391
