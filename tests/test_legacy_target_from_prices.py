@@ -1,4 +1,4 @@
-import pytest
+import pytest # type: ignore
 
 from dtrm.legacy_target import legacy_excess_beta_target_from_prices
 
