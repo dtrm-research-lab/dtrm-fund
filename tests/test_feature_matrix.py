@@ -1,6 +1,7 @@
 import numpy as np
 
 from dtrm.feature_matrix import assemble_legacy_features
+from dtrm.feature_matrix import assemble_legacy_feature_matrix
 
 
 def test_assemble_legacy_features():
@@ -25,3 +26,33 @@ def test_assemble_legacy_features():
 
     assert row[389] == np.float32(1.25)
     assert row[390] == np.float32(-0.10)
+
+def test_assemble_legacy_feature_matrix():
+    embeddings = np.arange(2 * 384, dtype=np.float32).reshape(2, 384)
+
+    text_features = np.asarray(
+        [
+            [1, 2, 3, 4, 5],
+            [6, 7, 8, 9, 10],
+        ],
+        dtype=np.float32,
+    )
+
+    beta_pre = np.asarray([1.25, 0.80], dtype=np.float32)
+    ret_spy_evt = np.asarray([-0.10, 0.05], dtype=np.float32)
+
+    X = assemble_legacy_feature_matrix(
+        embeddings,
+        text_features,
+        beta_pre,
+        ret_spy_evt,
+    )
+
+    assert X.shape == (2, 391)
+    assert X.dtype == np.float32
+    assert X.flags["C_CONTIGUOUS"]
+
+    np.testing.assert_array_equal(X[:, :384], embeddings)
+    np.testing.assert_array_equal(X[:, 384:389], text_features)
+    np.testing.assert_array_equal(X[:, 389], beta_pre)
+    np.testing.assert_array_equal(X[:, 390], ret_spy_evt)

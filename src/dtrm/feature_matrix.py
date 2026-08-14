@@ -42,3 +42,43 @@ def assemble_legacy_features(
     )
 
     return np.ascontiguousarray(row, dtype=np.float32)
+
+def assemble_legacy_feature_matrix(
+    embeddings: np.ndarray,
+    text_features: np.ndarray,
+    beta_pre: np.ndarray,
+    ret_spy_evt: np.ndarray,
+) -> np.ndarray:
+    """Assemble the legacy DTRM model matrix: 384 + 5 + 1 + 1 = 391."""
+
+    embeddings = np.asarray(embeddings, dtype=np.float32)
+    text_features = np.asarray(text_features, dtype=np.float32)
+    beta_pre = np.asarray(beta_pre, dtype=np.float32).reshape(-1, 1)
+    ret_spy_evt = np.asarray(ret_spy_evt, dtype=np.float32).reshape(-1, 1)
+
+    if embeddings.ndim != 2 or embeddings.shape[1] != 384:
+        raise ValueError("embeddings must have shape (n, 384).")
+
+    if text_features.ndim != 2 or text_features.shape[1] != 5:
+        raise ValueError("text_features must have shape (n, 5).")
+
+    n = embeddings.shape[0]
+
+    if (
+        text_features.shape[0] != n
+        or beta_pre.shape[0] != n
+        or ret_spy_evt.shape[0] != n
+    ):
+        raise ValueError("all feature blocks must contain the same number of rows.")
+
+    X = np.concatenate(
+        [
+            embeddings,
+            text_features,
+            beta_pre,
+            ret_spy_evt,
+        ],
+        axis=1,
+    )
+
+    return np.ascontiguousarray(X, dtype=np.float32)
