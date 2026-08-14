@@ -3,6 +3,20 @@
 import numpy as np
 
 
+def legacy_truncate_text(
+    text: str | None,
+    max_chars: int = 1600,
+) -> str:
+    """Reproduce legacy text normalization and truncation."""
+
+    if not isinstance(text, str):
+        text = "" if text is None else str(text)
+
+    text = text.replace("\n", " ").replace("\r", " ")
+
+    return text[:max_chars] if len(text) > max_chars else text
+
+
 def legacy_text_features(text: str | None) -> np.ndarray:
     """
     Reproduce the 5 cheap text features from trumpDataModel_v4.
@@ -15,9 +29,7 @@ def legacy_text_features(text: str | None) -> np.ndarray:
         upper_ratio
     """
 
-    if not isinstance(text, str):
-        text = "" if text is None else str(text)
-
+    text = legacy_truncate_text(text)
     text = text.strip()
 
     n_chars = len(text)
