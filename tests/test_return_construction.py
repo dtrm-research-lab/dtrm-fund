@@ -49,3 +49,22 @@ def test_legacy_return_is_none_when_price_outside_tolerance():
     )
 
     assert result is None
+
+def test_legacy_centered_return_preserves_event_timestamp():
+    prices = [
+        ("2024-12-13", 447.27),
+        ("2024-12-16", 451.59),
+        ("2025-04-14", 387.81),
+        ("2025-04-15", 385.73),
+    ]
+
+    result = legacy_centered_return(
+        prices,
+        "2025-02-13 22:04:26",
+        horizon_days=60,
+        tolerance_days=5,
+    )
+
+    expected = (385.73 - 447.27) / 447.27
+
+    assert result == expected
