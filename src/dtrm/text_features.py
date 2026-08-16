@@ -51,3 +51,19 @@ def legacy_text_features(text: str | None) -> np.ndarray:
     values[:4] = np.log1p(values[:4])
 
     return values
+
+def legacy_text_feature_matrix(texts) -> np.ndarray:
+    """Build legacy cheap text features preserving input order."""
+
+    rows = [
+        legacy_text_features(text)
+        for text in texts
+    ]
+
+    if not rows:
+        return np.empty((0, 5), dtype=np.float32)
+
+    return np.ascontiguousarray(
+        np.vstack(rows),
+        dtype=np.float32,
+    )

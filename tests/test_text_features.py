@@ -2,6 +2,7 @@ import numpy as np
 
 from dtrm.text_features import legacy_text_features
 from dtrm.text_features import legacy_truncate_text
+from dtrm.text_features import legacy_text_feature_matrix
 
 
 def test_legacy_text_features():
@@ -31,3 +32,24 @@ def test_legacy_truncate_text():
     assert "\r" not in result
     assert result.startswith("ABC DEF ")
     assert len(result) == 1600
+
+def test_legacy_text_feature_matrix_preserves_order():
+    texts = [
+        "HELLO world!",
+        "Second text?",
+    ]
+
+    X = legacy_text_feature_matrix(texts)
+
+    assert X.shape == (2, 5)
+    assert X.dtype == np.float32
+    assert X.flags["C_CONTIGUOUS"]
+
+    np.testing.assert_array_equal(
+        X[0],
+        legacy_text_features(texts[0]),
+    )
+    np.testing.assert_array_equal(
+        X[1],
+        legacy_text_features(texts[1]),
+    )
