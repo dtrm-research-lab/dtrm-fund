@@ -1,6 +1,6 @@
 stage:
   id: DTRM_BASELINE_LEGACY_V0
-  status: reconstruction
+  status: parity_validated
   purpose: reproduce the historical DTRM model before improving it
 
 objective:
@@ -46,3 +46,12 @@ future_challenger:
   target_window: forward
   target_start: "t"
   target_end: "t+60"
+
+validation:
+  exact_numeric_parity: true
+  xgboost_version: "3.0.2"
+  best_rmse_iteration: 106
+  selected_topk_iteration: 50
+  validation_rmse_at_selected_iteration: 0.19474168121814728
+  test_rmse_at_selected_iteration: 0.16775406897068024
+  tests_passed: 100
