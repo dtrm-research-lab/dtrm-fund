@@ -6,6 +6,33 @@ import numpy as np
 
 from dtrm.target_clipping import train_only_clip_bounds
 
+def _kahan_mean_float32(values) -> np.float32:
+    values = np.asarray(
+        values,
+        dtype=np.float32,
+    )
+
+    total = np.float32(0.0)
+    compensation = np.float32(0.0)
+
+    for value in values:
+        adjusted = np.float32(
+            value - compensation
+        )
+
+        updated = np.float32(
+            total + adjusted
+        )
+
+        compensation = np.float32(
+            (updated - total) - adjusted
+        )
+
+        total = updated
+
+    return np.float32(
+        total / np.float32(len(values))
+    )
 
 def preprocess_legacy_targets(
     train_tickers: Sequence[str],
@@ -49,10 +76,7 @@ def preprocess_legacy_targets(
         grouped.setdefault(str(ticker), []).append(target)
 
     ticker_means = {
-        ticker: np.asarray(
-            values,
-            dtype=np.float32,
-        ).mean(dtype=np.float32)
+        ticker: _kahan_mean_float32(values)
         for ticker, values in grouped.items()
     }
 

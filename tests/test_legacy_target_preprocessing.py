@@ -67,3 +67,31 @@ def test_valid_and_test_do_not_change_train_derived_parameters():
     assert first["clip_lower"] == second["clip_lower"]
     assert first["clip_upper"] == second["clip_upper"]
     assert first["ticker_means"] == second["ticker_means"]
+
+def test_kahan_float32_mean_matches_legacy_semantics():
+    from dtrm.legacy_target_preprocessing import (
+        _kahan_mean_float32,
+    )
+
+    values = np.array(
+        [
+            0.8607966,
+            1.6947894,
+            -0.28133884,
+        ],
+        dtype=np.float32,
+    )
+
+    naive_mean = values.mean(
+        dtype=np.float32
+    )
+
+    legacy_mean = _kahan_mean_float32(
+        values
+    )
+
+    assert legacy_mean == np.float32(
+        0.7580824
+    )
+
+    assert legacy_mean != naive_mean
