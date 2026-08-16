@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 
 from dtrm.embedding_cache import load_legacy_embedding_cache
+from dtrm.embedding_cache import embeddings_for_news_ids
 
 
 def test_load_legacy_embedding_cache(tmp_path):
@@ -44,3 +45,29 @@ def test_load_legacy_embedding_cache(tmp_path):
         np.asarray(embeddings),
         data,
     )
+
+def test_embeddings_for_news_ids_preserves_requested_order():
+    embeddings = np.arange(
+        4 * 384,
+        dtype=np.float32,
+    ).reshape(4, 384)
+
+    news_index = {
+        "a": 0,
+        "b": 1,
+        "c": 2,
+        "d": 3,
+    }
+
+    result = embeddings_for_news_ids(
+        embeddings,
+        news_index,
+        ["c", "a", "d"],
+    )
+
+    assert result.shape == (3, 384)
+    assert result.dtype == np.float32
+
+    np.testing.assert_array_equal(result[0], embeddings[2])
+    np.testing.assert_array_equal(result[1], embeddings[0])
+    np.testing.assert_array_equal(result[2], embeddings[3])

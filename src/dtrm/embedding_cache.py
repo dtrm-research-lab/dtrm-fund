@@ -37,3 +37,23 @@ def load_legacy_embedding_cache(
     )
 
     return embeddings, news_index
+
+def embeddings_for_news_ids(
+    embeddings: np.ndarray,
+    news_index: dict,
+    news_ids,
+) -> np.ndarray:
+    """Return legacy embeddings in exactly the requested news_id order."""
+
+    news_ids = list(news_ids)
+
+    idx = np.fromiter(
+        (news_index[nid] for nid in news_ids),
+        dtype=np.int32,
+        count=len(news_ids),
+    )
+
+    return np.asarray(
+        embeddings[idx],
+        dtype=np.float32,
+    )
