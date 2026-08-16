@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from dtrm.legacy_target_preprocessing import preprocess_legacy_targets
@@ -14,6 +15,10 @@ def test_preprocess_legacy_targets():
         lower_quantile=0.0,
         upper_quantile=1.0,
     )
+
+    assert result["train"].dtype == np.float32
+    assert result["valid"].dtype == np.float32
+    assert result["test"].dtype == np.float32
 
     assert result["clip_lower"] == pytest.approx(0.0)
     assert result["clip_upper"] == pytest.approx(10.0)
