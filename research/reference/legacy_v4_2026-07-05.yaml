@@ -75,3 +75,32 @@ xgboost_reference:
     iter_226:
       train_rmse: 0.09418
       valid_rmse: 0.18810
+
+topk_selection:
+  selected_iteration: 50
+  validation_topk_fraction: 0.10
+  validation_topk_mean: 0.10708630084991455
+  validation_topk_hit: 0.7308853118712274
+
+final_metrics:
+  validation:
+    rows: 19880
+    topk_rows: 1988
+    rmse: 0.19474168121814728
+    mae: 0.15201909840106964
+    r2: 0.023951145718553724
+    mean_target: -0.052364252507686615
+    topk_mean: 0.10708630084991455
+    hit_rate: 0.3573943661971831
+    topk_hit_rate: 0.7308853118712274
+
+  test:
+    rows: 25919
+    topk_rows: 2591
+    rmse: 0.16775406897068024
+    mae: 0.12764497101306915
+    r2: -0.053128921820862596
+    mean_target: -0.06453049182891846
+    topk_mean: 0.04648241028189659
+    hit_rate: 0.2612369304371311
+    topk_hit_rate: 0.3790042454650714
