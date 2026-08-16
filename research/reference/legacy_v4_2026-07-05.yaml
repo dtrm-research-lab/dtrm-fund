@@ -39,3 +39,39 @@ target_preprocessing:
 
 features:
   count: 391
+
+row_order:
+  required_for_exact_parity: true
+  sequence:
+    - sort_by_ticker_and_date_dt
+    - group_by_ticker_sort_false
+    - sort_each_ticker_by_date_dt
+  note: >
+    Row order inside equal ticker/date_dt timestamps affects XGBoost
+    subsampling and therefore exact model reproducibility.
+
+xgboost_reference:
+  validated_version: "3.0.2"
+  best_iteration: 106
+  best_valid_rmse: 0.18778947659492848
+  stopped_iteration: 226
+
+  checkpoints:
+    iter_0:
+      train_rmse: 0.11347
+      valid_rmse: 0.19500
+    iter_50:
+      train_rmse: 0.10359
+      valid_rmse: 0.18974
+    iter_100:
+      train_rmse: 0.09943
+      valid_rmse: 0.18782
+    iter_150:
+      train_rmse: 0.09686
+      valid_rmse: 0.18819
+    iter_200:
+      train_rmse: 0.09505
+      valid_rmse: 0.18798
+    iter_226:
+      train_rmse: 0.09418
+      valid_rmse: 0.18810
