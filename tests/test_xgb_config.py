@@ -4,6 +4,7 @@ from dtrm.xgb_config import (
     LEGACY_TOPK_FRAC,
     LEGACY_TOPK_SCAN_STEP,
     legacy_xgb_params,
+    quantile_xgb_params,
 )
 
 
@@ -27,7 +28,23 @@ def test_legacy_xgb_params():
         "verbosity": 1,
     }
 
-    assert LEGACY_NUM_BOOST_ROUND == 2000
-    assert LEGACY_EARLY_STOP_ROUNDS == 120
-    assert LEGACY_TOPK_FRAC == 0.10
-    assert LEGACY_TOPK_SCAN_STEP == 10
+def test_quantile_xgb_params_preserve_baseline_structure():
+    baseline = legacy_xgb_params()
+
+    for alpha in (0.1, 0.5, 0.9):
+        params = quantile_xgb_params(alpha)
+
+        assert params["objective"] == "reg:quantileerror"
+        assert params["quantile_alpha"] == alpha
+        assert "eval_metric" not in params
+
+        for key, value in baseline.items():
+            if key in {"objective", "eval_metric"}:
+                continue
+
+            assert params[key] == value
+
+assert LEGACY_NUM_BOOST_ROUND == 2000
+assert LEGACY_EARLY_STOP_ROUNDS == 120
+assert LEGACY_TOPK_FRAC == 0.10
+assert LEGACY_TOPK_SCAN_STEP == 10

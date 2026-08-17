@@ -21,6 +21,22 @@ def legacy_xgb_params() -> dict:
         "verbosity": 1,
     }
 
+def quantile_xgb_params(alpha: float) -> dict:
+    """Return the baseline XGBoost configuration for one quantile."""
+
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must be between 0 and 1.")
+
+    params = legacy_xgb_params()
+
+    params["objective"] = "reg:quantileerror"
+    params["quantile_alpha"] = float(alpha)
+
+    # Let the quantile objective use its matching default metric
+    # instead of inheriting baseline RMSE.
+    params.pop("eval_metric")
+
+    return params
 
 LEGACY_NUM_BOOST_ROUND = 2000
 LEGACY_EARLY_STOP_ROUNDS = 120
