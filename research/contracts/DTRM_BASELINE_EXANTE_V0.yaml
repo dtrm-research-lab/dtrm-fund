@@ -1,0 +1,33 @@
+stage:
+  id: DTRM_BASELINE_EXANTE_V0
+  status: defined
+  parent: DTRM_BASELINE_LEGACY_V0
+  purpose: >
+    Rebuild the DTRM baseline as a genuinely ex-ante experiment
+    before introducing probabilistic or optimization improvements.
+
+target:
+  window: forward
+  start: "t"
+  end: "t+60"
+
+must_preserve:
+  - historical cohort dates
+  - universe
+  - embargo_days
+  - model architecture
+  - feature definitions except future-dependent features
+  - transaction cost assumptions
+  - evaluation methodology
+
+must_remove:
+  - centered target window
+  - future-inclusive features
+  - any information unavailable at decision time
+
+principle:
+  - change information availability, not the model
+  - isolate the value of removing look-ahead information
+
+validation:
+  status: pending
