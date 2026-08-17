@@ -82,3 +82,76 @@ def assemble_legacy_feature_matrix(
     )
 
     return np.ascontiguousarray(X, dtype=np.float32)
+
+def assemble_exante_feature_matrix(
+    embeddings: np.ndarray,
+    text_features: np.ndarray,
+    beta_pre: np.ndarray,
+) -> np.ndarray:
+    """
+    Assemble the ex-ante DTRM model matrix.
+
+    Layout:
+        384 embedding
+        5 text features
+        1 beta_pre
+
+    Total: 390 float32 features.
+
+    Future-inclusive ret_spy_evt is intentionally excluded.
+    """
+
+    embeddings = np.asarray(
+        embeddings,
+        dtype=np.float32,
+    )
+
+    text_features = np.asarray(
+        text_features,
+        dtype=np.float32,
+    )
+
+    beta_pre = np.asarray(
+        beta_pre,
+        dtype=np.float32,
+    ).reshape(-1, 1)
+
+    if (
+        embeddings.ndim != 2
+        or embeddings.shape[1] != 384
+    ):
+        raise ValueError(
+            "embeddings must have shape (n, 384)."
+        )
+
+    if (
+        text_features.ndim != 2
+        or text_features.shape[1] != 5
+    ):
+        raise ValueError(
+            "text_features must have shape (n, 5)."
+        )
+
+    n = embeddings.shape[0]
+
+    if (
+        text_features.shape[0] != n
+        or beta_pre.shape[0] != n
+    ):
+        raise ValueError(
+            "all feature blocks must contain the same number of rows."
+        )
+
+    X = np.concatenate(
+        [
+            embeddings,
+            text_features,
+            beta_pre,
+        ],
+        axis=1,
+    )
+
+    return np.ascontiguousarray(
+        X,
+        dtype=np.float32,
+    )
