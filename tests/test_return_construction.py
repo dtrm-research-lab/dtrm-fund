@@ -1,6 +1,7 @@
 import pytest
 
 from dtrm.return_construction import legacy_centered_return
+import dtrm.return_construction as return_construction
 
 
 def test_legacy_centered_return():
@@ -68,3 +69,21 @@ def test_legacy_centered_return_preserves_event_timestamp():
     expected = (385.73 - 447.27) / 447.27
 
     assert result == expected
+
+def test_forward_return_starts_on_or_after_event_time():
+    prices = [
+        ("2026-01-15", 100.0),
+        ("2026-01-16", 101.0),
+        ("2026-03-17", 121.2),
+    ]
+
+    result = return_construction.forward_return(
+        prices,
+        event_date="2026-01-15 12:00:00",
+        horizon_days=60,
+        tolerance_days=5,
+    )
+
+    expected = (121.2 - 101.0) / 101.0
+
+    assert result == pytest.approx(expected)
