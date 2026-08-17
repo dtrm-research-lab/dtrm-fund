@@ -30,4 +30,34 @@ principle:
   - isolate the value of removing look-ahead information
 
 validation:
-  status: pending
+  status: validated
+  reproducible: true
+  tests_passed: 113
+  reproducible_runner: research/experiments/run_exante_baseline_v0.py
+
+  feature_count: 390
+  removed_feature:
+    - ret_spy_evt
+
+  best_rmse_iteration: 6
+  best_rmse_score: 0.13148387466227393
+
+  selected_topk_iteration: 10
+  selected_topk_mean: -0.023497406393289566
+  selected_topk_hit_rate: 0.2857142857142857
+
+  validation:
+    rows: 19880
+    rmse: 0.12996163964271545
+    mae: 0.10709021985530853
+    r2: -0.1314978454237854
+    topk_mean: -0.023497406393289566
+    topk_hit_rate: 0.2857142857142857
+
+  test:
+    rows: 25919
+    rmse: 0.12977591156959534
+    mae: 0.09975705295801163
+    r2: -0.029834466473519283
+    topk_mean: 0.024929869920015335
+    topk_hit_rate: 0.39637205712080276
