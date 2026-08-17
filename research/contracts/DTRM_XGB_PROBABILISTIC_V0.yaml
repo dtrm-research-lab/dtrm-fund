@@ -1,0 +1,40 @@
+stage:
+  id: DTRM_XGB_PROBABILISTIC_V0
+  status: defined
+  parent: DTRM_BASELINE_EXANTE_V0
+  purpose: >
+    Extend the validated ex-ante XGBoost baseline from
+    point prediction to probabilistic return estimation.
+
+hypothesis:
+  statement: >
+    Predicting the conditional distribution of forward returns
+    provides more useful decision information than a single
+    point estimate.
+
+outputs:
+  - p10
+  - p50
+  - p90
+
+must_preserve:
+  - ex-ante target definition
+  - historical cohort dates
+  - universe
+  - train_validation_test_splits
+  - embargo_days
+  - ex-ante feature matrix
+  - information available at decision time
+  - evaluation methodology
+
+baseline:
+  id: DTRM_BASELINE_EXANTE_V0
+  tag: dtrm-baseline-exante-v0
+
+principle:
+  - change prediction uncertainty, not information availability
+  - compare against the frozen ex-ante baseline
+  - no stage advances without measurable incremental value
+
+validation:
+  status: pending
