@@ -402,8 +402,9 @@ def pinball_loss(
     target: np.ndarray,
     prediction: np.ndarray,
     alpha: float,
+    weights=None,
 ) -> float:
-    """Return the unweighted quantile pinball loss."""
+    """Return quantile pinball loss."""
 
     error = target - prediction
 
@@ -412,13 +413,42 @@ def pinball_loss(
         (alpha - 1.0) * error,
     )
 
-    return float(np.mean(loss))
+    if weights is None:
+        return float(np.mean(loss))
 
+    return float(
+        np.average(loss, weights=weights)
+    )
+
+def weighted_quantile(
+    values: np.ndarray,
+    weights: np.ndarray,
+    quantile: float,
+) -> float:
+    """Return a weighted empirical quantile."""
+
+    order = np.argsort(values)
+
+    values = np.asarray(values)[order]
+    weights = np.asarray(weights)[order]
+
+    cumulative = np.cumsum(weights)
+    cutoff = quantile * cumulative[-1]
+
+    index = np.searchsorted(
+        cumulative,
+        cutoff,
+        side="left",
+    )
+
+    return float(values[index])
 
 def quantile_diagnostics(
     target: np.ndarray,
     predictions,
+    weights,
 ):
+    
     """Evaluate calibration and interval quality."""
 
     p10 = predictions["p10"]
@@ -469,13 +499,34 @@ def quantile_diagnostics(
         "crossing_rate": float(
             np.mean(crossing)
         ),
+        "weighted_pinball_p10": pinball_loss(
+            target, p10, 0.10, weights
+        ),
+        "weighted_pinball_p50": pinball_loss(
+            target, p50, 0.50, weights
+        ),
+        "weighted_pinball_p90": pinball_loss(
+            target, p90, 0.90, weights
+        ),
+        "weighted_coverage_p10": float(
+            np.average(target <= p10, weights=weights)
+        ),
+        "weighted_coverage_p50": float(
+            np.average(target <= p50, weights=weights)
+        ),
+        "weighted_coverage_p90": float(
+            np.average(target <= p90, weights=weights)
+        ),
+        "weighted_coverage_80_interval": float(
+            np.average(inside_80, weights=weights)
+        ),
     }
-
 
 def evaluate_probabilistic_models(
     models,
     dmatrices,
     targets,
+    weights,
     selected_p50_iteration: int,
 ):
     """
@@ -483,9 +534,51 @@ def evaluate_probabilistic_models(
     P50 Top-K decision methodology.
     """
 
+    validation_predictions = {}
+
+    for name, model in models.items():
+        iteration = (
+            int(model.best_iteration)
+            if model.best_iteration is not None
+            else LEGACY_NUM_BOOST_ROUND - 1
+        )
+
+        validation_predictions[name] = (
+            predict_at_iteration(
+                model,
+                dmatrices["valid"],
+                iteration,
+            )
+        )
+
+    calibration_offsets = {}
+
+    for name, alpha in QUANTILES.items():
+        residual = (
+            targets["valid"]
+            - validation_predictions[name]
+        )
+
+        calibration_offsets[name] = (
+            weighted_quantile(
+                residual,
+                weights["valid"],
+                alpha,
+            )
+        )
+
+    print()
+    print("VALIDATION CALIBRATION OFFSETS")
+
+    for name in ("p10", "p50", "p90"):
+        print(
+            name,
+            calibration_offsets[name],
+        )
+
     results = {}
 
-    for split in ("valid", "test"):
+    for split in ("train", "valid", "test"):
         quantile_predictions = {}
 
         for name, model in models.items():
@@ -502,6 +595,15 @@ def evaluate_probabilistic_models(
                     iteration,
                 )
             )
+
+        calibrated_predictions = {
+            name: (
+                prediction
+                + calibration_offsets[name]
+            )
+            for name, prediction
+            in quantile_predictions.items()
+        }
 
         p50_decision_prediction = (
             predict_at_iteration(
@@ -520,6 +622,14 @@ def evaluate_probabilistic_models(
             "probabilistic": quantile_diagnostics(
                 targets[split],
                 quantile_predictions,
+                weights[split],
+            ),
+            "probabilistic_calibrated": (
+                quantile_diagnostics(
+                    targets[split],
+                    calibrated_predictions,
+                    weights[split],
+                )
             ),
         }
 
@@ -570,6 +680,7 @@ def main():
         models,
         dmatrices,
         targets,
+        weights,
         topk.iteration,
     )
 
@@ -604,13 +715,19 @@ def main():
         topk.topk_hit_rate,
     )
 
-    for split in ("valid", "test"):
+    for split in ("train", "valid", "test"):
         decision = (
             metrics[split]["decision"]
         )
 
         probabilistic = (
             metrics[split]["probabilistic"]
+        )
+
+        calibrated = (
+            metrics[split][
+                "probabilistic_calibrated"
+            ]
         )
 
         print()
@@ -676,11 +793,40 @@ def main():
             "coverage_p90:",
             probabilistic["coverage_p90"],
         )
-
         print(
             "coverage_80_interval:",
             probabilistic[
                 "coverage_80_interval"
+            ],
+        )
+        print(
+            "weighted_pinball_p10:",
+            probabilistic["weighted_pinball_p10"],
+        )
+        print(
+            "weighted_pinball_p50:",
+            probabilistic["weighted_pinball_p50"],
+        )
+        print(
+            "weighted_pinball_p90:",
+            probabilistic["weighted_pinball_p90"],
+        )
+        print(
+            "weighted_coverage_p10:",
+            probabilistic["weighted_coverage_p10"],
+        )
+        print(
+            "weighted_coverage_p50:",
+            probabilistic["weighted_coverage_p50"],
+        )
+        print(
+            "weighted_coverage_p90:",
+            probabilistic["weighted_coverage_p90"],
+        )
+        print(
+            "weighted_coverage_80_interval:",
+            probabilistic[
+                "weighted_coverage_80_interval"
             ],
         )
         print(
@@ -692,6 +838,44 @@ def main():
         print(
             "crossing_rate:",
             probabilistic["crossing_rate"],
+        )
+        print(
+            "calibrated_weighted_pinball_p10:",
+            calibrated["weighted_pinball_p10"],
+        )
+        print(
+            "calibrated_weighted_pinball_p50:",
+            calibrated["weighted_pinball_p50"],
+        )
+        print(
+            "calibrated_weighted_pinball_p90:",
+            calibrated["weighted_pinball_p90"],
+        )
+        print(
+            "calibrated_weighted_coverage_p10:",
+            calibrated["weighted_coverage_p10"],
+        )
+        print(
+            "calibrated_weighted_coverage_p50:",
+            calibrated["weighted_coverage_p50"],
+        )
+        print(
+            "calibrated_weighted_coverage_p90:",
+            calibrated["weighted_coverage_p90"],
+        )
+        print(
+            "calibrated_weighted_coverage_80_interval:",
+            calibrated[
+                "weighted_coverage_80_interval"
+            ],
+        )
+        print(
+            "calibrated_mean_interval_width:",
+            calibrated["mean_interval_width"],
+        )
+        print(
+            "calibrated_crossing_rate:",
+            calibrated["crossing_rate"],
         )
 
 
