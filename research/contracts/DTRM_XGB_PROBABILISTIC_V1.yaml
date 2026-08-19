@@ -18,6 +18,71 @@ frozen_inputs:
   baseline_tag: dtrm-baseline-exante-v0
   probabilistic_tag: dtrm-xgb-probabilistic-v0
 
+holdout:
+  status: frozen
+  start: 2026-05-02
+  end: 2026-06-06
+
+  news_snapshot:
+    file: news_2025-01-01_2026-06-06.pkl
+    unique_news: 5526
+
+  pairs_snapshot:
+    file: pairs_raw_2025-01-01_2026-06-06.pkl
+    rows: 40320
+    unique_news: 5526
+    canonical_tickers: 171
+    duplicate_pairs: 0
+
+  ticker_normalization:
+    BRK.B: BRK-B
+
+  price_snapshot:
+    suffix: 2026-08-10
+    assets_including_spy: 174
+    last_price_date: 2026-08-10
+
+  embeddings:
+    model: all-MiniLM-L6-v2
+    dimensions: 384
+    dtype: float32
+    normalize: true
+    max_chars: 1600
+    coverage: 1.0
+
+    provenance:
+      cache_2026-06-06: 4764
+      cache_2026-05-23: 735
+      v1_reproduced_supplement: 27
+
+    manifest:
+      file: probabilistic_v1_embedding_manifest_2026-06-06.pkl
+
+    supplement:
+      file: probabilistic_v1_missing_embeddings_2026-06-06.pkl
+
+  beta_pre:
+    file: probabilistic_v1_holdout_beta_pre_2026-06-06.pkl
+    rows: 40320
+    missing: 0
+
+target:
+  definition: forward_excess_beta
+  source_tag: dtrm-baseline-exante-v0
+  implementation: dtrm.exante_target.forward_excess_beta_target
+
+  formula: >
+    stock_forward_return - beta_pre * market_forward_return
+
+  horizon_days: 60
+  price_tolerance_days: 5
+
+  beta_pre:
+    lookback: 252
+    min_observations: 60
+    tolerance_days: 20
+    information_set: on_or_before_event_date
+
 decision_rule:
   ranking: frozen_exante_point_prediction
   veto: calibrated_p10_greater_than_zero
@@ -30,6 +95,26 @@ evaluation:
   v0_test_status: consumed
   holdout_requirement: new_untouched_temporal_cohort
   rule_must_be_frozen_before_holdout: true
+  holdout_outcomes_inspected: false
+  primary_metric: topk_mean_excess_beta
+
+  comparison:
+    baseline: frozen_exante_point_ranking
+    candidate: frozen_exante_point_ranking_with_p10_veto
+    same_holdout: true
+    same_topk_fraction: true
+
+  promotion_criterion:
+    require_full_topk: true
+    minimum_delta_topk_mean: 0.0
+    rule: >
+      Promote only if candidate topk_mean_excess_beta is
+      strictly greater than baseline topk_mean_excess_beta.
+
+  secondary_metrics:
+    - topk_hit_rate
+
+  threshold_tuning_after_holdout: forbidden
 
 promotion:
   status: pending
