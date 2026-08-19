@@ -75,6 +75,40 @@ validation:
       mean_interval_width: 0.3348904848098755
       crossing_rate: 0.0
 
+  decision_value:
+    methodology: top10pct_ranked_signal
+
+    baseline_exante:
+      validation:
+        topk_mean: -0.023497406393289566
+        topk_hit_rate: 0.2857142857142857
+      test:
+        topk_mean: 0.024929869920015335
+        topk_hit_rate: 0.39637205712080276
+
+    p10:
+      selected_iteration: 10
+      validation:
+        topk_mean: -0.02310997247695923
+        topk_hit_rate: 0.2962776659959759
+      test:
+        topk_mean: -0.03245527297258377
+        topk_hit_rate: 0.3662678502508684
+
+    p50:
+      selected_iteration: 0
+      validation:
+        topk_mean: -0.017756586894392967
+        topk_hit_rate: 0.4864185110663984
+      test:
+        topk_mean: -0.054749589413404465
+        topk_hit_rate: 0.2848321111539946
+
+    conclusion: >
+      P10 improves materially over P50 on the held-out test,
+      but neither probabilistic ranking signal demonstrates
+      incremental decision value over the frozen ex-ante baseline.
+      
   promotion:
     status: pending
     reason: >
