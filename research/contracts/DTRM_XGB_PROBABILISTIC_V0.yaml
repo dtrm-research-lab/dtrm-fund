@@ -37,7 +37,7 @@ principle:
   - no stage advances without measurable incremental value
 
 validation:
-  status: pending
+  status: validated
   reproducible: true
   tests_passed: 114
   runner: research/experiments/run_probabilistic_xgb_v0.py
@@ -127,8 +127,9 @@ validation:
         incremental decision value over the frozen ex-ante baseline.
 
   promotion:
-    status: pending
+    status: not_promoted
     reason: >
       Probabilistic calibration generalizes out of sample,
-      but incremental decision value versus the frozen
-      ex-ante baseline has not yet been demonstrated.
+      but P10, P50, and the fixed full-distribution score
+      do not demonstrate incremental decision value over
+      the frozen ex-ante baseline.
