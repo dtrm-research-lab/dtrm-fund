@@ -336,15 +336,12 @@ def predict_at_iteration(
     )
 
 
-def select_p50_topk(
+def select_quantile_topk(
     model,
     dmatrices,
     targets,
 ):
-    """
-    Preserve the baseline Top-K selection methodology,
-    using the median prediction as the point forecast.
-    """
+    """Select the Top-K iteration for one quantile model."""
 
     max_iteration = (
         int(model.best_iteration)
@@ -527,6 +524,7 @@ def evaluate_probabilistic_models(
     dmatrices,
     targets,
     weights,
+    selected_p10_iteration: int,
     selected_p50_iteration: int,
 ):
     """
@@ -605,6 +603,14 @@ def evaluate_probabilistic_models(
             in quantile_predictions.items()
         }
 
+        p10_decision_prediction = (
+            predict_at_iteration(
+                models["p10"],
+                dmatrices[split],
+                selected_p10_iteration,
+            )
+        )
+
         p50_decision_prediction = (
             predict_at_iteration(
                 models["p50"],
@@ -630,6 +636,11 @@ def evaluate_probabilistic_models(
                     calibrated_predictions,
                     weights[split],
                 )
+            ),
+            "decision_p10": regression_topk_metrics(
+                targets[split],
+                p10_decision_prediction,
+                topk_fraction=LEGACY_TOPK_FRAC,
             ),
         }
 
@@ -670,7 +681,13 @@ def main():
         )
     )
 
-    topk = select_p50_topk(
+    p10_topk = select_quantile_topk(
+    models["p10"],
+    dmatrices,
+    targets,
+    )
+
+    p50_topk = select_quantile_topk(
         models["p50"],
         dmatrices,
         targets,
@@ -681,7 +698,8 @@ def main():
         dmatrices,
         targets,
         weights,
-        topk.iteration,
+        p10_topk.iteration,
+        p50_topk.iteration,
     )
 
     print()
@@ -703,21 +721,39 @@ def main():
 
     print()
     print(
+        "selected_p10_topk_iteration:",
+        p10_topk.iteration,
+    )
+    print(
+        "selected_p10_topk_mean:",
+        p10_topk.topk_mean,
+    )
+    print(
+        "selected_p10_topk_hit_rate:",
+        p10_topk.topk_hit_rate,
+    )
+
+    print()
+    print(
         "selected_p50_topk_iteration:",
-        topk.iteration,
+        p50_topk.iteration,
     )
     print(
         "selected_p50_topk_mean:",
-        topk.topk_mean,
+        p50_topk.topk_mean,
     )
     print(
         "selected_p50_topk_hit_rate:",
-        topk.topk_hit_rate,
+        p50_topk.topk_hit_rate,
     )
 
     for split in ("train", "valid", "test"):
         decision = (
             metrics[split]["decision"]
+        )
+
+        decision_p10 = (
+            metrics[split]["decision_p10"]
         )
 
         probabilistic = (
@@ -755,6 +791,16 @@ def main():
             "mean_target:",
             decision.mean_target,
         )
+
+        print(
+            "p10_topk_mean:",
+            decision_p10.topk_mean,
+        )
+        print(
+            "p10_topk_hit_rate:",
+            decision_p10.topk_hit_rate,
+        )
+
         print(
             "p50_topk_mean:",
             decision.topk_mean,
@@ -799,6 +845,7 @@ def main():
                 "coverage_80_interval"
             ],
         )
+
         print(
             "weighted_pinball_p10:",
             probabilistic["weighted_pinball_p10"],
@@ -811,6 +858,7 @@ def main():
             "weighted_pinball_p90:",
             probabilistic["weighted_pinball_p90"],
         )
+
         print(
             "weighted_coverage_p10:",
             probabilistic["weighted_coverage_p10"],
@@ -829,6 +877,7 @@ def main():
                 "weighted_coverage_80_interval"
             ],
         )
+
         print(
             "mean_interval_width:",
             probabilistic[
@@ -839,6 +888,7 @@ def main():
             "crossing_rate:",
             probabilistic["crossing_rate"],
         )
+
         print(
             "calibrated_weighted_pinball_p10:",
             calibrated["weighted_pinball_p10"],
@@ -851,6 +901,7 @@ def main():
             "calibrated_weighted_pinball_p90:",
             calibrated["weighted_pinball_p90"],
         )
+
         print(
             "calibrated_weighted_coverage_p10:",
             calibrated["weighted_coverage_p10"],
@@ -869,6 +920,7 @@ def main():
                 "weighted_coverage_80_interval"
             ],
         )
+
         print(
             "calibrated_mean_interval_width:",
             calibrated["mean_interval_width"],
@@ -877,7 +929,6 @@ def main():
             "calibrated_crossing_rate:",
             calibrated["crossing_rate"],
         )
-
 
 if __name__ == "__main__":
     main()
