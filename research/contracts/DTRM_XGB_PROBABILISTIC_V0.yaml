@@ -38,3 +38,46 @@ principle:
 
 validation:
   status: pending
+  reproducible: true
+  tests_passed: 114
+  runner: research/experiments/run_probabilistic_xgb_v0.py
+
+  quantile_models:
+    p10:
+      best_iteration: 18
+      best_score: 0.02465790502590275
+    p50:
+      best_iteration: 19
+      best_score: 0.05380345140186534
+    p90:
+      best_iteration: 0
+      best_score: 0.02865654745966941
+
+  calibration:
+    method: weighted_validation_residual_offsets
+    fitted_on: validation_only
+
+    offsets:
+      p10: -0.06494169682264328
+      p50: -0.05668593570590019
+      p90: 0.058683641254901886
+
+    test:
+      weighted_coverage_p10: 0.11934943403423799
+      weighted_coverage_p50: 0.44923744497795326
+      weighted_coverage_p90: 0.9396685491096511
+      weighted_coverage_80_interval: 0.8203191150754132
+
+      weighted_pinball_p10: 0.018568364903330803
+      weighted_pinball_p50: 0.04700617119669914
+      weighted_pinball_p90: 0.02591572515666485
+
+      mean_interval_width: 0.3348904848098755
+      crossing_rate: 0.0
+
+  promotion:
+    status: pending
+    reason: >
+      Probabilistic calibration generalizes out of sample,
+      but incremental decision value versus the frozen
+      ex-ante baseline has not yet been demonstrated.
