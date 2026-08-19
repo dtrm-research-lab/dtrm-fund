@@ -76,39 +76,56 @@ validation:
       crossing_rate: 0.0
 
   decision_value:
-    methodology: top10pct_ranked_signal
+      methodology: top10pct_ranked_signal
 
-    baseline_exante:
-      validation:
-        topk_mean: -0.023497406393289566
-        topk_hit_rate: 0.2857142857142857
-      test:
-        topk_mean: 0.024929869920015335
-        topk_hit_rate: 0.39637205712080276
+      baseline_exante:
+        validation:
+          topk_mean: -0.023497406393289566
+          topk_hit_rate: 0.2857142857142857
+        test:
+          topk_mean: 0.024929869920015335
+          topk_hit_rate: 0.39637205712080276
 
-    p10:
-      selected_iteration: 10
-      validation:
-        topk_mean: -0.02310997247695923
-        topk_hit_rate: 0.2962776659959759
-      test:
-        topk_mean: -0.03245527297258377
-        topk_hit_rate: 0.3662678502508684
+      p10:
+        selected_iteration: 10
+        validation:
+          topk_mean: -0.02310997247695923
+          topk_hit_rate: 0.2962776659959759
+        test:
+          topk_mean: -0.03245527297258377
+          topk_hit_rate: 0.3662678502508684
 
-    p50:
-      selected_iteration: 0
-      validation:
-        topk_mean: -0.017756586894392967
-        topk_hit_rate: 0.4864185110663984
-      test:
-        topk_mean: -0.054749589413404465
-        topk_hit_rate: 0.2848321111539946
+      p50:
+        selected_iteration: 0
+        validation:
+          topk_mean: -0.017756586894392967
+          topk_hit_rate: 0.4864185110663984
+        test:
+          topk_mean: -0.054749589413404465
+          topk_hit_rate: 0.2848321111539946
 
-    conclusion: >
-      P10 improves materially over P50 on the held-out test,
-      but neither probabilistic ranking signal demonstrates
-      incremental decision value over the frozen ex-ante baseline.
-      
+      full_distribution_score:
+        formula: "p50 - 0.5 * (p90 - p10)"
+        width_penalty: 0.5
+        runner: research/experiments/run_probabilistic_score_v0.py
+
+        validation:
+          topk_mean: -0.03505129739642143
+          topk_hit_rate: 0.2107645875251509
+
+        test:
+          topk_mean: -0.0584881454706192
+          topk_hit_rate: 0.22307989193361635
+
+        conclusion: >
+          Penalizing predictive interval width does not improve
+          decision value over P10, P50, or the frozen ex-ante baseline.
+
+      conclusion: >
+        P10 improves materially over P50 on the held-out test,
+        but neither probabilistic ranking signal demonstrates
+        incremental decision value over the frozen ex-ante baseline.
+
   promotion:
     status: pending
     reason: >
