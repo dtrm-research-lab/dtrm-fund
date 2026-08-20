@@ -53,6 +53,10 @@ decision_rule:
   veto_percentile: 0.25
   topk_fraction: 0.10
   threshold_must_be_frozen_before_new_holdout: true
+  fill_policy: >
+    Walk down the frozen baseline ranking and select only
+    candidates whose calibrated P10 is greater than or equal
+    to the frozen threshold until Top-K is filled.
 
   veto_threshold_estimation:
     distribution: frozen_v0_validation_calibrated_p10
@@ -65,11 +69,38 @@ decision_rule:
     calibration_offset: -0.06494169682264328
     frozen_threshold: -0.16665692627429962
 
+feasibility:
+  status: passed
+  holdout_rows: 4449
+  required_topk_rows: 444
+  calibrated_p10_pass_rows: 2530
+  pass_rate: 0.568667116205889
+  can_fill_topk: true
+  outcome_independent: true
+
 evaluation:
   v0_test_status: consumed
   v1_holdout_status: consumed_for_feasibility
   holdout_requirement: new_untouched_temporal_cohort
   threshold_tuning_after_holdout: forbidden
+
+  primary_metric: topk_mean_excess_beta
+
+  comparison:
+    baseline: frozen_exante_point_ranking
+    candidate: frozen_exante_point_ranking_with_relative_p10_veto
+    same_holdout: true
+    same_topk_fraction: true
+
+  promotion_criterion:
+    require_full_topk: true
+    minimum_delta_topk_mean: 0.0
+    rule: >
+      Promote only if candidate topk_mean_excess_beta is
+      strictly greater than baseline topk_mean_excess_beta.
+
+  secondary_metrics:
+    - topk_hit_rate
 
 promotion:
   status: pending
