@@ -83,6 +83,14 @@ target:
     tolerance_days: 20
     information_set: on_or_before_event_date
 
+probabilistic_v0_inference:
+  p10:
+    best_iteration: 18
+    calibration_offset: -0.06494169682264328
+    calibration_method: weighted_validation_residual_offsets
+    calibration_fitted_on: validation_only
+    calibrated_prediction: raw_p10_prediction_plus_calibration_offset
+
 decision_rule:
   ranking: frozen_exante_point_prediction
   veto: calibrated_p10_greater_than_zero
