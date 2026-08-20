@@ -129,5 +129,20 @@ evaluation:
 
   threshold_tuning_after_holdout: forbidden
 
+feasibility:
+  status: failed
+  holdout_rows: 40320
+  required_topk_rows: 4032
+  calibrated_p10_pass_rows: 0
+  can_fill_topk: false
+  outcome_independent_failure: true
+  reason: >
+    The preregistered calibrated P10 > 0 veto rejects every
+    candidate in the untouched holdout, so the required Top-K
+    portfolio cannot be constructed without changing the frozen rule.
+
 promotion:
-  status: pending
+  status: not_promoted
+  reason: >
+    V1 fails the preregistered feasibility gate before outcome
+    evaluation. The veto threshold will not be retuned on this holdout.
