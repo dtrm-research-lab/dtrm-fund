@@ -27,6 +27,13 @@ decision_rule:
   topk_fraction: 0.10
   threshold_must_be_frozen_before_new_holdout: true
 
+  veto_threshold_estimation:
+    distribution: frozen_v0_validation_calibrated_p10
+    estimator: weighted_empirical_quantile
+    weights: legacy_news_weights
+    quantile: 0.25
+    fitted_on: validation_only
+
 evaluation:
   v0_test_status: consumed
   v1_holdout_status: consumed_for_feasibility
