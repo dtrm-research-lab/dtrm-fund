@@ -1,0 +1,37 @@
+stage:
+  id: DTRM_XGB_PROBABILISTIC_V2
+  status: defined
+  parent: DTRM_XGB_PROBABILISTIC_V1
+
+purpose: >
+  Test whether calibrated probabilistic downside information
+  adds decision value when used as a relative risk veto around
+  the frozen ex-ante baseline ranking.
+
+hypothesis:
+  statement: >
+    Preserving the frozen ex-ante ranking while rejecting
+    candidates whose calibrated P10 falls below the 25th
+    percentile of the frozen V0 validation P10 distribution
+    improves selection quality versus the ex-ante baseline alone.
+
+frozen_inputs:
+  baseline_tag: dtrm-baseline-exante-v0
+  probabilistic_tag: dtrm-xgb-probabilistic-v0
+  previous_experiment_tag: dtrm-xgb-probabilistic-v1
+
+decision_rule:
+  ranking: frozen_exante_point_prediction
+  veto_reference: frozen_v0_validation_calibrated_p10
+  veto_percentile: 0.25
+  topk_fraction: 0.10
+  threshold_must_be_frozen_before_new_holdout: true
+
+evaluation:
+  v0_test_status: consumed
+  v1_holdout_status: consumed_for_feasibility
+  holdout_requirement: new_untouched_temporal_cohort
+  threshold_tuning_after_holdout: forbidden
+
+promotion:
+  status: pending
