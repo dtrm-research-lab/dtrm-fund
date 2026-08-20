@@ -33,6 +33,10 @@ decision_rule:
     weights: legacy_news_weights
     quantile: 0.25
     fitted_on: validation_only
+    validation_rows: 19880
+    p10_best_iteration: 18
+    calibration_offset: -0.06494169682264328
+    frozen_threshold: -0.16665692627429962
 
 evaluation:
   v0_test_status: consumed
