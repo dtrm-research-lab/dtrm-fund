@@ -1,0 +1,72 @@
+stage:
+  id: DTRM_XGB_PROBABILISTIC_V3
+  status: defined
+  parent: DTRM_XGB_PROBABILISTIC_V2
+
+purpose: >
+  Test whether the promoted V2 relative calibrated-P10 veto
+  reproduces its decision value on a new untouched temporal
+  holdout without changing the decision rule.
+
+hypothesis:
+  statement: >
+    Preserving the frozen ex-ante ranking while rejecting
+    candidates whose calibrated P10 falls below the V2 frozen
+    threshold improves Top-K selection quality versus the
+    frozen ex-ante baseline on a new temporal cohort.
+
+frozen_inputs:
+  baseline_tag: dtrm-baseline-exante-v0
+  probabilistic_tag: dtrm-xgb-probabilistic-v0
+  decision_rule_source_tag: dtrm-xgb-probabilistic-v2
+
+holdout:
+  status: pending_selection
+  requirement: new_untouched_temporal_cohort
+  outcomes_inspected: false
+
+decision_rule:
+  ranking: frozen_exante_point_prediction
+  veto_reference: frozen_v0_validation_calibrated_p10
+  veto_percentile: 0.25
+  topk_fraction: 0.10
+
+  fill_policy: >
+    Walk down the frozen baseline ranking and select only
+    candidates whose calibrated P10 is greater than or equal
+    to the frozen threshold until Top-K is filled.
+
+  veto_threshold:
+    estimator: weighted_empirical_quantile
+    weights: legacy_news_weights
+    quantile: 0.25
+    fitted_on: validation_only
+    validation_rows: 19880
+    p10_best_iteration: 18
+    calibration_offset: -0.06494169682264328
+    frozen_threshold: -0.16665692627429962
+
+  threshold_tuning: forbidden
+
+evaluation:
+  primary_metric: topk_mean_excess_beta
+
+  comparison:
+    baseline: frozen_exante_point_ranking
+    candidate: frozen_exante_point_ranking_with_relative_p10_veto
+    same_holdout: true
+    same_topk_fraction: true
+
+  promotion_criterion:
+    require_full_topk: true
+    minimum_delta_topk_mean: 0.0
+    rule: >
+      Replication succeeds only if candidate
+      topk_mean_excess_beta is strictly greater than baseline
+      topk_mean_excess_beta.
+
+  secondary_metrics:
+    - topk_hit_rate
+
+promotion:
+  status: pending
