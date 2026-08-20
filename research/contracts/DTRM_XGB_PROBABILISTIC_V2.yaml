@@ -20,6 +20,33 @@ frozen_inputs:
   probabilistic_tag: dtrm-xgb-probabilistic-v0
   previous_experiment_tag: dtrm-xgb-probabilistic-v1
 
+holdout:
+  status: frozen
+  start: 2026-06-07T00:30:00Z
+  end: 2026-06-10T23:09:25Z
+
+  structural_validation:
+    unique_news: 575
+    pairs: 4449
+    canonical_tickers: 108
+    duplicate_pairs: 0
+    topk_rows: 444
+
+  ticker_normalization:
+    BRK.B: BRK-B
+
+  price_snapshot:
+    suffix: 2026-08-10
+    assets_including_spy: 174
+
+  target_observability:
+    observable_pairs: 4449
+    missing_pairs: 0
+    horizon_days: 60
+    price_tolerance_days: 5
+
+  outcomes_inspected: false
+
 decision_rule:
   ranking: frozen_exante_point_prediction
   veto_reference: frozen_v0_validation_calibrated_p10
