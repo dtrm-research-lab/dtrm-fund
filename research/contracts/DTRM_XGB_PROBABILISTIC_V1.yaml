@@ -83,6 +83,11 @@ target:
     tolerance_days: 20
     information_set: on_or_before_event_date
 
+baseline_exante_inference:
+  selected_topk_iteration: 10
+  inference_role: frozen_point_ranking
+  source_tag: dtrm-baseline-exante-v0
+
 probabilistic_v0_inference:
   p10:
     best_iteration: 18
