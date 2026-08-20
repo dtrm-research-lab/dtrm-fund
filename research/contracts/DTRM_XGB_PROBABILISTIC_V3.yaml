@@ -21,8 +21,34 @@ frozen_inputs:
   decision_rule_source_tag: dtrm-xgb-probabilistic-v2
 
 holdout:
-  status: pending_selection
+  status: frozen
   requirement: new_untouched_temporal_cohort
+
+  start: 2026-06-11T00:11:50Z
+  end: 2026-06-14T23:00:00Z
+
+  structural_validation:
+    unique_news: 398
+    pairs: 2827
+    canonical_tickers: 125
+    duplicate_pairs: 0
+    topk_rows: 282
+
+  ticker_normalization:
+    BRK.B: BRK-B
+
+  price_snapshot:
+    suffix: 2026-08-15
+    history_start: 2024-02-16
+    assets_including_spy: 174
+    last_trading_date: 2026-08-14
+
+  target_observability:
+    observable_pairs: 2827
+    missing_pairs: 0
+    horizon_days: 60
+    price_tolerance_days: 5
+
   outcomes_inspected: false
 
 decision_rule:
