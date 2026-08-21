@@ -49,7 +49,7 @@ holdout:
     horizon_days: 60
     price_tolerance_days: 5
 
-  outcomes_inspected: false
+  outcomes_inspected: true
 
 decision_rule:
   ranking: frozen_exante_point_prediction
@@ -103,5 +103,24 @@ evaluation:
   secondary_metrics:
     - topk_hit_rate
 
+  result:
+    holdout_rows: 2827
+    topk_rows: 282
+
+    baseline_topk_mean: -0.1790371835231781
+    candidate_topk_mean: -0.029599694535136223
+    delta_topk_mean: 0.14943748898804188
+
+    baseline_topk_hit_rate: 0.06028368794326241
+    candidate_topk_hit_rate: 0.6453900709219859
+    delta_topk_hit_rate: 0.5851063829787234
+
+    promotion_criterion_met: true
+
 promotion:
-  status: pending
+  status: promoted
+  reason: >
+    The preregistered V2 relative calibrated-P10 veto
+    reproduced its incremental Top-K decision value versus
+    the frozen ex-ante baseline on the untouched V3 holdout
+    without changing the rule or threshold.
