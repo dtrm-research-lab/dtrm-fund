@@ -1,0 +1,76 @@
+stage:
+  id: DTRM_XGB_PROBABILISTIC_V4
+  status: defined
+  parent: DTRM_XGB_PROBABILISTIC_V3
+
+purpose: >
+  Test the robustness of the frozen V2/V3 relative calibrated-P10
+  veto on a substantially longer temporal cohort whose outcomes
+  have never been inspected.
+
+hypothesis:
+  statement: >
+    Preserving the frozen ex-ante point ranking while applying
+    the unchanged relative calibrated-P10 veto improves Top-K
+    decision quality versus the frozen ex-ante baseline on the
+    previously outcome-uninspected V1 temporal cohort.
+
+frozen_inputs:
+  baseline_tag: dtrm-baseline-exante-v0
+  probabilistic_tag: dtrm-xgb-probabilistic-v0
+  decision_rule_source_tag: dtrm-xgb-probabilistic-v2
+  replication_tag: dtrm-xgb-probabilistic-v3
+
+holdout:
+  status: preregistered
+  source: DTRM_XGB_PROBABILISTIC_V1
+
+  start: 2026-05-02
+  end: 2026-06-06
+
+  rationale: >
+    This cohort is materially longer than V2 and V3 and its
+    outcomes were not inspected during V1, which was closed
+    outcome-independently on feasibility of a different absolute
+    P10 rule.
+
+  outcomes_inspected: false
+
+decision_rule:
+  ranking: frozen_exante_point_prediction
+  topk_fraction: 0.10
+
+  fill_policy: >
+    Walk down the frozen baseline ranking and select only
+    candidates whose calibrated P10 is greater than or equal
+    to the frozen threshold until Top-K is filled.
+
+  veto_threshold:
+    p10_best_iteration: 18
+    calibration_offset: -0.06494169682264328
+    frozen_threshold: -0.16665692627429962
+
+  threshold_tuning: forbidden
+  model_retraining: forbidden
+  rule_changes_after_holdout: forbidden
+
+evaluation:
+  primary_metric: topk_mean_excess_beta
+
+  promotion_criterion:
+    require_full_topk: true
+    rule: >
+      Robustness succeeds only if candidate topk_mean_excess_beta
+      is strictly greater than baseline topk_mean_excess_beta.
+
+  secondary_metrics:
+    - topk_hit_rate
+
+  paper_evidence:
+    objective: >
+      Determine whether the V2/V3 effect persists over a materially
+      longer outcome-uninspected temporal cohort.
+    no_requirement_for_absolute_positive_return: true
+
+promotion:
+  status: pending
