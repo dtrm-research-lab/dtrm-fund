@@ -184,3 +184,44 @@ primary_uncertainty_result:
     dependence among ticker rows sharing the same news_id is preserved.
     This result does not remove dependence due to repeated tickers or
     overlapping 60-day forward-return windows.
+
+ticker_sensitivity_result:
+  status: completed
+  method: ticker_cluster_bootstrap
+  replicates: 10000
+  infeasible_replicates:
+    V2: 0
+    V3: 0
+    V4: 0
+
+  V2:
+    delta_topk_mean:
+      point: 0.14429480582475662
+      ci95: [-0.006220224499702454, 0.19615343257319176]
+    delta_topk_hit_rate:
+      point: 0.5788288288288288
+      ci95: [-0.007422653940288334, 0.7869257290241077]
+
+  V3:
+    delta_topk_mean:
+      point: 0.14943748898804188
+      ci95: [0.007538507026038135, 0.193316538631916]
+    delta_topk_hit_rate:
+      point: 0.5851063829787234
+      ci95: [0.026547834540091176, 0.79931338028169]
+
+  V4:
+    delta_topk_mean:
+      point: 0.027561593800783157
+      ci95: [-0.010468163806945084, 0.07181955866981293]
+    delta_topk_hit_rate:
+      point: 0.10168650793650791
+      ci95: [-0.007457728649162368, 0.28585617483056575]
+
+  interpretation: >
+    Point estimates remain positive in V2, V3, and V4, but ticker-cluster
+    uncertainty is materially wider than news_id-cluster uncertainty.
+    The 95 percent intervals exclude zero in V3 but include zero in V2
+    and V4 for both incremental Top-K mean and hit rate. Therefore the
+    evidence must not be described as uniformly robust to cross-sectional
+    ticker concentration.
