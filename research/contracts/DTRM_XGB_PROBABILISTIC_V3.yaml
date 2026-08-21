@@ -74,6 +74,15 @@ decision_rule:
 
   threshold_tuning: forbidden
 
+feasibility:
+  status: passed
+  holdout_rows: 2827
+  required_topk_rows: 282
+  calibrated_p10_pass_rows: 1634
+  pass_rate: 0.5779978776087725
+  can_fill_topk: true
+  outcome_independent: true
+
 evaluation:
   primary_metric: topk_mean_excess_beta
 
