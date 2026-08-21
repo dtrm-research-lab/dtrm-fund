@@ -1,6 +1,6 @@
 stage:
   id: DTRM_XGB_PROBABILISTIC_PHASE2_STATS
-  status: defined
+  status: completed
   parent: DTRM_XGB_PROBABILISTIC_V4
 
 purpose: >
@@ -296,3 +296,23 @@ temporal_robustness_result:
     materially in the later part of the holdout. This analysis is
     descriptive and supports temporal regime dependence rather than
     a claim of invariant weekly superiority.
+
+
+completion:
+  status: completed
+  conclusion: >
+    The frozen probabilistic downside guardrail produced positive
+    incremental Top-K mean estimates in V2, V3, and V4. News-event
+    cluster bootstrap intervals remained positive in all three
+    cohorts. Ticker-cluster sensitivity was materially wider and
+    included zero in V2 and V4, while remaining positive in V3.
+    Within V4, four of six ISO weeks had positive incremental Top-K
+    mean. The evidence therefore supports reproducible incremental
+    decision value across frozen temporal tests, but not invariant
+    robustness across securities or time regimes.
+
+  paper_claim_boundary: >
+    Report reproducible incremental decision improvement with
+    dependency-aware uncertainty and explicit cross-sectional and
+    temporal sensitivity. Do not claim absolute profitability,
+    uniform ticker-level robustness, or invariant weekly superiority.
