@@ -88,15 +88,33 @@ temporal_robustness:
   cohort: V4
   method: calendar_week_partition
   tuning: forbidden
+
+  partition:
+    date_source: signal_date_dt
+    calendar_definition: ISO_8601_week
+    week_start: Monday
+    include_partial_boundary_weeks: true
+    drop_weeks_based_on_result: forbidden
+
+  weekly_selection:
+    recompute_within_each_week: true
+    ranking: frozen_exante_point_prediction
+    candidate_rule: frozen_calibrated_p10_veto
+    topk_fraction: 0.10
+    topk_rounding: floor_via_int
+    require_candidate_fill_full_topk: true
+
   statistics:
     - weekly_delta_topk_mean
     - weekly_delta_topk_hit_rate
     - fraction_of_weeks_with_positive_delta_topk_mean
+
   interpretation: descriptive
   rationale: >
     V4 spans a materially longer temporal interval than V2 and V3
     and is therefore the appropriate cohort for within-window temporal
-    stability analysis.
+    stability analysis. All ISO calendar weeks intersecting the frozen
+    V4 holdout are retained, including partial boundary weeks.
 
 cross_cohort_summary:
   report:
