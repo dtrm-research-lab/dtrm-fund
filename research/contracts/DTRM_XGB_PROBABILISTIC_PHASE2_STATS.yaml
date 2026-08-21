@@ -243,3 +243,56 @@ ticker_sensitivity_result:
     and V4 for both incremental Top-K mean and hit rate. Therefore the
     evidence must not be described as uniformly robust to cross-sectional
     ticker concentration.
+
+temporal_robustness_result:
+  status: completed
+  cohort: V4
+  method: ISO_8601_calendar_week_partition
+  total_weeks: 6
+  positive_delta_topk_mean_weeks: 4
+  fraction_of_weeks_with_positive_delta_topk_mean: 0.6666666666666666
+
+  weeks:
+    - label: 2026-W18
+      rows: 279
+      topk_rows: 27
+      delta_topk_mean: -0.0809578220359981
+      delta_topk_hit_rate: -0.18518518518518517
+
+    - label: 2026-W19
+      rows: 5836
+      topk_rows: 583
+      delta_topk_mean: -0.0035914480686187744
+      delta_topk_hit_rate: 0.02572898799313894
+
+    - label: 2026-W20
+      rows: 9325
+      topk_rows: 932
+      delta_topk_mean: 0.003072386607527733
+      delta_topk_hit_rate: -0.01609442060085836
+
+    - label: 2026-W21
+      rows: 9286
+      topk_rows: 928
+      delta_topk_mean: 0.029558938927948475
+      delta_topk_hit_rate: 0.14331896551724144
+
+    - label: 2026-W22
+      rows: 8341
+      topk_rows: 834
+      delta_topk_mean: 0.08911256492137909
+      delta_topk_hit_rate: 0.41007194244604317
+
+    - label: 2026-W23
+      rows: 7253
+      topk_rows: 725
+      delta_topk_mean: 0.07314547896385193
+      delta_topk_hit_rate: 0.3351724137931034
+
+  interpretation: >
+    V4 does not show uniform week-by-week improvement. Incremental
+    Top-K mean is positive in four of six ISO weeks and negative in
+    two, including the partial opening week. The effect strengthens
+    materially in the later part of the holdout. This analysis is
+    descriptive and supports temporal regime dependence rather than
+    a claim of invariant weekly superiority.
