@@ -54,6 +54,36 @@ decision_rule:
   model_retraining: forbidden
   rule_changes_after_holdout: forbidden
 
+artifact_commitments:
+  purpose: >
+    Cryptographically commit the reused V1 artifacts before
+    V4 outcome inspection. Target files were hashed without
+    reading or evaluating their contents.
+
+  probabilistic_v1_holdout_beta_pre_2026-06-06.pkl:
+    sha256: e39896db92f1bb7c8334f61a6eee7bc71f8acbd6b6e87504c388ae0b8b1463d8
+
+  probabilistic_v1_holdout_features_2026-06-06.npy:
+    sha256: a75af139bab4768740eb2e96c8656e51910ce0eb240babd357c7e96150b9d750
+
+  probabilistic_v1_holdout_signals_2026-06-06.pkl:
+    sha256: dc6f2c7ce6e794c271864526c94e9709c2837129b4776f298a9487641a8ea76b
+
+  probabilistic_v1_holdout_targets_2026-06-06.pkl:
+    sha256: a48dc970761d0474e4bb856fed892b5ffa5a908afec4d54f938ea5ab4ed89cdf
+
+  probabilistic_v1_holdout_model_targets_2026-06-06.pkl:
+    sha256: 8c1ad175aa9c54a81134109f0a6459ee892d365f77f6489f379d49941b262121
+
+feasibility:
+  status: passed
+  holdout_rows: 40320
+  required_topk_rows: 4032
+  calibrated_p10_pass_rows: 23348
+  pass_rate: 0.5790674603174604
+  can_fill_topk: true
+  outcome_independent: true
+
 evaluation:
   primary_metric: topk_mean_excess_beta
 
