@@ -34,7 +34,7 @@ holdout:
     outcome-independently on feasibility of a different absolute
     P10 rule.
 
-  outcomes_inspected: false
+  outcomes_inspected: true
 
 decision_rule:
   ranking: frozen_exante_point_prediction
@@ -102,5 +102,24 @@ evaluation:
       longer outcome-uninspected temporal cohort.
     no_requirement_for_absolute_positive_return: true
 
+  result:
+    holdout_rows: 40320
+    topk_rows: 4032
+
+    baseline_topk_mean: -0.05458883196115494
+    candidate_topk_mean: -0.02702723816037178
+    delta_topk_mean: 0.027561593800783157
+
+    baseline_topk_hit_rate: 0.3864087301587302
+    candidate_topk_hit_rate: 0.4880952380952381
+    delta_topk_hit_rate: 0.10168650793650791
+
+    promotion_criterion_met: true
+
 promotion:
-  status: pending
+  status: promoted
+  reason: >
+    The frozen V2/V3 relative calibrated-P10 veto improves
+    Top-K decision quality versus the frozen ex-ante baseline
+    on the substantially longer outcome-uninspected V1 cohort
+    without retraining, threshold tuning, or rule changes.
