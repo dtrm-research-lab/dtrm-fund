@@ -1,0 +1,127 @@
+stage:
+  id: DTRM_XGB_PROBABILISTIC_PHASE2_STATS
+  status: defined
+  parent: DTRM_XGB_PROBABILISTIC_V4
+
+purpose: >
+  Quantify uncertainty and temporal robustness of the already-frozen
+  V2, V3, and V4 decision results without changing models, thresholds,
+  ranking rules, Top-K fraction, or cohort definitions.
+
+analysis_status:
+  aggregate_outcomes_already_known: true
+  inferential_statistics_computed_before_this_contract: false
+  characterization: post-outcome_analysis_plan_frozen_before_inference
+
+frozen_experiments:
+  - DTRM_XGB_PROBABILISTIC_V2
+  - DTRM_XGB_PROBABILISTIC_V3
+  - DTRM_XGB_PROBABILISTIC_V4
+
+estimand:
+  primary: >
+    Difference in Top-K mean excess-beta target between the frozen
+    calibrated-P10 guardrail candidate and the frozen deterministic
+    baseline within each holdout cohort.
+  notation: candidate_topk_mean_minus_baseline_topk_mean
+
+selection:
+  topk_fraction: 0.10
+  baseline: >
+    Rank by frozen ex-ante baseline prediction and select the first K.
+  candidate: >
+    Walk the same frozen baseline ranking and retain rows satisfying
+    the frozen calibrated-P10 veto until K rows are selected.
+  recompute_selection_inside_resamples: true
+
+primary_uncertainty_analysis:
+  method: cluster_bootstrap
+  cluster: news_id
+  replicates: 10000
+  random_seed: 20260821
+  confidence_level: 0.95
+  interval: percentile
+  cohorts:
+    - V2
+    - V3
+    - V4
+  statistics:
+    - delta_topk_mean
+    - delta_topk_hit_rate
+  rationale: >
+    Multiple ticker rows can originate from the same news event.
+    Resampling individual rows would incorrectly treat those rows as
+    independent. Each bootstrap replicate therefore resamples news_id
+    clusters with replacement and recomputes K and both selections.
+
+sensitivity_analysis:
+  method: ticker_cluster_bootstrap
+  cluster: ticker
+  replicates: 10000
+  random_seed: 20260822
+  confidence_level: 0.95
+  interval: percentile
+  purpose: >
+    Test whether conclusions are sensitive to cross-sectional
+    concentration in individual securities.
+
+temporal_robustness:
+  cohort: V4
+  method: calendar_week_partition
+  tuning: forbidden
+  statistics:
+    - weekly_delta_topk_mean
+    - weekly_delta_topk_hit_rate
+    - fraction_of_weeks_with_positive_delta_topk_mean
+  interpretation: descriptive
+  rationale: >
+    V4 spans a materially longer temporal interval than V2 and V3
+    and is therefore the appropriate cohort for within-window temporal
+    stability analysis.
+
+cross_cohort_summary:
+  report:
+    - V2_point_estimate
+    - V3_point_estimate
+    - V4_point_estimate
+    - sign_consistency
+  pooled_significance_test: forbidden
+  rationale: >
+    The three cohorts differ materially in duration and dependence
+    structure. A pooled p-value would imply stronger independence
+    assumptions than the experiment supports.
+
+dependency_limitations:
+  acknowledge:
+    - shared_news_events
+    - repeated_tickers
+    - overlapping_60_day_forward_return_windows
+  statement: >
+    Bootstrap intervals quantify sensitivity to news-event and ticker
+    clustering but do not establish fully independent observations.
+    Because 60-day forward-return windows overlap in calendar time,
+    inferential results must not be described as proof of independent
+    trading opportunities.
+
+forbidden:
+  - threshold_retuning
+  - model_retraining
+  - alternative_candidate_rules
+  - cohort_redefinition
+  - selecting_bootstrap_method_based_on_results
+  - dropping_unfavorable_periods
+  - claiming_absolute_profitability
+
+paper_claim_gate:
+  supported_if:
+    - V2_delta_topk_mean_positive
+    - V3_delta_topk_mean_positive
+    - V4_delta_topk_mean_positive
+  statistical_language: >
+    Confidence intervals and sensitivity analyses may strengthen or
+    weaken the evidence, but they do not change the frozen promotion
+    outcomes of V2-V4.
+  maximum_claim: >
+    The frozen probabilistic downside guardrail shows reproducible
+    incremental decision value across three untouched temporal tests,
+    with dependency-aware uncertainty analysis.
