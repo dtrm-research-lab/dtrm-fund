@@ -144,3 +144,43 @@ paper_claim_gate:
     The frozen probabilistic downside guardrail shows reproducible
     incremental decision value across three untouched temporal tests,
     with dependency-aware uncertainty analysis.
+
+primary_uncertainty_result:
+  status: completed
+  method: news_id_cluster_bootstrap
+  replicates: 10000
+  infeasible_replicates:
+    V2: 0
+    V3: 0
+    V4: 0
+
+  V2:
+    delta_topk_mean:
+      point: 0.14429480582475662
+      ci95: [0.12422081055119634, 0.1529691657051444]
+    delta_topk_hit_rate:
+      point: 0.5788288288288288
+      ci95: [0.5062970261097139, 0.609375]
+
+  V3:
+    delta_topk_mean:
+      point: 0.14943748898804188
+      ci95: [0.12443295484408737, 0.16876715365506242]
+    delta_topk_hit_rate:
+      point: 0.5851063829787234
+      ci95: [0.49097472924187735, 0.64102787456446]
+
+  V4:
+    delta_topk_mean:
+      point: 0.027561593800783157
+      ci95: [0.020819739997386934, 0.032413393817842]
+    delta_topk_hit_rate:
+      point: 0.10168650793650791
+      ci95: [0.08152519907128697, 0.13842317931436227]
+
+  interpretation: >
+    All three frozen cohorts have positive 95 percent percentile
+    bootstrap intervals for incremental Top-K mean and hit rate when
+    dependence among ticker rows sharing the same news_id is preserved.
+    This result does not remove dependence due to repeated tickers or
+    overlapping 60-day forward-return windows.
