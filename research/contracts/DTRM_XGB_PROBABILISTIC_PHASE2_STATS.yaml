@@ -54,6 +54,22 @@ primary_uncertainty_analysis:
     independent. Each bootstrap replicate therefore resamples news_id
     clusters with replacement and recomputes K and both selections.
 
+  resampling_mechanics:
+    draw_count: number_of_observed_unique_clusters
+    sampling: uniform_with_replacement
+    include_all_rows_per_cluster_draw: true
+    repeated_cluster_draws_duplicate_all_cluster_rows: true
+    recompute_topk_from_resampled_row_count: true
+    topk_rounding: floor_via_int
+
+  replicate_feasibility:
+    require_candidate_fill_full_topk: true
+    require_all_replicates_feasible: true
+    infeasible_replicates_are_not_imputed: true
+    report_infeasible_count: true
+
+  percentile_quantile_method: linear
+
 sensitivity_analysis:
   method: ticker_cluster_bootstrap
   cluster: ticker
@@ -64,6 +80,9 @@ sensitivity_analysis:
   purpose: >
     Test whether conclusions are sensitive to cross-sectional
     concentration in individual securities.
+  resampling_mechanics: same_as_primary_with_ticker_as_cluster
+  require_all_replicates_feasible: true
+  percentile_quantile_method: linear
 
 temporal_robustness:
   cohort: V4
