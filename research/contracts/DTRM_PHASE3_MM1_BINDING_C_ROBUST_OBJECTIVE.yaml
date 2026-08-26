@@ -1,0 +1,310 @@
+binding:
+  id: DTRM_PHASE3_MM1_BINDING_C_ROBUST_OBJECTIVE
+  phase: 3
+  experiment: MM1
+  component: robust_objective
+  status: defined
+  parent_contract: DTRM_PHASE3_MINMAX_CONTRACT
+  parent_action_binding: DTRM_PHASE3_MM1_BINDING_B_ACTION_SET
+  predecessor_negative_result: DTRM_PHASE3_MM0_INNER_ADVERSARY_DERIVATION
+
+purpose: >
+  Define the primary MM1 robust decision criterion after proving that the
+  MM0 same-scenario incremental objective is structurally unable to produce
+  positive robust improvement. MM1 maximizes each admissible action's own
+  worst-case value under the already-frozen budgeted downside uncertainty
+  family, while keeping the Phase-2 champion in the same feasible set as the
+  mandatory fallback and retaining the original Phase-2 metric for ex-post
+  evaluation.
+
+scientific_question: >
+  Among candidates that already pass the promoted Phase-2 calibrated-P10
+  guardrail, can selecting the full-K subset with the highest preregistered
+  worst-case decision value produce a stronger ex-ante robustness guarantee
+  than the frozen Phase-2 champion, and subsequently preserve or improve
+  realized Phase-2 decision value on untouched evaluation data?
+
+frozen_inherited_objects:
+  information_state:
+    contract: DTRM_PHASE3_BINDING_A_ZT
+    unchanged: true
+
+  action_space:
+    contract: DTRM_PHASE3_MM1_BINDING_B_ACTION_SET
+    symbol: A_MM1(Z_H)
+    definition: "{S subseteq E_H : |S| = K_H}"
+
+  phase2_champion:
+    symbol: C_H
+    role:
+      - frozen_reference
+      - admissible_action
+      - mandatory_fallback
+
+  value_function:
+    contract: DTRM_PHASE3_BINDING_C_VALUE
+    scenario_value: >
+      V_H(S,z) = (1 / K_H) * sum_{i in S} y_i(z)
+    realized_value: >
+      V_H_realized(S) = (1 / K_H) * sum_{i in S} target_model_i
+    target_space: frozen_phase2_target_model_units
+
+  uncertainty_family:
+    family_contract: DTRM_PHASE3_MM0_UNCERTAINTY_FAMILY
+    rho_contract: DTRM_PHASE3_MM0_RHO_FROZEN
+    rho: 0.4378501384944031
+    candidate_nominal: "b_i = baseline_point_score_i"
+    downside_floor: "l_i = min(b_i, calibrated_p10_i)"
+    downside_width: "d_i = b_i - l_i >= 0"
+    scenario_value: "y_i(z) = b_i - z_i * d_i"
+    constraints:
+      - "0 <= z_i <= 1"
+      - "sum_{i in E_H} z_i <= 0.4378501384944031 * K_H"
+    nominal_state_included: true
+    unchanged: true
+
+objective_change_from_MM0:
+  MM0_objective:
+    formula: >
+      min_z [V_H(S,z) - V_H(C_H,z)]
+    status: retired_for_MM1_primary_objective
+    reason: >
+      With z=0 in the uncertainty set and C_H equal to the Top-K subset by
+      baseline_point_score, the frozen MM0 derivation proves this quantity
+      cannot be strictly positive for any admissible challenger.
+
+  MM1_objective:
+    principle: own_worst_case_value
+    statement: >
+      Each admissible action is assigned its own worst-case guarantee over
+      the same frozen uncertainty set. MM1 chooses the feasible action with
+      the largest guarantee. This is not a claim that one action dominates
+      another in every common scenario.
+
+primary_robust_value:
+  symbol: W_H(S)
+  definition: >
+    W_H(S) = min_{z in U_rho(Z_H)} V_H(S,z)
+  direction: maximize
+  units: frozen_phase2_target_model_units
+  probability_weighting: forbidden
+
+  interpretation: >
+    W_H(S) is the lowest decision value that the frozen uncertainty family
+    can assign to action S when the adversary allocates at most rho*K_H
+    units of downside stress. Higher W_H means a stronger ex-ante worst-case
+    guarantee under the preregistered MM1 model of uncertainty.
+
+exact_inner_adversary_for_one_action:
+  budget:
+    symbol: B_H
+    formula: "B_H = rho * K_H = 0.4378501384944031 * K_H"
+
+  observation: >
+    For a fixed selected set S, stressing rows outside S does not change
+    V_H(S,z). Therefore an optimal adversary spends its available budget
+    only on selected rows with positive downside width d_i, prioritizing the
+    largest d_i values.
+
+  sorted_widths:
+    notation: >
+      d_(1)(S) >= d_(2)(S) >= ... >= d_(K_H)(S) >= 0
+
+  decomposition:
+    integer_budget: "g_H = floor(B_H)"
+    fractional_budget: "r_H = B_H - g_H"
+
+  penalty:
+    symbol: Psi_B(S)
+    formula: >
+      Psi_B(S) = sum_{j=1}^{min(g_H,K_H)} d_(j)(S)
+                 + r_H * d_(g_H+1)(S) if g_H < K_H,
+                 with the fractional term omitted when r_H = 0.
+
+  exact_worst_case_formula:
+    formula: >
+      W_H(S) = (1 / K_H) * sum_{i in S} b_i
+               - (1 / K_H) * Psi_B(S)
+
+  solver_requirement: none_for_inner_problem
+  inner_problem_class: continuous_fractional_knapsack
+  scenario_enumeration_required: false
+  monte_carlo_required: false
+
+phase2_champion_robust_value:
+  symbol: W_H(C_H)
+  definition: >
+    W_H(C_H) = min_z V_H(C_H,z)
+  computed_under_same_uncertainty_family: true
+  same_rho: true
+  same_K_H: true
+
+robust_lift_relative_to_phase2:
+  symbol: R_H(S)
+  formula: >
+    R_H(S) = W_H(S) - W_H(C_H)
+  interpretation:
+    positive: action_has_higher_worst_case_guarantee_than_phase2
+    zero: action_matches_phase2_worst_case_guarantee
+    negative: action_has_lower_worst_case_guarantee_than_phase2
+
+  important_distinction: >
+    R_H(S) compares two separately minimized worst-case guarantees. It is
+    not the MM0 quantity min_z[V_H(S,z)-V_H(C_H,z)], and the worst-case
+    stress vector attaining W_H(S) need not be the same vector attaining
+    W_H(C_H).
+
+outer_decision_problem:
+  robust_optimizer_symbol: S_H_star
+  formula: >
+    S_H_star in argmax_{S in A_MM1(Z_H)} W_H(S)
+
+  guaranteed_relation: >
+    Because C_H belongs to A_MM1(Z_H), max_S W_H(S) >= W_H(C_H).
+    Therefore the optimized ex-ante robust lift is non-negative by
+    construction, but realized ex-post improvement is not guaranteed.
+
+intervention_rule:
+  numerical_tolerance: 1.0e-12
+  tolerance_role: numerical_only_not_economic_threshold
+
+  fallback_rule: >
+    If max_S W_H(S) <= W_H(C_H) + 1e-12, select C_H exactly.
+
+  intervention_rule: >
+    A non-champion MM1 action may be selected only if its frozen robust value
+    exceeds W_H(C_H) by more than 1e-12.
+
+  rationale: >
+    Phase 2 remains the default unless the preregistered robust objective
+    provides a strictly higher worst-case guarantee beyond floating-point
+    noise. The tolerance is not a tunable materiality threshold.
+
+deterministic_tie_breaking:
+  applies_only_if: >
+    Multiple non-champion actions have robust values equal to the maximum
+    within the numerical tolerance and the champion itself is not within
+    tolerance of that maximum.
+
+  ordered_rules:
+    - >
+      maximize overlap cardinality |S intersect C_H| to minimize intervention
+      relative to the frozen Phase-2 decision;
+    - >
+      among remaining ties, maximize nominal mean
+      (1/K_H) * sum_{i in S} baseline_point_score_i;
+    - >
+      among remaining ties, choose the lexicographically smallest tuple of
+      sorted frozen baseline_rank values.
+
+  outcome_data_used_for_ties: false
+
+same_world_rule_scope_clarification:
+  Binding_C_rule: >
+    The same-world rule remains valid whenever two actions are compared
+    inside one scenario-level DeltaV_H(S,z) calculation.
+
+  MM1_primary_objective: >
+    MM1 does not optimize scenario-level DeltaV. It first computes each
+    action's own minimum over the common uncertainty set, then compares the
+    resulting scalar guarantees. Therefore separate minimizing stress
+    vectors across different actions are permitted by definition.
+
+  no_contract_rewrite: true
+
+ex_post_evaluation:
+  timing: only_after_MM1_action_and_all_evaluation_rules_are_frozen
+  observed_input: target_model
+
+  primary_realized_comparison:
+    formula: >
+      DeltaV_H_realized(S_H_star)
+        = V_H_realized(S_H_star) - V_H_realized(C_H)
+    favorable_direction: greater_than_zero
+    inherited_from: DTRM_PHASE3_BINDING_C_VALUE
+
+  secondary_realized_metric:
+    topk_hit_rate: allowed_as_secondary_only
+
+  ex_ante_robust_lift_does_not_imply_ex_post_gain: true
+  absolute_profitability_claim: forbidden
+
+information_firewall:
+  allowed_for_robust_decision:
+    - news_id
+    - ticker
+    - date_dt
+    - baseline_point_score
+    - baseline_rank
+    - calibrated_p10
+    - phase2_guardrail_pass
+    - frozen_rho_MM0
+    - frozen_topk_fraction
+
+  forbidden_for_robust_decision:
+    - target_model
+    - realized_forward_returns
+    - future_prices
+    - phase3_holdout_metrics
+    - p50
+    - p90
+    - raw_390_features_as_new_policy_inputs
+    - transformer_embeddings
+    - historical_analogue_outcomes
+
+  holdout_outcome_inspection_before_optimizer_freeze: forbidden
+
+nontriviality:
+  MM0_structural_failure_removed: true
+  reason: >
+    MM1 no longer requires a challenger to beat the Phase-2 champion in
+    the nominal world or in every common world. A lower-nominal candidate
+    subset may be preferred if its reduced downside-width exposure raises
+    its own worst-case guarantee above W_H(C_H).
+
+  positive_robust_lift_possible_in_principle: true
+  positive_realized_lift_guaranteed: false
+
+forbidden:
+  - revert_to_MM0_same_scenario_incremental_objective_as_primary
+  - remove_nominal_state_to_force_MM1_intervention
+  - retune_rho
+  - change_phase2_eligibility
+  - change_K_H
+  - use_phase3_outcomes_to_select_tie_breaks
+  - use_phase3_outcomes_to_select_objective
+  - introduce_probability_weighted_expected_value
+  - introduce_p50_or_p90
+  - introduce_historical_memory
+  - introduce_transformer_extension
+
+negative_result_policy:
+  statement: >
+    If the exact MM1 optimizer selects C_H under the frozen robust objective,
+    or if a non-champion robust selection later fails to improve realized
+    Phase-2 decision value, the result is retained. Neither rho, eligibility,
+    the objective, nor tie-breaking may be changed in response.
+
+implementation_gate:
+  exact_robust_value_adapter: permitted
+  exact_inner_adversary_function: permitted
+  MM1_subset_optimizer: permitted_after_robust_value_adapter_tests_pass
+  phase3_holdout_evaluation: still_blocked_until_optimizer_and_evaluation_contract_are_frozen
+
+next_required_step: >
+  Implement and unit-test the deterministic MM1 robust-value function
+  W_H(S), including equivalence to direct small-problem linear optimization
+  or exhaustive stress checks where practical, before implementing the
+  outer subset optimizer.
+
+gate_3_10_MM1_binding_C:
+  status: PASS_FOR_ROBUST_OBJECTIVE
+  permits:
+    - implement_exact_MM1_robust_value_adapter
+    - unit_test_exact_inner_adversary
+  does_not_permit:
+    - inspect_phase3_holdout_outcomes
+    - retune_rho
+    - implement_outer_optimizer_before_inner_adapter_tests
+    - introduce_new_predictive_information
+    - historical_event_extension
