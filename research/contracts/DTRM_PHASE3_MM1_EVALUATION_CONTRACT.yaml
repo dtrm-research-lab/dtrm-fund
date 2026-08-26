@@ -1,0 +1,495 @@
+stage:
+  id: DTRM_PHASE3_MM1_EVALUATION_CONTRACT
+  phase: 3
+  experiment: MM1
+  component: confirmatory_evaluation
+  status: preregistered_evaluation_pending
+  parent_action_binding: DTRM_PHASE3_MM1_BINDING_B_ACTION_SET
+  parent_objective_binding: DTRM_PHASE3_MM1_BINDING_C_ROBUST_OBJECTIVE
+  parent_optimizer_contract: DTRM_PHASE3_MM1_OUTER_OPTIMIZER
+  optimizer_implementation: src/dtrm/phase3_mm1_optimizer.py
+  robust_value_adapter: src/dtrm/phase3_mm1_robust_value.py
+
+purpose: >
+  Freeze the Phase-3 MM1 evaluation design before any MM1 realized target
+  outcome is inspected. The confirmatory comparison is MM1 versus the
+  promoted Phase-2 calibrated-P10 guardrail champion, using the same frozen
+  target_model value units and Top-K mean estimand as Phase 2. Previously
+  consumed Phase-2 cohorts V2, V3, and V4 are not eligible to serve as the
+  primary MM1 promotion holdout.
+
+scientific_question: >
+  Does the fully preregistered MM1 robust subset decision, constructed only
+  from frozen Phase-2 ex-ante signals and the frozen budgeted downside
+  uncertainty model, improve realized Top-K decision value relative to the
+  promoted Phase-2 guardrail on a new temporal cohort whose exact MM1
+  candidate-versus-champion target_model comparison has not been inspected?
+
+methodological_boundary:
+  current_calendar_context: 2026-08-26
+  market_history_publicly_observable: true
+  claim_not_made: >
+    This experiment does not claim that researchers are epistemically blind
+    to broad public market movements after the cohort dates.
+  protected_outcome_definition: >
+    The protected outcome is the exact row-level target_model vector and the
+    resulting MM1-versus-Phase2 realized comparison for the preregistered
+    cohort. Those quantities must not be read, computed, summarized, or used
+    to alter MM1 before the ex-ante decision artifact is frozen.
+
+frozen_policy:
+  information_state:
+    contract: DTRM_PHASE3_BINDING_A_ZT
+    direct_fields:
+      - news_id
+      - ticker
+      - date_dt
+      - baseline_point_score
+      - baseline_rank
+      - calibrated_p10
+      - phase2_guardrail_pass
+
+  phase2_guardrail:
+    baseline_selected_iteration: 10
+    p10_best_iteration: 18
+    p10_calibration_offset: -0.06494169682264328
+    p10_threshold: -0.16665692627429962
+    topk_fraction: 0.10
+
+  MM1:
+    eligible_pool: phase2_guardrail_pass_true_only
+    exact_cardinality: "K_H = int(n_H * 0.10)"
+    rho: 0.4378501384944031
+    objective: maximize_own_worst_case_value
+    solver: scipy_optimize_milp_HiGHS_exact_zero_gap
+    fallback_tolerance: 1.0e-12
+    tie_hierarchy:
+      - maximum_overlap_with_phase2_champion
+      - maximum_nominal_mean
+      - lexicographically_smallest_sorted_baseline_rank_tuple
+
+  retuning_after_this_contract: forbidden
+
+reference_champion:
+  symbol: C_H
+  identity: promoted_phase2_relative_calibrated_p10_guardrail
+  construction: >
+    Sort the cohort by the frozen baseline point prediction, retain only rows
+    whose calibrated P10 passes the frozen threshold, and select the first
+    K_H passing rows.
+  comparison_baseline_is_not:
+    - raw_deterministic_topk_without_p10_guardrail
+    - p10_ranking
+    - newly_trained_model
+  rationale: >
+    Phase 3 must beat the strongest promoted Phase-2 decision rule, not the
+    weaker deterministic predecessor that Phase 2 already improved upon.
+
+confirmatory_cohort_V5:
+  role: primary_MM1_promotion_holdout
+  status: preregistered_before_MM1_outcome_inspection
+  start: 2026-06-15T00:00:00Z
+  end: 2026-06-25T23:59:59Z
+
+  temporal_provenance:
+    immediately_after_consumed_phase2_V3: true
+    prior_consumed_endpoint: 2026-06-14T23:00:00Z
+    overlap_with_V2_V3_V4: false
+
+  rationale: >
+    V5 begins immediately after the final consumed Phase-2 confirmation
+    cohort V3 and extends through June 25. With the frozen 60-calendar-day
+    target horizon, the latest nominal target timestamp is August 24, 2026,
+    so the cohort can be evaluated from a price snapshot containing at least
+    that trading date without selecting the window based on MM1 outcomes.
+
+  target_window:
+    horizon_days: 60
+    price_tolerance_days: 5
+    latest_nominal_target_date: 2026-08-24
+    required_price_snapshot_last_date: ">= 2026-08-24"
+
+  data_generation:
+    news_event_pipeline: same_semantics_as_frozen_phase2
+    ticker_normalization: same_as_frozen_phase2
+    model_training: forbidden
+    threshold_refit: forbidden
+    calibration_refit: forbidden
+    universe_change: forbidden_without_separate_contract
+
+prospective_replication_V6:
+  role: future_MM1_replication_holdout
+  status: preregistered_now_not_primary_for_V5_promotion
+  start: 2026-06-26T00:00:00Z
+  end: 2026-07-06T23:59:59Z
+  overlap_with_V5: false
+  overlap_with_V2_V3_V4: false
+
+  target_window:
+    horizon_days: 60
+    price_tolerance_days: 5
+    latest_nominal_target_date: 2026-09-04
+    evaluation_before_target_maturity: forbidden
+
+  rule: >
+    V6 must use the exact frozen V5 MM1 policy, rho, optimizer, fallback,
+    metrics, and promotion direction. No change prompted by V5 results is
+    permitted before V6 evaluation. V6 is intended as a future replication,
+    not as an alternative cohort that may replace an unfavorable V5 result.
+
+previous_phase2_cohorts:
+  V2:
+    dates: 2026-06-07_to_2026-06-10
+    outcomes_already_inspected: true
+  V3:
+    dates: 2026-06-11_to_2026-06-14
+    outcomes_already_inspected: true
+  V4:
+    dates: 2026-05-02_to_2026-06-06
+    outcomes_already_inspected: true
+
+  role_for_MM1: retrospective_nonconfirmatory_benchmark_only
+  use_before_V5_primary_result: forbidden
+  use_after_V5_primary_result: permitted_with_frozen_MM1_policy
+  promotion_use: forbidden
+  interpretation: >
+    V2-V4 may later show whether MM1 would have altered already-published
+    Phase-2 decisions, but their known outcomes make them unsuitable as new
+    confirmatory evidence for choosing or promoting MM1.
+
+two_stage_information_firewall:
+  stage_1_ex_ante_decision:
+    target_outcomes_accessible: false
+    permitted_inputs:
+      - frozen_V5_news_and_candidate_rows
+      - frozen_Phase2_model_artifacts_or_exact_reconstruction
+      - baseline_point_prediction
+      - raw_or_calibrated_p10_as_required_by_adapter_A
+      - beta_pre_and_other_inputs_only_as_needed_to_reproduce_frozen_signals
+      - frozen_constants
+
+    required_outputs:
+      - V5_signal_artifact_sha256
+      - cohort_row_count
+      - unique_news_id_count
+      - canonical_ticker_count
+      - duplicate_pair_count
+      - K_H
+      - phase2_eligible_count
+      - phase2_champion_row_identities
+      - MM1_selected_row_identities
+      - robust_value_MM1
+      - robust_value_phase2
+      - robust_lift
+      - overlap_with_phase2
+      - intervention
+      - solver_status
+      - solver_mip_gap
+      - scipy_version
+      - numpy_version
+
+    required_decision_manifest: >
+      A tracked, human-readable V5 decision manifest must be committed to the
+      repository before any V5 target_model artifact is opened by the MM1
+      evaluation runner. Large signal files may remain gitignored, but their
+      SHA-256 digest must be recorded in the manifest.
+
+    forbidden:
+      - target_model
+      - raw_forward_target
+      - realized_stock_forward_return
+      - realized_market_forward_return
+      - future_price_path_as_decision_input
+      - V5_realized_metrics
+      - V2_V3_V4_MM1_realized_results
+
+  stage_2_realized_evaluation:
+    prerequisite: committed_V5_decision_manifest
+    action_reoptimization_after_target_access: forbidden
+    action_change_after_target_access: forbidden
+    target_use: evaluation_only
+
+row_identity_and_merge:
+  primary_key:
+    - news_id
+    - ticker
+  date_consistency_required: true
+  duplicate_signal_keys_allowed: false
+  duplicate_target_keys_allowed: false
+  signal_target_merge: one_to_one_complete
+  dropping_rows_after_outcome_access: forbidden
+  target_completeness_required_for_primary_evaluation: true
+  rule: >
+    Every V5 signal row must have a finite target_model value for the primary
+    evaluation dataset. If complete target observability cannot be achieved
+    under the frozen 60-day/5-day price rule, the primary V5 evaluation is
+    infeasible and no result-driven row deletion or cohort shortening is
+    permitted.
+
+value_and_target_semantics:
+  raw_target:
+    formula: >
+      Y_raw = stock_forward_return - beta_pre * market_forward_return
+    horizon_days: 60
+    price_tolerance_days: 5
+
+  target_model:
+    semantics: frozen_phase2_preprocessed_target
+    required_steps:
+      - train_only_1pct_99pct_clipping_bounds
+      - apply_same_train_bounds_to_V5
+      - subtract_frozen_clipped_train_ticker_mean
+      - unseen_ticker_fallback_mean_zero
+    parameter_refit_on_V5: forbidden
+    role: primary_realized_value_unit
+
+point_evaluation:
+  phase2_value:
+    symbol: V_H_realized_C
+    formula: >
+      mean(target_model_i for i in C_H)
+
+  MM1_value:
+    symbol: V_H_realized_MM1
+    formula: >
+      mean(target_model_i for i in S_H_star)
+
+  primary_estimand:
+    symbol: DeltaV_H_realized
+    formula: >
+      V_H_realized_MM1 - V_H_realized_C
+    semantic_name: delta_topk_mean_target_model_vs_phase2
+    favorable_direction: greater_than_zero
+
+  secondary_metric:
+    symbol: delta_topk_hit_rate
+    formula: >
+      mean(target_model_i > 0 for i in S_H_star)
+      - mean(target_model_i > 0 for i in C_H)
+    optimization_role: none
+
+  report_ex_ante_diagnostics:
+    - robust_value_MM1
+    - robust_value_phase2
+    - robust_lift
+    - overlap_with_phase2
+    - intervention
+    - nominal_mean_MM1
+    - nominal_mean_phase2
+
+promotion_gate_V5:
+  prerequisite_gates:
+    - decision_manifest_committed_before_target_access
+    - solver_optimal_zero_gap
+    - full_K_phase2_champion
+    - full_K_MM1_action
+    - complete_target_merge
+
+  no_intervention_case:
+    condition: "MM1_selected_action == phase2_champion"
+    classification: NO_INCREMENTAL_ACTION
+    promoted: false
+    realized_delta_definition: 0.0
+    interpretation: >
+      The robust decision layer found no ex-ante reason to depart from Phase
+      2. This is a valid negative/null Phase-3 result and must not trigger
+      changes to rho, the uncertainty family, or the objective.
+
+  intervention_case:
+    required_ex_ante_condition: "robust_lift > 1.0e-12"
+    primary_promotion_rule: "DeltaV_H_realized > 0"
+    equality_rule: not_promoted
+    negative_rule: not_promoted
+
+  primary_status_labels:
+    PROMOTED_POINT: >
+      A non-champion action was frozen ex ante and its realized Top-K mean
+      target_model is strictly greater than the frozen Phase-2 champion.
+    NOT_PROMOTED_REALIZED: >
+      MM1 intervened ex ante but realized DeltaV_H_realized is less than or
+      equal to zero.
+    NO_INCREMENTAL_ACTION: >
+      The frozen optimizer selected the Phase-2 champion fallback.
+    INFEASIBLE: >
+      A preregistered structural or target-completeness gate fails.
+
+  no_absolute_profit_requirement: true
+  reason: >
+    The scientific claim is incremental decision value versus the promoted
+    Phase-2 guardrail, not absolute portfolio profitability.
+
+primary_uncertainty_analysis:
+  status: preregistered
+  method: news_id_cluster_bootstrap
+  replicates: 10000
+  random_seed: 20260827
+  confidence_level: 0.95
+  interval: percentile
+  quantile_method: linear
+
+  resampling_unit: news_id
+  draw_count: observed_unique_news_id_clusters
+  sampling: uniform_with_replacement
+  include_all_rows_per_cluster_draw: true
+  repeated_draws_duplicate_all_cluster_rows: true
+
+  policy_recomputation_inside_each_replicate: true
+  rules_per_replicate:
+    - recompute_n_and_K_as_int_10_percent
+    - reproduce_phase2_champion_on_resampled_rows
+    - materialize_MM1_state_without_outcomes
+    - rerun_exact_frozen_MM1_optimizer
+    - evaluate_both_actions_on_the_same_resampled_target_rows
+
+  statistics:
+    - delta_topk_mean_target_model_vs_phase2
+    - delta_topk_hit_rate
+
+  feasibility:
+    require_phase2_and_MM1_full_K: true
+    report_infeasible_replicates: true
+    zero_infeasible_replicates_required_for_confirmatory_CI: true
+    result_driven_replicate_dropping: forbidden
+
+  inferential_role: supportive_not_required_for_point_promotion
+  evidence_label_if_primary_mean_CI_lower_bound_gt_zero: >
+    PRIMARY_NEWS_CLUSTER_CI_SUPPORTS_POSITIVE_INCREMENT
+  evidence_label_if_CI_includes_zero: >
+    POINT_RESULT_NOT_CONFIRMED_BY_NEWS_CLUSTER_CI
+  rationale: >
+    Phase-2 promotion was based on the frozen point estimand, with bootstrap
+    inference added as dependency-aware support. MM1 retains the same
+    separation so the Phase-3 promotion hurdle is not silently changed after
+    observing the result.
+
+ticker_cluster_sensitivity:
+  status: preregistered
+  method: ticker_cluster_bootstrap
+  replicates: 10000
+  random_seed: 20260828
+  confidence_level: 0.95
+  interval: percentile
+  quantile_method: linear
+  policy_recomputation_inside_each_replicate: true
+  feasibility_rule: same_as_primary_bootstrap
+  role: sensitivity_only
+  promotion_role: none
+  interpretation: >
+    Ticker-cluster intervals measure sensitivity to cross-sectional security
+    concentration. They may weaken the robustness claim but do not replace
+    the frozen V5 point promotion criterion.
+
+cross_cohort_reporting:
+  before_V5_result:
+    MM1_realized_V2_V3_V4: forbidden
+  after_V5_result:
+    allowed_nonconfirmatory:
+      - V2
+      - V3
+      - V4
+    rules:
+      - exact_same_MM1_policy
+      - exact_same_rho
+      - exact_same_metrics
+      - clearly_label_retrospective
+      - no_retuning
+      - no_pooled_significance_test
+
+  future_V6:
+    confirmatory_replication: true
+    exact_same_policy_required: true
+    result_cannot_replace_V5: true
+
+claim_hierarchy:
+  if_V5_no_incremental_action: >
+    MM1 provided no additional ex-ante robust intervention beyond the
+    promoted Phase-2 guardrail on the preregistered V5 cohort.
+
+  if_V5_not_promoted_realized: >
+    MM1 increased the preregistered ex-ante worst-case guarantee but did not
+    improve realized Phase-2 decision value on V5. This supports a separation
+    between modelled robustness and realized incremental value.
+
+  if_V5_promoted_point_only: >
+    MM1 produced positive realized incremental decision value versus Phase 2
+    on one preregistered temporal cohort. This is preliminary Phase-3
+    evidence and does not establish temporal replication.
+
+  if_V5_promoted_and_news_CI_positive: >
+    MM1 produced positive realized incremental decision value on V5 with a
+    news-event-cluster bootstrap interval that also excludes zero. The claim
+    remains single-cohort until V6 is mature and evaluated.
+
+  if_V6_later_replicates_positive: >
+    Only after V6 may the project claim temporal replication of the frozen
+    MM1 decision rule, subject to the preregistered dependency limitations.
+
+  forbidden_claims:
+    - absolute_profitability
+    - guaranteed_realized_returns_from_exante_robustness
+    - minimax_theorem_equality
+    - uniform_security_level_robustness_without_support
+    - temporal_replication_before_V6
+    - causal_market_effect
+
+dependency_limitations:
+  acknowledge:
+    - shared_news_events
+    - repeated_tickers
+    - overlapping_60_day_forward_return_windows
+    - public_market_history_known_in_broad_terms
+  statement: >
+    The evaluation tests a frozen decision policy on protected exact target
+    artifacts. It does not create independent trading opportunities, and the
+    bootstrap procedures do not eliminate dependence induced by overlapping
+    60-day return windows.
+
+forbidden_after_contract_freeze:
+  - change_V5_dates
+  - substitute_V2_V3_or_V4_as_primary_holdout
+  - inspect_V2_V3_V4_MM1_realized_results_before_V5
+  - retune_rho
+  - change_uncertainty_family
+  - change_MM1_objective
+  - change_tie_hierarchy
+  - change_phase2_threshold
+  - retrain_models
+  - introduce_p50_or_p90
+  - introduce_historical_memory
+  - introduce_transformer_state
+  - drop_V5_rows_based_on_target
+  - change_promotion_metric
+  - change_bootstrap_cluster_based_on_results
+  - stop_bootstrap_early_based_on_results
+
+implementation_sequence:
+  step_1: >
+    Implement a V5 ex-ante signal-and-decision freeze runner that cannot load
+    target artifacts and writes the tracked decision manifest plus signal
+    SHA-256 digest.
+  step_2: >
+    Unit-test the V5 decision-freeze runner and commit the generated decision
+    manifest before target access.
+  step_3: >
+    Implement the realized V5 evaluator against the already-frozen manifest.
+  step_4: >
+    Run the point evaluation exactly once under the frozen contract.
+  step_5: >
+    Run the preregistered news_id bootstrap and ticker sensitivity without
+    altering the point result or promotion rule.
+  step_6: >
+    Only after V5 is complete may retrospective MM1 results on V2-V4 be
+    computed. V6 remains untouched until its target window is mature.
+
+gate_3_12_MM1_evaluation_contract:
+  status: PASS_FOR_V5_DECISION_FREEZE_IMPLEMENTATION
+  permits:
+    - implement_V5_exante_signal_and_decision_freeze_runner
+    - generate_and_hash_V5_signal_artifact
+    - freeze_V5_MM1_and_phase2_actions_before_target_access
+  does_not_permit:
+    - inspect_V5_target_model
+    - run_V5_realized_evaluation_before_decision_manifest_commit
+    - inspect_MM1_realized_V2_V3_V4_before_V5
+    - evaluate_V6_before_target_maturity
+    - retune_any_MM1_or_phase2_parameter
