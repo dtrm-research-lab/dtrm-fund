@@ -18,7 +18,7 @@ def _build_state(baseline, calibrated_p10):
     rows = baseline.size
     return materialize_mm0_information_state(
         news_id=np.arange(rows),
-        ticker=[f"T{i:02d}" for i in range(rows)],
+        ticker=[f"T{i:04d}" for i in range(rows)],
         date_dt=np.arange(rows),
         baseline_point_score=baseline,
         raw_p10=calibrated_p10 - P10_CALIBRATION_OFFSET,
@@ -48,7 +48,9 @@ def _exhaustive_mm1(state):
                 "robust": value.robust_value,
                 "nominal": value.nominal_mean,
                 "overlap": sum(int(i) in champion_set for i in indices),
-                "rank_tuple": tuple(sorted(int(state.baseline_rank[i]) for i in indices)),
+                "rank_tuple": tuple(
+                    sorted(int(state.baseline_rank[i]) for i in indices)
+                ),
             }
         )
 
@@ -62,7 +64,9 @@ def _exhaustive_mm1(state):
         if record["robust"] >= robust_star - ROBUST_VALUE_TOLERANCE
     ]
     overlap_star = max(record["overlap"] for record in candidates)
-    candidates = [record for record in candidates if record["overlap"] == overlap_star]
+    candidates = [
+        record for record in candidates if record["overlap"] == overlap_star
+    ]
 
     nominal_star = max(record["nominal"] for record in candidates)
     candidates = [
@@ -81,6 +85,15 @@ def _nontrivial_state():
     calibrated = np.full(rows, -1.0)
     calibrated[:6] = np.array([0.00, 0.00, 0.87, 0.83, 0.79, 0.75])
     return _build_state(baseline, calibrated)
+
+
+def _eligible_arrays(state):
+    eligible = np.flatnonzero(state.phase2_guardrail_pass).astype(np.int64)
+    baseline = np.asarray(state.baseline_point_score[eligible], dtype=np.float64)
+    calibrated = np.asarray(state.calibrated_p10[eligible], dtype=np.float64)
+    widths = baseline - np.minimum(baseline, calibrated)
+    ranks = np.asarray(state.baseline_rank[eligible])
+    return eligible, baseline, widths, ranks
 
 
 def test_mm1_optimizer_matches_exhaustive_nontrivial_problem():
@@ -116,6 +129,42 @@ def test_mm1_optimizer_matches_exhaustive_random_small_problems(seed):
     assert result.intervention is expected_intervention
 
 
+@pytest.mark.parametrize("seed", [20260829, 20260830, 20260831])
+def test_exact_threshold_primary_matches_original_milp_on_small_problems(seed):
+    rng = np.random.default_rng(seed)
+    rows = 40
+    baseline = np.linspace(1.20, 0.05, rows)
+    calibrated = np.full(rows, -1.0)
+    eligible_count = 11
+    widths = rng.uniform(0.001, 0.50, size=eligible_count)
+    calibrated[:eligible_count] = baseline[:eligible_count] - widths
+    state = _build_state(baseline, calibrated)
+
+    eligible, b, d, ranks = _eligible_arrays(state)
+    k = int(state.rows * 0.10)
+
+    threshold_local, threshold_total, _, _ = optimizer._threshold_primary_optimum(
+        b,
+        d,
+        k=k,
+        baseline_ranks=ranks,
+    )
+    milp_local, milp_gap = optimizer._milp_primary_reference(b, d, k=k)
+
+    threshold_value = robust_value_for_selection(
+        state,
+        eligible[threshold_local],
+    ).robust_value
+    milp_value = robust_value_for_selection(
+        state,
+        eligible[milp_local],
+    ).robust_value
+
+    assert threshold_total / k == pytest.approx(threshold_value, abs=1e-11)
+    assert threshold_value == pytest.approx(milp_value, abs=1e-11)
+    assert milp_gap == pytest.approx(0.0, abs=1e-12)
+
+
 def test_mm1_optimizer_falls_back_to_phase2_when_widths_are_zero():
     rows = 20
     baseline = np.linspace(1.00, 0.20, rows)
@@ -129,6 +178,7 @@ def test_mm1_optimizer_falls_back_to_phase2_when_widths_are_zero():
     np.testing.assert_array_equal(result.selected_indices, expected_champion)
     assert result.intervention is False
     assert result.robust_lift == pytest.approx(0.0, abs=1e-12)
+    assert result.solver_status == "optimal_exact_threshold_champion_fallback"
 
 
 def test_mm1_optimizer_never_selects_phase2_vetoed_high_nominal_row():
@@ -137,10 +187,14 @@ def test_mm1_optimizer_never_selects_phase2_vetoed_high_nominal_row():
     baseline[0] = 5.0
     calibrated = np.full(rows, -1.0)
     calibrated[0] = -2.0
-    calibrated[1:7] = baseline[1:7] - np.array([0.5, 0.4, 0.05, 0.05, 0.05, 0.05])
+    calibrated[1:7] = baseline[1:7] - np.array(
+        [0.5, 0.4, 0.05, 0.05, 0.05, 0.05]
+    )
     state = _build_state(baseline, calibrated)
 
-    assert state.phase2_guardrail_pass[0] is np.False_ or not bool(state.phase2_guardrail_pass[0])
+    assert state.phase2_guardrail_pass[0] is np.False_ or not bool(
+        state.phase2_guardrail_pass[0]
+    )
 
     result = optimize_mm1(state)
 
@@ -153,9 +207,6 @@ def test_mm1_optimizer_applies_lexicographic_rank_tie_break():
     baseline = np.linspace(1.00, 0.20, rows)
     calibrated = np.full(rows, -1.0)
 
-    # Champion rows 0 and 1 have large downside widths. Rows 2, 3, and 4
-    # are deliberately identical robust/nominal alternatives, so level 4
-    # must choose the two with the lexicographically smallest baseline ranks.
     baseline[2:5] = 0.80
     calibrated[0:2] = 0.00
     calibrated[2:5] = 0.79
@@ -169,9 +220,10 @@ def test_mm1_optimizer_applies_lexicographic_rank_tie_break():
     assert result.intervention is True
     assert set(result.selected_indices.tolist()) == set(expected.tolist())
     assert result.robust_value_selected == pytest.approx(expected_robust, abs=1e-12)
+    assert result.solver_status == "optimal_exact_threshold_plus_milp_tie_hierarchy"
 
 
-def test_mm1_optimizer_short_circuits_lex_scan_when_level3_winner_is_unique(monkeypatch):
+def test_unique_primary_band_does_not_call_milp(monkeypatch):
     rows = 20
     baseline = np.linspace(1.00, 0.20, rows)
     calibrated = np.full(rows, -1.0)
@@ -181,20 +233,36 @@ def test_mm1_optimizer_short_circuits_lex_scan_when_level3_winner_is_unique(monk
     calibrated[4] = baseline[4] - 0.10
     state = _build_state(baseline, calibrated)
 
-    solve_calls = 0
-    original_solve = optimizer._solve
+    def forbidden_solve(**kwargs):
+        raise AssertionError("MILP must not run for a unique primary robust band")
 
-    def counted_solve(**kwargs):
-        nonlocal solve_calls
-        solve_calls += 1
-        return original_solve(**kwargs)
-
-    monkeypatch.setattr(optimizer, "_solve", counted_solve)
+    monkeypatch.setattr(optimizer, "_solve", forbidden_solve)
     result = optimizer.optimize_mm1(state)
 
     assert result.intervention is True
-    # Primary robust optimum + overlap + nominal + one no-good uniqueness check.
-    assert solve_calls == 4
+    assert result.solver_status == "optimal_exact_threshold_unique_primary_band"
+    assert result.solver_mip_gap == 0.0
+
+
+def test_exact_threshold_solver_scales_without_milp_on_large_unique_state(monkeypatch):
+    rng = np.random.default_rng(20260826)
+    rows = 1000
+    baseline = np.linspace(1.20, 0.20, rows)
+    widths = rng.uniform(0.001, 0.20, size=rows)
+    calibrated = baseline - widths
+    state = _build_state(baseline, calibrated)
+
+    def forbidden_solve(**kwargs):
+        raise AssertionError("large unique state must not invoke HiGHS")
+
+    monkeypatch.setattr(optimizer, "_solve", forbidden_solve)
+    result = optimizer.optimize_mm1(state)
+
+    assert result.k == 100
+    assert result.eligible_rows == 1000
+    assert result.solver_status.startswith("optimal_exact_threshold")
+    assert result.solver_mip_gap == 0.0
+    assert len(result.selected_indices) == 100
 
 
 def test_mm1_optimizer_is_deterministic():
@@ -206,6 +274,7 @@ def test_mm1_optimizer_is_deterministic():
     np.testing.assert_array_equal(first.selected_indices, second.selected_indices)
     assert first.robust_value_selected == second.robust_value_selected
     assert first.intervention == second.intervention
+    assert first.solver_status == second.solver_status
 
 
 def test_mm1_optimizer_rejects_infeasible_eligible_pool():
