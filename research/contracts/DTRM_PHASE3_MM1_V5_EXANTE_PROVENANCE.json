@@ -1,0 +1,98 @@
+{
+  "stage": "DTRM_PHASE3_MM1_V5_EXANTE_PROVENANCE",
+  "status": "frozen_before_mm1_decision",
+  "purpose": "Bind the Phase-3 MM1 V5 decision to one concrete outcome-blind source snapshot and one concrete pair of ex-ante artifacts before the MM1 optimizer is executed.",
+  "frozen_at_research_date": "2026-08-26",
+  "phase3_branch": "research/phase3-minmax-contract",
+  "builder_source_head_before_provenance_commit": "9018f35c63c5508a6bbd152f46c6f42cf464c254",
+  "v5_window": {
+    "start": "2026-06-15T00:00:00+00:00",
+    "end": "2026-06-25T23:59:59+00:00"
+  },
+  "source_snapshot": {
+    "database": "trumpMinMax",
+    "collection": "trumpNews",
+    "projected_fields": [
+      "_id",
+      "date",
+      "text",
+      "matched_tickers"
+    ],
+    "raw_documents": 1510,
+    "canonical_source_sha256": "6944a4a660b28d8503304edc9dfbe3b702eea9a2c9a31194428cd7ccece7f6a2"
+  },
+  "cohort": {
+    "frozen_phase2_universe_tickers": 173,
+    "unique_news": 1510,
+    "pair_rows": 10745,
+    "canonical_tickers": 155,
+    "duplicate_pairs": 0
+  },
+  "features": {
+    "dimensions": 390,
+    "dtype": "float32",
+    "layout": "384_sbert_plus_5_legacy_text_plus_1_beta_pre",
+    "sbert_model": "all-MiniLM-L6-v2",
+    "sbert_dimensions": 384,
+    "sbert_normalize": true,
+    "sbert_max_chars": 1600,
+    "sentence_transformers_version": "5.7.0",
+    "text_feature_count": 5,
+    "beta_feature_count": 1,
+    "ret_spy_evt_included": false
+  },
+  "beta_pre": {
+    "lookback": 252,
+    "min_observations": 60,
+    "tolerance_days": 20,
+    "information_set": "prices_on_or_before_each_event_date_only",
+    "post_event_prices_passed_to_beta": false,
+    "missing_or_imputed": 0,
+    "price_snapshot_loader": "run_exante_baseline_v0.load_exante_price_cache"
+  },
+  "artifacts": {
+    "candidate_rows": {
+      "path": "research/local_data/phase3_mm1_v5_candidate_rows_exante.pkl",
+      "sha256": "746397708ae7da7a5054bd81dc829721a5a78a344f15dd828933670fc27a78c6"
+    },
+    "feature_matrix": {
+      "path": "research/local_data/phase3_mm1_v5_features_exante.npy",
+      "shape": [10745, 390],
+      "sha256": "253ff6aa82e621299794a3df3f9b010ddd6fc39a12efd32418211a312c501efa"
+    },
+    "build_summary": {
+      "path": "research/local_data/phase3_mm1_v5_exante_build_summary.json",
+      "role": "local outcome-blind build record; values copied into this tracked provenance freeze"
+    }
+  },
+  "independent_local_hash_check": {
+    "candidate_rows_sha256_matches_build_summary": true,
+    "feature_matrix_sha256_matches_build_summary": true,
+    "verification_command": "shasum -a 256 <candidate_rows> <feature_matrix>"
+  },
+  "information_firewall": {
+    "outcome_firewall_passed_at_build": true,
+    "target_model_accessed": false,
+    "forward_target_computed": false,
+    "realized_forward_returns_accessed": false,
+    "mm1_optimizer_executed_before_this_provenance_freeze": false
+  },
+  "governance": {
+    "artifact_overwrite_after_freeze": "forbidden",
+    "source_snapshot_substitution_after_freeze": "forbidden",
+    "feature_reencoding_after_freeze": "forbidden_for_V5_confirmatory_decision",
+    "beta_reconstruction_change_after_freeze": "forbidden",
+    "cohort_row_drop_or_addition_after_freeze": "forbidden",
+    "next_permitted_step": "execute the already-tested V5 ex-ante MM1 decision-freeze runner against exactly these hashes",
+    "still_forbidden": [
+      "V5 target_model access",
+      "V5 realized forward-return evaluation",
+      "MM1 realized V2/V3/V4 evaluation",
+      "rho retuning",
+      "uncertainty-set changes",
+      "objective changes",
+      "threshold changes",
+      "history or Transformer features"
+    ]
+  }
+}
