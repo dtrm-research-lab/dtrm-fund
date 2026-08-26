@@ -43,7 +43,8 @@ def test_validate_v5_inputs_accepts_exact_exante_schema():
     assert len(rows) == 3
     assert features.shape == (3, 390)
     assert features.dtype == np.float32
-    assert str(rows["date_dt"].dtype) == "datetime64[ns, UTC]"
+    assert isinstance(rows["date_dt"].dtype, pd.DatetimeTZDtype)
+    assert str(rows["date_dt"].dt.tz) == "UTC"
 
 
 def test_validate_v5_inputs_rejects_extra_columns():
