@@ -36,6 +36,22 @@ def _features(rows: int = 3) -> np.ndarray:
     return np.zeros((rows, v5.EXPECTED_FEATURE_COUNT), dtype=np.float32)
 
 
+def _provenance(rows_sha: str = "rows", features_sha: str = "features") -> dict:
+    return {
+        "artifacts": {
+            "candidate_rows": {
+                "path": str(v5.V5_ROWS_PATH.relative_to(v5.REPO_ROOT)),
+                "sha256": rows_sha,
+            },
+            "feature_matrix": {
+                "path": str(v5.V5_FEATURES_PATH.relative_to(v5.REPO_ROOT)),
+                "shape": [10745, v5.EXPECTED_FEATURE_COUNT],
+                "sha256": features_sha,
+            },
+        }
+    }
+
+
 def test_validate_v5_inputs_accepts_exact_exante_schema():
     rows, features = v5.validate_v5_inputs(_rows(), _features())
 
@@ -97,6 +113,32 @@ def test_sha256_file_matches_known_digest(tmp_path):
     assert v5.sha256_file(path) == hashlib.sha256(b"abc").hexdigest()
 
 
+def test_require_frozen_input_hashes_accepts_exact_provenance():
+    v5.require_frozen_input_hashes(
+        _provenance(),
+        rows_sha256="rows",
+        features_sha256="features",
+    )
+
+
+def test_require_frozen_input_hashes_rejects_candidate_row_mutation():
+    with pytest.raises(RuntimeError, match="candidate-row SHA-256"):
+        v5.require_frozen_input_hashes(
+            _provenance(),
+            rows_sha256="mutated",
+            features_sha256="features",
+        )
+
+
+def test_require_frozen_input_hashes_rejects_feature_mutation():
+    with pytest.raises(RuntimeError, match="feature-matrix SHA-256"):
+        v5.require_frozen_input_hashes(
+            _provenance(),
+            rows_sha256="rows",
+            features_sha256="mutated",
+        )
+
+
 def test_selection_identities_are_sorted_by_frozen_baseline_rank():
     signals = pd.DataFrame(
         {
@@ -156,6 +198,7 @@ def test_build_manifest_marks_information_firewall_and_full_identities():
         rows_sha256="rows",
         features_sha256="features",
         signals_sha256="signals",
+        provenance_sha256="provenance",
         source_head="abc123",
         source_branch="research/phase3-minmax-contract",
         offset_reproduced=v5.P10_CALIBRATION_OFFSET,
@@ -165,6 +208,8 @@ def test_build_manifest_marks_information_firewall_and_full_identities():
     )
 
     assert manifest["status"] == "decision_frozen_pending_git_commit"
+    assert manifest["frozen_exante_provenance"]["sha256"] == "provenance"
+    assert manifest["frozen_exante_provenance"]["input_hashes_enforced_before_scoring"] is True
     assert manifest["information_firewall"]["V5_realized_outcomes_accessed"] is False
     assert manifest["information_firewall"]["manifest_commit_required_before_realized_evaluation"] is True
     assert len(manifest["decision"]["phase2_champion_row_identities"]) == 2
