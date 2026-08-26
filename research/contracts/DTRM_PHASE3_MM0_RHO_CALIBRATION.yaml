@@ -1,0 +1,179 @@
+stage:
+  id: DTRM_PHASE3_MM0_RHO_CALIBRATION
+  phase: 3
+  component: rho_calibration
+  status: method_frozen_value_pending_local_run
+  parent: DTRM_PHASE3_MM0_UNCERTAINTY_FAMILY
+
+purpose: >
+  Calibrate the MM0 budget parameter rho from frozen Phase-2 VALID
+  information only, using an outcome-grounded stress-utilization measure
+  and dependency-aware bootstrap. The calibration rule is frozen before
+  the numerical rho value is observed and before any Phase-3 holdout is
+  evaluated.
+
+reference_sample:
+  source: DTRM_BASELINE_EXANTE_V0 validation split
+  rows_expected: 19880
+  relationship_to_phase3_evaluation: design_reference_only
+  phase3_holdout_outcomes_used: false
+  phase2_test_used: false
+  V2_V3_V4_outcomes_used: false
+
+frozen_phase2_reproduction:
+  baseline:
+    selected_iteration: 10
+    expected_best_rmse_iteration: 6
+  p10:
+    best_iteration: 18
+    calibration_offset: -0.06494169682264328
+  guardrail:
+    frozen_threshold: -0.16665692627429962
+    threshold_quantile: 0.25
+    threshold_estimator: weighted_empirical_quantile
+    weights: legacy_news_weights
+  required_gates:
+    - validation_row_count_matches_19880
+    - baseline_best_iteration_matches_6
+    - p10_best_iteration_matches_18
+    - reproduced_p10_calibration_offset_matches_frozen_value
+    - reproduced_p10_threshold_matches_frozen_value
+    - phase2_guardrail_can_fill_validation_topk
+  failure_rule: >
+    If any reproduction gate fails, rho must not be computed or frozen.
+
+observed_stress_definition:
+  for_each_validation_row:
+    nominal: "b_i = baseline_point_score_i"
+    floor: "l_i = min(b_i, calibrated_p10_i)"
+    width: "d_i = b_i - l_i"
+    realized_value: "y_i = frozen Phase-2 target_model_i"
+
+  normalized_stress:
+    symbol: z_i_obs
+    formula_if_positive_width: >
+      z_i_obs = clip((b_i - y_i) / d_i, 0, 1)
+    formula_if_zero_width: "z_i_obs = 0"
+    range: "0 <= z_i_obs <= 1"
+    interpretation:
+      zero: realized outcome at or above nominal score
+      fractional: realized outcome lies between nominal and P10 floor
+      one: realized outcome is at or below the P10 floor
+
+  zero_width_policy:
+    rule: zero_stress
+    rationale: >
+      MM0 cannot adversarially move a row whose downside wedge is zero.
+      Realized downside below such a zero-width floor is reported as a
+      model-family diagnostic and must not be used to inflate rho.
+
+reference_action:
+  name: phase2_champion_on_validation
+  topk_fraction: 0.10
+  K_formula: "K_VALID = int(n_VALID * 0.10)"
+  construction: >
+    Sort VALID by frozen baseline score descending, retain only rows whose
+    calibrated P10 is greater than or equal to the frozen Phase-2 threshold,
+    then take the first K_VALID rows.
+  rationale: >
+    rho K is the stress capacity relevant to a full-K decision. Calibrating
+    stress utilization on the frozen Phase-2 champion selection maps the
+    empirical quantity directly to the MM0 budget scale.
+
+point_estimator:
+  symbol: rho_hat
+  formula: >
+    rho_hat = (1 / K_VALID) * sum_{i in a_VALID^(2)} z_i_obs
+  interpretation: >
+    Equivalent fraction of the Top-K selection that historically consumed
+    a full baseline-to-P10 downside move on VALID. Fractional moves consume
+    proportional budget exactly as in the MM0 uncertainty family.
+  weighting: unweighted_rows
+  rationale_weighting: >
+    Binding C defines decision value as the unweighted arithmetic mean over
+    selected Top-K rows, so rho calibration uses the same selected-row unit.
+
+sampling_uncertainty:
+  primary_method: news_id_cluster_bootstrap
+  reason: >
+    Multiple ticker rows can originate from the same news event. This
+    inherits the primary dependency treatment used in the frozen Phase-2
+    statistical contract.
+  replicates: 10000
+  random_seed: 20260826
+  sampling: uniform_clusters_with_replacement
+  cluster: news_id
+  include_all_rows_per_cluster_draw: true
+  recompute_K_inside_resample: true
+  recompute_phase2_champion_selection_inside_resample: true
+  frozen_threshold_inside_resample: true
+  frozen_models_inside_resample: true
+  infeasible_replicates_allowed: false
+  quantile_method: linear
+
+primary_rho_rule:
+  confidence_level: 0.95
+  interval_type: one_sided_upper_percentile
+  formula: >
+    rho_MM0 = quantile_0.95({rho_hat_bootstrap_r})
+  clamp: "rho_MM0 = min(1, max(0, rho_MM0))"
+  rationale: >
+    The point estimate is a sample realization of stress intensity. Using
+    the preregistered one-sided 95 percent upper bootstrap bound provides a
+    conservative budget without selecting rho by Phase-3 performance.
+    The 95 percent confidence level is inherited from the Phase-2
+    dependency-aware statistical protocol.
+
+reported_diagnostics_not_used_to_choose_rho:
+  - rho_point_estimate
+  - bootstrap_median
+  - bootstrap_q025
+  - bootstrap_q975
+  - phase2_validation_pass_rate
+  - positive_wedge_rate_in_champion
+  - zero_width_rate_in_champion
+  - realized_below_floor_rate_in_champion
+  - realized_above_nominal_rate_in_champion
+  - full_stress_rate_in_champion
+  - zero_stress_rate_in_champion
+
+family_misspecification_diagnostic:
+  realized_below_floor_rate:
+    meaning: >
+      Fraction of selected VALID rows whose target_model lies below the
+      calibrated P10 downside floor.
+    governance: >
+      This diagnostic may reveal that the simple MM0 wedge is imperfect,
+      but it must not trigger an ex-post change to the rho formula or the
+      floor definition. Any alternative family requires a new preregistered
+      experiment.
+
+forbidden:
+  - choosing_rho_from_phase3_holdout_performance
+  - choosing_rho_from_V2_V3_or_V4_realized_improvement
+  - changing_bootstrap_quantile_after_seeing_rho
+  - changing_bootstrap_cluster_after_seeing_rho
+  - changing_stress_formula_after_seeing_rho
+  - using_p50_or_p90
+  - using_historical_memory
+  - using_test_targets_in_rho_estimation
+  - tuning_rho_to_force_minmax_intervention
+
+execution:
+  runner: research/experiments/run_phase3_mm0_rho_calibration.py
+  local_output: research/local_data/phase3_mm0_rho_calibration.json
+  output_is_gitignored: true
+  next_step_after_run: >
+    Review the reproduction gates and the single preregistered rho_MM0
+    result. If all gates pass, write that numerical value into a frozen
+    MM0 parameter contract before implementing the MinMax optimizer.
+
+gate_3_6_rho_method:
+  status: pass_for_execution
+  permits:
+    - run_rho_calibration_on_phase2_validation
+  does_not_permit:
+    - phase3_holdout_evaluation
+    - rho_retuning
+    - minmax_optimization
+    - historical_event_extension
