@@ -38,6 +38,12 @@ EXPECTED_FEATURE_COUNT = 390
 V5_ROWS_PATH = LOCAL_DATA / "phase3_mm1_v5_candidate_rows_exante.pkl"
 V5_FEATURES_PATH = LOCAL_DATA / "phase3_mm1_v5_features_exante.npy"
 V5_SIGNALS_PATH = LOCAL_DATA / "phase3_mm1_v5_signals_frozen.pkl"
+V5_PROVENANCE_PATH = (
+    REPO_ROOT
+    / "research"
+    / "contracts"
+    / "DTRM_PHASE3_MM1_V5_EXANTE_PROVENANCE.json"
+)
 V5_MANIFEST_PATH = (
     REPO_ROOT
     / "research"
@@ -82,6 +88,57 @@ def require_clean_tracked_worktree() -> None:
         raise RuntimeError(
             "Tracked working tree must be clean before freezing the V5 decision"
         )
+
+
+def load_frozen_v5_provenance() -> dict:
+    if not V5_PROVENANCE_PATH.exists():
+        raise FileNotFoundError(
+            f"Missing frozen V5 ex-ante provenance: {V5_PROVENANCE_PATH}"
+        )
+
+    provenance = json.loads(V5_PROVENANCE_PATH.read_text())
+    if provenance.get("status") != "frozen_before_mm1_decision":
+        raise RuntimeError("V5 provenance is not frozen for MM1 decision use")
+
+    window = provenance.get("v5_window", {})
+    if window.get("start") != V5_START.isoformat():
+        raise RuntimeError("Frozen V5 provenance start timestamp mismatch")
+    if window.get("end") != V5_END.isoformat():
+        raise RuntimeError("Frozen V5 provenance end timestamp mismatch")
+
+    return provenance
+
+
+def require_frozen_input_hashes(
+    provenance: dict,
+    *,
+    rows_sha256: str,
+    features_sha256: str,
+) -> None:
+    artifacts = provenance.get("artifacts", {})
+    rows_spec = artifacts.get("candidate_rows", {})
+    features_spec = artifacts.get("feature_matrix", {})
+
+    expected_rows_path = str(V5_ROWS_PATH.relative_to(REPO_ROOT))
+    expected_features_path = str(V5_FEATURES_PATH.relative_to(REPO_ROOT))
+
+    if rows_spec.get("path") != expected_rows_path:
+        raise RuntimeError("Frozen candidate-row provenance path mismatch")
+    if features_spec.get("path") != expected_features_path:
+        raise RuntimeError("Frozen feature-matrix provenance path mismatch")
+
+    if rows_spec.get("sha256") != rows_sha256:
+        raise RuntimeError(
+            "V5 candidate-row SHA-256 does not match frozen ex-ante provenance"
+        )
+    if features_spec.get("sha256") != features_sha256:
+        raise RuntimeError(
+            "V5 feature-matrix SHA-256 does not match frozen ex-ante provenance"
+        )
+
+    shape = features_spec.get("shape")
+    if shape != [10745, EXPECTED_FEATURE_COUNT]:
+        raise RuntimeError("Frozen V5 feature-matrix shape provenance mismatch")
 
 
 def validate_v5_inputs(
@@ -254,6 +311,7 @@ def build_manifest(
     rows_sha256: str,
     features_sha256: str,
     signals_sha256: str,
+    provenance_sha256: str,
     source_head: str,
     source_branch: str,
     offset_reproduced: float,
@@ -277,6 +335,11 @@ def build_manifest(
             "git_head_before_manifest_commit": source_head,
             "git_branch": source_branch,
             "tracked_worktree_clean_before_run": True,
+        },
+        "frozen_exante_provenance": {
+            "path": str(V5_PROVENANCE_PATH.relative_to(REPO_ROOT)),
+            "sha256": provenance_sha256,
+            "input_hashes_enforced_before_scoring": True,
         },
         "input_artifacts": {
             "candidate_rows": {
@@ -351,8 +414,15 @@ def main() -> None:
     source_head = git_head()
     source_branch = git_branch()
 
+    provenance = load_frozen_v5_provenance()
+    provenance_sha256 = sha256_file(V5_PROVENANCE_PATH)
     rows_sha256 = sha256_file(V5_ROWS_PATH)
     features_sha256 = sha256_file(V5_FEATURES_PATH)
+    require_frozen_input_hashes(
+        provenance,
+        rows_sha256=rows_sha256,
+        features_sha256=features_sha256,
+    )
 
     rows, features = load_v5_inputs()
 
@@ -383,6 +453,7 @@ def main() -> None:
         rows_sha256=rows_sha256,
         features_sha256=features_sha256,
         signals_sha256=signals_sha256,
+        provenance_sha256=provenance_sha256,
         source_head=source_head,
         source_branch=source_branch,
         offset_reproduced=offset_reproduced,
@@ -394,6 +465,7 @@ def main() -> None:
     V5_MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + "\n")
 
     print("DTRM PHASE 3 MM1 V5 DECISION FREEZE")
+    print("frozen provenance: PASS")
     print("rows:", len(signals))
     print("K_H:", optimization.k)
     print("Phase-2 eligible rows:", optimization.eligible_rows)
