@@ -1,0 +1,258 @@
+stage:
+  id: DTRM_PHASE3_MM0_UNCERTAINTY_FAMILY
+  phase: 3
+  component: U_MM0_family
+  status: defined_family_parameter_pending
+  parent_contract: DTRM_PHASE3_MINMAX_CONTRACT
+  parent_bindings:
+    - DTRM_PHASE3_BINDING_A_ZT
+    - DTRM_PHASE3_BINDING_B_ACTION_SET
+    - DTRM_PHASE3_BINDING_C_VALUE
+    - DTRM_PHASE3_BINDING_D_UNCERTAINTY_SET
+
+purpose: >
+  Instantiate the simplest non-trivial uncertainty-set family for the
+  first Phase-3 MinMax experiment using only the frozen Phase-2 point
+  prediction and calibrated P10 downside signal, while preserving the
+  Phase-2 target scale and avoiding a disguised replacement P10 ranking.
+
+scientific_question: >
+  Does a budgeted adversarial allocation of the already-frozen Phase-2
+  downside wedge identify additional vetoes that improve worst-case
+  decision value relative to the Phase-2 champion?
+
+method_class:
+  name: budgeted_downside_uncertainty
+  robust_optimization_family: budgeted_uncertainty
+  role: minimal_MM0_baseline
+  probability_model_required: false
+  historical_memory_used: false
+  p50_used: false
+  p90_used: false
+  new_predictive_model_used: false
+
+information_inputs:
+  source: DTRM_PHASE3_BINDING_A_ZT
+  per_candidate_allowed:
+    - baseline_point_score
+    - calibrated_p10
+    - phase2_guardrail_pass
+    - baseline_rank
+    - row_identity
+  forbidden:
+    - target_model
+    - realized_forward_returns
+    - future_prices
+    - p50
+    - p90
+    - raw_390_features
+    - transformer_embeddings
+    - historical_analogue_outcomes
+
+common_target_scale:
+  requirement: frozen_phase2_target_model_units
+  justification: >
+    The deterministic XGBoost point model and the quantile XGBoost models
+    are trained on the same preprocessed Phase-2 target vectors. Therefore
+    baseline_point_score and calibrated_p10 can define a bounded downside
+    interval directly in the value space required by Binding C.
+
+candidate_downside_wedge:
+  for_each: "i in E_H"
+
+  nominal_value:
+    symbol: b_i
+    formula: "b_i = baseline_point_score_i"
+
+  downside_floor:
+    symbol: l_i
+    formula: "l_i = min(b_i, calibrated_p10_i)"
+    reason: >
+      P10 is intended as downside information, but the independent models
+      do not mathematically guarantee calibrated_p10 <= baseline_point_score
+      for every row. The min operation prevents an adverse scenario from
+      increasing a candidate value.
+
+  downside_width:
+    symbol: d_i
+    formula: "d_i = b_i - l_i = max(0, b_i - calibrated_p10_i)"
+    constraints:
+      - "d_i >= 0"
+      - finite
+
+scenario_representation:
+  symbol: z
+  dimensions: "|E_H|"
+  per_candidate_stress:
+    symbol: z_i
+    domain: "0 <= z_i <= 1"
+    interpretation:
+      0: candidate remains at frozen nominal point prediction
+      1: candidate is stressed to its frozen downside floor
+      fractional: candidate lies between nominal and downside floor
+
+  candidate_scenario_value:
+    formula: "y_i(z) = b_i - z_i * d_i"
+    equivalent_bounds: "l_i <= y_i(z) <= b_i"
+    action_independent_formula: true
+
+joint_budget:
+  symbol: Gamma
+  semantic_name: stress_budget
+  normalized_parameter:
+    symbol: rho
+    domain: "0 <= rho <= 1"
+
+  cohort_budget_formula: "Gamma_H = rho * K_H"
+  admissibility_constraint: "sum_{i in E_H}(z_i) <= Gamma_H"
+
+  rationale: >
+    The adversary may fully stress only a limited equivalent number of
+    candidates at once. Fractional stresses consume proportional budget.
+    Scaling the budget by the frozen Top-K size makes the robustness level
+    comparable across cohorts of different lengths while remaining
+    independent of the challenger action.
+
+uncertainty_set:
+  symbol: U_MM0_rho(Z_H)
+  formula: >
+    U_MM0_rho(Z_H) = { y(z) :
+      y_i(z) = b_i - z_i d_i,
+      0 <= z_i <= 1 for all i in E_H,
+      sum_i z_i <= rho K_H }
+
+  nonempty: true
+  nominal_state_included:
+    stress_vector: "z_i = 0 for every i"
+    scenario_value: "y_i = b_i"
+
+  bounded: true
+  lower_envelope: "l_i"
+  upper_envelope: "b_i"
+  joint_cross_candidate_rule: budget_constraint
+  probabilities: none
+
+why_not_box_uncertainty:
+  rejected_family: "0 <= z_i <= 1 independently with no joint budget"
+  consequence: >
+    The adversary could push every selected candidate to its P10 floor.
+    The max-min problem would then collapse toward selecting purely on
+    downside-floor values and would provide little evidence beyond a
+    stronger P10 rule.
+
+why_not_single_global_stress:
+  rejected_family: "z_i = lambda for every candidate"
+  consequence: >
+    The worst case would generally be the common endpoint lambda = 1,
+    again collapsing the experiment toward a deterministic P10-floor
+    comparison rather than testing cross-sectional adversarial robustness.
+
+why_budgeted_family:
+  properties:
+    - bounded
+    - nonempty
+    - joint
+    - action_independent_set_definition
+    - same_world_for_champion_and_challenger
+    - uses_only_promoted_phase2_signals
+    - no_probability_assumptions
+    - tunable_conservatism_with_single_parameter
+    - does_not_require_new_predictive_model
+
+  interpretation: >
+    MM0 asks whether an action remains incrementally better than the
+    Phase-2 champion when an adversary can allocate a limited amount of
+    downside stress across the already-admissible candidate universe.
+
+maxmin_objective:
+  inherited_from: DTRM_PHASE3_BINDING_C_VALUE
+  challenger_value: >
+    V_H(a,z) = mean_{i in S_H(a)} y_i(z)
+  champion_value: >
+    V_H(a_H^(2),z) = mean_{i in a_H^(2)} y_i(z)
+  incremental_value: >
+    DeltaV_H(a,z) = V_H(a,z) - V_H(a_H^(2),z)
+  robust_margin: >
+    GammaMargin_H(a;rho) = min_{z in U_MM0_rho(Z_H)} DeltaV_H(a,z)
+  outer_problem: >
+    a_H^MM0(rho) = argmax_{a in A_2(Z_H)} GammaMargin_H(a;rho)
+
+same_world_rule:
+  required: true
+  statement: >
+    The same stress vector z and resulting complete value vector y(z)
+    must be applied to champion and challenger in each DeltaV comparison.
+
+parameter_governance:
+  rho:
+    status: NOT_YET_FROZEN
+    selection_on_phase3_holdout: forbidden
+    arbitrary_choice_without_reference_evidence: forbidden
+    required_next_step: >
+      Define a preregistered calibration rule for rho using only an
+      approved pre-Phase-3 design/reference sample, then freeze rho before
+      any Phase-3 evaluation outcome is inspected.
+
+  allowed_reference_in_principle:
+    - frozen_phase2_training_or_validation_information
+    - already_consumed_phase2_evidence_if_explicitly_declared_as_design_data
+
+  preferred_design_principle: >
+    Use one fixed rho for the primary MM0 experiment. Any sensitivity grid
+    must be preregistered as secondary analysis and must not be used to
+    select the reported primary result after holdout inspection.
+
+  rho_edge_cases:
+    rho_0:
+      meaning: no_adversarial_stress
+      use: deterministic_sanity_check_only
+    rho_1:
+      meaning: budget_equal_to_full_topk_size
+      risk: >
+        May be highly conservative and may fully stress every challenger-
+        only replacement when enough budget is available.
+      primary_default: false
+
+optimization_note:
+  implementation_status: blocked
+  observation: >
+    The uncertainty set is polyhedral. The inner minimization is a
+    budget-allocation problem over bounded downside deviations. This may
+    permit an exact deterministic solution without enumerating scenarios,
+    but no solver or algorithm is authorized until rho is frozen and the
+    executable adapters from Bindings A-C are implemented and tested.
+
+negative_result_policy:
+  statement: >
+    If every non-neutral action has non-positive robust margin under the
+    frozen primary rho, MM0 returns the Phase-2 champion. That is a valid
+    scientific result and must not trigger post-holdout relaxation of rho.
+
+historical_memory_boundary:
+  status: excluded_from_MM0
+  future_extension: >
+    The PRAGMA-inspired historical event representation may later replace
+    or enrich this simple budgeted family by empirically grounding joint
+    stress structure and scenario provenance. Its incremental value must
+    remain separately measurable against MM0.
+
+forbidden_before_rho_freeze:
+  - phase3_holdout_outcome_inspection
+  - minmax_search
+  - scenario_result_reporting
+  - choosing_rho_by_best_phase3_performance
+  - relaxing_rho_after_no_intervention
+  - introducing_p50_or_p90
+  - introducing_historical_memory
+
+gate_3_5_mm0_family:
+  status: pass_for_family_definition
+  permits:
+    - rho_calibration_contract
+    - deterministic_Zt_adapter_design
+    - deterministic_action_finalizer_design
+    - deterministic_value_adapter_design
+  does_not_permit:
+    - phase3_holdout_evaluation
+    - minmax_optimization
+    - historical_event_extension
