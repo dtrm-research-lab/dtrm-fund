@@ -1,0 +1,240 @@
+binding:
+  id: DTRM_PHASE3_BINDING_A_ZT
+  phase: 3
+  component: Z_t
+  status: defined
+  parent_contract: DTRM_PHASE3_MINMAX_CONTRACT
+  purpose: >
+    Bind the Phase-3 MinMax information state to the exact frozen
+    Phase-2 champion information available at decision time, while
+    preventing the initial MinMax experiment from gaining additional
+    predictive information beyond the promoted Phase-2 guardrail.
+
+scientific_isolation:
+  principle: >
+    MinMax v0 must test the value of adversarial decision reasoning,
+    not the value of exposing additional model features or unused
+    probabilistic outputs to a new decision rule.
+  rule: >
+    Only information already used by the promoted Phase-2 champion,
+    plus row identity and decision-time metadata required to preserve
+    ordering and temporal integrity, is directly accessible to MinMax v0.
+
+phase2_sources:
+  baseline_contract: research/contracts/DTRM_BASELINE_EXANTE_V0.yaml
+  probabilistic_contract: research/contracts/DTRM_XGB_PROBABILISTIC_V0.yaml
+  promoted_guardrail_contract: research/contracts/DTRM_XGB_PROBABILISTIC_V2.yaml
+  replication_contract: research/contracts/DTRM_XGB_PROBABILISTIC_V3.yaml
+  robustness_contract: research/contracts/DTRM_XGB_PROBABILISTIC_V4.yaml
+
+  baseline_runner: research/experiments/run_exante_baseline_v0.py
+  probabilistic_runner: research/experiments/run_probabilistic_xgb_v0.py
+
+phase2_frozen_parameters:
+  baseline_point_prediction:
+    selected_topk_iteration: 10
+    role: frozen_exante_point_ranking
+
+  calibrated_p10:
+    model_best_iteration: 18
+    calibration_method: weighted_validation_residual_offsets
+    calibration_fitted_on: validation_only
+    calibration_offset: -0.06494169682264328
+
+  guardrail:
+    threshold_estimator: weighted_empirical_quantile
+    threshold_reference: frozen_v0_validation_calibrated_p10
+    threshold_quantile: 0.25
+    frozen_threshold: -0.16665692627429962
+    pass_operator: greater_than_or_equal
+
+  selection:
+    topk_fraction: 0.10
+    ranking: frozen_exante_point_prediction
+    fill_policy: >
+      Walk down the frozen baseline ranking and select only candidates
+      whose calibrated P10 is greater than or equal to the frozen
+      threshold until Top-K is filled.
+
+zt_mm0:
+  unit: candidate_pair_at_decision_time
+
+  notation: >
+    Z_(i,t)^MM0 contains the minimum frozen Phase-2 champion state
+    required to reproduce the ranking and calibrated-P10 guardrail
+    for candidate pair i at decision time t.
+
+  direct_fields:
+    - name: news_id
+      role: event_identity
+      dtype: identifier
+      information_time: on_or_before_t
+      model_input: false
+
+    - name: ticker
+      role: asset_identity
+      dtype: identifier
+      information_time: on_or_before_t
+      model_input: false
+
+    - name: date_dt
+      role: decision_timestamp
+      dtype: timestamp
+      information_time: t
+      model_input: false
+
+    - name: baseline_point_score
+      role: frozen_phase2_ranking_score
+      source: DTRM_BASELINE_EXANTE_V0
+      inference_iteration: 10
+      information_time: computed_from_information_on_or_before_t
+
+    - name: baseline_rank
+      role: deterministic_order_within_evaluation_universe
+      source: baseline_point_score
+      information_time: computed_at_decision_time
+      note: >
+        Rank is a deterministic transformation of the frozen point score;
+        tie handling must reproduce the Phase-2 ordering semantics.
+
+    - name: calibrated_p10
+      role: frozen_downside_signal
+      source: DTRM_XGB_PROBABILISTIC_V0
+      raw_model_iteration: 18
+      transform: raw_p10_plus_frozen_calibration_offset
+      calibration_offset: -0.06494169682264328
+      information_time: computed_from_information_on_or_before_t
+
+    - name: phase2_guardrail_pass
+      role: frozen_admissibility_indicator
+      source: calibrated_p10
+      formula: calibrated_p10 >= -0.16665692627429962
+      dtype: boolean
+      information_time: computed_at_decision_time
+
+  constants_available_to_policy:
+    p10_veto_threshold: -0.16665692627429962
+    topk_fraction: 0.10
+    baseline_selected_iteration: 10
+    p10_best_iteration: 18
+    p10_calibration_offset: -0.06494169682264328
+
+provenance_only_not_direct_mm0_inputs:
+  exante_feature_matrix:
+    total_features: 390
+    dtype: float32
+    implementation: src/dtrm/feature_matrix.py::assemble_exante_feature_matrix
+    layout:
+      sbert_embedding:
+        dimensions: 384
+        model: all-MiniLM-L6-v2
+        normalized: true
+        max_chars: 1600
+      cheap_text_features:
+        dimensions: 5
+        implementation: src/dtrm/text_features.py::legacy_text_features
+        order:
+          - n_chars_log1p
+          - n_words_log1p
+          - n_excl_log1p
+          - n_qm_log1p
+          - upper_ratio
+      beta_pre:
+        dimensions: 1
+        information_set: on_or_before_event_date
+        lookback: 252
+        min_observations: 60
+        tolerance_days: 20
+
+    excluded_legacy_feature:
+      name: ret_spy_evt
+      reason: future_inclusive
+
+  frozen_auxiliary_probabilistic_outputs:
+    access_in_mm0: forbidden
+    reason: >
+      P50 and P90 were produced and calibrated in Phase 2 but were not
+      part of the promoted relative-P10 guardrail. Exposing them in the
+      first MinMax experiment would confound adversarial-reasoning value
+      with additional predictive-information value.
+    outputs:
+      p50:
+        best_iteration: 19
+        calibration_offset: -0.05668593570590019
+      p90:
+        best_iteration: 0
+        calibration_offset: 0.058683641254901886
+    future_use: >
+      May be tested only in a separately preregistered Phase-3 ablation
+      after the strict MM0 experiment is frozen.
+
+explicitly_excluded_from_zt:
+  - name: forward_excess_beta_target
+    reason: ex_post_outcome
+    horizon_days: 60
+
+  - name: realized_stock_forward_return
+    reason: future_information
+
+  - name: realized_market_forward_return
+    reason: future_information
+
+  - name: future_price_path
+    reason: future_information
+
+  - name: test_or_holdout_outcomes
+    reason: evaluation_only
+
+  - name: promotion_metrics
+    reason: evaluation_only
+
+  - name: topk_mean_excess_beta
+    reason: evaluation_only
+
+  - name: topk_hit_rate
+    reason: evaluation_only
+
+  - name: split_label
+    reason: experimental_governance_metadata_not_decision_signal
+
+  - name: sample_weight
+    reason: training_calibration_or_evaluation_metadata_not_decision_signal
+
+temporal_integrity:
+  event_time_field: date_dt
+  requirement: >
+    Every direct MM0 field must either exist at t or be deterministically
+    computed from information available on or before t using frozen
+    Phase-2 models and constants.
+  future_information_allowed: false
+
+invariants:
+  model_retraining: forbidden
+  calibration_refit: forbidden
+  threshold_retuning: forbidden
+  baseline_iteration_change: forbidden
+  p10_iteration_change: forbidden
+  topk_fraction_change: forbidden
+  phase2_fill_policy_change: forbidden
+
+implementation_binding:
+  status: pending_adapter
+  requirement: >
+    Before MinMax code is implemented, create a deterministic adapter
+    that materializes Z_t^MM0 from frozen Phase-2 inference outputs and
+    verify it against the Phase-2 ranking and guardrail behavior.
+  note: >
+    Existing local Phase-2 signal artifacts are evidence inputs but are
+    not committed to the repository; the adapter must not rely on an
+    undocumented pickle schema.
+
+gate_3_1_binding_a:
+  status: pass_for_definition
+  permits:
+    - binding_B_admissible_action_set
+    - deterministic_Zt_adapter_design
+  does_not_permit:
+    - adversarial_scenario_definition
+    - minmax_optimization
+    - holdout_outcome_inspection_for_phase3
+    - transformer_event_extension
