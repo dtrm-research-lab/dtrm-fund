@@ -1,0 +1,146 @@
+stage:
+  id: DTRM_PHASE3_MM0_RHO_FROZEN
+  phase: 3
+  component: rho_MM0
+  status: frozen
+  parent_family: DTRM_PHASE3_MM0_UNCERTAINTY_FAMILY
+  calibration_contract: DTRM_PHASE3_MM0_RHO_CALIBRATION
+
+purpose: >
+  Freeze the single primary MM0 stress-budget parameter after executing
+  the preregistered calibration rule on the frozen Phase-2 validation
+  sample. No Phase-3 evaluation outcomes were used to select this value.
+
+provenance:
+  runner: research/experiments/run_phase3_mm0_rho_calibration.py
+  local_result_artifact: research/local_data/phase3_mm0_rho_calibration.json
+  artifact_gitignored: true
+  reference_sample: frozen_phase2_validation
+  phase3_holdout_outcomes_used: false
+  phase2_test_used: false
+  V2_V3_V4_realized_improvement_used: false
+
+reproduction_gates:
+  status: PASS
+  validation_rows:
+    observed: 19880
+    expected: 19880
+  validation_news_id_clusters: 3165
+  phase2_guardrail_pass_rows: 12804
+  baseline_best_rmse_iteration: 6
+  baseline_selected_iteration: 10
+  p10_best_iteration: 18
+  p10_calibration_offset: -0.06494169682264328
+  p10_guardrail_threshold: -0.16665692627429962
+  interpretation: >
+    The frozen Phase-2 validation pipeline reproduced successfully before
+    rho was accepted. A failed reproduction would have invalidated the
+    calibration run.
+
+calibration_result:
+  point_estimate:
+    symbol: rho_hat
+    value: 0.40395839850772436
+    role: diagnostic_point_estimate
+
+  primary_frozen_parameter:
+    symbol: rho_MM0
+    value: 0.4378501384944031
+    estimator: one_sided_95_percent_upper_news_id_cluster_bootstrap_quantile
+    bootstrap_replicates: 10000
+    bootstrap_seed: 20260826
+    quantile: 0.95
+    quantile_method: linear
+    status: FROZEN
+
+  gap_to_point_estimate:
+    absolute: 0.03389173998667875
+    interpretation: >
+      The frozen adversarial budget is intentionally more conservative
+      than the observed validation point estimate because the preregistered
+      rule uses the one-sided 95 percent upper bootstrap quantile.
+
+uncertainty_set_binding:
+  family: budgeted_downside_uncertainty
+  candidate_value: "y_i(z) = b_i - z_i * d_i"
+  constraints:
+    - "0 <= z_i <= 1"
+    - "sum_i z_i <= rho_MM0 * K_H"
+  frozen_budget_formula: >
+    Gamma_H = 0.4378501384944031 * K_H
+  interpretation: >
+    The adversary receives stress capacity equivalent to approximately
+    43.785 percent of the frozen Top-K size, with fractional candidate
+    stresses consuming proportional budget.
+
+family_diagnostic:
+  realized_below_floor_rate_in_validation_champion:
+    value: 0.08702213279678069
+    interpretation: >
+      About 8.70 percent of selected validation rows realized a target_model
+      below the simple calibrated-P10 downside floor. This is evidence that
+      the MM0 wedge is an intentionally simplified uncertainty family, not
+      a complete empirical support set.
+    governance: >
+      This diagnostic was preregistered as non-tuning information. It does
+      not alter rho_MM0, the P10 floor, or the MM0 uncertainty family after
+      observing the calibration output.
+
+scientific_interpretation:
+  statement: >
+    rho_MM0 is not a hand-selected robustness coefficient. It is an
+    empirically calibrated stress-intensity budget derived from realized
+    downside utilization in the frozen Phase-2 validation champion and
+    conservatively expanded to the preregistered one-sided 95 percent
+    cluster-bootstrap upper bound.
+  claim_limit: >
+    The value grounds the severity of the minimal MM0 adversary. It does
+    not prove that the budgeted-downside uncertainty family is the true
+    market data-generating process or that P10 fully contains future risk.
+
+parameter_governance:
+  primary_rho: 0.4378501384944031
+  retuning_after_phase3_results: forbidden
+  replacing_with_point_estimate_after_phase3_results: forbidden
+  changing_confidence_level_after_phase3_results: forbidden
+  changing_bootstrap_cluster_after_phase3_results: forbidden
+  changing_bootstrap_seed_after_phase3_results: forbidden
+  expanding_or_contracting_rho_to_force_intervention: forbidden
+
+sensitivity_policy:
+  primary_experiment_uses_only_frozen_rho: true
+  secondary_rho_grid_status: not_authorized_yet
+  rule: >
+    Any later rho sensitivity analysis must be preregistered before the
+    relevant Phase-3 evaluation outcomes are inspected and cannot replace
+    the frozen primary result.
+
+negative_result_policy:
+  statement: >
+    If MM0 cannot find a positive robust-improvement action with
+    rho_MM0 = 0.4378501384944031, the Phase-2 champion remains the action.
+    The frozen rho must not be reduced merely to obtain an intervention.
+
+implementation_gate:
+  rho_status: frozen
+  uncertainty_family_status: parameterized_for_MM0
+  now_permitted:
+    - deterministic_Zt_adapter_implementation_and_tests
+    - deterministic_action_finalizer_implementation_and_tests
+    - deterministic_value_adapter_implementation_and_tests
+    - exact_inner_adversary_derivation
+  still_forbidden:
+    - phase3_holdout_outcome_inspection
+    - post_result_rho_tuning
+    - historical_event_extension
+    - p50_or_p90_extension
+    - transformer_extension
+    - promotion_claims
+
+gate_3_7_rho_freeze:
+  status: PASS
+  frozen_value: 0.4378501384944031
+  next_gate: >
+    Implement and verify the deterministic Phase-3 adapters required by
+    Bindings A, B, and C before implementing or evaluating the complete
+    MinMax challenger.
