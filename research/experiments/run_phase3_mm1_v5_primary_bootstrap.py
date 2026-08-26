@@ -1,11 +1,11 @@
 """Run the preregistered V5 primary news_id cluster bootstrap for MM1.
 
 The V5 point result is already frozen. This runner performs the supportive
-uncertainty analysis exactly as preregistered: uniformly resample observed
-news_id clusters with replacement, duplicate every row belonging to each
-cluster draw, recompute n and K, rebuild the frozen Phase-2 information state,
-rerun the exact frozen MM1 policy using ex-ante signals only, and then evaluate
-both replicate-specific actions on the same resampled target_model rows.
+uncertainty analysis exactly as preregistered. Repeated bootstrap copies of the
+same original V5 row are scientifically exchangeable; the frozen bootstrap
+solver amendment therefore treats copy-label permutations as one integer
+quantity action while preserving the exact expanded-sample policy, K, rho,
+robust objective, champion fallback, target values, seed, and resampling law.
 """
 
 from __future__ import annotations
@@ -19,7 +19,15 @@ import numpy as np
 import pandas as pd
 
 from dtrm.phase3_mm0_state import materialize_mm0_information_state
-from dtrm.phase3_mm1_optimizer import optimize_mm1
+from dtrm.phase3_mm1_optimizer import (
+    ROBUST_VALUE_TOLERANCE,
+    _adjusted_scores,
+    _theta_candidates,
+    _threshold_primary_optimum,
+    _topk_positions,
+    optimize_mm1 as optimize_mm1_expanded_reference,
+)
+from dtrm.phase3_mm1_robust_value import RHO_MM0, robust_value_for_selection
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -28,6 +36,12 @@ REPORTS = REPO_ROOT / "research" / "reports"
 
 DECISION_MANIFEST_PATH = (
     REPO_ROOT / "research" / "contracts" / "DTRM_PHASE3_MM1_V5_DECISION_MANIFEST.json"
+)
+BOOTSTRAP_AMENDMENT_PATH = (
+    REPO_ROOT
+    / "research"
+    / "contracts"
+    / "DTRM_PHASE3_MM1_V5_BOOTSTRAP_SOLVER_AMENDMENT.yaml"
 )
 POINT_RESULT_PATH = REPORTS / "DTRM_PHASE3_MM1_V5_REALIZED_RESULT.json"
 SIGNALS_PATH = LOCAL_DATA / "phase3_mm1_v5_signals_frozen.pkl"
@@ -75,10 +89,9 @@ def require_clean_tracked_worktree() -> None:
         raise RuntimeError("Tracked working tree must be clean before V5 primary bootstrap")
 
 
-def require_committed_json(path: Path, *, expected_status: str | None = None) -> dict:
+def require_committed_bytes(path: Path) -> bytes:
     if not path.exists():
         raise FileNotFoundError(path)
-
     relative = str(path.relative_to(REPO_ROOT))
     try:
         committed = subprocess.check_output(
@@ -87,13 +100,16 @@ def require_committed_json(path: Path, *, expected_status: str | None = None) ->
         )
     except subprocess.CalledProcessError as exc:
         raise RuntimeError(f"Required bootstrap provenance is not committed: {relative}") from exc
-
     local = path.read_bytes()
     if committed != local:
         raise RuntimeError(f"Local provenance differs from committed Git bytes: {relative}")
+    return local
 
-    payload = json.loads(local)
+
+def require_committed_json(path: Path, *, expected_status: str | None = None) -> dict:
+    payload = json.loads(require_committed_bytes(path))
     if expected_status is not None and payload.get("status") != expected_status:
+        relative = str(path.relative_to(REPO_ROOT))
         raise RuntimeError(f"Unexpected provenance status in {relative}")
     return payload
 
@@ -220,7 +236,7 @@ def reproduce_frozen_point(frame: pd.DataFrame, decision_manifest: dict) -> dict
     }
 
 
-def resampled_row_indices(
+def resampled_row_multiplicity(
     cluster_codes: np.ndarray,
     *,
     n_clusters: int,
@@ -228,14 +244,278 @@ def resampled_row_indices(
 ) -> np.ndarray:
     draws = rng.integers(0, n_clusters, size=n_clusters)
     counts = np.bincount(draws, minlength=n_clusters)
-    row_multiplicity = counts[np.asarray(cluster_codes, dtype=np.int64)]
-    return np.repeat(np.arange(cluster_codes.size, dtype=np.int64), row_multiplicity)
+    return counts[np.asarray(cluster_codes, dtype=np.int64)].astype(np.int64, copy=False)
 
 
-def evaluate_resampled_policy(
+def resampled_row_indices(
+    cluster_codes: np.ndarray,
+    *,
+    n_clusters: int,
+    rng: np.random.Generator,
+) -> np.ndarray:
+    multiplicity = resampled_row_multiplicity(
+        cluster_codes,
+        n_clusters=n_clusters,
+        rng=rng,
+    )
+    return np.repeat(np.arange(cluster_codes.size, dtype=np.int64), multiplicity)
+
+
+def _expanded_state(frame: pd.DataFrame, multiplicity: np.ndarray):
+    counts = np.asarray(multiplicity, dtype=np.int64)
+    if counts.ndim != 1 or counts.size != len(frame):
+        raise ValueError("Bootstrap row multiplicity must align with the V5 frame")
+    if (counts < 0).any():
+        raise ValueError("Bootstrap row multiplicity must be non-negative")
+
+    expanded_idx = np.repeat(np.arange(len(frame), dtype=np.int64), counts)
+    if expanded_idx.size == 0:
+        raise ValueError("Bootstrap replicate must contain at least one row")
+
+    resampled = frame.iloc[expanded_idx]
+    state = materialize_mm0_information_state(
+        news_id=resampled["news_id"].to_numpy(),
+        ticker=resampled["ticker"].to_numpy(),
+        date_dt=resampled["date_dt_signal"].to_numpy(),
+        baseline_point_score=resampled["baseline_point_score"].to_numpy(dtype=np.float64),
+        raw_p10=resampled["raw_p10"].to_numpy(dtype=np.float64),
+    )
+    return state, expanded_idx
+
+
+def _quantity_vector(
+    original_row_ids: np.ndarray,
+    selected_positions: np.ndarray,
+    *,
+    original_rows: int,
+) -> np.ndarray:
+    selected = np.asarray(selected_positions, dtype=np.int64)
+    return np.bincount(
+        np.asarray(original_row_ids, dtype=np.int64)[selected],
+        minlength=original_rows,
+    ).astype(np.int64, copy=False)
+
+
+def _best_one_unit_distinct_total(
+    *,
+    unrestricted_total: float,
+    adjusted: np.ndarray,
+    eligible_original_ids: np.ndarray,
+    selected_local: np.ndarray,
+    original_rows: int,
+) -> float:
+    capacities = np.bincount(
+        eligible_original_ids,
+        minlength=original_rows,
+    ).astype(np.int64, copy=False)
+    selected_qty = _quantity_vector(
+        eligible_original_ids,
+        selected_local,
+        original_rows=original_rows,
+    )
+
+    score_by_original = np.full(original_rows, -np.inf, dtype=np.float64)
+    np.maximum.at(score_by_original, eligible_original_ids, adjusted)
+
+    remove_rows = np.flatnonzero(selected_qty > 0)
+    add_rows = np.flatnonzero(selected_qty < capacities)
+    if remove_rows.size == 0 or add_rows.size == 0:
+        return -np.inf
+
+    best_delta = -np.inf
+
+    best_add = int(add_rows[np.argmax(score_by_original[add_rows])])
+    best_remove = int(remove_rows[np.argmin(score_by_original[remove_rows])])
+    if best_add != best_remove:
+        best_delta = float(score_by_original[best_add] - score_by_original[best_remove])
+
+    alternate_add = add_rows[add_rows != best_remove]
+    if alternate_add.size:
+        add = int(alternate_add[np.argmax(score_by_original[alternate_add])])
+        best_delta = max(
+            best_delta,
+            float(score_by_original[add] - score_by_original[best_remove]),
+        )
+
+    alternate_remove = remove_rows[remove_rows != best_add]
+    if alternate_remove.size:
+        remove = int(alternate_remove[np.argmin(score_by_original[alternate_remove])])
+        best_delta = max(
+            best_delta,
+            float(score_by_original[best_add] - score_by_original[remove]),
+        )
+
+    if not np.isfinite(best_delta):
+        return -np.inf
+    return float(unrestricted_total + best_delta)
+
+
+def _best_distinct_quantity_robust_total(
+    baseline: np.ndarray,
+    widths: np.ndarray,
+    *,
+    k: int,
+    baseline_ranks: np.ndarray,
+    eligible_original_ids: np.ndarray,
+    excluded_quantity: np.ndarray,
+    original_rows: int,
+) -> float:
+    """Exact best robust total excluding one exchangeable quantity vector."""
+
+    budget = float(RHO_MM0 * k)
+    best_alternative = -np.inf
+
+    for theta in _theta_candidates(widths):
+        adjusted = _adjusted_scores(baseline, widths, float(theta))
+        unrestricted = _topk_positions(
+            adjusted,
+            k=k,
+            baseline_ranks=baseline_ranks,
+        )
+        unrestricted_total = float(np.sum(adjusted[unrestricted], dtype=np.float64))
+        unrestricted_quantity = _quantity_vector(
+            eligible_original_ids,
+            unrestricted,
+            original_rows=original_rows,
+        )
+
+        if not np.array_equal(unrestricted_quantity, excluded_quantity):
+            additive_total = unrestricted_total
+        else:
+            additive_total = _best_one_unit_distinct_total(
+                unrestricted_total=unrestricted_total,
+                adjusted=adjusted,
+                eligible_original_ids=eligible_original_ids,
+                selected_local=unrestricted,
+                original_rows=original_rows,
+            )
+
+        if np.isfinite(additive_total):
+            robust_total = float(additive_total - budget * float(theta))
+            if robust_total > best_alternative:
+                best_alternative = robust_total
+
+    return float(best_alternative)
+
+
+def _weighted_metrics(
+    target: np.ndarray,
+    quantity: np.ndarray,
+    *,
+    k: int,
+) -> tuple[float, float]:
+    qty = np.asarray(quantity, dtype=np.int64)
+    values = np.asarray(target, dtype=np.float64)
+    if qty.size != values.size or int(np.sum(qty)) != k:
+        raise RuntimeError("Exchangeable action does not contain exactly K units")
+    mean_value = float(np.dot(values, qty) / k)
+    hit_rate = float(np.dot((values > 0.0).astype(np.float64), qty) / k)
+    return mean_value, hit_rate
+
+
+def evaluate_resampled_policy_exchangeable(
+    frame: pd.DataFrame,
+    multiplicity: np.ndarray,
+) -> dict[str, float | int] | None:
+    """Rerun the exact frozen policy modulo scientifically meaningless copy labels."""
+
+    state, expanded_idx = _expanded_state(frame, multiplicity)
+    n = int(state.rows)
+    k = int(n * TOPK_FRACTION)
+    if k <= 0:
+        raise ValueError("Bootstrap replicate Top-K is empty")
+
+    rank_order = np.argsort(state.baseline_rank)
+    eligible_order = rank_order[state.phase2_guardrail_pass[rank_order]]
+    if eligible_order.size < k:
+        return None
+    champion = eligible_order[:k].astype(np.int64, copy=False)
+
+    eligible_indices = np.flatnonzero(state.phase2_guardrail_pass).astype(np.int64, copy=False)
+    if eligible_indices.size < k:
+        return None
+
+    baseline = np.asarray(state.baseline_point_score[eligible_indices], dtype=np.float64)
+    calibrated_p10 = np.asarray(state.calibrated_p10[eligible_indices], dtype=np.float64)
+    widths = baseline - np.minimum(baseline, calibrated_p10)
+    ranks = np.asarray(state.baseline_rank[eligible_indices], dtype=np.int64)
+
+    selected_local, primary_total, _theta, _theta_count = _threshold_primary_optimum(
+        baseline,
+        widths,
+        k=k,
+        baseline_ranks=ranks,
+    )
+    selected = eligible_indices[selected_local]
+
+    selected_robust = robust_value_for_selection(state, selected)
+    champion_robust = robust_value_for_selection(state, champion)
+    primary_mean = float(primary_total / k)
+    if not np.isclose(
+        selected_robust.robust_value,
+        primary_mean,
+        rtol=0.0,
+        atol=1.0e-10,
+    ):
+        raise RuntimeError("Exchangeable primary theorem does not reproduce robust value")
+
+    if primary_mean <= champion_robust.robust_value + ROBUST_VALUE_TOLERANCE:
+        final_selected = champion
+    else:
+        eligible_original_ids = expanded_idx[eligible_indices]
+        selected_quantity = _quantity_vector(
+            eligible_original_ids,
+            selected_local,
+            original_rows=len(frame),
+        )
+        alternative_total = _best_distinct_quantity_robust_total(
+            baseline,
+            widths,
+            k=k,
+            baseline_ranks=ranks,
+            eligible_original_ids=eligible_original_ids,
+            excluded_quantity=selected_quantity,
+            original_rows=len(frame),
+        )
+        alternative_mean = float(alternative_total / k)
+        if alternative_mean >= primary_mean - ROBUST_VALUE_TOLERANCE:
+            raise RuntimeError(
+                "Bootstrap replicate has a non-unique primary robust band modulo "
+                "exchangeable copies; fast amendment refuses to alter tie hierarchy"
+            )
+        final_selected = selected
+
+    champion_quantity = np.bincount(
+        expanded_idx[champion],
+        minlength=len(frame),
+    ).astype(np.int64, copy=False)
+    selected_quantity = np.bincount(
+        expanded_idx[final_selected],
+        minlength=len(frame),
+    ).astype(np.int64, copy=False)
+
+    target = frame["target_model"].to_numpy(dtype=np.float64)
+    phase2_value, phase2_hit = _weighted_metrics(target, champion_quantity, k=k)
+    mm1_value, mm1_hit = _weighted_metrics(target, selected_quantity, k=k)
+
+    return {
+        "rows": n,
+        "K_H": k,
+        "phase2_value": phase2_value,
+        "MM1_value": mm1_value,
+        "delta_topk_mean_target_model_vs_phase2": float(mm1_value - phase2_value),
+        "phase2_hit_rate": phase2_hit,
+        "MM1_hit_rate": mm1_hit,
+        "delta_topk_hit_rate": float(mm1_hit - phase2_hit),
+    }
+
+
+def evaluate_resampled_policy_expanded_reference(
     frame: pd.DataFrame,
     resampled_idx: np.ndarray,
 ) -> dict[str, float | int] | None:
+    """Small-sample equivalence reference; never used by the 10k runner."""
+
     idx = np.asarray(resampled_idx, dtype=np.int64)
     if idx.ndim != 1 or idx.size == 0:
         raise ValueError("Bootstrap replicate indices must be a non-empty vector")
@@ -255,7 +535,7 @@ def evaluate_resampled_policy(
     )
 
     try:
-        optimization = optimize_mm1(state)
+        optimization = optimize_mm1_expanded_reference(state)
     except ValueError as exc:
         if "eligible pool cannot fill" in str(exc):
             return None
@@ -305,12 +585,12 @@ def cluster_bootstrap(
     infeasible = 0
 
     for replicate in range(replicates):
-        idx = resampled_row_indices(
+        multiplicity = resampled_row_multiplicity(
             cluster_codes,
             n_clusters=n_clusters,
             rng=rng,
         )
-        result = evaluate_resampled_policy(frame, idx)
+        result = evaluate_resampled_policy_exchangeable(frame, multiplicity)
         if result is None:
             infeasible += 1
         else:
@@ -356,6 +636,7 @@ def main() -> None:
         POINT_RESULT_PATH,
         expected_status="realized_point_evaluation_complete_pending_commit",
     )
+    require_committed_bytes(BOOTSTRAP_AMENDMENT_PATH)
 
     if point_result["decision_manifest"]["sha256"] != sha256_file(DECISION_MANIFEST_PATH):
         raise RuntimeError("V5 point result is bound to a different decision manifest")
@@ -379,6 +660,7 @@ def main() -> None:
 
     print("DTRM PHASE 3 MM1 V5 PRIMARY NEWS_ID BOOTSTRAP")
     print("point result reproduction: PASS")
+    print("bootstrap solver amendment: PASS")
     print("rows:", len(frame))
     print("news_id clusters:", frame["news_id"].nunique())
     print("replicates:", REPLICATES)
@@ -426,11 +708,17 @@ def main() -> None:
             "repeated_draws_duplicate_all_cluster_rows": True,
             "policy_recomputation_inside_each_replicate": True,
             "recompute_n_and_K": True,
-            "rerun_exact_frozen_MM1_optimizer": True,
+            "rerun_exact_frozen_MM1_policy": True,
+            "solver_representation": "exact_exchangeable_integer_multiplicity",
+            "copy_label_permutations_are_distinct_actions": False,
         },
         "provenance": {
             "decision_manifest_sha256": sha256_file(DECISION_MANIFEST_PATH),
             "point_result_sha256": sha256_file(POINT_RESULT_PATH),
+            "bootstrap_solver_amendment_path": str(
+                BOOTSTRAP_AMENDMENT_PATH.relative_to(REPO_ROOT)
+            ),
+            "bootstrap_solver_amendment_sha256": sha256_file(BOOTSTRAP_AMENDMENT_PATH),
             "signals_sha256": sha256_file(SIGNALS_PATH),
             "target_model_sha256": sha256_file(TARGET_PATH),
         },
