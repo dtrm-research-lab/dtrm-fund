@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
@@ -40,12 +39,27 @@ def test_frozen_primary_bootstrap_constants():
     assert boot.CONFIDENCE_LEVEL == 0.95
 
 
-def test_resampled_row_indices_duplicate_all_rows_of_repeated_cluster():
+def test_resampled_row_multiplicity_duplicates_all_rows_of_repeated_cluster():
     class FakeRNG:
         def integers(self, low, high, size):
             assert low == 0
             assert high == 3
             assert size == 3
+            return np.array([0, 0, 2], dtype=np.int64)
+
+    cluster_codes = np.array([0, 0, 1, 2, 2], dtype=np.int64)
+    result = boot.resampled_row_multiplicity(
+        cluster_codes,
+        n_clusters=3,
+        rng=FakeRNG(),
+    )
+
+    assert result.tolist() == [2, 2, 0, 1, 1]
+
+
+def test_resampled_row_indices_remains_exact_expanded_reference():
+    class FakeRNG:
+        def integers(self, low, high, size):
             return np.array([0, 0, 2], dtype=np.int64)
 
     cluster_codes = np.array([0, 0, 1, 2, 2], dtype=np.int64)
@@ -58,47 +72,68 @@ def test_resampled_row_indices_duplicate_all_rows_of_repeated_cluster():
     assert result.tolist() == [0, 0, 1, 1, 3, 4]
 
 
-def test_evaluate_resampled_policy_recomputes_k_and_calls_optimizer(monkeypatch):
+def test_exchangeable_policy_recomputes_k_from_integer_multiplicity():
     frame = _frame(20)
-    observed = {}
+    multiplicity = np.ones(20, dtype=np.int64)
+    multiplicity[:2] = 2
+    multiplicity[2:4] = 0
 
-    def fake_optimize(state):
-        observed["rows"] = state.rows
-        observed["k"] = int(state.rows * 0.10)
-        return SimpleNamespace(
-            k=2,
-            champion_indices=np.array([0, 1], dtype=np.int64),
-            selected_indices=np.array([18, 19], dtype=np.int64),
-        )
+    result = boot.evaluate_resampled_policy_exchangeable(frame, multiplicity)
 
-    monkeypatch.setattr(boot, "optimize_mm1", fake_optimize)
-    result = boot.evaluate_resampled_policy(frame, np.arange(20, dtype=np.int64))
-
-    assert observed == {"rows": 20, "k": 2}
+    assert result is not None
+    assert result["rows"] == 20
     assert result["K_H"] == 2
-    assert result["delta_topk_mean_target_model_vs_phase2"] > 0.0
-    assert result["delta_topk_hit_rate"] > 0.0
 
 
-def test_evaluate_resampled_policy_returns_none_when_frozen_policy_is_infeasible(monkeypatch):
+def test_exchangeable_policy_returns_none_when_phase2_pool_cannot_fill():
     frame = _frame(20)
+    frame["raw_p10"] = -1.0
+    multiplicity = np.ones(20, dtype=np.int64)
 
-    def fake_optimize(_state):
-        raise ValueError("Phase-2 eligible pool cannot fill the frozen Top-K")
-
-    monkeypatch.setattr(boot, "optimize_mm1", fake_optimize)
-    assert boot.evaluate_resampled_policy(frame, np.arange(20, dtype=np.int64)) is None
+    assert boot.evaluate_resampled_policy_exchangeable(frame, multiplicity) is None
 
 
-def test_evaluate_resampled_policy_propagates_unrelated_optimizer_errors(monkeypatch):
+def test_exchangeable_solver_matches_expanded_frozen_optimizer_on_small_duplicate_sample():
     frame = _frame(20)
+    multiplicity = np.array(
+        [2, 2, 0, 0] + [1] * 16,
+        dtype=np.int64,
+    )
+    expanded_idx = np.repeat(np.arange(len(frame), dtype=np.int64), multiplicity)
 
-    def fake_optimize(_state):
-        raise ValueError("different failure")
+    compact = boot.evaluate_resampled_policy_exchangeable(frame, multiplicity)
+    expanded = boot.evaluate_resampled_policy_expanded_reference(frame, expanded_idx)
 
-    monkeypatch.setattr(boot, "optimize_mm1", fake_optimize)
-    with pytest.raises(ValueError, match="different failure"):
-        boot.evaluate_resampled_policy(frame, np.arange(20, dtype=np.int64))
+    assert compact is not None
+    assert expanded is not None
+    for key in (
+        "rows",
+        "K_H",
+        "phase2_value",
+        "MM1_value",
+        "delta_topk_mean_target_model_vs_phase2",
+        "phase2_hit_rate",
+        "MM1_hit_rate",
+        "delta_topk_hit_rate",
+    ):
+        assert compact[key] == pytest.approx(expanded[key], abs=1.0e-12)
+
+
+def test_copy_label_swap_is_not_a_distinct_quantity_action():
+    adjusted = np.array([0.8, 0.8, 0.5], dtype=np.float64)
+    original_ids = np.array([0, 0, 1], dtype=np.int64)
+    selected = np.array([0], dtype=np.int64)
+
+    # The unselected second copy of row 0 is not a distinct quantity action;
+    # the best distinct action must move the unit to original row 1.
+    result = boot._best_one_unit_distinct_total(
+        unrestricted_total=0.8,
+        adjusted=adjusted,
+        eligible_original_ids=original_ids,
+        selected_local=selected,
+        original_rows=2,
+    )
+    assert result == pytest.approx(0.5)
 
 
 def test_reproduce_frozen_point_uses_only_manifest_identities():
@@ -162,14 +197,14 @@ def test_percentile_interval_rejects_nan_values():
 def test_cluster_bootstrap_is_deterministic_for_same_seed(monkeypatch):
     frame = _frame(20)
 
-    def fake_evaluate(_frame, idx):
-        value = float(np.mean(idx))
+    def fake_evaluate(_frame, multiplicity):
+        value = float(np.mean(multiplicity))
         return {
             "delta_topk_mean_target_model_vs_phase2": value,
             "delta_topk_hit_rate": value / 100.0,
         }
 
-    monkeypatch.setattr(boot, "evaluate_resampled_policy", fake_evaluate)
+    monkeypatch.setattr(boot, "evaluate_resampled_policy_exchangeable", fake_evaluate)
 
     first = boot.cluster_bootstrap(
         frame,
@@ -191,7 +226,7 @@ def test_cluster_bootstrap_reports_infeasible_replicates(monkeypatch):
     frame = _frame(20)
     calls = {"n": 0}
 
-    def fake_evaluate(_frame, _idx):
+    def fake_evaluate(_frame, _multiplicity):
         calls["n"] += 1
         if calls["n"] == 2:
             return None
@@ -200,7 +235,7 @@ def test_cluster_bootstrap_reports_infeasible_replicates(monkeypatch):
             "delta_topk_hit_rate": 0.2,
         }
 
-    monkeypatch.setattr(boot, "evaluate_resampled_policy", fake_evaluate)
+    monkeypatch.setattr(boot, "evaluate_resampled_policy_exchangeable", fake_evaluate)
     delta_mean, delta_hit, infeasible = boot.cluster_bootstrap(
         frame,
         rng=np.random.default_rng(1),
@@ -212,12 +247,14 @@ def test_cluster_bootstrap_reports_infeasible_replicates(monkeypatch):
     assert np.isnan(delta_hit[1])
 
 
-def test_runner_source_recomputes_policy_and_contains_no_retuning():
+def test_runner_source_uses_exchangeable_exact_amendment_and_contains_no_retuning():
     source = (
         EXPERIMENTS / "run_phase3_mm1_v5_primary_bootstrap.py"
     ).read_text()
 
-    assert "optimize_mm1(state)" in source
+    assert "evaluate_resampled_policy_exchangeable(frame, multiplicity)" in source
+    assert "_threshold_primary_optimum(" in source
+    assert "DTRM_PHASE3_MM1_V5_BOOTSTRAP_SOLVER_AMENDMENT.yaml" in source
     assert "rng.integers(0, n_clusters, size=n_clusters)" in source
     assert '"rho_retuned": False' in source
     assert '"threshold_retuned": False' in source
