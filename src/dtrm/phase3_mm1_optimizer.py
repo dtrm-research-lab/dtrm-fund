@@ -178,6 +178,25 @@ def _selected_local_positions(solution: np.ndarray, *, n: int, k: int) -> np.nda
     return selected.astype(np.int64, copy=False)
 
 
+def _selection_exclusion_constraint(
+    variable_count: int,
+    selected_local: np.ndarray,
+    *,
+    k: int,
+) -> LinearConstraint:
+    """Exclude exactly one cardinality-k binary selection with a no-good cut."""
+
+    indices = np.asarray(selected_local, dtype=np.int64)
+    if indices.size != k:
+        raise ValueError("selection exclusion requires exactly k selected positions")
+    return _single_row_constraint(
+        variable_count,
+        indices,
+        np.ones(indices.size, dtype=np.float64),
+        ub=float(k - 1),
+    )
+
+
 def optimize_mm1(state: MM0InformationState) -> MM1OptimizationResult:
     """
     Solve the preregistered MM1 max-min problem exactly with a MILP robust counterpart.
@@ -314,47 +333,82 @@ def optimize_mm1(state: MM0InformationState) -> MM1OptimizationResult:
             lb=float(nominal_star_total - k * ROBUST_VALUE_TOLERANCE),
         )
 
-        # Tie level 4: exact lexicographically smallest sorted baseline-rank tuple.
-        fixed: dict[int, int] = {}
-        selected_count = 0
-        rank_order = np.argsort(state.baseline_rank[eligible_indices])
+        # Tie level 4 remains exactly the preregistered lexicographic rule. Before
+        # starting the potentially long greedy feasibility scan, prove whether the
+        # level-1/2/3 winner is already unique inside the frozen tolerance bands.
+        # The no-good cut excludes only nominal_local because cardinality is fixed.
+        # If that cut makes the problem infeasible, no lexicographic comparison is
+        # needed and nominal_local is necessarily the exact level-4 winner.
         zero_c = np.zeros(variable_count, dtype=np.float64)
         tie_constraints = (robust_band, overlap_constraint, nominal_band)
+        exclusion = _selection_exclusion_constraint(
+            variable_count,
+            nominal_local,
+            k=k,
+        )
+        alternative = _solve(
+            c=zero_c,
+            base_matrix=base_matrix,
+            base_lb=base_lb,
+            base_ub=base_ub,
+            lower=lower,
+            upper=upper,
+            integrality=integrality,
+            extra_constraints=tie_constraints + (exclusion,),
+            require_optimal=False,
+        )
 
-        for local_position in rank_order:
-            local_position = int(local_position)
-            remaining_needed = k - selected_count
-            if remaining_needed == 0:
-                fixed[local_position] = 0
-                continue
+        if not bool(alternative.success) or int(alternative.status) != 0:
+            if int(alternative.status) != 2:
+                raise RuntimeError(
+                    "MM1 uniqueness check ended without an optimal or infeasible status: "
+                    f"{alternative.message}"
+                )
+            final_local = nominal_local
+        else:
+            # Multiple selections remain in the frozen robust/overlap/nominal bands.
+            # Fall back to the original exact greedy lexicographic feasibility scan.
+            fixed: dict[int, int] = {}
+            selected_count = 0
+            rank_order = np.argsort(state.baseline_rank[eligible_indices])
 
-            trial_fixed = dict(fixed)
-            trial_fixed[local_position] = 1
-            trial = _solve(
-                c=zero_c,
-                base_matrix=base_matrix,
-                base_lb=base_lb,
-                base_ub=base_ub,
-                lower=lower,
-                upper=upper,
-                integrality=integrality,
-                extra_constraints=tie_constraints,
-                fixed_x=trial_fixed,
-                require_optimal=False,
+            for local_position in rank_order:
+                local_position = int(local_position)
+                remaining_needed = k - selected_count
+                if remaining_needed == 0:
+                    fixed[local_position] = 0
+                    continue
+
+                trial_fixed = dict(fixed)
+                trial_fixed[local_position] = 1
+                trial = _solve(
+                    c=zero_c,
+                    base_matrix=base_matrix,
+                    base_lb=base_lb,
+                    base_ub=base_ub,
+                    lower=lower,
+                    upper=upper,
+                    integrality=integrality,
+                    extra_constraints=tie_constraints,
+                    fixed_x=trial_fixed,
+                    require_optimal=False,
+                )
+
+                if bool(trial.success) and int(trial.status) == 0:
+                    fixed[local_position] = 1
+                    selected_count += 1
+                else:
+                    fixed[local_position] = 0
+
+            if selected_count != k:
+                raise RuntimeError("MM1 lexicographic tie-break failed to construct a full Top-K")
+
+            final_local = np.array(
+                sorted(position for position, value in fixed.items() if value == 1),
+                dtype=np.int64,
             )
-
-            if bool(trial.success) and int(trial.status) == 0:
-                fixed[local_position] = 1
-                selected_count += 1
-            else:
-                fixed[local_position] = 0
-
-        if selected_count != k:
-            raise RuntimeError("MM1 lexicographic tie-break failed to construct a full Top-K")
-
-        final_local = np.array(sorted(position for position, value in fixed.items() if value == 1), dtype=np.int64)
-        if final_local.size != k:
-            raise RuntimeError("MM1 lexicographic tie-break returned wrong cardinality")
+            if final_local.size != k:
+                raise RuntimeError("MM1 lexicographic tie-break returned wrong cardinality")
 
         selected = eligible_indices[final_local]
         selected_value = robust_value_for_selection(state, selected)
