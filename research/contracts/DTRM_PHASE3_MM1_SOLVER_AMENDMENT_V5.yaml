@@ -1,0 +1,190 @@
+stage:
+  id: DTRM_PHASE3_MM1_SOLVER_AMENDMENT_V5
+  phase: 3
+  experiment: MM1
+  component: exact_outer_solver_scaling_amendment
+  status: frozen_pre_V5_decision
+  date: 2026-08-26
+  parent_optimizer_contract: DTRM_PHASE3_MM1_OUTER_OPTIMIZER
+  parent_evaluation_contract: DTRM_PHASE3_MM1_EVALUATION_CONTRACT
+
+reason_for_amendment:
+  trigger_is_outcome_blind: true
+  V5_exante_structure_observed:
+    cohort_rows: 10745
+    phase2_eligible_rows: 6253
+    K_H: 1074
+  operational_observation: >
+    The preregistered zero-gap HiGHS mixed-integer robust counterpart did not
+    complete at the V5 ex-ante problem scale. The process was terminated
+    before optimize_mm1 returned and before a V5 decision manifest existed.
+  decision_manifest_existed_at_amendment: false
+  V5_target_model_accessed: false
+  V5_realized_forward_returns_accessed: false
+  V5_MM1_vs_phase2_realized_comparison_accessed: false
+  rationale: >
+    Relaxing the MIP gap, imposing a time limit, accepting an incumbent, or
+    reducing the candidate universe would change the preregistered exactness
+    standard. Instead this amendment replaces only the computational route
+    with an analytically equivalent exact solver specialized to the already
+    frozen budgeted-downside uncertainty family.
+
+scientific_policy_unchanged:
+  action_set: exact_K_subsets_of_phase2_eligible_pool
+  K_rule: "K_H = int(n_H * 0.10)"
+  rho: 0.4378501384944031
+  uncertainty_family: unchanged
+  objective: maximize_own_worst_case_value_W_H
+  phase2_champion: unchanged
+  intervention_tolerance: 1.0e-12
+  tie_hierarchy:
+    - maximum_champion_overlap
+    - maximum_nominal_mean
+    - lexicographically_smallest_sorted_baseline_rank_tuple
+  outcome_inputs: forbidden
+  threshold_retuning: forbidden
+  rho_retuning: forbidden
+  candidate_row_addition_or_deletion: forbidden
+
+exact_reformulation:
+  starting_dual_total_objective: >
+    J_H(x,theta,p) = sum_i b_i*x_i - B_H*theta - sum_i p_i,
+    with theta + p_i >= d_i*x_i, theta >= 0, p_i >= 0,
+    x_i binary and sum_i x_i = K_H.
+
+  eliminate_p_for_fixed_x_theta: >
+    At an optimum p_i = max(d_i*x_i - theta, 0). Because theta >= 0 and
+    x_i is binary, an unselected row contributes zero and a selected row
+    contributes max(d_i - theta, 0).
+
+  reduced_exact_objective: >
+    J_H(x,theta) = sum_i x_i * q_i(theta) - B_H*theta,
+    where q_i(theta) = b_i - max(d_i - theta, 0).
+
+  fixed_theta_solution: >
+    For any fixed theta, exact cardinality implies that the maximizing x is
+    obtained by selecting the K_H largest q_i(theta) among the frozen
+    Phase-2-eligible rows.
+
+  finite_breakpoint_theorem: >
+    q_i(theta) is continuous and piecewise affine with its only slope change
+    at theta=d_i. On every closed interval between consecutive distinct
+    downside widths, the sum of the K_H largest q_i(theta) is the maximum of
+    finitely many affine exact-K subset totals and is therefore convex.
+    Subtracting the linear term B_H*theta preserves convexity, so the maximum
+    on each interval is attained at an endpoint. For theta above max_i d_i,
+    all q_i(theta)=b_i and -B_H*theta makes the objective decreasing because
+    B_H>0. Therefore a global exact optimum is attained at
+    theta in {0} union {d_i : i in E_H}.
+
+  primary_solver: >
+    Enumerate the finite set theta in {0} union the distinct eligible
+    downside widths. At each theta select the deterministic exact top-K of
+    q_i(theta), compute J_H, and retain the maximum. This enumerates dual
+    breakpoints, not uncertainty scenarios and not exact-K subsets.
+
+  reported_scientific_value: >
+    The winning subset is always re-evaluated with the unchanged independent
+    robust_value_for_selection fractional-knapsack adapter. The finite-theta
+    objective must agree with that authoritative W_H within numerical
+    validation tolerance.
+
+primary_band_uniqueness_certificate:
+  purpose: >
+    Avoid invoking a large MILP merely to prove that the primary robust-value
+    band contains one action.
+  exact_rule: >
+    After obtaining the primary winner S_star, compute the best robust total
+    over every exact-K action except S_star using the same finite theta set.
+    At a fixed theta, if the unrestricted top-K differs from S_star it is the
+    best allowed alternative. If it equals S_star, fixed cardinality implies
+    the best distinct action is the single least-loss swap: remove the
+    selected row with the smallest q_i(theta) and add the unselected row with
+    the largest q_i(theta). Maximizing this alternative total over the exact
+    theta breakpoint set gives the exact best action excluding S_star.
+  unique_if: >
+    best_alternative_W_H < W_star - 1e-12
+  consequence: >
+    If unique, levels 2-4 are vacuous and S_star is the final frozen action.
+
+residual_tie_rule:
+  condition: >
+    Another action survives the frozen level-1 robust band
+    W_H(S) >= W_star - 1e-12.
+  procedure: >
+    Retain the original exact scipy.optimize.milp/HiGHS formulation only for
+    the residual frozen tie hierarchy: maximize champion overlap in the exact
+    robust band, maximize nominal mean with overlap fixed, then apply the
+    exact sequential lexicographic baseline-rank feasibility procedure.
+  mip_rel_gap: 0.0
+  heuristic_tie_break: forbidden
+
+superseded_implementation_only_clauses:
+  DTRM_PHASE3_MM1_OUTER_OPTIMIZER:
+    - implementation_solver.primary_library_as_primary_route
+    - complexity_and_scaling.primary_method_exact_MILP_robust_counterpart
+  DTRM_PHASE3_MM1_EVALUATION_CONTRACT:
+    - frozen_policy.MM1.solver_scipy_optimize_milp_HiGHS_exact_zero_gap
+  interpretation: >
+    Only the exact computational route is superseded. All mathematical policy,
+    information, fallback, tie, cohort, metric, promotion, and claim clauses
+    in the parent contracts remain binding.
+
+output_semantics:
+  solver_status_allowed:
+    - optimal_exact_threshold_champion_fallback
+    - optimal_exact_threshold_unique_primary_band
+    - optimal_exact_threshold_plus_milp_tie_hierarchy
+  solver_mip_gap_field_backward_compatibility: >
+    On a pure finite-threshold path, solver_mip_gap is recorded as 0.0 to
+    denote an exact finite optimization with no relaxation gap; it is not a
+    HiGHS-reported MIP statistic. If the residual MILP tie hierarchy is used,
+    zero-gap HiGHS optimality remains required.
+
+validation_required_before_V5_decision:
+  - exact_threshold_primary_matches_full_subset_enumeration_on_small_problems
+  - exact_threshold_primary_matches_original_zero_gap_MILP_on_small_problems
+  - champion_fallback_matches_frozen_rule
+  - phase2_vetoed_rows_never_selected
+  - deliberate_residual_tie_uses_original_exact_tie_hierarchy
+  - deterministic_repeatability
+  - large_unique_synthetic_problem_completes_without_calling_MILP
+  - V5_decision_freeze_tests_remain_green
+
+information_firewall:
+  permitted:
+    - frozen_V5_exante_signals
+    - baseline_point_score
+    - calibrated_p10
+    - phase2_guardrail_pass
+    - baseline_rank
+    - frozen_rho
+    - frozen_K_H
+  forbidden:
+    - target_model
+    - realized_forward_returns
+    - future_price_path_as_decision_input
+    - V5_realized_metrics
+    - V2_V3_V4_MM1_realized_results
+    - history_or_transformer_features
+
+V6_rule: >
+  If V5 reaches a frozen decision under this amendment, the same amended exact
+  solver is part of the frozen MM1 policy required for the preregistered V6
+  replication. No solver change prompted by V5 realized results is permitted.
+
+gate:
+  status: PASS_FOR_IMPLEMENTATION_AND_TESTS_ONLY
+  permits:
+    - implement_exact_finite_threshold_primary_solver
+    - retain_original_MILP_for_residual_ties
+    - add_equivalence_and_scaling_tests
+  blocks_until_tests_pass:
+    - execute_V5_decision_freeze
+  still_forbidden:
+    - inspect_V5_outcomes
+    - evaluate_V5_realized_delta
+    - retune_rho
+    - alter_action_set
+    - alter_objective
+    - alter_tie_hierarchy
