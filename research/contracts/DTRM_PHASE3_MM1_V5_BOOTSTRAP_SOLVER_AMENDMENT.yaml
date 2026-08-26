@@ -1,0 +1,97 @@
+stage:
+  id: DTRM_PHASE3_MM1_V5_BOOTSTRAP_SOLVER_AMENDMENT
+  phase: 3
+  experiment: MM1
+  component: primary_news_id_cluster_bootstrap_solver
+  status: frozen_before_primary_bootstrap_distribution
+
+reason:
+  observed_operational_failure: >
+    A pre-bootstrap timing probe using the preregistered news_id resampling and
+    the expanded-row MM1 implementation stalled inside the exact optimizer and
+    was terminated before a bootstrap distribution or summary was produced.
+  root_cause: >
+    Cluster resampling with replacement creates repeated copies of the same
+    original V5 row. The expanded binary representation treats copy identities
+    as distinct actions even though repeated copies have identical frozen
+    baseline score, calibrated P10, downside width, ticker, date, and realized
+    target_model. Copy-label permutations therefore create artificial primary
+    ties and can trigger the residual MILP hierarchy at bootstrap scale.
+
+scientific_invariants:
+  resampling_unit: news_id
+  replicates: 10000
+  random_seed: 20260827
+  draw_count: observed_unique_news_id_clusters
+  sampling: uniform_with_replacement
+  repeated_draws_duplicate_all_cluster_rows: true
+  recompute_n_each_replicate: true
+  recompute_K_each_replicate: "K = int(n * 0.10)"
+  phase2_guardrail_unchanged: true
+  rho_unchanged: 0.4378501384944031
+  uncertainty_family_unchanged: true
+  robust_objective_unchanged: true
+  fallback_tolerance_unchanged: 1.0e-12
+  target_model_unchanged: true
+  bootstrap_statistics_unchanged:
+    - delta_topk_mean_target_model_vs_phase2
+    - delta_topk_hit_rate
+  percentile_interval_unchanged: true
+  quantile_method: linear
+
+exchangeable_representation:
+  unit: original_frozen_V5_row
+  multiplicity: >
+    The number of times the row's news_id cluster is drawn in the bootstrap
+    replicate. Every unit remains selectable from zero up to that integer
+    multiplicity.
+  exact_cardinality: >
+    Sum of selected row multiplicities is exactly K, identical to selecting K
+    binary copies in the physically expanded bootstrap sample.
+  fixed_theta_score: >
+    q_i(theta) = b_i - max(d_i - theta, 0). Selecting K binary copies with the
+    largest q_i is exactly equivalent to selecting integer quantities bounded
+    by the observed row multiplicities.
+  theta_set: "{0} union {d_i for rows with positive eligible multiplicity}"
+  robust_budget: "B = rho * K"
+  copy_labels_have_no_scientific_identity: true
+
+exactness_certificate:
+  primary_solver: >
+    Use the same finite theta-breakpoint theorem as the frozen V5 solver.
+    Candidate quantities are exact integer multiplicities, not a relaxation.
+  phase2_champion: >
+    Reproduce the frozen Phase-2 eligible baseline ordering and fill exactly K
+    units under the replicate multiplicities.
+  primary_band_uniqueness: >
+    Compute the exact best alternative robust total excluding the selected
+    integer quantity vector. Copy-label permutations of the same quantity
+    vector are not distinct actions. If the best distinct quantity vector lies
+    within the frozen 1e-12 mean robust band, the fast route must stop rather
+    than silently alter the tie hierarchy.
+  fallback: >
+    Preserve the frozen champion fallback whenever the MM1 robust value does
+    not exceed the Phase-2 champion by more than 1e-12.
+  required_equivalence_tests: >
+    On small bootstrap samples where the expanded frozen optimizer is
+    operational, the exchangeable solver must reproduce K, Phase-2 realized
+    value, MM1 realized value, delta mean, and delta hit rate to numerical
+    tolerance.
+
+forbidden_changes:
+  - seed_change
+  - replicate_count_change
+  - rho_retuning
+  - P10_threshold_retuning
+  - outcome_dependent_selection_rule
+  - result_driven_replicate_dropping
+  - changing_K_definition
+  - changing_target_model
+  - treating repeated copies as fractional observations
+
+provenance:
+  frozen_V5_point_result_commit: 9140c82c9a6da1b45b5d5a294c90f3b0cff0e9bb
+  frozen_V5_point_classification: PROMOTED_POINT
+  primary_bootstrap_summary_observed_before_amendment: false
+  primary_bootstrap_distribution_observed_before_amendment: false
+  V6_policy_change_permitted_from_V5: false
