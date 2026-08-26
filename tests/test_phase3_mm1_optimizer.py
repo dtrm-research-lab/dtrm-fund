@@ -3,6 +3,7 @@ from itertools import combinations
 import numpy as np
 import pytest
 
+import dtrm.phase3_mm1_optimizer as optimizer
 from dtrm.phase3_mm0_state import (
     P10_CALIBRATION_OFFSET,
     materialize_mm0_information_state,
@@ -168,6 +169,32 @@ def test_mm1_optimizer_applies_lexicographic_rank_tie_break():
     assert result.intervention is True
     assert set(result.selected_indices.tolist()) == set(expected.tolist())
     assert result.robust_value_selected == pytest.approx(expected_robust, abs=1e-12)
+
+
+def test_mm1_optimizer_short_circuits_lex_scan_when_level3_winner_is_unique(monkeypatch):
+    rows = 20
+    baseline = np.linspace(1.00, 0.20, rows)
+    calibrated = np.full(rows, -1.0)
+    calibrated[0:2] = 0.0
+    calibrated[2] = baseline[2] - 0.01
+    calibrated[3] = baseline[3] - 0.02
+    calibrated[4] = baseline[4] - 0.10
+    state = _build_state(baseline, calibrated)
+
+    solve_calls = 0
+    original_solve = optimizer._solve
+
+    def counted_solve(**kwargs):
+        nonlocal solve_calls
+        solve_calls += 1
+        return original_solve(**kwargs)
+
+    monkeypatch.setattr(optimizer, "_solve", counted_solve)
+    result = optimizer.optimize_mm1(state)
+
+    assert result.intervention is True
+    # Primary robust optimum + overlap + nominal + one no-good uniqueness check.
+    assert solve_calls == 4
 
 
 def test_mm1_optimizer_is_deterministic():
