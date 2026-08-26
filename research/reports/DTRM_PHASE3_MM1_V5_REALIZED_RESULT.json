@@ -1,0 +1,69 @@
+{
+  "stage": "DTRM_PHASE3_MM1_V5_REALIZED_EVALUATION",
+  "status": "realized_point_evaluation_complete_pending_commit",
+  "decision_manifest": {
+    "path": "research/contracts/DTRM_PHASE3_MM1_V5_DECISION_MANIFEST.json",
+    "sha256": "eb86fcdea5ea345fa4f839c9722053ab15ab639477f878c03c2e2242c0cee9ca"
+  },
+  "price_provenance": {
+    "path": "research/contracts/DTRM_PHASE3_MM1_V5_REALIZED_PRICE_PROVENANCE.json",
+    "sha256": "209a91638bb3056d3118d05812dc0dc6d37e4b227ec7dd9539d4a52848901a6e",
+    "price_snapshot_sha256": "701c930760e3f2da94509c1526e4a4d334effc721dbbf5bbdcf08506872e4e27"
+  },
+  "target_construction": {
+    "formula": "stock_forward_return - beta_pre_frozen * SPY_forward_return",
+    "horizon_days": 60,
+    "price_tolerance_days": 5,
+    "beta_source": "frozen V5 feature matrix column 389",
+    "beta_precision": "float32 feature value promoted to float64 for arithmetic",
+    "preprocessing": "frozen Phase2 TRAIN-only 1pct/99pct clipping plus TRAIN ticker de-meaning",
+    "clip_lower": -0.22634289228142143,
+    "clip_upper": 0.4171376705235394,
+    "train_ticker_means": 171,
+    "unseen_V5_tickers": [
+      "ELVR",
+      "PH"
+    ]
+  },
+  "row_integrity": {
+    "signal_rows": 10745,
+    "target_rows": 10745,
+    "complete_one_to_one": true,
+    "rows_dropped_after_outcome_access": 0
+  },
+  "target_artifact": {
+    "path": "research/local_data/phase3_mm1_v5_target_model.pkl",
+    "sha256": "baaac7ced5b29b6afc2eede1ed3293022261e5380989e14ddfe86a791c8af749"
+  },
+  "frozen_exante_diagnostics": {
+    "robust_value_MM1": -0.0645249791061155,
+    "robust_value_phase2": -0.06690889593706592,
+    "robust_lift": 0.0023839168309504194,
+    "overlap_with_phase2": 457,
+    "intervention": true,
+    "solver_status": "optimal_exact_threshold_unique_primary_band"
+  },
+  "point_evaluation": {
+    "classification": "PROMOTED_POINT",
+    "promoted": true,
+    "same_action": false,
+    "phase2_value": -0.026074727841529793,
+    "MM1_value": 0.031173931286900932,
+    "delta_topk_mean_target_model_vs_phase2": 0.057248659128430725,
+    "phase2_hit_rate": 0.6554934823091247,
+    "MM1_hit_rate": 0.7104283054003724,
+    "delta_topk_hit_rate": 0.05493482309124764,
+    "K_H": 1074
+  },
+  "bootstrap": {
+    "primary_news_id": "pending_separate_preregistered_runner",
+    "ticker_sensitivity": "pending_separate_preregistered_runner"
+  },
+  "governance": {
+    "MM1_reoptimized_after_outcome_access": false,
+    "rho_retuned": false,
+    "threshold_retuned": false,
+    "V2_V3_V4_MM1_realized_results_used": false,
+    "V6_policy_change_permitted_from_V5": false
+  }
+}
