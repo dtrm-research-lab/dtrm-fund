@@ -1,0 +1,318 @@
+binding:
+  id: DTRM_PHASE3_BINDING_C_VALUE
+  phase: 3
+  component: V
+  status: defined
+  parent_contract: DTRM_PHASE3_MINMAX_CONTRACT
+  parent_bindings:
+    - DTRM_PHASE3_BINDING_A_ZT
+    - DTRM_PHASE3_BINDING_B_ACTION_SET
+  purpose: >
+    Bind the Phase-3 decision-value function to the exact Phase-2
+    champion evaluation semantics so that MinMax tests adversarial
+    decision robustness without introducing a new optimization metric.
+
+scientific_isolation:
+  principle: >
+    MM0 must optimize and later be evaluated in the same primary
+    decision-value space used to establish the Phase-2 champion.
+  forbidden_confounds:
+    - redefining_value_to_favor_phase3
+    - switching_to_raw_return_only_for_phase3
+    - optimizing_hit_rate_instead_of_phase2_primary_metric
+    - mixing_ex_ante_scenario_value_with_realized_holdout_outcomes
+    - introducing_probability_weights_before_uncertainty_set_contract
+
+phase2_executable_sources:
+  target_construction: src/dtrm/exante_target.py::forward_excess_beta_target
+  market_adjustment: src/dtrm/targets.py::market_adjusted_target
+  target_preprocessing: src/dtrm/legacy_target_preprocessing.py::preprocess_legacy_targets
+  target_clip_bounds: src/dtrm/target_clipping.py::train_only_clip_bounds
+  phase2_selection_evaluator: research/experiments/run_phase2_primary_bootstrap.py::evaluate_selection
+  generic_topk_evaluator: src/dtrm/evaluation.py::regression_topk_metrics
+  phase2_statistics_contract: research/contracts/DTRM_XGB_PROBABILISTIC_PHASE2_STATS.yaml
+
+phase2_primary_estimand:
+  name: delta_topk_mean_excess_beta_target
+  definition: >
+    Difference in Top-K mean model-target value between a candidate
+    selection and the relevant frozen champion selection on the same
+    cohort and using the same target vector.
+  phase2_stats_reference: >
+    candidate_topk_mean_minus_baseline_topk_mean
+  phase3_reference_champion: frozen_phase2_guardrail
+  note: >
+    Phase 3 advances from the promoted Phase-2 calibrated-P10 guardrail,
+    so the Phase-3 challenger is compared primarily against that
+    guardrail action rather than against the earlier raw deterministic
+    baseline. The earlier baseline may remain a contextual diagnostic.
+
+raw_economic_target:
+  symbol: Y_i_raw
+  formula: >
+    Y_i_raw = stock_forward_return_i
+              - beta_pre_i * market_forward_return_i
+  horizon_days: 60
+  price_tolerance_days: 5
+  beta_information_set: on_or_before_event_date
+  role: economic_interpretation_and_target_source
+  decision_time_access: forbidden
+  reason: realized_forward_outcome
+
+frozen_model_target_space:
+  symbol: y_i
+  source: Y_i_raw
+  preprocessing:
+    clipping:
+      lower_quantile: 0.01
+      upper_quantile: 0.99
+      fitted_on: train_only
+      frozen_for_validation_and_test: true
+    ticker_demeaning:
+      ticker_means_fitted_on: train_only
+      applied_to:
+        - train
+        - validation
+        - test
+  dtype_semantics: float32_legacy_pipeline
+  artifact_column: target_model
+  role: frozen_phase2_decision_value_unit
+  note: >
+    The observed Phase-2 Top-K means are computed on target_model.
+    Therefore MM0 must preserve this value space for exact
+    champion-versus-challenger comparability.
+
+scenario_value_interface:
+  scenario_symbol: u
+  uncertainty_set_symbol: U(Z_H)
+  uncertainty_set_status: intentionally_undefined
+
+  per_candidate_scenario_value:
+    symbol: y_i(u)
+    requirement: >
+      Every admissible scenario u must assign a finite scenario value
+      y_i(u) to each candidate that may appear in an admissible action.
+    unit: frozen_model_target_space
+    semantic_requirement: >
+      y_i(u) must be interpretable on the same transformed target scale
+      as target_model, so scenario and realized values remain comparable.
+    construction_method: not_defined_in_binding_C
+    probability: not_required
+
+  prohibited_at_this_stage:
+    - specific_shock_values
+    - scenario_probabilities
+    - monte_carlo_distribution
+    - historical_analogue_rules
+    - transformer_derived_scenarios
+    - regime_labels
+    - outcome_fitted_scenario_parameters
+
+primary_value_function:
+  action_symbol: a
+  selected_set_symbol: S_H(a)
+  cardinality: K_H
+
+  formula: >
+    V_H(a,u) = (1 / K_H) * sum_{i in S_H(a)} y_i(u)
+
+  aggregation: arithmetic_mean
+  rationale: >
+    Phase 2 evaluates decision quality using the arithmetic mean of the
+    frozen model target over the selected Top-K rows. MM0 preserves the
+    same aggregation under every adversarial scenario.
+
+  direction: maximize
+  interpretation: >
+    Higher V_H(a,u) means better decision value under scenario u in
+    exactly the same primary metric space inherited from Phase 2.
+
+phase2_champion_scenario_value:
+  champion_symbol: a_H^(2)
+  formula: >
+    V_H(a_H^(2),u)
+      = (1 / K_H) * sum_{i in a_H^(2)} y_i(u)
+  requirement: >
+    Challenger and champion must always be evaluated under the same
+    scenario u. The adversary is not allowed to use different scenario
+    realizations for the two actions inside one comparison.
+
+incremental_scenario_value:
+  symbol: DeltaV_H(a,u)
+  formula: >
+    DeltaV_H(a,u) = V_H(a,u) - V_H(a_H^(2),u)
+  primary_role: baseline_anchored_scenario_comparison
+  interpretation:
+    positive: challenger_beats_phase2_champion_under_scenario_u
+    zero: challenger_matches_phase2_champion_under_scenario_u
+    negative: challenger_underperforms_phase2_champion_under_scenario_u
+
+robust_improvement_margin:
+  symbol: Gamma_H(a)
+  formula: >
+    Gamma_H(a) = min_{u in U(Z_H)} DeltaV_H(a,u)
+  status: mathematically_bound_but_not_executable_until_U_is_defined
+
+  fallback_identity:
+    action: a_H^(2)
+    formula: >
+      DeltaV_H(a_H^(2),u) = 0 for every u
+    consequence: >
+      Gamma_H(a_H^(2)) = 0, so the frozen Phase-2 champion provides a
+      zero-increment fallback inside the admissible action set.
+
+  intervention_concept:
+    strict_rule: >
+      A Phase-3 challenger can only justify intervention if its frozen
+      robust-improvement criterion exceeds the fallback after all later
+      numerical/statistical tolerances have been preregistered.
+    current_conceptual_threshold: 0.0
+    final_numeric_gate_status: not_yet_defined
+
+ex_post_realized_value:
+  notation: V_H_realized(a)
+  input: observed_target_model
+  formula: >
+    V_H_realized(a)
+      = (1 / K_H) * sum_{i in S_H(a)} target_model_i
+  timing: only_after_action_and_all_phase3_rules_are_frozen
+  role: holdout_champion_vs_challenger_evaluation
+
+ex_post_realized_increment:
+  notation: DeltaV_H_realized(a)
+  formula: >
+    DeltaV_H_realized(a)
+      = V_H_realized(a) - V_H_realized(a_H^(2))
+  primary_phase3_observed_metric: true
+  favorable_direction: greater_than_zero
+  no_absolute_profit_requirement: true
+  note: >
+    A candidate may add decision value relative to Phase 2 even if both
+    selected-set means are negative. This preserves the Phase-2 claim
+    boundary of incremental decision improvement rather than guaranteed
+    profitability.
+
+secondary_diagnostic:
+  name: topk_hit_rate
+  phase2_definition: >
+    Mean indicator(target_model_i > 0) across selected Top-K rows.
+  role_in_mm0_optimization: forbidden
+  role_in_ex_post_reporting: allowed_secondary_metric
+  rationale: >
+    Phase 2 treated Top-K hit rate as secondary. MM0 must not optimize
+    it as a hidden alternative objective and then claim improvement in
+    the primary Top-K mean metric.
+
+not_primary_objectives:
+  - rmse
+  - mae
+  - r2
+  - raw_profitability
+  - absolute_positive_return
+  - topk_hit_rate
+  - expected_value_over_scenario_probabilities
+  - sharpe_ratio
+  - volatility_penalty
+  - drawdown
+  - portfolio_weighted_return
+  note: >
+    These may only enter later Phase-3 or downstream portfolio stages
+    through separately preregistered contracts. They are not part of
+    the MM0 value function.
+
+same_scenario_comparison_rule:
+  required: true
+  statement: >
+    For each u, compare V_H(a,u) and V_H(a_H^(2),u) using the exact same
+    candidate-level scenario value vector y(u). This blocks an invalid
+    adversary that penalizes the challenger and champion under different
+    worlds.
+
+same_cohort_comparison_rule:
+  required: true
+  statement: >
+    Challenger and Phase-2 champion must use the same frozen cohort H,
+    same K_H, same Phase-2 eligible pool semantics, and same realized
+    target vector for ex-post evaluation.
+
+information_firewall:
+  during_action_construction:
+    target_model_access: forbidden
+    realized_forward_returns_access: forbidden
+    future_price_path_access: forbidden
+    realized_topk_metrics_access: forbidden
+
+  during_uncertainty_set_design:
+    phase3_evaluation_holdout_outcomes: forbidden
+    note: >
+      The uncertainty-set contract must be frozen without learning its
+      rules from the outcomes of the Phase-3 evaluation cohort.
+
+  during_ex_post_evaluation:
+    target_model_access: allowed
+    purpose: frozen_champion_vs_challenger_measurement_only
+
+consistency_checks_required_before_minmax:
+  - name: phase2_value_reproduction
+    requirement: >
+      Reproduce the Phase-2 guardrail observed Top-K mean from its
+      frozen target_model artifact and frozen selected row identities.
+
+  - name: neutral_action_identity
+    requirement: >
+      The no-additional-veto action from Binding B must return exactly
+      the Phase-2 champion value under both scenario and realized-value
+      evaluators.
+
+  - name: arithmetic_mean_equivalence
+    requirement: >
+      The new value adapter must match numpy mean semantics used by the
+      frozen Phase-2 evaluator to numerical tolerance fixed before tests.
+
+  - name: target_space_equivalence
+    requirement: >
+      Scenario-value adapters must declare values in target_model units;
+      no raw-return/model-target mixing is permitted.
+
+implementation_binding:
+  status: pending_adapter
+  required_interfaces:
+    scenario_value: >
+      value(selected_indices, scenario_target_vector) -> float
+    realized_value: >
+      value(selected_indices, observed_target_model_vector) -> float
+    incremental_value: >
+      candidate_value - phase2_champion_value
+  no_uncertainty_generation_logic: true
+  no_minmax_search_logic: true
+
+claim_boundary:
+  supported_target_claim: >
+    MM0 tests whether an additional adversarial guardrail can improve
+    worst-case incremental decision value in the frozen Phase-2 target
+    space and subsequently preserve or improve observed decision value
+    relative to the frozen Phase-2 champion.
+  not_supported_by_binding_C:
+    - guaranteed_profitability
+    - causal_market_impact
+    - live_portfolio_performance
+    - scenario_realism
+    - minimax_theorem_equality
+    - transformer_or_historical_memory_value
+
+gate_3_3_binding_C:
+  status: pass_for_definition
+  prerequisites_satisfied:
+    - binding_A_Z_t_defined
+    - binding_B_action_set_defined
+    - phase2_primary_value_metric_identified
+    - ex_ante_and_ex_post_value_separated
+    - phase2_champion_is_primary_reference
+  permits:
+    - deterministic_value_adapter_design
+    - uncertainty_set_contract_design
+  does_not_permit:
+    - adversarial_scenario_instantiation
+    - minmax_optimization
+    - phase3_holdout_outcome_inspection
+    - transformer_event_extension
