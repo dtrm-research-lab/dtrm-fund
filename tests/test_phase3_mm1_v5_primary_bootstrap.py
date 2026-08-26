@@ -26,7 +26,7 @@ def _frame(n: int = 20) -> pd.DataFrame:
                 utc=True,
             ),
             "baseline_point_score": np.linspace(1.0, 0.1, n),
-            "raw_p10": np.full(n, 0.1),
+            "raw_p10": np.linspace(0.2, -0.05, n),
             "target_model": np.linspace(-0.2, 0.3, n),
         }
     )
@@ -124,8 +124,6 @@ def test_copy_label_swap_is_not_a_distinct_quantity_action():
     original_ids = np.array([0, 0, 1], dtype=np.int64)
     selected = np.array([0], dtype=np.int64)
 
-    # The unselected second copy of row 0 is not a distinct quantity action;
-    # the best distinct action must move the unit to original row 1.
     result = boot._best_one_unit_distinct_total(
         unrestricted_total=0.8,
         adjusted=adjusted,
