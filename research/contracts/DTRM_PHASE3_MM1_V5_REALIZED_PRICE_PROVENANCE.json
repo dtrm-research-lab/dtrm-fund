@@ -1,0 +1,41 @@
+{
+  "stage": "DTRM_PHASE3_MM1_V5_REALIZED_PRICE_PROVENANCE",
+  "status": "frozen_before_target_model_construction",
+  "frozen_at_utc": "2026-08-26",
+  "decision_manifest": {
+    "path": "research/contracts/DTRM_PHASE3_MM1_V5_DECISION_MANIFEST.json",
+    "sha256": "eb86fcdea5ea345fa4f839c9722053ab15ab639477f878c03c2e2242c0cee9ca",
+    "committed_before_price_access": true
+  },
+  "price_snapshot": {
+    "path": "research/local_data/phase3_mm1_v5_price_snapshot.pkl",
+    "sha256": "701c930760e3f2da94509c1526e4a4d334effc721dbbf5bbdcf08506872e4e27",
+    "provider": "Financial Modeling Prep",
+    "endpoint": "api/v3/historical-price-full/{ticker}",
+    "api_key_recorded": false,
+    "required_tickers": 156,
+    "rows": 7956,
+    "min_date": "2026-06-15",
+    "max_date": "2026-08-26",
+    "required_last_market_date": "2026-08-24"
+  },
+  "verification": {
+    "manual_sha256_matches_builder_summary": true,
+    "snapshot_reaches_required_target_maturity": true,
+    "realized_comparison_computed": false,
+    "target_model_computed": false,
+    "MM1_reoptimized": false
+  },
+  "next_gate": {
+    "permitted": [
+      "implement_and_test_V5_realized_target_evaluator",
+      "construct_target_model_from_frozen_snapshot_after_tests"
+    ],
+    "forbidden_until_evaluator_tests_pass": [
+      "compute_MM1_vs_phase2_realized_delta",
+      "run_bootstrap_inference",
+      "inspect_V2_V3_V4_MM1_realized_results",
+      "retune_MM1_policy"
+    ]
+  }
+}
