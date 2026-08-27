@@ -1,0 +1,96 @@
+stage:
+  id: DTRM_PHASE3_MM1_V5_BOOTSTRAP_TIE_AMENDMENT
+  phase: 3
+  experiment: MM1
+  cohort: V5
+  status: frozen_before_primary_bootstrap_distribution
+
+trigger:
+  event: first_10_replicate_smoke_test
+  outcome_statistics_written: false
+  bootstrap_summary_written: false
+  bootstrap_distribution_written: false
+  observation_used: ex_ante_robust_primary_band_nonuniqueness_only
+  reason: >
+    The exchangeable-copy fast path correctly removed false copy-label symmetry,
+    but the first smoke replicate showed that more than one economically distinct
+    integer quantity vector can survive the already-frozen 1e-12 primary robust
+    band. Aborting is safe but does not implement the preregistered tie hierarchy.
+
+scientific_policy_unchanged:
+  resampling_unit: news_id
+  replicates: 10000
+  random_seed: 20260827
+  topk_fraction: 0.10
+  rho: 0.4378501384944031
+  uncertainty_family: frozen_MM1_budgeted_downside
+  primary_objective: maximize_own_worst_case_value
+  robust_value_tolerance: 1.0e-12
+  fallback: phase2_champion_if_primary_not_strictly_better
+  tie_hierarchy:
+    - maximum_overlap_with_phase2_champion
+    - maximum_nominal_mean
+    - lexicographically_smallest_baseline_rank_quantity_tuple
+  target_model_changed: false
+  point_result_changed: false
+  V6_policy_changed: false
+
+exchangeable_semantics:
+  repeated_bootstrap_copies_of_same_original_row_are_interchangeable: true
+  action_representation: integer_quantity_per_original_row
+  capacity: bootstrap_multiplicity_of_original_row
+  total_quantity: exact_replicate_K
+  champion_overlap: sum_i min(q_i, champion_quantity_i)
+  nominal_total: sum_i q_i * baseline_point_score_i
+  lexicographic_rule: >
+    After robust-band, overlap and nominal constraints are fixed, maximize the
+    selected quantity at the lowest available baseline rank, then the next rank,
+    and continue recursively. Copy labels within one original row have no
+    scientific identity and are not used.
+
+exact_residual_solver:
+  robust_band_identity: >
+    W(q) >= W_star - tolerance iff there exists a frozen downside-width
+    breakpoint theta for which the additive dual score satisfies the same
+    robust-band lower bound.
+  theta_set: "{0} union unique downside widths present in the replicate"
+  per_theta_primary_total: >
+    Select exact-K units with largest adjusted scores
+    a_i(theta)=b_i-max(d_i-theta,0), respecting bootstrap multiplicities,
+    then subtract rho*K*theta.
+  boundary_reduction: >
+    At a fixed theta let M be the unrestricted exact-K adjusted-score total,
+    T the robust-band adjusted-score requirement, slack=M-T, and c the Kth
+    adjusted-score cutoff. Any unit with score greater than c+slack is forced
+    selected; any unit with score less than c-slack is forced unselected.
+    Only the conservative boundary band is sent to the residual integer solver.
+  residual_variables: >
+    For each boundary original row, split integer quantity into champion-copy
+    capacity and non-champion-copy capacity. This exactly linearizes overlap.
+  residual_constraints:
+    - exact_remaining_cardinality
+    - fixed_theta_adjusted_score_at_least_robust_band_requirement
+    - original_row_capacity
+  hierarchy_solver:
+    overlap: exact_integer_maximization
+    nominal: exact_integer_maximization_conditional_on_global_overlap
+    lexicographic: sequential_exact_integer_feasibility_by_ascending_baseline_rank
+  global_theta_rule: >
+    Apply each hierarchy level over the union of all theta witnesses. A final
+    quantity vector must reproduce the robust band directly under the frozen
+    robust-value adapter.
+
+numerical_safety:
+  boundary_reduction_is_conservative: true
+  rule: >
+    Numerical padding may retain extra boundary variables but may never force a
+    potentially feasible variable out of the residual solver.
+  failure_policy: >
+    Any solver non-optimality, infeasibility inconsistency, cardinality mismatch,
+    robust-band mismatch, or hierarchy mismatch aborts the bootstrap. No
+    replicate is dropped and no parameter is retuned.
+
+claim_boundary:
+  role: computational_amendment_only
+  point_promotion_rule_changed: false
+  bootstrap_inferential_role_changed: false
