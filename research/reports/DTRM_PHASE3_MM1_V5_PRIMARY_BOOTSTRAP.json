@@ -1,0 +1,63 @@
+{
+  "stage": "DTRM_PHASE3_MM1_V5_PRIMARY_BOOTSTRAP",
+  "status": "primary_bootstrap_complete_pending_commit",
+  "method": "news_id_cluster_bootstrap",
+  "replicates": 10000,
+  "random_seed": 20260827,
+  "confidence_level": 0.95,
+  "interval": "percentile",
+  "quantile_method": "linear",
+  "implementation": "exchangeable_integer_quantities_exact_residual_tie_hierarchy",
+  "resampling": {
+    "unit": "news_id",
+    "draw_count": 1510,
+    "sampling": "uniform_with_replacement",
+    "include_all_rows_per_cluster_draw": true,
+    "repeated_draws_duplicate_all_cluster_rows": true,
+    "policy_recomputation_inside_each_replicate": true,
+    "recompute_n_and_K": true,
+    "rerun_exact_frozen_MM1_optimizer": true
+  },
+  "provenance": {
+    "decision_manifest_sha256": "eb86fcdea5ea345fa4f839c9722053ab15ab639477f878c03c2e2242c0cee9ca",
+    "point_result_sha256": "631e82ad5e9f5a86081d9c7751ea0f96dfdf4ee727fdcf5ee8a431e8dfb793fc",
+    "signals_sha256": "221b39ab8f492a8698cecd3f48ae2bc27b22b6d4d1ef85b5aae5628b7a8acf20",
+    "target_model_sha256": "baaac7ced5b29b6afc2eede1ed3293022261e5380989e14ddfe86a791c8af749",
+    "bootstrap_solver_amendment_sha256": "9db51464f3ddf9ce7133e55d08aa6bd8fb166f4071460670f377d7a2db3d7966",
+    "bootstrap_tie_amendment_sha256": "58688a41c21281dbe0d7a92290f0c3b376ba6222f107533a2fce7e563ad4e684"
+  },
+  "observed": {
+    "rows": 10745,
+    "news_id_clusters": 1510,
+    "point_delta_topk_mean_target_model_vs_phase2": 0.057248659128430725,
+    "point_delta_topk_hit_rate": 0.05493482309124764
+  },
+  "bootstrap": {
+    "infeasible_replicates": 0,
+    "zero_infeasible_required_for_confirmatory_CI": true,
+    "delta_topk_mean_target_model_vs_phase2_ci95": [
+      0.04347436500585557,
+      0.07485787854304315
+    ],
+    "delta_topk_hit_rate_ci95": [
+      0.0244122965641953,
+      0.10027861679715344
+    ],
+    "hierarchy_counts": {
+      "exact_exchangeable_tie_hierarchy": 5101,
+      "unique_primary_band": 4899
+    },
+    "evidence_label": "PRIMARY_NEWS_CLUSTER_CI_SUPPORTS_POSITIVE_INCREMENT"
+  },
+  "distributions": {
+    "path": "research/local_data/phase3_mm1_v5_primary_bootstrap_distributions.npz",
+    "sha256": "5b4501dd74a32f8f44056d374b3afb0af04fbe9ba3f9820963dc24929749422e"
+  },
+  "governance": {
+    "rho_retuned": false,
+    "threshold_retuned": false,
+    "V5_policy_changed": false,
+    "promotion_role": "supportive_not_required_for_point_promotion",
+    "V6_policy_change_permitted_from_V5": false
+  }
+}
