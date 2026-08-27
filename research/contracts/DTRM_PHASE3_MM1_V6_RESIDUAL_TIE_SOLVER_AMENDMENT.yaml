@@ -1,0 +1,144 @@
+stage:
+  id: DTRM_PHASE3_MM1_V6_RESIDUAL_TIE_SOLVER_AMENDMENT
+  phase: 3
+  experiment: MM1
+  cohort: V6
+  component: exact_residual_tie_solver_scaling_amendment
+  status: frozen_before_V6_decision_manifest
+  date: 2026-08-27
+  parent_solver_amendment: DTRM_PHASE3_MM1_SOLVER_AMENDMENT_V5
+  parent_evaluation_contract: DTRM_PHASE3_MM1_EVALUATION_CONTRACT
+
+trigger:
+  trigger_is_outcome_blind: true
+  event: first_V6_exante_decision_freeze_execution
+  observation_used: residual_tie_solver_did_not_complete_operationally
+  signals_artifact_written_before_interrupt: true
+  signals_values_used_to_design_amendment: false
+  decision_manifest_existed_at_amendment: false
+  V6_target_model_accessed: false
+  V6_realized_forward_returns_accessed: false
+  V6_MM1_vs_phase2_realized_comparison_accessed: false
+  V5_realized_results_used_to_change_policy: false
+  reason: >
+    The frozen finite-threshold primary solver completed far enough for the V6
+    runner to enter the residual tie path, after which the original global
+    zero-gap HiGHS hierarchy did not complete operationally. The process was
+    interrupted before optimize_mm1 returned and before a V6 decision manifest
+    existed. No V6 outcome was available or inspected. Relaxing exactness,
+    changing the tolerance, reducing the candidate universe, or accepting an
+    incumbent would alter the frozen policy, so only the computational route
+    for the already-frozen residual tie hierarchy is amended.
+
+scientific_policy_unchanged:
+  action_set: exact_K_subsets_of_phase2_eligible_pool
+  K_rule: "K_H = int(n_H * 0.10)"
+  rho: 0.4378501384944031
+  uncertainty_family: frozen_MM1_budgeted_downside
+  primary_objective: maximize_own_worst_case_value_W_H
+  phase2_champion: unchanged
+  champion_fallback_rule: unchanged
+  robust_value_tolerance: 1.0e-12
+  tie_hierarchy:
+    - maximum_overlap_with_phase2_champion
+    - maximum_nominal_mean
+    - lexicographically_smallest_sorted_baseline_rank_tuple
+  baseline_model: unchanged
+  p10_model: unchanged
+  calibration_offset: unchanged
+  p10_threshold: unchanged
+  candidate_rows: frozen_V6_hash_bound
+  feature_matrix: frozen_V6_hash_bound
+  outcome_inputs: forbidden
+  rho_retuning: forbidden
+  threshold_retuning: forbidden
+  model_retraining: forbidden
+  V5_driven_policy_change: forbidden
+
+exact_residual_reformulation:
+  primary_solver: frozen_V5_finite_theta_threshold_solver
+  primary_robust_band: "W_H(S) >= W_star - 1e-12"
+  theta_witness_identity: >
+    Membership in the primary robust band is equivalent to existence of a
+    frozen downside-width breakpoint theta at which the exact-K additive score
+    satisfies the corresponding dual lower bound. The witness set is
+    theta in {0} union the distinct eligible downside widths.
+  per_theta_adjusted_score: >
+    a_i(theta) = b_i - max(d_i - theta, 0), with budget term rho*K_H*theta.
+  boundary_reduction: >
+    For a surviving theta witness, let M be the unrestricted exact-K adjusted
+    total, T the robust-band adjusted requirement, slack=M-T, and c the Kth
+    adjusted-score cutoff. Rows with adjusted score strictly greater than
+    c+slack are forced selected; rows strictly less than c-slack are forced
+    unselected. Only a conservative numerical boundary around the cutoff is
+    passed to the residual exact solver.
+  unit_capacity_semantics: >
+    V6 has one scientific identity per candidate row. Each residual decision
+    variable is binary with capacity one. Champion overlap is therefore the
+    sum of selected residual rows that belong to the frozen Phase-2 champion.
+  hierarchy_over_union_of_theta_witnesses:
+    level_2_overlap: exact_maximum_over_all_surviving_theta_witnesses
+    level_3_nominal: exact_maximum_conditional_on_global_overlap
+    level_4_lexicographic: exact_sequential_feasibility_by_ascending_baseline_rank
+  authoritative_validation: >
+    The final action must contain exactly K_H distinct Phase-2-eligible rows and
+    must be re-evaluated by the unchanged robust_value_for_selection adapter.
+    It must remain inside the frozen 1e-12 robust band and reproduce the frozen
+    overlap and nominal hierarchy levels.
+
+numerical_safety:
+  boundary_numerical_padding: conservative_only
+  mip_rel_gap_for_reduced_residual_problems: 0.0
+  heuristic_tie_break: forbidden
+  incumbent_acceptance: forbidden
+  time_limit_acceptance: forbidden
+  failure_policy: >
+    Any non-optimal residual solve, infeasibility inconsistency, cardinality
+    mismatch, eligibility violation, robust-band mismatch, overlap mismatch,
+    nominal mismatch, or lexicographic inconsistency aborts the V6 decision.
+    No row, parameter, tolerance, or policy component may be altered in response.
+
+implementation_boundary:
+  central_frozen_policy_files_changed: false
+  rule: >
+    Do not modify the byte-frozen V5 MM0 state, robust-value adapter, or primary
+    optimizer implementation. Implement a V6 decision wrapper that invokes the
+    unchanged finite-threshold primary logic and uses the exact reduced residual
+    hierarchy only when the frozen primary-band uniqueness certificate fails.
+  frozen_V5_policy_blobs_remain_authoritative: true
+
+validation_required_before_V6_decision_rerun:
+  - reduced_residual_matches_original_global_MILP_on_small_tied_unit_capacity_problems
+  - champion_fallback_is_unchanged
+  - unique_primary_band_path_is_unchanged
+  - residual_hierarchy_preserves_exact_K_and_phase2_eligibility
+  - residual_hierarchy_preserves_overlap_then_nominal_then_lex_order
+  - deterministic_repeatability
+  - V6_frozen_input_hashes_remain_unchanged
+  - V6_outcome_firewall_remains_green
+
+information_firewall:
+  permitted:
+    - frozen_V6_candidate_rows
+    - frozen_V6_feature_matrix
+    - frozen_V6_exante_signals
+    - baseline_point_score
+    - calibrated_p10
+    - phase2_guardrail_pass
+    - baseline_rank
+    - frozen_rho
+    - frozen_K_H
+  forbidden:
+    - V6_target_model
+    - V6_realized_forward_returns
+    - V6_future_price_path_as_decision_input
+    - V6_realized_metrics
+    - history_or_transformer_features
+    - any_result_driven_policy_change
+
+governance:
+  role: computational_amendment_only
+  V6_replication_policy_changed: false
+  V6_promotion_or_replication_rule_changed: false
+  realized_evaluation_before_2026_09_04: forbidden
+  next_permitted_step: implement_and_test_exact_reduced_residual_V6_decision_wrapper
