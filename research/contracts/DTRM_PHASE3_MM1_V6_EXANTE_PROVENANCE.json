@@ -1,0 +1,105 @@
+{
+  "stage": "DTRM_PHASE3_MM1_V6_EXANTE_PROVENANCE",
+  "status": "frozen_before_mm1_decision",
+  "purpose": "Bind the prospective Phase-3 MM1 V6 temporal replication decision to one concrete outcome-blind source snapshot and one concrete pair of ex-ante artifacts before the MM1 optimizer is executed.",
+  "frozen_at_research_date": "2026-08-27",
+  "phase3_branch": "research/phase3-minmax-contract",
+  "builder_source_head_before_provenance_commit": "31a791132cfdad4c88e7412e85356ffb1a439434",
+  "v6_window": {
+    "start": "2026-06-26T00:00:00+00:00",
+    "end": "2026-07-06T23:59:59+00:00"
+  },
+  "source_snapshot": {
+    "database": "trumpMinMax",
+    "collection": "trumpNews",
+    "projected_fields": [
+      "_id",
+      "date",
+      "text",
+      "matched_tickers"
+    ],
+    "raw_documents": 1671,
+    "canonical_source_sha256": "bb23c650381cb535c5bf94ab10c86acfceec01073dd0435c671b09e802cbd80d"
+  },
+  "cohort": {
+    "role": "prospective_temporal_replication",
+    "frozen_phase2_universe_tickers": 173,
+    "unique_news": 1671,
+    "pair_rows": 11922,
+    "canonical_tickers": 166,
+    "duplicate_pairs": 0
+  },
+  "features": {
+    "dimensions": 390,
+    "dtype": "float32",
+    "layout": "384_sbert_plus_5_legacy_text_plus_1_beta_pre",
+    "sbert_model": "all-MiniLM-L6-v2",
+    "sbert_dimensions": 384,
+    "sbert_normalize": true,
+    "sbert_max_chars": 1600,
+    "sentence_transformers_version": "5.7.0",
+    "text_feature_count": 5,
+    "beta_feature_count": 1,
+    "ret_spy_evt_included": false
+  },
+  "beta_pre": {
+    "lookback": 252,
+    "min_observations": 60,
+    "tolerance_days": 20,
+    "information_set": "prices_on_or_before_each_event_date_only",
+    "post_event_prices_passed_to_beta": false,
+    "missing_or_imputed": 0,
+    "price_snapshot_loader": "run_exante_baseline_v0.load_exante_price_cache"
+  },
+  "artifacts": {
+    "candidate_rows": {
+      "path": "research/local_data/phase3_mm1_v6_candidate_rows_exante.pkl",
+      "sha256": "68afbcec9c4c9ae7d7cacf10cc1aef48c0087a907058f8208bcd8bc3b0724c0e"
+    },
+    "feature_matrix": {
+      "path": "research/local_data/phase3_mm1_v6_features_exante.npy",
+      "shape": [11922, 390],
+      "sha256": "32267bbc4e974d5cf715133b58771274613ca7917db31fb6b9b3ad6025337bb2"
+    },
+    "build_summary": {
+      "path": "research/local_data/phase3_mm1_v6_exante_build_summary.json",
+      "role": "local outcome-blind build record; values copied into this tracked provenance freeze"
+    }
+  },
+  "independent_local_hash_check": {
+    "candidate_rows_sha256_matches_build_summary": true,
+    "feature_matrix_sha256_matches_build_summary": true,
+    "verification_command": "shasum -a 256 <candidate_rows> <feature_matrix>"
+  },
+  "information_firewall": {
+    "outcome_firewall_passed_at_build": true,
+    "target_model_accessed": false,
+    "forward_target_computed": false,
+    "realized_forward_returns_accessed": false,
+    "mm1_optimizer_executed_before_this_provenance_freeze": false,
+    "V5_results_used_to_change_V6_policy": false
+  },
+  "governance": {
+    "artifact_overwrite_after_freeze": "forbidden",
+    "source_snapshot_substitution_after_freeze": "forbidden",
+    "feature_reencoding_after_freeze": "forbidden_for_V6_temporal_replication_decision",
+    "beta_reconstruction_change_after_freeze": "forbidden",
+    "cohort_row_drop_or_addition_after_freeze": "forbidden",
+    "rho_retuned": false,
+    "threshold_retuned": false,
+    "model_retrained_for_V6": false,
+    "V6_policy_changed_from_frozen_V5": false,
+    "evaluation_before_2026_09_04": "forbidden",
+    "next_permitted_step": "execute the V6 ex-ante MM1 decision-freeze runner against exactly these hashes",
+    "still_forbidden": [
+      "V6 target_model access",
+      "V6 realized forward-return evaluation",
+      "rho retuning",
+      "uncertainty-set changes",
+      "objective changes",
+      "threshold changes",
+      "history or Transformer features",
+      "any V5-driven policy change before V6 evaluation"
+    ]
+  }
+}
