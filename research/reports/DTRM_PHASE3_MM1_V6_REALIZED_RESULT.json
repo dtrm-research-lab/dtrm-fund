@@ -1,0 +1,61 @@
+{
+  "stage": "DTRM_PHASE3_MM1_V6_REALIZED_EVALUATION",
+  "status": "realized_point_evaluation_complete_pending_commit",
+  "role": "prospective_temporal_replication",
+  "decision_manifest": {
+    "path": "research/contracts/DTRM_PHASE3_MM1_V6_DECISION_MANIFEST.json",
+    "sha256": "6e75b65c3f600aa5055d8325ca4f9d33e3b8c679cab75d120c27eb3ebf9f5a5f"
+  },
+  "price_provenance": {
+    "path": "research/contracts/DTRM_PHASE3_MM1_V6_REALIZED_PRICE_PROVENANCE.json",
+    "sha256": "eeb23de15e23f197359d834874168154ed8d7efd8dcdcd0113cace5635868103",
+    "price_snapshot_sha256": "014d64946709c6f52504abb4fdc3f9c498f81d47e03472e78bbbcdd909a3308a"
+  },
+  "target_construction": {
+    "formula": "stock_forward_return - beta_pre_frozen * SPY_forward_return",
+    "horizon_days": 60,
+    "price_tolerance_days": 5,
+    "beta_source": "frozen V6 feature matrix column 389",
+    "beta_precision": "float32 feature value promoted to float64 for arithmetic",
+    "preprocessing": "frozen Phase2 TRAIN-only 1pct/99pct clipping plus TRAIN ticker de-meaning",
+    "clip_lower": -0.22634289228142143,
+    "clip_upper": 0.4171376705235394,
+    "train_ticker_means": 171,
+    "unseen_V6_tickers": [
+      "ELVR",
+      "PH"
+    ],
+    "unseen_ticker_fallback_mean": 0.0
+  },
+  "target_artifact": {
+    "path": "research/local_data/phase3_mm1_v6_target_model.pkl",
+    "sha256": "f63d4fd9e0adc6eddfc865daa20bd4d79cb84b2d2c6019763392954d2a21a07b"
+  },
+  "row_integrity": {
+    "signal_rows": 11922,
+    "target_rows": 11922,
+    "complete_one_to_one": true,
+    "rows_dropped_after_outcome_access": 0
+  },
+  "point_evaluation": {
+    "classification": "PROMOTED_POINT",
+    "promoted": true,
+    "same_action": false,
+    "phase2_value": -0.1018182919063799,
+    "MM1_value": 0.008832130386594108,
+    "delta_topk_mean_target_model_vs_phase2": 0.11065042229297402,
+    "phase2_hit_rate": 0.4186241610738255,
+    "MM1_hit_rate": 0.5771812080536913,
+    "delta_topk_hit_rate": 0.15855704697986583,
+    "K_H": 1192
+  },
+  "governance": {
+    "MM1_reoptimized": false,
+    "rho_retuned": false,
+    "threshold_retuned": false,
+    "frozen_actions_changed": false,
+    "V5_results_used_to_change_V6_policy": false,
+    "bootstrap_inference_run": false,
+    "claim_temporal_replication_requires_V6_evidence_review": true
+  }
+}
