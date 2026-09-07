@@ -1,0 +1,210 @@
+{
+  "counts_sha256": "292815a104dd843fc453f6240fcc6bc99d390efa786198472a05be09bc704855",
+  "engineering_status": "PASS_METADATA_COUNTERS_SCHEMA",
+  "execution_mode": "synthetic",
+  "fields": [
+    {
+      "field": "_id",
+      "types": [
+        {
+          "count": 3,
+          "type": "objectId"
+        }
+      ]
+    },
+    {
+      "field": "date",
+      "types": [
+        {
+          "count": 1,
+          "type": "date"
+        },
+        {
+          "count": 2,
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "field": "matched_tickers",
+      "types": [
+        {
+          "count": 2,
+          "type": "array"
+        },
+        {
+          "count": 1,
+          "type": "null"
+        }
+      ]
+    },
+    {
+      "field": "published_at",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "publishedDate",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "first_seen_at",
+      "types": [
+        {
+          "count": 2,
+          "type": "missing"
+        },
+        {
+          "count": 1,
+          "type": "null"
+        }
+      ]
+    },
+    {
+      "field": "firstSeenAt",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "version_observed_at",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "observed_at",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "ingested_at",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "fetched_at",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "created_at",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "updated_at",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "version_id",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "supersedes_version_id",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "content_sha256",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "linked_at",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "mapping_version",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "field": "asset_links",
+      "types": [
+        {
+          "count": 3,
+          "type": "missing"
+        }
+      ]
+    }
+  ],
+  "graph": "phase4_source_metadata_inventory_v0",
+  "nested_metadata_inspected": false,
+  "outcome_access_permitted": false,
+  "pipeline_sha256": "b95f1ffbbfd8164d304756b3572ba5fcdf859509affb0f41bf9c977ca88ef3bb",
+  "sampled_documents": 3,
+  "schema_version": "dtrm.phase4.source_metadata_inventory.v0",
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "selection": {
+    "exhaustiveness": "not_established",
+    "limit": 1000,
+    "representative": false,
+    "sort": "ascending_id_not_event_time"
+  },
+  "snapshot_verified": false,
+  "source": {
+    "collection": "trumpNews",
+    "database": "trumpMinMax"
+  },
+  "timestamp_semantics_verified": false,
+  "training_permitted": false
+}

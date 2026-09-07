@@ -64,3 +64,12 @@ The user supplied the following terminal output from their local Mac validation:
 - Verified the merged tree and all 157 inherited files plus the original Stage-0 contract. Phase III remains frozen; human approval closes this ontology increment's integration gate only.
 - Opened `feature/phase4-source-metadata-audit-v0` from the merge. Registered `DTRM_PHASE4_SOURCE_METADATA_AUDIT_V0.md` before its implementation or any live source query.
 - The next operation is a bounded type/presence inventory of candidate metadata fields in `trumpMinMax.trumpNews`; no values or outcomes are returned. Live source access remains to be executed locally by the user. The inventory cannot authenticate historical availability or close Stage 1 by itself.
+
+## 2026-09-07 — Source metadata inventory implementation and synthetic validation
+
+- Registration commit: `c6bdb927f16aea1919b4c5c219c9c21dca544147`, before implementation. Added pure immutable counters/reporting, the fixed read aggregation, an optional local Mongo adapter, and a CLI with separate synthetic/live modes and no-overwrite behavior.
+- Query scope is fixed at 19 candidate top-level fields, at most 1,000 records in ascending `_id` order, returning only BSON type/count aggregates. Missing/null remain distinct, input counts are reconciled, credentials and driver messages are excluded from output, and the client closes on failures.
+- Added 32 synthetic/transport/CLI cases. Full suite: `375 passed in 3.23s` (343 prior plus 32 new). Ruff passed and strict mypy passed for eight source files. Tests exercise a fake transport, not an actual Mongo server.
+- The synthetic metadata inventory reproduces byte for byte against `DTRM_PHASE4_SOURCE_METADATA_SYNTHETIC_V0.json`; the original ontology evidence also reproduces unchanged. Wheel build passed in a disposable staged-tree archive. All 157 inherited files and the original Stage-0 contract passed preservation before and after validation.
+- Updated Phase-IV CI to cover the new code/tests and synthetic comparison. Added `docs/phase4/source-metadata-audit.md` with local execution instructions and precise limits of the counters. Current-head PR checks remain the authoritative remote gate.
+- No live source query, source values, model fitting, sequence construction, MM1 run, outcome access, or scientific promotion occurred. The actual metadata report and source/decision-clock bindings remain pending; scientific status stays `BLOCKED_SOURCE_AUDIT`.
