@@ -31,15 +31,19 @@ jobs:
       - name: Check inherited source and original contract
         run: python research/experiments/validate_phase4_source_preservation.py
       - name: Lint Phase IV
-        run: python -m ruff check --select E4,E7,E9,F,I src/dtrm/phase4 tests/test_phase4_event_ontology.py research/experiments/run_phase4_ontology_review.py research/experiments/validate_phase4_source_preservation.py
+        run: python -m ruff check --select E4,E7,E9,F,I src/dtrm/phase4 tests/test_phase4_*.py research/experiments/run_phase4_*.py research/experiments/validate_phase4_source_preservation.py
       - name: Type check Phase IV
-        run: python -m mypy --strict src/dtrm/phase4 research/experiments/run_phase4_ontology_review.py research/experiments/validate_phase4_source_preservation.py
+        run: python -m mypy --strict src/dtrm/phase4 research/experiments/run_phase4_*.py research/experiments/validate_phase4_source_preservation.py
       - name: Deterministic tests and inherited regressions
         run: python -m pytest -q
       - name: Reproduce synthetic ontology review
         run: |
           python research/experiments/run_phase4_ontology_review.py --input tests/fixtures/phase4_event_batch_v0.json --output /tmp/phase4-ontology-review.json
           cmp /tmp/phase4-ontology-review.json research/reports/DTRM_PHASE4_ONTOLOGY_SYNTHETIC_REVIEW_V0.json
+      - name: Reproduce synthetic source metadata inventory
+        run: |
+          python research/experiments/run_phase4_source_metadata_audit.py --synthetic-input tests/fixtures/phase4_source_metadata_aggregate_v0.json --output /tmp/phase4-source-metadata.json
+          cmp /tmp/phase4-source-metadata.json research/reports/DTRM_PHASE4_SOURCE_METADATA_SYNTHETIC_V0.json
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)
