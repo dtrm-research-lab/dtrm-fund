@@ -186,11 +186,16 @@ def validate_revision_chains(batch: EventBatch) -> EventBatch:
         first_seen = {e.first_seen_at for e in versions.values() if e.first_seen_at is not None}
         if len(first_seen) > 1:
             raise OntologyError("inconsistent logical first_seen_at across versions")
+        logical_first_seen = next(iter(first_seen), None)
         roots = [e.version_id for e in versions.values() if e.supersedes_version_id is None]
         if len(roots) != 1:
             raise OntologyError("revision chain must have exactly one root")
         successor: dict[str, str] = {}
         for event in versions.values():
+            if (logical_first_seen is not None
+                    and event.version_observed_at is not None
+                    and event.version_observed_at < logical_first_seen):
+                raise OntologyError("version observation precedes logical first observation")
             parent_id = event.supersedes_version_id
             if parent_id is None:
                 continue
@@ -198,18 +203,19 @@ def validate_revision_chains(batch: EventBatch) -> EventBatch:
                 raise OntologyError("missing predecessor in complete revision batch")
             if parent_id in successor:
                 raise OntologyError("forked revision chain")
-            parent = versions[parent_id]
-            if (parent.version_observed_at is not None
-                    and event.version_observed_at is not None
-                    and event.version_observed_at < parent.version_observed_at):
-                raise OntologyError("revision observation times move backwards")
             successor[parent_id] = event.version_id
         visited: set[str] = set()
         current: str | None = roots[0]
+        last_known_observed: datetime | None = None
         while current is not None:
             if current in visited:
                 raise OntologyError("cyclic revision chain")
             visited.add(current)
+            observed = versions[current].version_observed_at
+            if observed is not None:
+                if last_known_observed is not None and observed < last_known_observed:
+                    raise OntologyError("revision observation times move backwards")
+                last_known_observed = observed
             current = successor.get(current)
         if len(visited) != len(versions):
             raise OntologyError("disconnected or cyclic revision chain")

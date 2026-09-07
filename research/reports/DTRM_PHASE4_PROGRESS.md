@@ -45,3 +45,14 @@ The user supplied the following terminal output from their local Mac validation:
 - The final `git diff --exit-code` and `git status --short` produced no output before `PASS_LOCAL_PHASE4`.
 - The local engineering validation is complete; the evidence gaps noted for the earlier excerpt are resolved. This append changes only the ledger and does not require the user to repeat the same local checks. Current-head CI remains the remote gate for this documentation update.
 - Human review before integration remains pending under `AGENTS.md`. Real-source audit, decision-clock binding, and all subsequent scientific stages remain pending.
+
+## 2026-09-07 — Review follow-up: incomplete revision timestamps
+
+- PR #1 review threads `PRRT_kwDOT2PA1c6f3uUG` and `PRRT_kwDOT2PA1c6f3uUK` identified two implementation gaps against the existing ontology's clock semantics. No contract, scientific hypothesis, frozen source, or fixture was changed.
+- The sole known logical `first_seen_at` now constrains every version observation in its logical record, including versions that omit that field. Validation does not fill missing metadata.
+- Revision traversal carries the last known observation time across unknown intermediate versions. It rejects a later revision whose known time predates a known ancestor; equal times and unknown metadata remain allowed. Traversal follows predecessor links rather than lexical identifiers or input order.
+- Added eight parameterized regression cases covering contradictory/consistent logical first-seen metadata, reordered input, and backwards/equal/forward/unknown timestamps across an unknown revision with nonchronological lexical IDs.
+- Before the fix, the eight new cases produced three failures and five passes, reproducing both review findings. After the fix, the full suite passed: `343 passed in 3.37s` (291 inherited plus 52 Phase-IV cases).
+- Scoped Ruff and strict mypy passed; the original synthetic review reproduced byte for byte; the wheel built successfully from a disposable staged-tree archive. Source preservation passed before and after the build for all 157 inherited files and the original Stage-0 contract.
+- Ancestry thread `PRRT_kwDOT2PA1c6f3uUA` was checked against the actual feature branch: `git merge-base --is-ancestor` succeeds for both preregistration `46a049021d96b84725e2636c9d24e5d5de8c1d18` and implementation `5046fbcc24b4a00300ad33be97d37b92b7bfe135` at parent `50eafa63e0cd779ad6d7e0843993c99a4176e7c0`. The implementation's parent is the preregistration, whose parent is the frozen source. The branch retains the required chronology; integration must preserve it rather than squash it.
+- The user's 335-test Mac evidence remains valid for its explicitly recorded commit. The 343-test result is agent-run evidence for this subsequent fix; current-head CI is the remote acceptance gate. Human review before integration and `BLOCKED_SOURCE_AUDIT` remain in force.

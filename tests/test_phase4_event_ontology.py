@@ -164,6 +164,51 @@ def test_version_before_logical_first_observation_is_rejected(batch):
         run_ontology_review(batch)
 
 
+@pytest.mark.parametrize("reverse_input", [False, True])
+@pytest.mark.parametrize("logical_seen,valid", [
+    ("2026-07-07T10:00:00Z", True), ("2026-07-07T10:02:00Z", False),
+])
+def test_logical_first_seen_constrains_versions_that_omit_it(
+        batch, reverse_input, logical_seen, valid):
+    first, revision = batch["events"][:2]
+    first["first_seen_at"] = None
+    revision["first_seen_at"] = logical_seen
+    if reverse_input:
+        batch["events"].reverse()
+    if not valid:
+        with pytest.raises(GraphFailure, match="precedes logical") as error:
+            run_ontology_review(batch)
+        assert error.value.node == "validate_revision_chains"
+    else:
+        result = run_ontology_review(batch).to_dict()
+        assert result["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+        assert normalize_observations(batch).events[0].first_seen_at is None
+
+
+@pytest.mark.parametrize("tip_observed,valid", [
+    ("2026-07-07T10:00:00Z", False), ("2026-07-07T10:01:00Z", True),
+    ("2026-07-08T09:00:00Z", True), (None, True),
+])
+def test_unknown_revision_cannot_hide_backwards_known_times(batch, tip_observed, valid):
+    first, middle = batch["events"][:2]
+    first["first_seen_at"] = middle["first_seen_at"] = None
+    middle["version_observed_at"] = None
+    tip = deepcopy(middle)
+    # Scientific chronology must follow predecessor links, not lexical IDs or input order.
+    tip["version_id"] = "a-tip"
+    tip["supersedes_version_id"] = middle["version_id"]
+    tip["version_observed_at"] = tip_observed
+    batch["events"].insert(0, tip)
+    if not valid:
+        with pytest.raises(GraphFailure, match="move backwards") as error:
+            run_ontology_review(batch)
+        assert error.value.node == "validate_revision_chains"
+    else:
+        result = run_ontology_review(batch).to_dict()
+        assert result["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+        assert middle["version_observed_at"] is None
+
+
 def test_missing_link_timestamp_remains_unknown_even_with_known_version(batch):
     batch["events"][0]["asset_links"][0]["linked_at"] = None
     assert run_ontology_review(batch).links[0].available_at is None
