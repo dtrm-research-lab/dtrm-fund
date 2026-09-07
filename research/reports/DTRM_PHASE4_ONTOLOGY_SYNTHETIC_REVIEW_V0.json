@@ -1,0 +1,49 @@
+{
+  "asset_link_count": 4,
+  "canonical_batch_sha256": "2eb42a30dbef729cbf66c9c98acde7a087bcd5556618b6556b0705413cdf14cb",
+  "completed_nodes": [
+    "normalize_observations",
+    "validate_revision_chains",
+    "assess_metadata_completeness"
+  ],
+  "dataset_role": "synthetic",
+  "engineering_status": "PASS_ONTOLOGY_SCHEMA",
+  "graph": "phase4_event_ontology_v0",
+  "links": [
+    {
+      "available_at": "2026-07-07T10:02:00Z",
+      "source": "fmp_news",
+      "source_event_id": "synthetic-news-1",
+      "ticker": "AAA",
+      "version_id": "v1"
+    },
+    {
+      "available_at": "2026-07-07T10:05:00Z",
+      "source": "fmp_news",
+      "source_event_id": "synthetic-news-1",
+      "ticker": "BBB",
+      "version_id": "v1"
+    },
+    {
+      "available_at": "2026-07-08T09:00:00Z",
+      "source": "fmp_news",
+      "source_event_id": "synthetic-news-1",
+      "ticker": "AAA",
+      "version_id": "v2"
+    },
+    {
+      "available_at": null,
+      "source": "fmp_news",
+      "source_event_id": "synthetic-news-2",
+      "ticker": "CCC",
+      "version_id": "v1"
+    }
+  ],
+  "logical_event_count": 2,
+  "outcome_access_permitted": false,
+  "schema_version": "dtrm.phase4.ontology_review.v0",
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "training_permitted": false,
+  "unknown_availability_count": 1,
+  "version_count": 3
+}
