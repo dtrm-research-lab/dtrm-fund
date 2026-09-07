@@ -56,3 +56,11 @@ The user supplied the following terminal output from their local Mac validation:
 - Scoped Ruff and strict mypy passed; the original synthetic review reproduced byte for byte; the wheel built successfully from a disposable staged-tree archive. Source preservation passed before and after the build for all 157 inherited files and the original Stage-0 contract.
 - Ancestry thread `PRRT_kwDOT2PA1c6f3uUA` was checked against the actual feature branch: `git merge-base --is-ancestor` succeeds for both preregistration `46a049021d96b84725e2636c9d24e5d5de8c1d18` and implementation `5046fbcc24b4a00300ad33be97d37b92b7bfe135` at parent `50eafa63e0cd779ad6d7e0843993c99a4176e7c0`. The implementation's parent is the preregistration, whose parent is the frozen source. The branch retains the required chronology; integration must preserve it rather than squash it.
 - The user's 335-test Mac evidence remains valid for its explicitly recorded commit. The 343-test result is agent-run evidence for this subsequent fix; current-head CI is the remote acceptance gate. Human review before integration and `BLOCKED_SOURCE_AUDIT` remain in force.
+
+## 2026-09-07 — Human approval, integration, and next source-audit contract
+
+- User explicitly authorized: "Integra y continua con el proceso".
+- Merged PR #1 into `research/phase4-temporal-state` as `c6f07549ba733866809aa05156365611e2002b62`, preserving both parents and preregistration ancestry. The accepted feature head is `e502f892258df273d4207d606c176bcb039d4be1`; all four push/PR workflows passed and the three review threads were resolved before merge.
+- Verified the merged tree and all 157 inherited files plus the original Stage-0 contract. Phase III remains frozen; human approval closes this ontology increment's integration gate only.
+- Opened `feature/phase4-source-metadata-audit-v0` from the merge. Registered `DTRM_PHASE4_SOURCE_METADATA_AUDIT_V0.md` before its implementation or any live source query.
+- The next operation is a bounded type/presence inventory of candidate metadata fields in `trumpMinMax.trumpNews`; no values or outcomes are returned. Live source access remains to be executed locally by the user. The inventory cannot authenticate historical availability or close Stage 1 by itself.
