@@ -1,0 +1,12 @@
+{
+  "schema_version": "dtrm.phase4.source_binding.v0",
+  "repository": "dtrm-research-lab/dtrm-fund",
+  "inherited_commit": "a853d5d3f2d6c93a3483a0126ab3475b02960bfc",
+  "inherited_tree": "fae65d7457225dff1601eaf43fb0ef2b2d4b2c19",
+  "preservation_scope": "every_tracked_file_in_inherited_commit",
+  "stage0_contract_sha256": "1ec55a67aaa89289e7f167564fb9788fde136f6decc8f5dbfebc54e7d6009f03",
+  "large_model_and_data_artifacts": "not_materialized_or_revalidated_in_this_increment",
+  "source_availability_audit": "pending",
+  "training_permitted": false,
+  "outcome_access_permitted": false
+}
