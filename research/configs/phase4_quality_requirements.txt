@@ -1,0 +1,5 @@
+# Quality tools validated for this increment; scientific runtime remains inherited.
+pytest==9.1.1
+ruff==0.16.6
+mypy==2.3.1
+build==1.6.0

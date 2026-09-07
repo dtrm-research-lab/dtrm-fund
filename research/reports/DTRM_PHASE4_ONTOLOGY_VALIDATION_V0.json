@@ -1,0 +1,56 @@
+{
+  "checks": {
+    "baseline_tests": {
+      "passed": 291
+    },
+    "combined_tests": {
+      "passed": 335
+    },
+    "final_targeted_ontology_tests": {
+      "passed": 44
+    },
+    "mypy_strict": {
+      "source_files": 5,
+      "status": "PASS"
+    },
+    "ruff": "PASS",
+    "source_preservation": {
+      "inherited_files": 157,
+      "status": "PASS"
+    },
+    "synthetic_review": "PASS_WITH_UNKNOWN_AVAILABILITY_RETAINED",
+    "wheel_build": "PASS_DISPOSABLE_SOURCE_COPY"
+  },
+  "ci_evidence": "GitHub check runs on the active PR head are authoritative; not assumed by this local record",
+  "engineering_status": "PASS_LOCAL_GATES",
+  "files_sha256": {
+    "research/experiments/run_phase4_ontology_review.py": "e5d2d996a16ea7ebed55d5eb66a13535f57423b12e208605d2e7fa103f53e027",
+    "research/experiments/validate_phase4_source_preservation.py": "852f3d1b90c7ffb03ea770e1d0887dadf6f9a737d2140f1ee653536eb3a76655",
+    "research/reports/DTRM_PHASE4_ONTOLOGY_SYNTHETIC_REVIEW_V0.json": "323dcbc246e6900ce4c24c0673b2819c69ec0037458512afe5165c9a12903e61",
+    "src/dtrm/phase4/__init__.py": "a3250b89896ae2a1ce167877219befbef4206ab08ba348fe99570e7a7206e237",
+    "src/dtrm/phase4/events.py": "67e180746d0acec4f294aa544ccdf8ba6a58d7d02130ff23716a4b40cc025303",
+    "src/dtrm/phase4/ontology_graph.py": "e0614c8747f48826878b96d2b1d58b9521bee2fb690e6911fcafb3864046b586",
+    "tests/fixtures/phase4_event_batch_v0.json": "27bd52d287001751f4dc21ff301113143350d7b852d894d69d7abcd40470be8b",
+    "tests/test_phase4_event_ontology.py": "d743eb0f8b2784e5e70e43d0acdc8aa74768eb9c32bde1b2a52ac580020a637c"
+  },
+  "human_review": "pending",
+  "inherited_commit": "a853d5d3f2d6c93a3483a0126ab3475b02960bfc",
+  "outcome_access_permitted": false,
+  "preregistration_commit": "46a049021d96b84725e2636c9d24e5d5de8c1d18",
+  "remaining_gates": [
+    "actual source metadata/vintage inventory",
+    "decision clock and baseline compatibility",
+    "universe and mapping history",
+    "coverage and exposure ledger",
+    "complete preregistration and leakage firewall"
+  ],
+  "research_date": "2026-09-07",
+  "review": {
+    "independent_agent_review": false,
+    "kind": "authoring_agent_source_and_boundary_review"
+  },
+  "schema_version": "dtrm.phase4.ontology_validation.v0",
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "scope": "event ontology and synthetic validation only",
+  "training_permitted": false
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": "dtrm.phase4.event_batch.v0",
+  "dataset_role": "synthetic",
+  "events": [
+    {
+      "source": "fmp_news",
+      "source_event_id": "synthetic-news-1",
+      "version_id": "v1",
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "published_at": "2026-07-07T10:00:00Z",
+      "publication_precision": "instant",
+      "occurred_at": null,
+      "first_seen_at": "2026-07-07T10:01:00Z",
+      "version_observed_at": "2026-07-07T10:01:00Z",
+      "supersedes_version_id": null,
+      "asset_links": [
+        {"ticker": "AAA", "mapping_version": "synthetic-map-v0", "linked_at": "2026-07-07T10:02:00Z"},
+        {"ticker": "BBB", "mapping_version": "synthetic-map-v0", "linked_at": "2026-07-07T10:05:00Z"}
+      ]
+    },
+    {
+      "source": "fmp_news",
+      "source_event_id": "synthetic-news-1",
+      "version_id": "v2",
+      "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "published_at": "2026-07-07T10:00:00Z",
+      "publication_precision": "instant",
+      "occurred_at": null,
+      "first_seen_at": "2026-07-07T10:01:00Z",
+      "version_observed_at": "2026-07-08T09:00:00Z",
+      "supersedes_version_id": "v1",
+      "asset_links": [
+        {"ticker": "AAA", "mapping_version": "synthetic-map-v0", "linked_at": "2026-07-07T10:02:00Z"}
+      ]
+    },
+    {
+      "source": "fmp_news",
+      "source_event_id": "synthetic-news-2",
+      "version_id": "v1",
+      "content_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "published_at": "2026-07-07",
+      "publication_precision": "day",
+      "occurred_at": null,
+      "first_seen_at": null,
+      "version_observed_at": null,
+      "supersedes_version_id": null,
+      "asset_links": [
+        {"ticker": "CCC", "mapping_version": "synthetic-map-v0", "linked_at": null}
+      ]
+    }
+  ]
+}
