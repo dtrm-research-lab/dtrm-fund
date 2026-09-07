@@ -31,9 +31,9 @@ jobs:
       - name: Check inherited source and original contract
         run: python research/experiments/validate_phase4_source_preservation.py
       - name: Lint Phase IV
-        run: python -m ruff check --select E4,E7,E9,F,I src/dtrm/phase4 tests/test_phase4_*.py research/experiments/run_phase4_*.py research/experiments/validate_phase4_source_preservation.py
+        run: python -m ruff check --select E4,E7,E9,F,I src/dtrm/phase4 tests/test_phase4_*.py research/experiments/run_phase4_*.py research/experiments/validate_phase4_*.py
       - name: Type check Phase IV
-        run: python -m mypy --strict src/dtrm/phase4 research/experiments/run_phase4_*.py research/experiments/validate_phase4_source_preservation.py
+        run: python -m mypy --strict src/dtrm/phase4 research/experiments/run_phase4_*.py research/experiments/validate_phase4_*.py
       - name: Deterministic tests and inherited regressions
         run: python -m pytest -q
       - name: Reproduce synthetic ontology review
@@ -44,6 +44,8 @@ jobs:
         run: |
           python research/experiments/run_phase4_source_metadata_audit.py --synthetic-input tests/fixtures/phase4_source_metadata_aggregate_v0.json --output /tmp/phase4-source-metadata.json
           cmp /tmp/phase4-source-metadata.json research/reports/DTRM_PHASE4_SOURCE_METADATA_SYNTHETIC_V0.json
+      - name: Validate pinned collector lineage evidence
+        run: python research/experiments/validate_phase4_collector_lineage.py
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)
