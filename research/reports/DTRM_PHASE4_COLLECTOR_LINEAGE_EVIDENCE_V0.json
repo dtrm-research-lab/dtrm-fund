@@ -1,0 +1,429 @@
+{
+  "audit_id": "phase4_collector_lineage_audit_v0",
+  "decision": {
+    "conclusion": "The inspected collector cannot authenticate true observed-vintage history; ranking-time hashes preserve bounded recent execution evidence only.",
+    "history_construction_permitted": false,
+    "model_fitting_performed": false,
+    "next_permitted_operation": "Preregister a bounded read-only nested-raw, index, and coverage audit plus an explicit day-level decision-clock feasibility addendum.",
+    "outcome_access_permitted": false,
+    "scientific_status": "BLOCKED_SOURCE_AUDIT",
+    "training_permitted": false,
+    "true_observed_vintage_history_authenticated": false
+  },
+  "findings": [
+    {
+      "evidence": [
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 60,
+          "line_start": 54,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 2081,
+          "line_start": 2017,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F01_COLLECTOR_WRITE_SHAPE",
+      "property": "upstream, destination, and stored shape",
+      "statement": "The visible collector calls three Financial Modeling Prep news endpoints and inserts date, text, source, matched_tickers, raw, and normally dedupe_key into trumpMinMax.trumpNews.",
+      "status": "SUPPORTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 2067,
+          "line_start": 2055,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F02_OBSERVATION_CLOCK",
+      "property": "reproducible observation clock",
+      "statement": "The write path stores one date derived from provider publication fields or an unmarked local current-time fallback; it stores no collection, first-seen, or version-observed clock.",
+      "status": "CONTRADICTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 2011,
+          "line_start": 1993,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 2083,
+          "line_start": 2067,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F03_VERSION_LINEAGE",
+      "property": "immutable content vintages",
+      "statement": "The collector has insert-only intent and URL-or-text deduplication, but persists no content digest, version identity, or predecessor; its broad exception fallback may insert a changed row without dedupe_key and without linking it to an earlier version.",
+      "status": "CONTRADICTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 2066,
+          "line_start": 2051,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F04_LINK_PROVENANCE",
+      "property": "point-in-time ticker-link provenance",
+      "statement": "Ticker matches are computed during collection and stored as matched_tickers without a mapping version or link-availability time.",
+      "status": "CONTRADICTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "2bed9fad2e42ed2e04ee5603aafbbd2d7a569924",
+          "line_end": 102,
+          "line_start": 88,
+          "path": ".github/workflows/daily_model_inference.yml",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "4666c64c216f82a01e1000adce50e9101180bb7b",
+          "line_end": 40,
+          "line_start": 5,
+          "path": ".github/workflows/morning.yml",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 2172,
+          "line_start": 2118,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F05_INCREMENTAL_COVERAGE",
+      "property": "late-arrival and same-day coverage",
+      "statement": "After any stored day exists, the plan starts on the following day with no overlap. Multiple scheduled entrypoints therefore do not establish re-query coverage for late or revised items on an already represented day.",
+      "status": "CONTRADICTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "2bed9fad2e42ed2e04ee5603aafbbd2d7a569924",
+          "line_end": 102,
+          "line_start": 10,
+          "path": ".github/workflows/daily_model_inference.yml",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "4666c64c216f82a01e1000adce50e9101180bb7b",
+          "line_end": 40,
+          "line_start": 3,
+          "path": ".github/workflows/morning.yml",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "09b1267793ad20fd01474f60d3ae1b19b4150dfc",
+          "line_end": 74,
+          "line_start": 55,
+          "path": ".github/workflows/trump_score.yml",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "b39643a418a531060dd4e09a39424350f527d1fe",
+          "line_end": 216,
+          "line_start": 196,
+          "path": "agent/trump_model/run_pipeline.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F06_SCHEDULED_ENTRYPOINTS",
+      "property": "collector entrypoints",
+      "statement": "The inspected morning, daily-ranking, and manual score workflows all expose a path that runs the collector; the score-only Mongo flag does not disable collection.",
+      "status": "SUPPORTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "f5d2ca87937672e9b096cc6f3fc29d5390bdc09d",
+          "line_end": 209,
+          "line_start": 107,
+          "path": "agent/trump_model/freeze_loaded_news_evidence.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "792a8dbb4848ebe578c4658cd9c2f5c38f984586",
+          "line_end": 144,
+          "line_start": 45,
+          "path": "agent/trump_model/run_score_with_frozen_news.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "459e708055818a6fccea42e380ea6ef67cb4ecad",
+          "line_end": 51,
+          "line_start": 29,
+          "path": "src/theresistance_backend/intelligence/canonical_evidence.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F07_RANKING_TIME_FREEZE",
+      "property": "ranking-time evidence integrity",
+      "statement": "The ranking wrapper hashes ordered news identities, dates, text digests, and tickers, verifies that hash, and writes two-day and five-day candidate batches plus a manifest; append-only prefix recovery fails closed on mutation inside the sealed prefix.",
+      "status": "SUPPORTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "2bed9fad2e42ed2e04ee5603aafbbd2d7a569924",
+          "line_end": 492,
+          "line_start": 471,
+          "path": ".github/workflows/daily_model_inference.yml",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "331f261bfd4be636d3cd675ed287de6acd2dab8a",
+          "line_end": 218,
+          "line_start": 156,
+          "path": "agent/trump_model/export_daily_news_candidates.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "18fd2ad6af63de54ba46b3d03444d12f1adb247f",
+          "line_end": 230,
+          "line_start": 105,
+          "path": "agent/trump_model/freeze_daily_news_evidence.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F08_HISTORICAL_ARCHIVE",
+      "property": "historical archive availability",
+      "statement": "The daily workflow configures thirty-day artifact retention and the freeze operates on rolling two-day and five-day candidate windows; static code does not establish surviving artifacts or collection-time snapshots across the Phase IV historical period.",
+      "status": "UNRESOLVED"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "7a07384ac9c7efa70cef9c1d9682f727c2e10ac0",
+          "line_end": 73,
+          "line_start": 44,
+          "path": "src/github.js",
+          "repository": "tech-com-UA00001/DTRM_Fund_Agent_API"
+        },
+        {
+          "blob_sha": "8cc006d5a8ef12ff68b2f18b104f3e977bc043ca",
+          "line_end": 233,
+          "line_start": 203,
+          "path": "src/mcp/mcpServer.js",
+          "repository": "tech-com-UA00001/DTRM_Fund_Agent_API"
+        },
+        {
+          "blob_sha": "16e549cf43ebeb8c6f1fc1a8248eaf8b96bd4bfc",
+          "line_end": 125,
+          "line_start": 18,
+          "path": "src/routes.trumpScore.js",
+          "repository": "tech-com-UA00001/DTRM_Fund_Agent_API"
+        },
+        {
+          "blob_sha": "a1cdcd663486be2bf7dfb3a90bab13927892bd4d",
+          "line_end": 20,
+          "line_start": 1,
+          "path": "src/server.js",
+          "repository": "tech-com-UA00001/DTRM_Fund_Agent_API"
+        }
+      ],
+      "finding_id": "F09_API_BOUNDARY",
+      "property": "API provenance role",
+      "statement": "The inspected API boundary dispatches a configurable GitHub workflow, polls its run, downloads a named result artifact, and returns parsed summaries; it does not add a news observation or version-provenance record.",
+      "status": "SUPPORTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "2bed9fad2e42ed2e04ee5603aafbbd2d7a569924",
+          "line_end": 50,
+          "line_start": 27,
+          "path": ".github/workflows/daily_model_inference.yml",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "09b1267793ad20fd01474f60d3ae1b19b4150dfc",
+          "line_end": 86,
+          "line_start": 31,
+          "path": ".github/workflows/trump_score.yml",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F10_RUNTIME_DEPLOYMENT",
+      "property": "runtime and deployment history",
+      "statement": "Pinned source reveals possible workflow behavior but does not prove which commits executed historically, whether runs completed, or which artifacts and database states survived.",
+      "status": "UNRESOLVED"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "11c769408054e62e2f819d6b59af87158827a04d",
+          "line_end": 12,
+          "line_start": 1,
+          "path": "docs/architecture/daily_intelligence_append_only_recovery_v1.md",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "459e708055818a6fccea42e380ea6ef67cb4ecad",
+          "line_end": 51,
+          "line_start": 29,
+          "path": "src/theresistance_backend/intelligence/canonical_evidence.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "896b9a578284764f22d4a665e1c4251041638c45",
+          "line_end": 37,
+          "line_start": 7,
+          "path": "tests/foundation/test_canonical_evidence.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F11_FREEZE_TESTS",
+      "property": "ranking-evidence tests",
+      "statement": "Tests cover exact snapshot recovery, append-only extension, and fail-closed mutation for the ranking-time canonical evidence prefix.",
+      "status": "SUPPORTED_STATICALLY"
+    },
+    {
+      "evidence": [
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 63,
+          "line_start": 57,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+          "line_end": 2083,
+          "line_start": 2069,
+          "path": "agent/trump_model/news_collector.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        },
+        {
+          "blob_sha": "896b9a578284764f22d4a665e1c4251041638c45",
+          "line_end": 37,
+          "line_start": 7,
+          "path": "tests/foundation/test_canonical_evidence.py",
+          "repository": "tech-com-UA00001/theresistance-back"
+        }
+      ],
+      "finding_id": "F12_COLLECTOR_PROVENANCE_TESTS",
+      "property": "collector provenance tests",
+      "statement": "Complete pinned-tree searches found no tests that enforce collector timestamp origin, dedupe fallback, index creation failure, revision lineage, link provenance, or overlapping late-arrival collection.",
+      "status": "UNRESOLVED"
+    }
+  ],
+  "inspection": {
+    "live_system_accessed": false,
+    "mode": "pinned_static_repository",
+    "outcome_files_accessed": false,
+    "sources": [
+      {
+        "commit": "badb20158890e9982c7806382cc3e151782af372",
+        "files": [
+          {
+            "blob_sha": "7a07384ac9c7efa70cef9c1d9682f727c2e10ac0",
+            "path": "src/github.js"
+          },
+          {
+            "blob_sha": "8cc006d5a8ef12ff68b2f18b104f3e977bc043ca",
+            "path": "src/mcp/mcpServer.js"
+          },
+          {
+            "blob_sha": "16e549cf43ebeb8c6f1fc1a8248eaf8b96bd4bfc",
+            "path": "src/routes.trumpScore.js"
+          },
+          {
+            "blob_sha": "a1cdcd663486be2bf7dfb3a90bab13927892bd4d",
+            "path": "src/server.js"
+          }
+        ],
+        "recursive_tree_complete": true,
+        "repository": "tech-com-UA00001/DTRM_Fund_Agent_API",
+        "role": "workflow_dispatch_and_artifact_retrieval",
+        "tree_entry_count": 4384,
+        "tree_sha": "b5107d0ee17f2909e0b0c060a7d00d00bb91a567"
+      },
+      {
+        "commit": "7a8107e4451891535366acaf766348785ccc157b",
+        "files": [
+          {
+            "blob_sha": "2bed9fad2e42ed2e04ee5603aafbbd2d7a569924",
+            "path": ".github/workflows/daily_model_inference.yml"
+          },
+          {
+            "blob_sha": "4666c64c216f82a01e1000adce50e9101180bb7b",
+            "path": ".github/workflows/morning.yml"
+          },
+          {
+            "blob_sha": "09b1267793ad20fd01474f60d3ae1b19b4150dfc",
+            "path": ".github/workflows/trump_score.yml"
+          },
+          {
+            "blob_sha": "331f261bfd4be636d3cd675ed287de6acd2dab8a",
+            "path": "agent/trump_model/export_daily_news_candidates.py"
+          },
+          {
+            "blob_sha": "18fd2ad6af63de54ba46b3d03444d12f1adb247f",
+            "path": "agent/trump_model/freeze_daily_news_evidence.py"
+          },
+          {
+            "blob_sha": "f5d2ca87937672e9b096cc6f3fc29d5390bdc09d",
+            "path": "agent/trump_model/freeze_loaded_news_evidence.py"
+          },
+          {
+            "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+            "path": "agent/trump_model/news_collector.py"
+          },
+          {
+            "blob_sha": "b39643a418a531060dd4e09a39424350f527d1fe",
+            "path": "agent/trump_model/run_pipeline.py"
+          },
+          {
+            "blob_sha": "792a8dbb4848ebe578c4658cd9c2f5c38f984586",
+            "path": "agent/trump_model/run_score_with_frozen_news.py"
+          },
+          {
+            "blob_sha": "11c769408054e62e2f819d6b59af87158827a04d",
+            "path": "docs/architecture/daily_intelligence_append_only_recovery_v1.md"
+          },
+          {
+            "blob_sha": "459e708055818a6fccea42e380ea6ef67cb4ecad",
+            "path": "src/theresistance_backend/intelligence/canonical_evidence.py"
+          },
+          {
+            "blob_sha": "896b9a578284764f22d4a665e1c4251041638c45",
+            "path": "tests/foundation/test_canonical_evidence.py"
+          }
+        ],
+        "recursive_tree_complete": true,
+        "repository": "tech-com-UA00001/theresistance-back",
+        "role": "news_collection_and_ranking_evidence",
+        "tree_entry_count": 235,
+        "tree_sha": "f295888372d9ef3c089cc24dd1e72e6b1f2c92cf"
+      }
+    ]
+  },
+  "parent_evidence": {
+    "path": "research/reports/DTRM_PHASE4_SOURCE_METADATA_LIVE_20260907T183459Z.json",
+    "sha256": "30aa53d5bfad2a32b1b4ed0c9aa8eb2024fd60bf54dc5314b6b6af5b847b880b"
+  },
+  "registered_contract": {
+    "path": "research/contracts/DTRM_PHASE4_COLLECTOR_LINEAGE_AUDIT_V0.md",
+    "preregistration_commit": "6d7b41424dc65d6234a98a916e494f42bc0ee62d",
+    "sha256": "2242d3d83af01d2854315856757e4c7be02278e125fe605a17ba543c4d0727d5"
+  },
+  "schema_version": "dtrm.phase4.collector_lineage_evidence.v0"
+}
