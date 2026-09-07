@@ -31,3 +31,17 @@ The user supplied the following terminal output from their local Mac validation:
 - This records user-reported ontology success and preservation of all 157 inherited files and the original Stage-0 contract, with the expected scientific block still active.
 - The supplied excerpt does not include the tested HEAD, a local test-suite summary, or the synthetic comparison's exit status; these are not inferred from the preservation pass. Existing implementation and CI evidence remains separately attributed above and on PR #1.
 - Human review and integration remain pending. This evidence update changes only the progress ledger and does not close the real-source audit gate.
+
+## 2026-09-07 — Complete local validation supplied by the user
+
+- Evidence: uploaded terminal transcript `Pegado text(8).txt`, SHA-256 `9dff12e0ef85e6f56479e35d84fcea00ecc1087303f4a445e923f122c6808db1`. This is user-supplied local execution evidence, distinct from agent execution and remote CI.
+- Tested HEAD is explicitly printed: `b0b7612e9078d17e6c8c537ac62a4f05f3ff3ce1`. Build output identifies Python 3.11 and a macOS ARM64 build target.
+- Scoped Ruff: `All checks passed!`; strict mypy: `Success: no issues found in 5 source files`.
+- Full regression suite: `335 passed in 2.33s`.
+- Ontology graph: `succeeded`, with scientific status `BLOCKED_SOURCE_AUDIT`.
+- Synthetic comparison passed: the transcript reaches the final `PASS_LOCAL_PHASE4` marker after the supplied fail-fast command block's silent `cmp` step.
+- Wheel build: `Successfully built dtrm_fund-0.1.0-py3-none-any.whl`, using a disposable archived source copy. The inherited license-metadata deprecation and deliberately disabled byte-compilation produced non-blocking warnings.
+- Preservation before and after validation: `PASS_SOURCE_PRESERVATION`, 157 inherited files, with the pinned inherited commit/tree and Stage-0 contract hash unchanged.
+- The final `git diff --exit-code` and `git status --short` produced no output before `PASS_LOCAL_PHASE4`.
+- The local engineering validation is complete; the evidence gaps noted for the earlier excerpt are resolved. This append changes only the ledger and does not require the user to repeat the same local checks. Current-head CI remains the remote gate for this documentation update.
+- Human review before integration remains pending under `AGENTS.md`. Real-source audit, decision-clock binding, and all subsequent scientific stages remain pending.
