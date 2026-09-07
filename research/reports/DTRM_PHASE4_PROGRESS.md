@@ -85,3 +85,11 @@ The user supplied the following terminal output from their local Mac validation:
 - `BLOCKED_SOURCE_AUDIT` remains necessary. The next permitted evidence step is read-only collector/writer and archive lineage inspection, followed by an explicit source/decision-clock binding. No sample expansion, new field mapping, historical imputation, fitting, or outcome access was introduced in response to these counters.
 - Reviewed ancestry comment `PRRT_kwDOT2PA1c6f9oH7` against actual Git history: implementation `1c8f846b66c3277d16c4567494dd0cbf7d01497e` directly descends from preregistration `c6bdb927f16aea1919b4c5c219c9c21dca544147`; `git merge-base --is-ancestor` passes. The comment's squashed snapshot is not the feature head. Integration must preserve this existing ancestry.
 - This evidence-only update preserves implementation and contracts. PR #2's current-head CI and human integration review remain the delivery gates; the first live inventory does not close the scientific source audit.
+
+## 2026-09-07 — Source inventory integration and collector-audit registration
+
+- User explicitly authorized: "integra y continua".
+- Merged PR #2 into `research/phase4-temporal-state` as `ebe77c66ad74b3fc75791be10b502f6ab613b12d` using a merge commit. The accepted head `ff40e4db0a24fc692f96bcdd40a97aa5dde92e82` retains preregistration `c6bdb927f16aea1919b4c5c219c9c21dca544147` as an ancestor. Both post-merge workflows passed.
+- `research/phase3-minmax-contract` remains pinned to `a853d5d3f2d6c93a3483a0126ab3475b02960bfc`; all 157 inherited files and the original Stage-0 contract passed preservation after branching from the merge.
+- Opened `feature/phase4-collector-lineage-audit-v0`. Registered `DTRM_PHASE4_COLLECTOR_LINEAGE_AUDIT_V0.md` before inspecting repository contents.
+- Bound the static audit to `tech-com-UA00001/DTRM_Fund_Agent_API@badb20158890e9982c7806382cc3e151782af372` and `tech-com-UA00001/theresistance-back@7a8107e4451891535366acaf766348785ccc157b`. No runtime, database, endpoint, artifact, or outcome inspection is part of this cut.
