@@ -71,7 +71,19 @@ hypothesis. The representation hypothesis has not yet been tested.
 
 ## Defensible paths forward
 
-The preferred confirmatory path is prospective, append-only collection under a
+Before committing exclusively to prospective data, one final retrospective
+salvage audit is scientifically permissible if separately preregistered. It may
+test, without outcomes or source-text disclosure, whether Mongo `ObjectId`
+generation time is supportable as a conservative insertion-time proxy in this
+specific writer path; whether all relevant writers were insert-only; whether
+backfills and collection lag can be identified; and whether repeated source
+URLs appear as separate immutable records. `ObjectId` must remain inadmissible
+unless code, runtime and aggregate consistency evidence jointly support its
+meaning. Its embedded client-clock seconds are not self-authenticating, and it
+cannot by itself establish version content or historical ticker mapping.
+
+If that registered salvage gate fails or leaves material ambiguity, the
+preferred confirmatory path is prospective, append-only collection under a
 separately approved contract. It must preserve collection/first-seen time,
 exact-version observation time, immutable content bytes and digest, source
 identity, predecessor/version identity, mapping version and link-availability

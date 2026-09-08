@@ -149,10 +149,13 @@ The user supplied the following terminal output from their local Mac validation:
   remain prohibited. This is a negative feasibility result, not a test of the
   representation hypothesis. See
   `DTRM_PHASE4_SOURCE_FEASIBILITY_LIVE_INTERPRETATION_V0.md`.
-- Preferred next scientific path: separately preregister prospective immutable
-  event collection and bind its decision clock/control dependencies before
-  Stage-2 implementation. A weaker publication-time retrospective estimand
-  would require explicit new approval and cannot be substituted silently.
+- Next scientific fork, fixed without outcomes: first permit one separately
+  preregistered salvage audit of `ObjectId` insertion semantics, append-only
+  writer/runtime evidence, backfill lag and repeated-URL vintages. `ObjectId`
+  remains inadmissible unless that evidence supports it. If the gate fails,
+  proceed to prospective immutable event collection and bind its decision
+  clock/control dependencies before Stage 2. A weaker publication-time
+  retrospective estimand requires explicit approval and cannot be substituted.
 - Added a regression assertion pinning the live report bytes, both internal
   digests, execution mode and all scientific blocks. Agent validation: 47
   targeted tests and full suite 453 passed with three expected dedicated-CI
