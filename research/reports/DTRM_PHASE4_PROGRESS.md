@@ -1,5 +1,8 @@
 # Phase IV progress ledger
 
+Parallel contract-only increment (not Stage-2 implementation):
+[Temporal boundary v0 progress](DTRM_PHASE4_TEMPORAL_BOUNDARY_PROGRESS_V0.md).
+
 ## 2026-09-07 — Contract and event ontology
 
 - User accepted the Stage-0 direction and instructed repository persistence and the project's Agentic Graph Engineering validation cycle.
