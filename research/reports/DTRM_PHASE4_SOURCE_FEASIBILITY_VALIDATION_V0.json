@@ -1,0 +1,47 @@
+{
+  "schema_version": "dtrm.phase4.source_feasibility_validation.v0",
+  "preregistration_commit": "bcee8fb45c8ca8f1f40ae3c48049ea67928d4c24",
+  "tested_implementation_commit": "61e3302963e4743b9f6af846f2e76108b2b2de85",
+  "contract_sha256": "cc7fc1fc54f338361c47a785c6f5c878eb52b3afee5f42176558680e8d16b044",
+  "synthetic_report_sha256": "702b48478d952db504872f9b50a7192538b98e6dd588d8313d4f29627069f9f4",
+  "agent_environment": {
+    "python": "3.12.13",
+    "unit_functional_new_passed": 46,
+    "full_suite_passed": 452,
+    "isolated_mongo_tests_skipped": 3,
+    "skip_reason": "No disposable Mongo service outside dedicated CI job",
+    "ruff": "PASS",
+    "strict_mypy_source_files": 13,
+    "strict_mypy": "PASS",
+    "synthetic_reports_byte_identical": 3,
+    "collector_lineage_validator": "PASS",
+    "disposable_wheel_build": "PASS",
+    "source_preservation_before_after": "PASS",
+    "inherited_files_preserved": 157
+  },
+  "ci_on_tested_implementation": {
+    "tests_pr_run": 34218860339,
+    "phase4_pr_run": 34218860322,
+    "tests_push_run": 34218855726,
+    "phase4_push_run": 34218855745,
+    "all_workflows": "success",
+    "isolated_mongo_job": 102036979934,
+    "isolated_mongo_test_passed": 3,
+    "isolated_mongo_job_log_summary": "3 passed in 0.20s",
+    "mongo_service_image": "mongo:7.0.14",
+    "source_data": "synthetic_only"
+  },
+  "actual_source_validation": {
+    "status": "BLOCKED_MISSING_LOCAL_CREDENTIALS",
+    "configuration_values_displayed": false,
+    "production_connection_attempted": false,
+    "successful_live_report_created": false,
+    "source_queries_executed": 0
+  },
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "history_construction_permitted": false,
+  "training_permitted": false,
+  "outcome_access_permitted": false,
+  "human_review": "pending",
+  "ci_evidence_rule": "Run identities above bind implementation; current PR head must pass again after this evidence-only commit."
+}
