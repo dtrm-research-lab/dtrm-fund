@@ -46,6 +46,10 @@ jobs:
           cmp /tmp/phase4-source-metadata.json research/reports/DTRM_PHASE4_SOURCE_METADATA_SYNTHETIC_V0.json
       - name: Validate pinned collector lineage evidence
         run: python research/experiments/validate_phase4_collector_lineage.py
+      - name: Reproduce synthetic source feasibility report
+        run: |
+          python research/experiments/run_phase4_source_feasibility.py --synthetic-input tests/fixtures/phase4_source_feasibility_v0.json --output /tmp/phase4-source-feasibility.json
+          cmp /tmp/phase4-source-feasibility.json research/reports/DTRM_PHASE4_SOURCE_FEASIBILITY_SYNTHETIC_V0.json
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)
@@ -53,3 +57,27 @@ jobs:
           python -m build --wheel --no-isolation --outdir /tmp/phase4-dist "$phase4_build_dir"
       - name: Recheck frozen source after all gates
         run: python research/experiments/validate_phase4_source_preservation.py
+
+  synthetic-mongo:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7.0.14
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ping:1}).ok'"
+          --health-interval 10s --health-timeout 5s --health-retries 10
+    env:
+      PYTHONPATH: src
+      PYTHONDONTWRITEBYTECODE: '1'
+      PHASE4_SYNTHETIC_MONGO: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test-only dependencies
+        run: python -m pip install pytest -r research/configs/phase4_source_audit_requirements.txt
+      - name: Functional Mongo tests with synthetic records only
+        run: python -m pytest -q tests/test_phase4_source_feasibility_mongo.py
