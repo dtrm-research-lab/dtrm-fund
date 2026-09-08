@@ -124,3 +124,38 @@ The user supplied the following terminal output from their local Mac validation:
 - Implementation-head PR workflows `34218860339` (Tests) and `34218860322` (Phase IV gates), and push workflows `34218855726`/`34218855745`, all passed. Detailed evidence: `DTRM_PHASE4_SOURCE_FEASIBILITY_VALIDATION_V0.json`. Evidence-only commits must pass current-head CI again.
 - Actual source entrypoint returned `MISSING_LOCAL_CREDENTIALS` before importing a driver or connecting, and created no successful report. The env presence check did not expose values. No cross-project credential search, secret extraction, production queries, source writes, outcomes, fits, sequence construction or MM1 execution occurred.
 - User-local validation is not required for this development increment. Actual Mongo audit remains pending credentials configured in the executing environment; a green synthetic integration test is not a production-source audit. `BLOCKED_SOURCE_AUDIT` stays active and the later decision-clock addendum is not approved by these results.
+
+## 2026-09-08 — PR #4 integration and authenticated live-report bytes
+
+- The user declared PR #4 locally validated and explicitly authorized a merge
+  commit. Head `08d8669996592a30df875b64f3aea429a5813e56` was unchanged,
+  mergeable, free of review comments and green before integration. PR #4 was
+  merged as `350a75ca9e2ab8ea0dc1e3844be2c4bb25f13232`, retaining the
+  integration parent and exact feature parent. Both post-merge workflows passed;
+  all 157 inherited files and the original contract passed preservation.
+- The user then supplied the complete sanitized live feasibility report and
+  SHA-256 `0c0c633cd7eb9fef439788db894795f02edcfb10a844eb3f192a1c4b5d7d2995`.
+  Repository reconstruction matches that digest byte for byte. The fixed
+  pipeline and normalized evidence hashes independently recompute to the exact
+  values stored in the report. No credential-bearing content is present.
+- The 1,000-record nonrepresentative sample contains naive publication/date
+  strings and current URL variants, but none of the registered observation,
+  revision, content-vintage or mapping/link-availability provenance fields.
+  `dedupe_key` is absent throughout despite a current qualifying sparse unique
+  index. Current index definitions do not establish historical enforcement.
+- Scientific decision: the current collection alone cannot authenticate which
+  exact content/ticker vintage the machine knew at a historical cutoff.
+  Retrospective authentic `as-of` history, model fitting, outcomes and MM1 runs
+  remain prohibited. This is a negative feasibility result, not a test of the
+  representation hypothesis. See
+  `DTRM_PHASE4_SOURCE_FEASIBILITY_LIVE_INTERPRETATION_V0.md`.
+- Preferred next scientific path: separately preregister prospective immutable
+  event collection and bind its decision clock/control dependencies before
+  Stage-2 implementation. A weaker publication-time retrospective estimand
+  would require explicit new approval and cannot be substituted silently.
+- Added a regression assertion pinning the live report bytes, both internal
+  digests, execution mode and all scientific blocks. Agent validation: 47
+  targeted tests and full suite 453 passed with three expected dedicated-CI
+  skips; Ruff, strict mypy, three synthetic reproductions, lineage validator,
+  disposable wheel build and pre/post source preservation all passed. Remote
+  current-head CI and human review remain the integration gates.
