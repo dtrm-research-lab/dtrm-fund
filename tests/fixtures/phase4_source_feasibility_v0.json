@@ -1,0 +1,41 @@
+{
+  "aggregate": {
+    "sample": [{"n": 3}],
+    "f0": [{"_id": "object", "n": 2}, {"_id": "missing", "n": 1}],
+    "f1": [{"_id": "string", "n": 2}, {"_id": "missing", "n": 1}],
+    "f2": [{"_id": "string", "n": 2}, {"_id": "missing", "n": 1}],
+    "f3": [{"_id": "missing", "n": 3}],
+    "f4": [{"_id": "missing", "n": 3}],
+    "f5": [{"_id": "string", "n": 2}, {"_id": "missing", "n": 1}],
+    "f6": [{"_id": "missing", "n": 3}],
+    "f7": [{"_id": "missing", "n": 3}],
+    "f8": [{"_id": "string", "n": 2}, {"_id": "missing", "n": 1}],
+    "f9": [{"_id": "null", "n": 1}, {"_id": "missing", "n": 2}],
+    "f10": [{"_id": "missing", "n": 3}],
+    "f11": [{"_id": "missing", "n": 3}],
+    "f12": [{"_id": "missing", "n": 3}],
+    "f13": [{"_id": "missing", "n": 3}],
+    "f14": [{"_id": "missing", "n": 3}],
+    "f15": [{"_id": "missing", "n": 3}],
+    "f16": [{"_id": "missing", "n": 3}],
+    "d0": [
+      {"_id": {"kind": "explicit_timezone_string", "year": "2025"}, "n": 1},
+      {"_id": {"kind": "date_only_string", "year": "2025"}, "n": 1},
+      {"_id": {"kind": "invalid_string", "year": null}, "n": 1}
+    ],
+    "d1": [
+      {"_id": {"kind": "explicit_timezone_string", "year": "2025"}, "n": 1},
+      {"_id": {"kind": "naive_string", "year": "2025"}, "n": 1},
+      {"_id": {"kind": "missing", "year": null}, "n": 1}
+    ],
+    "d2": [
+      {"_id": {"kind": "null", "year": null}, "n": 1},
+      {"_id": {"kind": "missing", "year": null}, "n": 2}
+    ]
+  },
+  "indexes": [
+    {"key": {"_id": 1}, "name": "synthetic_id"},
+    {"key": {"date": 1}, "name": "synthetic_date"},
+    {"key": {"dedupe_key": 1}, "unique": true, "sparse": true, "name": "synthetic_dedupe"}
+  ]
+}
