@@ -1,0 +1,259 @@
+{
+  "audit_completed_at": "2026-09-08T21:38:02.975112+00:00",
+  "audit_started_at": "2026-09-08T21:38:01.825906+00:00",
+  "date_diagnostics": [
+    {
+      "bins": [
+        {
+          "kind": "naive_string",
+          "n": 604,
+          "year": "2024"
+        },
+        {
+          "kind": "naive_string",
+          "n": 396,
+          "year": "2025"
+        }
+      ],
+      "path": "date"
+    },
+    {
+      "bins": [
+        {
+          "kind": "missing",
+          "n": 45,
+          "year": null
+        },
+        {
+          "kind": "naive_string",
+          "n": 604,
+          "year": "2024"
+        },
+        {
+          "kind": "naive_string",
+          "n": 351,
+          "year": "2025"
+        }
+      ],
+      "path": "raw.publishedDate"
+    },
+    {
+      "bins": [
+        {
+          "kind": "missing",
+          "n": 955,
+          "year": null
+        },
+        {
+          "kind": "naive_string",
+          "n": 45,
+          "year": "2025"
+        }
+      ],
+      "path": "raw.date"
+    }
+  ],
+  "date_year_semantics": "diagnostic_UTC_conversion_not_availability",
+  "decision_clock_authenticated": false,
+  "engineering_status": "PASS_DIAGNOSTIC_SCHEMA",
+  "evidence_sha256": "3df9d397a3c67722220f64a1bd0c8fdf2d5d978ed3c469c7ef70fa71b8f60ad0",
+  "execution_mode": "live_mongo",
+  "fields": [
+    {
+      "path": "raw",
+      "types": [
+        {
+          "n": 1000,
+          "type": "object"
+        }
+      ]
+    },
+    {
+      "path": "dedupe_key",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.id",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.articleId",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.article_id",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.url",
+      "types": [
+        {
+          "n": 45,
+          "type": "missing"
+        },
+        {
+          "n": 955,
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "path": "raw.link",
+      "types": [
+        {
+          "n": 955,
+          "type": "missing"
+        },
+        {
+          "n": 45,
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "path": "raw.newsUrl",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.publishedDate",
+      "types": [
+        {
+          "n": 45,
+          "type": "missing"
+        },
+        {
+          "n": 955,
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "path": "raw.date",
+      "types": [
+        {
+          "n": 955,
+          "type": "missing"
+        },
+        {
+          "n": 45,
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "path": "raw.first_seen_at",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.observed_at",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.updated_at",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.version_id",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.content_sha256",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.mapping_version",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    },
+    {
+      "path": "raw.linked_at",
+      "types": [
+        {
+          "n": 1000,
+          "type": "missing"
+        }
+      ]
+    }
+  ],
+  "graph": "phase4_source_feasibility_v0",
+  "history_construction_permitted": false,
+  "index_semantics": "current_definitions_not_historical_enforcement",
+  "indexes": {
+    "date_ascending": 1,
+    "dedupe_ascending": 1,
+    "dedupe_unique_sparse_unqualified": 1,
+    "total": 3
+  },
+  "outcome_access_permitted": false,
+  "pipeline_sha256": "ab2be4c672405785094fd49b92444fb6bdf93d291a9e414cbac08c7013b3462d",
+  "reads_atomic": false,
+  "sampled_documents": 1000,
+  "schema_version": "dtrm.phase4.source_feasibility.v0",
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "selection": {
+    "coverage_scope": "sample_only",
+    "limit": 1000,
+    "representative": false,
+    "sort": "ascending_id_not_event_time"
+  },
+  "snapshot_verified": false,
+  "source": {
+    "collection": "trumpNews",
+    "database": "trumpMinMax"
+  },
+  "training_permitted": false
+}

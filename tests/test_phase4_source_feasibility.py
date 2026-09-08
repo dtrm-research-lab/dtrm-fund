@@ -1,5 +1,6 @@
 """Unit and functional cases; no production source is accessed."""
 
+import hashlib
 import json
 import runpy
 from copy import deepcopy
@@ -18,12 +19,13 @@ from dtrm.phase4.source_feasibility import (
     normalize_feasibility,
     sanitize_indexes,
 )
-from dtrm.phase4.source_metadata import MetadataError
+from dtrm.phase4.source_metadata import MetadataError, canonical_sha256
 from dtrm.phase4.source_metadata_io import MetadataIOError
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests/fixtures/phase4_source_feasibility_v0.json"
 EXPECTED = ROOT / "research/reports/DTRM_PHASE4_SOURCE_FEASIBILITY_SYNTHETIC_V0.json"
+LIVE_EVIDENCE = ROOT / "research/reports/DTRM_PHASE4_SOURCE_FEASIBILITY_LIVE_20260908T213801Z.json"
 
 
 @pytest.fixture
@@ -64,6 +66,22 @@ def test_roundtrip_order_immutable_and_blocked(payload):
         for flag in ("training_permitted", "outcome_access_permitted", "snapshot_verified",
                      "decision_clock_authenticated", "history_construction_permitted", "reads_atomic"):
             assert result[flag] is False
+
+
+def test_live_evidence_bytes_hashes_and_scientific_blocks_are_pinned():
+    raw = LIVE_EVIDENCE.read_bytes()
+    report = json.loads(raw)
+    assert hashlib.sha256(raw).hexdigest() == (
+        "0c0c633cd7eb9fef439788db894795f02edcfb10a844eb3f192a1c4b5d7d2995")
+    assert report["pipeline_sha256"] == canonical_sha256(build_feasibility_pipeline())
+    evidence = {key: report[key] for key in (
+        "sampled_documents", "fields", "date_diagnostics", "indexes")}
+    assert report["evidence_sha256"] == canonical_sha256(evidence)
+    assert report["execution_mode"] == "live_mongo"
+    assert report["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+    for flag in ("training_permitted", "outcome_access_permitted", "snapshot_verified",
+                 "decision_clock_authenticated", "history_construction_permitted", "reads_atomic"):
+        assert report[flag] is False
 
 
 def test_empty_sample(payload):
