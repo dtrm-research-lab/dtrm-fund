@@ -39,3 +39,36 @@
 - Scientific status remains `BLOCKED_SOURCE_AUDIT`. No local validation by the
   user is needed to review this proposal, but unresolved real-source evidence
   still prevents closing Stage 1 or starting Stage-2 implementation.
+
+## 2026-09-08 — Source-feasibility integration and user evidence
+
+- The user explicitly reported PR #4 locally validated and authorized a merge
+  commit. Before integration, PR #4 head
+  `08d8669996592a30df875b64f3aea429a5813e56` was unchanged, mergeable, retained
+  preregistration `bcee8fb45c8ca8f1f40ae3c48049ea67928d4c24`, had no review
+  comments and had successful `Tests` and `Phase IV gates` PR workflows.
+- PR #4 was integrated into `research/phase4-temporal-state` as merge commit
+  `350a75ca9e2ab8ea0dc1e3844be2c4bb25f13232`, with parents
+  `f5148f2f6787d3282c04a357e59d32ed3c515ba8` and the exact accepted feature
+  head. Both post-merge push workflows succeeded. Post-merge preservation
+  independently passed for all 157 inherited files and the original contract.
+- The user supplied these exact local excerpts: successful wheel build;
+  `PASS_SOURCE_PRESERVATION` with 157 files; and a successful live
+  `phase4_source_feasibility_v0` invocation sampling 1,000 documents while
+  retaining `scientific_status=BLOCKED_SOURCE_AUDIT`. This records operator-run
+  transport/protocol evidence and human acceptance, not agent access to Mongo.
+- No full live feasibility JSON, its digest, date-class counters or sanitized
+  index counters accompanied the excerpt. Their values are not inferred, and
+  no source-clock, vintage, history or scientific-readiness claim is promoted.
+- PR #5 now incorporates the approved PR #4 merge while preserving both commit
+  histories. Its original registration statement that PR #4 was then unmerged
+  remains a correct historical statement at registration time. PR #5 still
+  requires consolidated validation, current-head CI and separate human approval.
+- Consolidated agent validation after combining both histories: 452 tests passed
+  and three real-Mongo tests skipped outside their dedicated synthetic CI job;
+  scoped Ruff passed; strict mypy passed for 13 files; all three synthetic
+  reports reproduced byte for byte; the lineage validator passed with 12
+  findings. The disposable-source wheel built successfully after restoring the
+  isolated environment's build backend. Preservation passed before and after.
+  The temporary missing build backend was an environment setup issue, not a
+  source or test failure.
