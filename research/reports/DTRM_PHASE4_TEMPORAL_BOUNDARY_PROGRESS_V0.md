@@ -72,3 +72,21 @@
   isolated environment's build backend. Preservation passed before and after.
   The temporary missing build backend was an environment setup issue, not a
   source or test failure.
+
+## 2026-09-08 — Live evidence integration and temporal-contract reconciliation
+
+- The user explicitly authorized PR #6. Its reviewed head
+  `d4b178ff1bf52f68ed008450ff350b02e0ced451` was unchanged, mergeable,
+  free of comments and had four successful current-head workflows. It was
+  integrated as merge commit `e39acdfdc7a696926c236adc95dbb69f71b79d54`,
+  preserving the exact evidence head and prior integration parent.
+- Post-merge preservation passed for all 157 inherited files and the original
+  Stage-0 contract. Post-merge workflows are recorded on the integration commit;
+  their completion remains distinct from this subsequent reconciliation.
+- PR #5 now incorporates the authenticated live report and its registered
+  interpretation through an explicit merge of both histories. The evidence
+  confirms the temporal contract must keep its decision clock and history
+  permissions closed. It does not modify the earlier proposed cutoff semantics.
+- The next permitted scientific operation is a separately preregistered,
+  outcome-blind retrospective salvage audit. Until it passes, `ObjectId` is not
+  an observation clock and Stage-2 implementation remains prohibited.
