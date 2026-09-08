@@ -59,6 +59,13 @@
   review snapshot. The remote branch history is linear from registration
   `b38b3fc1851e1f636240e7fa418da2dcc933db8d` to its validation commit and
   preserves the registered tree above.
-- The amended contract hash and authoritative remote amendment commit will be
-  recorded after the amended commit is published. No implementation or live
-  query occurred while making these clarifications.
+- Authoritative remote amendment commit:
+  `a1e7ce59d9e99a0b7d36d3989664508536dbb0ae`; amended contract SHA-256:
+  `331ad4aaa2a60d4f2a3d172963e71052873d5942a475d4d3aa600d05495286f6`.
+  The amended tree exactly matched the locally validated tree before publish.
+- Pre/post source preservation passed for all 157 inherited files and the
+  original Stage-0 contract. Scoped Ruff passed; strict mypy passed for 13
+  files; the complete suite passed with 453 tests and three expected skips;
+  all prior synthetic reports and the 12-finding lineage report reproduced;
+  and the wheel built from a disposable archive. No implementation or live
+  query occurred while making or validating these clarifications.
