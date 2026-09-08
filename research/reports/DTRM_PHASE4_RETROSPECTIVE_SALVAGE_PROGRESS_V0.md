@@ -23,7 +23,10 @@
 
 ## Contract validation
 
-- Registration commit: `6ce50a46de1320c558bd4ac051a051fd95a53bda`;
+- Remote registration commit: `b38b3fc1851e1f636240e7fa418da2dcc933db8d`;
+  its tree `0528d5aa7a121d59d82aeba80f1c8a26dd055883` is identical to the
+  earlier local-only registration commit
+  `6ce50a46de1320c558bd4ac051a051fd95a53bda`;
   contract SHA-256:
   `e9ed93bcd39181f2037227eee39690b9259753a686b3f9e89614243f41d8e5c9`.
 - Scoped Ruff passed; strict mypy passed for 13 existing source/experiment
@@ -38,3 +41,24 @@
 - These are contract/regression checks, not implementation tests for the future
   salvage graph. Current-head CI and human review remain required. No live query
   is authorized by these checks.
+
+## 2026-09-08 — Pre-implementation review amendments
+
+- The remote registration commit remains an ancestor of the review branch;
+  its original contract and tree are preserved in history. The reviewed branch
+  therefore records preregistration before both these clarifications and any
+  implementation or new source query.
+- Review identified two underspecified failure boundaries. The contract now
+  assigns an empty census, a census without genuine BSON ObjectIds, and zero
+  structurally eligible ObjectId-bearing observations deterministically to
+  `RETROSPECTIVE_PROXY_CONTRADICTED`.
+- The live cursor is now independently bounded to 250,001 rows. Observing the
+  cap-plus-one row fails without an accepted report, even if a non-atomic
+  preliminary count had reported at most 250,000.
+- A review warning about missing preregistration ancestry arose from a squashed
+  review snapshot. The remote branch history is linear from registration
+  `b38b3fc1851e1f636240e7fa418da2dcc933db8d` to its validation commit and
+  preserves the registered tree above.
+- The amended contract hash and authoritative remote amendment commit will be
+  recorded after the amended commit is published. No implementation or live
+  query occurred while making these clarifications.

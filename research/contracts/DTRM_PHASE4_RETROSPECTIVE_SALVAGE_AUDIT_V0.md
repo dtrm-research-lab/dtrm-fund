@@ -54,7 +54,14 @@ These facts and limitations cannot be revised in response to the new audit.
 Source is exactly `trumpMinMax.trumpNews`. First obtain an exact document count
 with an empty filter. If it exceeds 250,000, stop with
 `SOURCE_EXCEEDS_REGISTERED_BOUND`; do not emit a partial scientific report.
-Otherwise stream a complete `_id`-ascending census with a fixed projection:
+Otherwise stream a complete `_id`-ascending census with a fixed projection.
+The cursor itself is limited to 250,001 rows (the cap plus one), and the client
+must consume no more than that bound. If a 250,001st row is observed, close all
+resources and fail with `SOURCE_EXCEEDS_REGISTERED_BOUND` without emitting an
+accepted report. This cursor-side bound is mandatory even when the preliminary
+count is at or below 250,000, because count and cursor reads are non-atomic.
+
+The fixed projection is:
 
 `_id`, `date`, `text`, `source`, `matched_tickers`, `dedupe_key`, `raw.id`,
 `raw.articleId`, `raw.article_id`, `raw.url`, `raw.link`, `raw.newsUrl`,
@@ -159,7 +166,10 @@ schema success is reported separately.
 Required if any relevant evidenced writer mutates/replaces existing news rows,
 assigns externally prepared ObjectIds without a bound generation event, or if
 the collection evidence cannot distinguish inserted content/ticker state from
-later mutation. The main Phase-IV confirmatory path must be prospective.
+later mutation. It is also required for an empty census, a census with no
+genuine BSON ObjectIds, or zero deterministic structurally eligible
+ObjectId-bearing observations: the proposed proxy cannot support any source
+data in those cases. The main Phase-IV confirmatory path must be prospective.
 
 ### `RETROSPECTIVE_PROXY_PARTIAL`
 
@@ -204,7 +214,7 @@ relaxing provenance requirements.
 | Node | Input to immutable output | Invariants and failure | Side effects |
 | --- | --- | --- | --- |
 | fixed query builder | constants to count/projection specs | exact namespace, cap, sort and allowlist | none |
-| census boundary | explicit local configuration to streamed projected rows | cap before stream; close resources; redacted failures | registered reads only |
+| census boundary | explicit local configuration to streamed projected rows | preliminary count plus cap-plus-one cursor enforcement; close resources; redacted failures | registered reads only |
 | row normalizer | projected row to typed ephemeral observation | exact keys/types; no inference or correction | none |
 | aggregate reducer | typed stream to frozen counters | deterministic, reconciling, bounded hashed grouping | none |
 | writer manifest validator | exact evidence manifest to frozen findings | allowlisted repositories/commits/fields; no runtime claims from schedules | none |
@@ -218,12 +228,14 @@ produces no accepted report. Reordering input rows cannot change output bytes.
 ## Required tests before review of an implementation
 
 Unit tests must cover every lag boundary, invalid calendar days, naive/full
-timestamps, ObjectId/non-ObjectId values, future clock anomalies, exact UTF-8
-hashing, URL fragment removal and non-normalization, source-ID precedence,
+timestamps, ObjectId/non-ObjectId values, empty/no-ObjectId censuses, future
+clock anomalies, exact UTF-8 hashing, URL fragment removal and
+non-normalization, source-ID precedence,
 content/URL version aggregates, ticker shape/duplicates, dedupe aggregation,
 reconciliation, immutability, ordering and all three decision states.
 
-Functional tests must cover cap-before-stream, bounded cursor consumption,
+Functional tests must cover preliminary cap rejection, cap-plus-one rejection
+despite a permitted preliminary count, bounded cursor consumption,
 closure on every failure, missing configuration before driver import, explicit
 dotenv/no override, redacted exceptions, no-overwrite/symlink defenses,
 aggregate-only serialization and absence of forbidden source values. An
