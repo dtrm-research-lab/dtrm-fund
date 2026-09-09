@@ -188,3 +188,10 @@ The user supplied the following terminal output from their local Mac validation:
   MM1 execution was accessed. `BLOCKED_SOURCE_AUDIT`, no history construction
   and no training remain in force. The next gate is validation and human review
   of this registration, not implementation.
+- Remote registration `13625046e8b258f085fab59966a31937786a5eec`
+  preserves the contract at SHA-256
+  `f98ce5e5d22810618571725d1645806729da358ff7622a7c47150cdc3e5cfcad`.
+  Agent validation passed 534 tests with three expected disposable-CI skips,
+  scoped Ruff, strict mypy, four synthetic reproductions, the 12-finding
+  lineage validator, disposable wheel build and pre/post preservation of all
+  157 inherited files. Current-head CI and human review remain pending.
