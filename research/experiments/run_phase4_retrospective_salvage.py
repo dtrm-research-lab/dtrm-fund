@@ -50,9 +50,9 @@ def main(argv: list[str] | None = None) -> int:
                     "graph": GRAPH,
                     "status": "succeeded",
                     "execution_mode": "synthetic",
-                    "scientific_assessment": report["scientific_assessment"],
-                    "scientific_status": report["scientific_status"],
-                    "total_documents": report["total_documents"],
+                    "scientific_assessment": report.scientific_assessment,
+                    "scientific_status": report.scientific_status,
+                    "total_documents": report.counts.total_documents,
                 },
                 sort_keys=True,
             )

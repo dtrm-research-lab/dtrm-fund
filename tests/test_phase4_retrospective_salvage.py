@@ -503,16 +503,24 @@ def test_report_hashes_and_aggregate_only_serialization(payload, report):
 
 
 def test_serializer_rejects_schema_expansion_promotion_and_credentials(report):
-    expanded = {**report, "source_example": "secret"}
+    expanded = {**report.to_dict(), "source_example": "secret"}
     with pytest.raises(SalvageError):
         serialize_salvage_report(expanded)
-    promoted = {**report, "training_permitted": True}
+    promoted = {**report.to_dict(), "training_permitted": True}
     with pytest.raises(SalvageError):
         serialize_salvage_report(promoted)
-    credential = deepcopy(report)
+    credential = deepcopy(report.to_dict())
     credential["scientific_status"] = "mongodb+srv://private"
     with pytest.raises(SalvageError):
         serialize_salvage_report(credential)
+    nested = report.to_dict()
+    nested["source"]["database"] = "PRIVATE_SOURCE"
+    nested["evidence_sha256"] = "stale"
+    with pytest.raises(SalvageError):
+        serialize_salvage_report(nested)
+    assert "PRIVATE_SOURCE" not in serialize_salvage_report(report)
+    with pytest.raises(FrozenInstanceError):
+        report.preliminary_count = 0
 
 
 @pytest.mark.parametrize(
@@ -590,7 +598,7 @@ def test_preliminary_count_rejects_before_stream_and_closes(monkeypatch):
     monkeypatch.setattr(io, "CENSUS_CAP", 3)
     port = Port(4, documents=[{"_id": 1}])
     with pytest.raises(SalvageIOError, match="SOURCE_EXCEEDS_REGISTERED_BOUND"):
-        read_registered_census(port)
+        read_registered_census(port, lambda document: None)
     assert [name for name, _ in port.calls] == ["count"]
     assert port.closed
 
@@ -600,7 +608,7 @@ def test_cap_plus_one_rejects_race_with_bounded_consumption_and_closure(monkeypa
     monkeypatch.setattr(io, "CURSOR_LIMIT", 4)
     port = Port(3, documents=[{"_id": i} for i in range(6)])
     with pytest.raises(SalvageIOError, match="SOURCE_EXCEEDS_REGISTERED_BOUND"):
-        read_registered_census(port)
+        read_registered_census(port, lambda document: None)
     assert port.row_cursor.consumed == 4
     assert port.row_cursor.closed and port.closed
     assert [name for name, _ in port.calls] == ["count", "census"]
@@ -608,17 +616,36 @@ def test_cap_plus_one_rejects_race_with_bounded_consumption_and_closure(monkeypa
 
 def test_non_atomic_count_delta_is_retained_without_claiming_snapshot():
     port = Port(2, documents=[{"_id": 1}, {"_id": 2}, {"_id": 3}])
-    result = read_registered_census(port)
+    seen = []
+    result = read_registered_census(port, seen.append)
     assert result.preliminary_count == 2
-    assert len(result.documents) == 3
+    assert result.census_count == 3
+    assert seen == [{"_id": 1}, {"_id": 2}, {"_id": 3}]
+    assert not hasattr(result, "documents")
     assert port.row_cursor.closed and port.index_cursor.closed and port.closed
+
+
+def test_census_consumes_each_document_before_requesting_the_next():
+    seen = []
+
+    class StreamingCursor(Cursor):
+        def __iter__(self):
+            for position, value in enumerate(self.values):
+                assert len(seen) == position
+                self.consumed += 1
+                yield value
+
+    port = Port(3)
+    port.row_cursor = StreamingCursor([{"_id": 1}, {"_id": 2}, {"_id": 3}])
+    result = read_registered_census(port, seen.append)
+    assert result.census_count == len(seen) == 3
 
 
 @pytest.mark.parametrize("failure", ["count", "open", "rows", "indexes"])
 def test_boundary_redacts_failures_and_closes_every_open_resource(failure):
     port = Port(1, documents=[{"_id": 1}], indexes=[{"key": {"_id": 1}}], failure=failure)
     with pytest.raises(SalvageIOError, match="CENSUS_READ_FAILED") as error:
-        read_registered_census(port)
+        read_registered_census(port, lambda document: None)
     assert "private" not in str(error.value)
     assert port.closed
     if failure == "rows":
@@ -631,14 +658,14 @@ def test_index_catalog_consumption_is_bounded_and_closed(monkeypatch):
     monkeypatch.setattr(io, "INDEX_LIMIT", 3)
     port = Port(0, indexes=[{"key": {"_id": 1}}] * 5)
     with pytest.raises(SalvageIOError, match="INDEX_CATALOG_EXCEEDS_BOUND"):
-        read_registered_census(port)
+        read_registered_census(port, lambda document: None)
     assert port.index_cursor.consumed == 3
     assert port.index_cursor.closed and port.closed
 
 
 def test_fixed_query_spec_reaches_every_port_call():
     port = Port(1, documents=[{"_id": 1}])
-    read_registered_census(port)
+    read_registered_census(port, lambda document: None)
     assert len(port.calls) == 3
     assert all(spec == build_census_query_spec() for _, spec in port.calls)
 

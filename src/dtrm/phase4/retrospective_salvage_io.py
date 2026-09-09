@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator, Sequence
+from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass
 from itertools import islice
 from typing import Protocol, cast
@@ -13,8 +13,10 @@ from dtrm.phase4.retrospective_salvage import (
     INDEX_LIMIT,
     CensusQuerySpec,
     SalvageError,
+    SalvageReducer,
+    SalvageReport,
     build_census_query_spec,
-    build_salvage_report,
+    build_salvage_report_from_counts,
     normalize_synthetic_document,
     parse_audit_instant,
     parse_writer_manifest,
@@ -42,7 +44,7 @@ class CensusPort(Protocol):
 @dataclass(frozen=True, slots=True)
 class CensusRead:
     preliminary_count: int
-    documents: tuple[object, ...]
+    census_count: int
     indexes: tuple[object, ...]
 
 
@@ -53,7 +55,7 @@ def _close(resource: CursorPort | CensusPort) -> None:
         raise SalvageIOError("RESOURCE_CLOSE_FAILED") from None
 
 
-def read_registered_census(port: CensusPort) -> CensusRead:
+def read_registered_census(port: CensusPort, consume: Callable[[object], None]) -> CensusRead:
     """Enforce both the preliminary cap and cap-plus-one stream boundary."""
 
     spec = build_census_query_spec()
@@ -66,11 +68,12 @@ def read_registered_census(port: CensusPort) -> CensusRead:
 
         row_cursor = port.open_census(spec)
         try:
-            documents: list[object] = []
+            census_count = 0
             for position, document in enumerate(islice(row_cursor, CURSOR_LIMIT), start=1):
                 if position == CURSOR_LIMIT:
                     raise SalvageIOError("SOURCE_EXCEEDS_REGISTERED_BOUND")
-                documents.append(document)
+                consume(document)
+                census_count = position
         finally:
             _close(row_cursor)
 
@@ -81,8 +84,8 @@ def read_registered_census(port: CensusPort) -> CensusRead:
                 raise SalvageIOError("INDEX_CATALOG_EXCEEDS_BOUND")
         finally:
             _close(index_cursor)
-        return CensusRead(preliminary_count, tuple(documents), indexes)
-    except SalvageIOError:
+        return CensusRead(preliminary_count, census_count, indexes)
+    except (SalvageIOError, SalvageError):
         raise
     except Exception:
         raise SalvageIOError("CENSUS_READ_FAILED") from None
@@ -132,7 +135,7 @@ def _sequence(value: object, label: str) -> list[object]:
     return value
 
 
-def run_synthetic_audit(value: object) -> dict[str, object]:
+def run_synthetic_audit(value: object) -> SalvageReport:
     """Execute the graph against one exact, non-production fixture schema."""
 
     if not isinstance(value, dict) or set(value) != {
@@ -149,14 +152,20 @@ def run_synthetic_audit(value: object) -> dict[str, object]:
     documents = _sequence(item["documents"], "documents")
     indexes = _sequence(item["indexes"], "indexes")
     writer = parse_writer_manifest(item["writer_manifest"])
-    census = read_registered_census(SyntheticCensusPort(documents, indexes))
+    reducer = SalvageReducer(started)
+    census = read_registered_census(
+        SyntheticCensusPort(documents, indexes),
+        lambda document: reducer.add(normalize_synthetic_document(document)),
+    )
     try:
-        normalized = tuple(normalize_synthetic_document(document) for document in census.documents)
         sanitized_indexes = sanitize_indexes(list(census.indexes))
     except MetadataError:
         raise SalvageError("invalid sanitized index catalog") from None
-    return build_salvage_report(
-        normalized,
+    counts = reducer.finish()
+    if census.census_count != counts.total_documents:
+        raise SalvageError("streamed census count does not reconcile")
+    return build_salvage_report_from_counts(
+        counts,
         sanitized_indexes,
         writer,
         started,

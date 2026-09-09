@@ -5,8 +5,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from collections import Counter, defaultdict
-from collections.abc import Mapping, Sequence
+from collections import Counter
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from typing import Literal, cast
@@ -565,125 +565,153 @@ def _group_size_label(size: int) -> str:
     return "gt_20"
 
 
-def aggregate_rows(rows: Sequence[SalvageRow], audit_started_at: datetime) -> SalvageCounts:
-    """Reduce ephemeral rows into order-invariant, aggregate-only counters."""
+class SalvageReducer:
+    """Consume normalized rows one at a time and retain aggregate state only."""
 
-    if audit_started_at.tzinfo is None:
-        raise SalvageError("audit_started_at must include timezone")
-    started = audit_started_at.astimezone(timezone.utc)
-    total = len(rows)
-    field_counters = [Counter[str]() for _ in PROJECTED_PATHS]
-    month_counts: Counter[str] = Counter()
-    lag_counts: Counter[str] = Counter()
-    provider_origins: Counter[str] = Counter()
-    provider_parse: Counter[str] = Counter()
-    text_classes: Counter[str] = Counter()
-    content_digests: set[str] = set()
-    url_groups: dict[str, list[str | None]] = defaultdict(list)
-    source_path_states = [Counter[str]() for _ in SOURCE_ID_PATHS]
-    source_origins: Counter[str] = Counter()
-    ticker_shapes: Counter[str] = Counter()
-    ticker_lengths: Counter[str] = Counter()
-    dedupe_groups: Counter[str] = Counter()
-    genuine = future = malformed = duplicate_rows = dedupe_missing = 0
+    def __init__(self, audit_started_at: datetime) -> None:
+        if audit_started_at.tzinfo is None:
+            raise SalvageError("audit_started_at must include timezone")
+        self.started = audit_started_at.astimezone(timezone.utc)
+        self.total = 0
+        self.field_counters = [Counter[str]() for _ in PROJECTED_PATHS]
+        self.month_counts: Counter[str] = Counter()
+        self.lag_counts: Counter[str] = Counter()
+        self.provider_origins: Counter[str] = Counter()
+        self.provider_parse: Counter[str] = Counter()
+        self.text_classes: Counter[str] = Counter()
+        self.content_digests: set[str] = set()
+        self.url_group_sizes: Counter[str] = Counter()
+        self.url_group_contents: dict[str, set[str]] = {}
+        self.source_path_states = [Counter[str]() for _ in SOURCE_ID_PATHS]
+        self.source_origins: Counter[str] = Counter()
+        self.ticker_shapes: Counter[str] = Counter()
+        self.ticker_lengths: Counter[str] = Counter()
+        self.dedupe_groups: Counter[str] = Counter()
+        self.genuine = 0
+        self.future = 0
+        self.malformed = 0
+        self.duplicate_rows = 0
+        self.dedupe_missing = 0
 
-    for row in rows:
+    def add(self, row: SalvageRow) -> None:
+        """Reduce one row without retaining the row or any raw projected document."""
+
+        self.total += 1
+        if self.total > CENSUS_CAP:
+            raise SalvageError("census exceeds registered bound")
         if len(row.field_types) != len(PROJECTED_PATHS):
             raise SalvageError("row field types do not match projection")
-        for counter, kind in zip(field_counters, row.field_types, strict=True):
+        for counter, kind in zip(self.field_counters, row.field_types, strict=True):
             counter[kind] += 1
         if row.id_time is not None:
-            genuine += 1
+            self.genuine += 1
             id_time = row.id_time.astimezone(timezone.utc)
-            month_counts[id_time.strftime("%Y-%m")] += 1
-            if id_time > started + timedelta(minutes=5):
-                future += 1
-            lag_counts[
+            self.month_counts[id_time.strftime("%Y-%m")] += 1
+            if id_time > self.started + timedelta(minutes=5):
+                self.future += 1
+            self.lag_counts[
                 "provider_day_unknown"
                 if row.provider_day is None
                 else _lag_label((id_time.date() - row.provider_day).days)
             ] += 1
-        provider_origins[row.provider_origin] += 1
-        provider_parse[row.provider_parse] += 1
-        text_classes[row.text_class] += 1
+        self.provider_origins[row.provider_origin] += 1
+        self.provider_parse[row.provider_parse] += 1
+        self.text_classes[row.text_class] += 1
         if row.content_digest is not None:
-            content_digests.add(row.content_digest)
+            self.content_digests.add(row.content_digest)
         if row.url_digest is not None:
-            url_groups[row.url_digest].append(row.content_digest)
-        for counter, state in zip(source_path_states, row.source_id_states, strict=True):
+            self.url_group_sizes[row.url_digest] += 1
+            if row.content_digest is not None:
+                self.url_group_contents.setdefault(row.url_digest, set()).add(
+                    row.content_digest
+                )
+        for counter, state in zip(self.source_path_states, row.source_id_states, strict=True):
             counter[state] += 1
-        source_origins[row.source_id_origin] += 1
-        ticker_shapes[row.ticker_shape] += 1
+        self.source_origins[row.source_id_origin] += 1
+        self.ticker_shapes[row.ticker_shape] += 1
         if row.ticker_length_bin is not None:
-            ticker_lengths[row.ticker_length_bin] += 1
-        malformed += row.ticker_malformed_elements
-        duplicate_rows += int(row.ticker_has_duplicate)
+            self.ticker_lengths[row.ticker_length_bin] += 1
+        self.malformed += row.ticker_malformed_elements
+        self.duplicate_rows += int(row.ticker_has_duplicate)
         if row.dedupe_digest is None:
-            dedupe_missing += 1
+            self.dedupe_missing += 1
         else:
-            dedupe_groups[row.dedupe_digest] += 1
+            self.dedupe_groups[row.dedupe_digest] += 1
 
-    repeated_size_counts: Counter[str] = Counter()
-    singleton_groups = repeated_groups = no_content = one_content = multiple_content = 0
-    for contents in url_groups.values():
-        size = len(contents)
-        if size == 1:
-            singleton_groups += 1
-            continue
-        repeated_groups += 1
-        repeated_size_counts[_group_size_label(size)] += 1
-        distinct_contents = {value for value in contents if value is not None}
-        if not distinct_contents:
-            no_content += 1
-        elif len(distinct_contents) == 1:
-            one_content += 1
-        else:
-            multiple_content += 1
+    def finish(self) -> SalvageCounts:
+        """Freeze and reconcile the aggregate state."""
 
-    fields = tuple(
-        PathTypeCounts(path, tuple(CountBin(kind, n) for kind, n in sorted(counter.items())))
-        for path, counter in zip(PROJECTED_PATHS, field_counters, strict=True)
-    )
-    source_paths = tuple(
-        SourceIdPathCounts(path, counter["missing"], counter["null"], counter["present"])
-        for path, counter in zip(SOURCE_ID_PATHS, source_path_states, strict=True)
-    )
-    result = SalvageCounts(
-        total,
-        fields,
-        genuine,
-        total - genuine,
-        tuple(CountBin(month, n) for month, n in sorted(month_counts.items())),
-        future,
-        _fixed_bins(lag_counts, LAG_LABELS),
-        _fixed_bins(provider_origins, (*PROVIDER_PATHS, "none")),
-        _fixed_bins(provider_parse, ("parsed", "invalid", "no_string")),
-        _fixed_bins(
-            text_classes, ("missing", "null", "string_empty", "string_nonempty", "non_string")
-        ),
-        len(content_digests),
-        sum(len(items) for items in url_groups.values()),
-        total - sum(len(items) for items in url_groups.values()),
-        len(url_groups),
-        singleton_groups,
-        repeated_groups,
-        no_content,
-        one_content,
-        multiple_content,
-        _fixed_bins(repeated_size_counts, URL_GROUP_LABELS),
-        source_paths,
-        _fixed_bins(source_origins, (*SOURCE_ID_PATHS, "none")),
-        _fixed_bins(ticker_shapes, ("missing", "non_array", "empty", "nonempty")),
-        _fixed_bins(ticker_lengths, TICKER_LENGTH_LABELS),
-        malformed,
-        duplicate_rows,
-        dedupe_missing,
-        total - dedupe_missing,
-        len(dedupe_groups),
-        sum(1 for n in dedupe_groups.values() if n > 1),
-    )
-    _validate_reconciliation(result)
-    return result
+        total = self.total
+        repeated_size_counts: Counter[str] = Counter()
+        singleton_groups = repeated_groups = no_content = one_content = multiple_content = 0
+        for url_digest, size in self.url_group_sizes.items():
+            if size == 1:
+                singleton_groups += 1
+                continue
+            repeated_groups += 1
+            repeated_size_counts[_group_size_label(size)] += 1
+            distinct_count = len(self.url_group_contents.get(url_digest, ()))
+            if distinct_count == 0:
+                no_content += 1
+            elif distinct_count == 1:
+                one_content += 1
+            else:
+                multiple_content += 1
+
+        fields = tuple(
+            PathTypeCounts(path, tuple(CountBin(kind, n) for kind, n in sorted(counter.items())))
+            for path, counter in zip(PROJECTED_PATHS, self.field_counters, strict=True)
+        )
+        source_paths = tuple(
+            SourceIdPathCounts(path, counter["missing"], counter["null"], counter["present"])
+            for path, counter in zip(SOURCE_ID_PATHS, self.source_path_states, strict=True)
+        )
+        result = SalvageCounts(
+            total,
+            fields,
+            self.genuine,
+            total - self.genuine,
+            tuple(CountBin(month, n) for month, n in sorted(self.month_counts.items())),
+            self.future,
+            _fixed_bins(self.lag_counts, LAG_LABELS),
+            _fixed_bins(self.provider_origins, (*PROVIDER_PATHS, "none")),
+            _fixed_bins(self.provider_parse, ("parsed", "invalid", "no_string")),
+            _fixed_bins(
+                self.text_classes,
+                ("missing", "null", "string_empty", "string_nonempty", "non_string"),
+            ),
+            len(self.content_digests),
+            sum(self.url_group_sizes.values()),
+            total - sum(self.url_group_sizes.values()),
+            len(self.url_group_sizes),
+            singleton_groups,
+            repeated_groups,
+            no_content,
+            one_content,
+            multiple_content,
+            _fixed_bins(repeated_size_counts, URL_GROUP_LABELS),
+            source_paths,
+            _fixed_bins(self.source_origins, (*SOURCE_ID_PATHS, "none")),
+            _fixed_bins(self.ticker_shapes, ("missing", "non_array", "empty", "nonempty")),
+            _fixed_bins(self.ticker_lengths, TICKER_LENGTH_LABELS),
+            self.malformed,
+            self.duplicate_rows,
+            self.dedupe_missing,
+            total - self.dedupe_missing,
+            len(self.dedupe_groups),
+            sum(1 for n in self.dedupe_groups.values() if n > 1),
+        )
+        _validate_reconciliation(result)
+        return result
+
+
+def aggregate_rows(rows: Iterable[SalvageRow], audit_started_at: datetime) -> SalvageCounts:
+    """Stream ephemeral rows into order-invariant, aggregate-only counters."""
+
+    reducer = SalvageReducer(audit_started_at)
+    for row in rows:
+        reducer.add(row)
+    return reducer.finish()
 
 
 def _validate_reconciliation(counts: SalvageCounts) -> None:
@@ -786,14 +814,99 @@ def _iso_utc(value: datetime) -> str:
     return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
-def build_salvage_report(
-    rows: Sequence[SalvageRow],
+@dataclass(frozen=True, slots=True)
+class SalvageReport:
+    """Immutable report state whose nested payload and hashes are derived afresh."""
+
+    counts: SalvageCounts
+    indexes: IndexCounts
+    writer: WriterManifest
+    audit_started_at: datetime
+    audit_completed_at: datetime
+    preliminary_count: int
+
+    def __getitem__(self, key: str) -> object:
+        """Expose a fresh derived value for read-only reporting consumers."""
+
+        return self.to_dict()[key]
+
+    @property
+    def scientific_assessment(self) -> DecisionState:
+        return assess_decision(self.counts, self.writer)
+
+    @property
+    def scientific_status(self) -> str:
+        return (
+            "BLOCKED_DECISION_CLOCK_BINDING"
+            if self.scientific_assessment == "RETROSPECTIVE_PROXY_CANDIDATE"
+            else "BLOCKED_SOURCE_AUDIT"
+        )
+
+    def to_dict(self) -> dict[str, object]:
+        evidence = {
+            **self.counts.to_dict(),
+            "indexes": self.indexes.to_dict(),
+            "writer_findings": self.writer.to_dict(),
+        }
+        total = self.counts.total_documents
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "graph": GRAPH,
+            "execution_mode": "synthetic",
+            "engineering_status": "PASS_SYNTHETIC_AUDIT_SCHEMA",
+            "scientific_assessment": self.scientific_assessment,
+            "assessment_semantics": "synthetic_lattice_exercise_not_source_evidence",
+            "scientific_status": self.scientific_status,
+            "decision_clock_authenticated": False,
+            "snapshot_verified": False,
+            "writer_runtime_evidence_authenticated": False,
+            "live_bson_semantics_validated": False,
+            "history_construction_permitted": False,
+            "training_permitted": False,
+            "outcome_access_permitted": False,
+            "model_fitting_performed": False,
+            "production_source_accessed": False,
+            "registered_contract": {
+                "path": CONTRACT_PATH,
+                "initial_registration_commit": INITIAL_REGISTRATION_COMMIT,
+                "initial_sha256": INITIAL_CONTRACT_SHA256,
+                "amendment_commit": AMENDMENT_COMMIT,
+                "sha256": CONTRACT_SHA256,
+            },
+            "source": {"database": DATABASE, "collection": COLLECTION},
+            "selection": {
+                "preliminary_count": self.preliminary_count,
+                "census_count": total,
+                "count_cursor_delta": total - self.preliminary_count,
+                "registered_cap": CENSUS_CAP,
+                "cursor_limit": CURSOR_LIMIT,
+                "sort": "ascending_id_not_event_time",
+                "projection": list(PROJECTED_PATHS),
+                "reads_atomic": False,
+                "complete_within_registered_bound": True,
+            },
+            "audit_metadata": {
+                "started_at": _iso_utc(self.audit_started_at),
+                "completed_at": _iso_utc(self.audit_completed_at),
+                "source_availability_semantics": False,
+            },
+            "pipeline_sha256": canonical_sha256(build_census_query_spec().to_dict()),
+            "writer_manifest_sha256": canonical_sha256(self.writer.to_dict()),
+            "evidence_sha256": canonical_sha256(evidence),
+            **evidence,
+        }
+
+
+def build_salvage_report_from_counts(
+    counts: SalvageCounts,
     indexes: IndexCounts,
     writer: WriterManifest,
     audit_started_at: datetime,
     audit_completed_at: datetime,
     preliminary_count: int,
-) -> dict[str, object]:
+) -> SalvageReport:
+    """Validate and freeze one report assembled from streamed aggregate counts."""
+
     if type(preliminary_count) is not int or not 0 <= preliminary_count <= CENSUS_CAP:
         raise SalvageError("invalid preliminary count")
     if audit_started_at.tzinfo is None or audit_completed_at.tzinfo is None:
@@ -802,125 +915,30 @@ def build_salvage_report(
     completed = audit_completed_at.astimezone(timezone.utc)
     if completed < started:
         raise SalvageError("invalid audit interval")
-    if len(rows) > CENSUS_CAP:
+    if counts.total_documents > CENSUS_CAP:
         raise SalvageError("census exceeds registered bound")
-    counts = aggregate_rows(rows, started)
-    state = assess_decision(counts, writer)
-    evidence = {
-        **counts.to_dict(),
-        "indexes": indexes.to_dict(),
-        "writer_findings": writer.to_dict(),
-    }
-    scientific_status = (
-        "BLOCKED_DECISION_CLOCK_BINDING"
-        if state == "RETROSPECTIVE_PROXY_CANDIDATE"
-        else "BLOCKED_SOURCE_AUDIT"
+    _validate_reconciliation(counts)
+    return SalvageReport(counts, indexes, writer, started, completed, preliminary_count)
+
+
+def build_salvage_report(
+    rows: Iterable[SalvageRow],
+    indexes: IndexCounts,
+    writer: WriterManifest,
+    audit_started_at: datetime,
+    audit_completed_at: datetime,
+    preliminary_count: int,
+) -> SalvageReport:
+    counts = aggregate_rows(rows, audit_started_at)
+    return build_salvage_report_from_counts(
+        counts, indexes, writer, audit_started_at, audit_completed_at, preliminary_count
     )
-    report: dict[str, object] = {
-        "schema_version": SCHEMA_VERSION,
-        "graph": GRAPH,
-        "execution_mode": "synthetic",
-        "engineering_status": "PASS_SYNTHETIC_AUDIT_SCHEMA",
-        "scientific_assessment": state,
-        "assessment_semantics": "synthetic_lattice_exercise_not_source_evidence",
-        "scientific_status": scientific_status,
-        "decision_clock_authenticated": False,
-        "snapshot_verified": False,
-        "writer_runtime_evidence_authenticated": False,
-        "live_bson_semantics_validated": False,
-        "history_construction_permitted": False,
-        "training_permitted": False,
-        "outcome_access_permitted": False,
-        "model_fitting_performed": False,
-        "production_source_accessed": False,
-        "registered_contract": {
-            "path": CONTRACT_PATH,
-            "initial_registration_commit": INITIAL_REGISTRATION_COMMIT,
-            "initial_sha256": INITIAL_CONTRACT_SHA256,
-            "amendment_commit": AMENDMENT_COMMIT,
-            "sha256": CONTRACT_SHA256,
-        },
-        "source": {"database": DATABASE, "collection": COLLECTION},
-        "selection": {
-            "preliminary_count": preliminary_count,
-            "census_count": len(rows),
-            "count_cursor_delta": len(rows) - preliminary_count,
-            "registered_cap": CENSUS_CAP,
-            "cursor_limit": CURSOR_LIMIT,
-            "sort": "ascending_id_not_event_time",
-            "projection": list(PROJECTED_PATHS),
-            "reads_atomic": False,
-            "complete_within_registered_bound": True,
-        },
-        "audit_metadata": {
-            "started_at": _iso_utc(started),
-            "completed_at": _iso_utc(completed),
-            "source_availability_semantics": False,
-        },
-        "pipeline_sha256": canonical_sha256(build_census_query_spec().to_dict()),
-        "writer_manifest_sha256": canonical_sha256(writer.to_dict()),
-        "evidence_sha256": canonical_sha256(evidence),
-        **evidence,
-    }
-    return report
 
 
-_REPORT_KEYS = {
-    "schema_version",
-    "graph",
-    "execution_mode",
-    "engineering_status",
-    "scientific_assessment",
-    "assessment_semantics",
-    "scientific_status",
-    "decision_clock_authenticated",
-    "snapshot_verified",
-    "writer_runtime_evidence_authenticated",
-    "live_bson_semantics_validated",
-    "history_construction_permitted",
-    "training_permitted",
-    "outcome_access_permitted",
-    "model_fitting_performed",
-    "production_source_accessed",
-    "registered_contract",
-    "source",
-    "selection",
-    "audit_metadata",
-    "pipeline_sha256",
-    "writer_manifest_sha256",
-    "evidence_sha256",
-    "total_documents",
-    "field_types",
-    "object_ids",
-    "provider_days",
-    "text",
-    "urls",
-    "source_ids",
-    "matched_tickers",
-    "dedupe_keys",
-    "reconciliation",
-    "indexes",
-    "writer_findings",
-}
-
-
-def serialize_salvage_report(report: Mapping[str, object]) -> str:
-    if set(report) != _REPORT_KEYS:
-        raise SalvageError("report keys violate aggregate-only schema")
-    for flag in (
-        "decision_clock_authenticated",
-        "snapshot_verified",
-        "writer_runtime_evidence_authenticated",
-        "live_bson_semantics_validated",
-        "history_construction_permitted",
-        "training_permitted",
-        "outcome_access_permitted",
-        "model_fitting_performed",
-        "production_source_accessed",
-    ):
-        if report[flag] is not False:
-            raise SalvageError("scientific promotion flag must remain false")
-    encoded = json.dumps(report, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
+def serialize_salvage_report(report: SalvageReport) -> str:
+    if type(report) is not SalvageReport:
+        raise SalvageError("serializer requires immutable SalvageReport")
+    encoded = json.dumps(report.to_dict(), sort_keys=True, indent=2, ensure_ascii=False) + "\n"
     lowered = encoded.lower()
     if any(fragment in lowered for fragment in _FORBIDDEN_REPORT_FRAGMENTS):
         raise SalvageError("report contains forbidden credential material")
