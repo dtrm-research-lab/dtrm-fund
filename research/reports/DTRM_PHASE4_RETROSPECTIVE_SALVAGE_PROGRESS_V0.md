@@ -98,3 +98,30 @@
   aggregate-only evidence. It is not a source conclusion: production access,
   history construction, training, outcomes, fitting and MM1 execution remain
   false and did not occur.
+
+## Synthetic implementation validation
+
+- Authoritative remote implementation commit:
+  `77d80fd47f8cb816d35d4040d8decf2e378b329f`; tree
+  `2e969eaaffd3f93e2b2c3a1a3d7973d4d02e68a6` exactly matched the locally
+  tested implementation tree before publication.
+- Added 80 unit and functional tests. The complete suite passed with 533 tests
+  and the three pre-existing dedicated-CI Mongo tests skipped locally. The new
+  tests cover every day-lag and group-size boundary, calendar parsing,
+  ObjectId/non-ObjectId and future-clock cases, exact UTF-8 hashing, URL/source
+  precedence, ticker/dedupe/version aggregates, reconciliation, immutability,
+  all decision states, cap races, bounded consumption, resource closure,
+  fixed-error redaction and CLI filesystem defenses.
+- Scoped Ruff passed; strict mypy passed for 16 files. All four synthetic
+  reports reproduced byte for byte, the 12-finding collector validator passed,
+  the wheel built from a disposable archive, and the 157 inherited files plus
+  original Stage-0 contract passed preservation before and after validation.
+- Synthetic report SHA-256:
+  `5c25ef1dd4eac262b36523cee31304fd50eceb8c36557dd7eefbc95f761abc7a`;
+  its pipeline and evidence hashes are
+  `4ae55be2684962e67c4b4843b417be1b337f95e70f00219a0712bcba67829114`
+  and `78cc1cd525b1990cc9f10352e78af11ecea4fdc86ca8bf09a65918f23488aca0`.
+- Full machine-readable evidence is recorded in
+  `DTRM_PHASE4_RETROSPECTIVE_SALVAGE_VALIDATION_V0.json`. Current-head remote
+  CI and human review remain pending. The unimplemented live tests are listed
+  explicitly; this increment makes no claim of completing the live audit.
