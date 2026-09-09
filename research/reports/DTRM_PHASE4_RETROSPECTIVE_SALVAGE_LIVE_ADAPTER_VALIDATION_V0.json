@@ -1,0 +1,62 @@
+{
+  "schema_version": "dtrm.phase4.retrospective_salvage_live_adapter_validation.v0",
+  "registration_commit": "13625046e8b258f085fab59966a31937786a5eec",
+  "registration_tree": "0fa23ee5990658faa577a4a6f1e43390eb0e9eae",
+  "parent_integration_commit": "a8bf5353f4fa46ad59d66faa980a1004276f97a8",
+  "contract_path": "research/contracts/DTRM_PHASE4_RETROSPECTIVE_SALVAGE_LIVE_ADAPTER_V0.md",
+  "contract_sha256": "f98ce5e5d22810618571725d1645806729da358ff7622a7c47150cdc3e5cfcad",
+  "agent_environment": {
+    "python": "3.12.14",
+    "full_suite_passed": 534,
+    "isolated_mongo_tests_skipped": 3,
+    "skip_reason": "Existing source-feasibility tests require the dedicated disposable CI Mongo service",
+    "ruff": "PASS",
+    "strict_mypy_source_files": 16,
+    "strict_mypy": "PASS",
+    "synthetic_reports_byte_identical": 4,
+    "collector_lineage_validator": "PASS",
+    "collector_lineage_findings": 12,
+    "disposable_wheel_build": "PASS",
+    "source_preservation_before_after": "PASS",
+    "inherited_files_preserved": 157
+  },
+  "registered_scope": {
+    "contract_only": true,
+    "adapter_implemented": false,
+    "production_configuration_inspected": false,
+    "database_driver_imported_for_registration": false,
+    "production_connection_attempted": false,
+    "source_queries_executed": 0,
+    "history_constructed": false,
+    "outcomes_accessed": false,
+    "model_fitting_performed": false,
+    "mm1_executed": false
+  },
+  "fixed_adapter_constraints": {
+    "production_operator": "user_only",
+    "configuration_keys": [
+      "MONGO_URI",
+      "db_password"
+    ],
+    "production_namespace": "trumpMinMax.trumpNews",
+    "read_only": true,
+    "majority_read_concern_without_downgrade": true,
+    "census_cap": 250000,
+    "cursor_limit": 250001,
+    "streamed_reduction": true,
+    "aggregate_only_report": true,
+    "writer_override_permitted": false,
+    "candidate_state_reachable": false
+  },
+  "ci_on_current_pr_head": {
+    "status": "PENDING_AFTER_EVIDENCE_COMMIT",
+    "rule": "Current-head Tests and Phase IV gates plus human review are required before integration"
+  },
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "decision_clock_authenticated": false,
+  "snapshot_verified": false,
+  "history_construction_permitted": false,
+  "training_permitted": false,
+  "outcome_access_permitted": false,
+  "human_review": "pending"
+}

@@ -168,3 +168,30 @@ The user supplied the following terminal output from their local Mac validation:
   skips; Ruff, strict mypy, three synthetic reproductions, lineage validator,
   disposable wheel build and pre/post source preservation all passed. Remote
   current-head CI and human review remain the integration gates.
+
+## 2026-09-09 — Retrospective-salvage live-adapter registration
+
+- PR #8 was integrated by merge commit
+  `a8bf5353f4fa46ad59d66faa980a1004276f97a8` only after its exact head passed
+  both workflows and both review findings were corrected and resolved.
+- Opened
+  `feature/phase4-retrospective-salvage-live-adapter-contract-v0` from that
+  merge and registered
+  `DTRM_PHASE4_RETROSPECTIVE_SALVAGE_LIVE_ADAPTER_V0.md` before implementation
+  or live execution.
+- The addendum fixes the user-local configuration, read-only Mongo transport,
+  exact streamed census, aggregate-only live report, disposable-CI boundary
+  and required tests. It accepts no writer-state override: existing static
+  evidence leaves material runtime fields unknown, so adapter v0 cannot emit a
+  candidate result.
+- No source configuration, credential, database, outcome, history, model or
+  MM1 execution was accessed. `BLOCKED_SOURCE_AUDIT`, no history construction
+  and no training remain in force. The next gate is validation and human review
+  of this registration, not implementation.
+- Remote registration `13625046e8b258f085fab59966a31937786a5eec`
+  preserves the contract at SHA-256
+  `f98ce5e5d22810618571725d1645806729da358ff7622a7c47150cdc3e5cfcad`.
+  Agent validation passed 534 tests with three expected disposable-CI skips,
+  scoped Ruff, strict mypy, four synthetic reproductions, the 12-finding
+  lineage validator, disposable wheel build and pre/post preservation of all
+  157 inherited files. Current-head CI and human review remain pending.
