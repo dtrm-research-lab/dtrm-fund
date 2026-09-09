@@ -46,3 +46,27 @@
   regression results only; current-head CI and human review remain pending.
 - Machine-readable evidence is recorded in
   `DTRM_PHASE4_RETROSPECTIVE_SALVAGE_LIVE_ADAPTER_VALIDATION_V0.json`.
+
+## Implementation after PR #9 integration
+
+- The user authorized integration and continuation. PR #9 was merged as
+  `d11b9cff62e656cb64664d126e48dca9381ffc7e`, retaining registration
+  `13625046e8b258f085fab59966a31937786a5eec` as an ancestor. The ancestry
+  review comment referred to a different review snapshot; the actual feature
+  head's direct parent was the registration. The evidence is recorded in the
+  PR review thread, which was resolved before merge.
+- Branch `feature/phase4-retrospective-salvage-live-adapter-v0` starts at that
+  merge. Implemented the separate live CLI, injected configuration/read
+  boundaries, genuine BSON classification, shared streamed derivations, fixed
+  static writer assessment and typed aggregate-only live serialization.
+- Production configuration is never inspected during development. Tests pass
+  explicit synthetic mappings; no production connection is attempted. The
+  implementation closes resources, redacts errors and third-party debug logs,
+  and publishes only a fully serialized report through exclusive creation.
+- Added 36 unit/functional-double cases plus three disposable-Mongo cases.
+  Initial scoped validation: 117 salvage tests pass; strict typing passes for
+  19 files. Full local regression initially stopped before test execution on a
+  native XGBoost library Bus error; the same dependency version is being
+  reinstalled in the isolated environment. This is not recorded as a pass.
+- Current-head CI, full regression and human implementation review remain
+  pending. No real-source evidence, history, outcome, fit or MM1 run occurred.

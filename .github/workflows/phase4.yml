@@ -27,6 +27,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install -r research/configs/phase4_quality_requirements.txt
+          python -m pip install -r research/configs/phase4_source_audit_requirements.txt
           python -m pip install numpy pandas scipy xgboost
       - name: Check inherited source and original contract
         run: python research/experiments/validate_phase4_source_preservation.py
@@ -84,4 +85,4 @@ jobs:
       - name: Install test-only dependencies
         run: python -m pip install pytest -r research/configs/phase4_source_audit_requirements.txt
       - name: Functional Mongo tests with synthetic records only
-        run: python -m pytest -q tests/test_phase4_source_feasibility_mongo.py
+        run: python -m pytest -q tests/test_phase4_source_feasibility_mongo.py tests/test_phase4_salvage_live_mongo.py
