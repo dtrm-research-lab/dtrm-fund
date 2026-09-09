@@ -1,0 +1,128 @@
+{
+  "audit_started_at": "2025-02-01T00:00:00Z",
+  "audit_completed_at": "2025-02-01T00:00:01Z",
+  "documents": [
+    {
+      "_id": {"$oid": "67810bc00000000000000001"},
+      "date": "2025-01-10",
+      "text": "Alpha exact text",
+      "source": "CONFIDENTIAL_SOURCE_ONE",
+      "matched_tickers": ["AAA", "BBB"],
+      "dedupe_key": "PRIVATE_DEDUPE_ONE",
+      "raw": {
+        "id": "PRIVATE_PROVIDER_ID_ONE",
+        "url": " https://news.invalid/a#first ",
+        "publishedDate": "2025-01-10T08:00:00"
+      }
+    },
+    {
+      "_id": {"$oid": "67825d400000000000000002"},
+      "text": "Alpha exact text",
+      "matched_tickers": ["AAA", "AAA", 7],
+      "dedupe_key": "PRIVATE_DEDUPE_ONE",
+      "raw": {
+        "articleId": "PRIVATE_PROVIDER_ID_TWO",
+        "url": "https://news.invalid/a#second",
+        "publishedDate": "2025-01-10"
+      }
+    },
+    {
+      "_id": {"$oid": "678e3ac00000000000000003"},
+      "text": "Beta exact text",
+      "matched_tickers": [],
+      "raw": {
+        "article_id": "PRIVATE_PROVIDER_ID_THREE",
+        "url": "https://news.invalid/d",
+        "publishedDate": "2025-01-10 trailing diagnostic text"
+      }
+    },
+    {
+      "_id": {"$oid": "679d65680000000000000004"},
+      "text": "",
+      "dedupe_key": null,
+      "raw": {
+        "link": "https://news.invalid/b#fragment",
+        "date": "2025-01-31"
+      }
+    },
+    {
+      "_id": {"$oid": "67728b400000000000000005"},
+      "date": "2025-01-01",
+      "text": null,
+      "matched_tickers": "AAA",
+      "dedupe_key": "PRIVATE_DEDUPE_TWO",
+      "raw": {"newsUrl": "https://news.invalid/c"}
+    },
+    {
+      "_id": "PRIVATE_LEGACY_ID",
+      "date": "not-a-calendar-day",
+      "text": 42,
+      "source": "CONFIDENTIAL_SOURCE_TWO",
+      "matched_tickers": ["CCC", "DDD", "EEE", "FFF", "GGG", "   "],
+      "dedupe_key": "PRIVATE_DEDUPE_TWO"
+    },
+    {
+      "_id": {"$oid": "6777d1400000000000000007"},
+      "text": "Gamma exact text",
+      "matched_tickers": [
+        "T01", "T02", "T03", "T04", "T05", "T06", "T07",
+        "T08", "T09", "T10", "T11", "T12", "T13", "T14",
+        "T15", "T16", "T17", "T18", "T19", "T20", "T21"
+      ],
+      "dedupe_key": "PRIVATE_DEDUPE_THREE",
+      "raw": {"newsUrl": "https://news.invalid/c#later"}
+    },
+    {
+      "_id": {"$oid": "6787a3400000000000000008"},
+      "text": "Delta exact text",
+      "matched_tickers": ["FFF"],
+      "dedupe_key": "PRIVATE_DEDUPE_FOUR",
+      "raw": {
+        "url": "https://news.invalid/d#changed",
+        "publishedDate": "invalid-even-though-next-path-is-valid",
+        "date": "2025-01-15"
+      }
+    },
+    {
+      "_id": {"$oid": "6787a3400000000000000009"},
+      "matched_tickers": null,
+      "dedupe_key": "PRIVATE_DEDUPE_FIVE",
+      "raw": {
+        "url": "https://news.invalid/e",
+        "publishedDate": "2025-01-16"
+      }
+    },
+    {
+      "_id": {"$oid": "6787a340000000000000000a"},
+      "text": null,
+      "matched_tickers": [],
+      "dedupe_key": "PRIVATE_DEDUPE_SIX",
+      "raw": {
+        "link": "https://news.invalid/e#second",
+        "publishedDate": "2025-01-13"
+      }
+    }
+  ],
+  "indexes": [
+    {"key": {"_id": 1}, "name": "synthetic_id"},
+    {"key": {"date": 1}, "name": "synthetic_date"},
+    {
+      "key": {"dedupe_key": 1},
+      "unique": true,
+      "sparse": true,
+      "name": "synthetic_dedupe"
+    }
+  ],
+  "writer_manifest": {
+    "mode": "synthetic_only",
+    "relevant_writers": "unknown",
+    "deployed_intervals": "unknown",
+    "id_assignment": "mongo_default",
+    "write_operations": "insert_only",
+    "atomic_text_tickers": "supported",
+    "later_mutation": "unknown",
+    "client_clock": "unknown",
+    "runtime_immutability": "unknown",
+    "write_authority": "unknown"
+  }
+}

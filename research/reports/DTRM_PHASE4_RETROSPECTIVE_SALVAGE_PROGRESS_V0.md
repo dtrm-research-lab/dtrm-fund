@@ -69,3 +69,32 @@
   all prior synthetic reports and the 12-finding lineage report reproduced;
   and the wheel built from a disposable archive. No implementation or live
   query occurred while making or validating these clarifications.
+
+## 2026-09-09 — Contract integration and synthetic graph implementation
+
+- The user authorized PR #7 integration by merge commit and continuation with
+  the synthetic implementation. Reviewed head
+  `d24f64e7179d76c55bdce992793ba09c07a01adb` was current and mergeable; both
+  current-head PR workflows passed and all three review threads were resolved.
+- PR #7 was integrated as merge commit
+  `92006f523fd100719e93f837ce5c697ae9a65e83`, with parents
+  `1912cc9685ad7cfaa584c031dd330a46cdac053c` and
+  `d24f64e7179d76c55bdce992793ba09c07a01adb`. Registration
+  `b38b3fc1851e1f636240e7fa418da2dcc933db8d` remains an ancestor. The 157-file
+  preservation gate passed after branching from the exact merge.
+- Opened `feature/phase4-retrospective-salvage-implementation-v0` from that
+  merge. Implemented immutable projected-row state, fixed query metadata,
+  deterministic provider-day/ObjectId diagnostics, exact content and URL
+  grouping, source-ID/ticker/dedupe counters, sanitized index reuse, complete
+  reconciliations and the exactly-one-state decision lattice.
+- The injected census boundary independently enforces the preliminary cap and
+  the cap-plus-one cursor stop, bounds index consumption and closes resources
+  on success and failure. Exceptions expose fixed codes only.
+- The CLI is synthetic-only and refuses overwrites and symlinks. It contains no
+  Mongo connector, driver import, environment lookup or dotenv loading. Live
+  source configuration and real-BSON/isolated-Mongo coverage remain explicitly
+  pending rather than being inferred from synthetic success.
+- The tracked ten-row fixture exercises a synthetic `PARTIAL` state and emits
+  aggregate-only evidence. It is not a source conclusion: production access,
+  history construction, training, outcomes, fitting and MM1 execution remain
+  false and did not occur.

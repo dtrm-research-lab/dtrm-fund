@@ -50,6 +50,10 @@ jobs:
         run: |
           python research/experiments/run_phase4_source_feasibility.py --synthetic-input tests/fixtures/phase4_source_feasibility_v0.json --output /tmp/phase4-source-feasibility.json
           cmp /tmp/phase4-source-feasibility.json research/reports/DTRM_PHASE4_SOURCE_FEASIBILITY_SYNTHETIC_V0.json
+      - name: Reproduce synthetic retrospective salvage report
+        run: |
+          python research/experiments/run_phase4_retrospective_salvage.py --synthetic-input tests/fixtures/phase4_retrospective_salvage_v0.json --output /tmp/phase4-retrospective-salvage.json
+          cmp /tmp/phase4-retrospective-salvage.json research/reports/DTRM_PHASE4_RETROSPECTIVE_SALVAGE_SYNTHETIC_V0.json
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)
