@@ -125,3 +125,30 @@
   `DTRM_PHASE4_RETROSPECTIVE_SALVAGE_VALIDATION_V0.json`. Current-head remote
   CI and human review remain pending. The unimplemented live tests are listed
   explicitly; this increment makes no claim of completing the live audit.
+
+## 2026-09-09 — PR #8 review hardening
+
+- Review found that the census boundary retained all projected documents until
+  cursor completion and that the serializer accepted a mutable nested mapping.
+  Both findings were treated as integration blockers despite prior green CI.
+- The census now normalizes and reduces each document before requesting the
+  next. It retains counters, distinct digests and hashed URL-group summaries
+  only; neither raw projected documents nor a second normalized census are
+  materialized. A regression test enforces consume-before-next semantics.
+- The final graph state is now a frozen `SalvageReport`. Serialization accepts
+  only that typed state and reconstructs the complete nested schema and all
+  hashes on every call. Mutated mappings, nested source injection and stale
+  hashes cannot enter the serializer.
+- Authoritative remote review-fix commit:
+  `d289f3c8ff67fbb68922c79deb9a1ed63cdd8e86`; tree
+  `af9a1614363d5291a2f84cf075bfba4475ca2e7d` exactly matched the locally
+  validated code tree before publication.
+- The focused suite passed 81 tests; the full suite passed 534 tests with the
+  same three expected dedicated-CI Mongo skips. Scoped Ruff and strict mypy
+  passed, the disposable wheel built, collector lineage passed with 12
+  findings, and source preservation passed before and after for all 157 frozen
+  files. The synthetic report remained byte-identical at SHA-256
+  `5c25ef1dd4eac262b36523cee31304fd50eceb8c36557dd7eefbc95f761abc7a`.
+- These changes harden memory, provenance and serialization boundaries only.
+  Scientific status remains `BLOCKED_SOURCE_AUDIT`; no production source,
+  outcome, training, fitting or MM1 execution occurred.
