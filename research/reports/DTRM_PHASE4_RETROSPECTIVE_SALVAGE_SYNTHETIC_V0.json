@@ -1,0 +1,532 @@
+{
+  "assessment_semantics": "synthetic_lattice_exercise_not_source_evidence",
+  "audit_metadata": {
+    "completed_at": "2025-02-01T00:00:01Z",
+    "source_availability_semantics": false,
+    "started_at": "2025-02-01T00:00:00Z"
+  },
+  "decision_clock_authenticated": false,
+  "dedupe_keys": {
+    "distinct_hashed_keys": 7,
+    "missing": 1,
+    "present": 9,
+    "repeated_key_groups": 2
+  },
+  "engineering_status": "PASS_SYNTHETIC_AUDIT_SCHEMA",
+  "evidence_sha256": "78cc1cd525b1990cc9f10352e78af11ecea4fdc86ca8bf09a65918f23488aca0",
+  "execution_mode": "synthetic",
+  "field_types": [
+    {
+      "path": "_id",
+      "types": [
+        {
+          "label": "objectId",
+          "n": 9
+        },
+        {
+          "label": "string",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "path": "date",
+      "types": [
+        {
+          "label": "missing",
+          "n": 7
+        },
+        {
+          "label": "string",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "path": "text",
+      "types": [
+        {
+          "label": "int",
+          "n": 1
+        },
+        {
+          "label": "missing",
+          "n": 1
+        },
+        {
+          "label": "null",
+          "n": 2
+        },
+        {
+          "label": "string",
+          "n": 6
+        }
+      ]
+    },
+    {
+      "path": "source",
+      "types": [
+        {
+          "label": "missing",
+          "n": 8
+        },
+        {
+          "label": "string",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "path": "matched_tickers",
+      "types": [
+        {
+          "label": "array",
+          "n": 7
+        },
+        {
+          "label": "missing",
+          "n": 1
+        },
+        {
+          "label": "null",
+          "n": 1
+        },
+        {
+          "label": "string",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "path": "dedupe_key",
+      "types": [
+        {
+          "label": "missing",
+          "n": 1
+        },
+        {
+          "label": "null",
+          "n": 1
+        },
+        {
+          "label": "string",
+          "n": 8
+        }
+      ]
+    },
+    {
+      "path": "raw.id",
+      "types": [
+        {
+          "label": "missing",
+          "n": 9
+        },
+        {
+          "label": "string",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "path": "raw.articleId",
+      "types": [
+        {
+          "label": "missing",
+          "n": 9
+        },
+        {
+          "label": "string",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "path": "raw.article_id",
+      "types": [
+        {
+          "label": "missing",
+          "n": 9
+        },
+        {
+          "label": "string",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "path": "raw.url",
+      "types": [
+        {
+          "label": "missing",
+          "n": 5
+        },
+        {
+          "label": "string",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "path": "raw.link",
+      "types": [
+        {
+          "label": "missing",
+          "n": 8
+        },
+        {
+          "label": "string",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "path": "raw.newsUrl",
+      "types": [
+        {
+          "label": "missing",
+          "n": 8
+        },
+        {
+          "label": "string",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "path": "raw.publishedDate",
+      "types": [
+        {
+          "label": "missing",
+          "n": 4
+        },
+        {
+          "label": "string",
+          "n": 6
+        }
+      ]
+    },
+    {
+      "path": "raw.date",
+      "types": [
+        {
+          "label": "missing",
+          "n": 8
+        },
+        {
+          "label": "string",
+          "n": 2
+        }
+      ]
+    }
+  ],
+  "graph": "phase4_retrospective_salvage_v0",
+  "history_construction_permitted": false,
+  "indexes": {
+    "date_ascending": 1,
+    "dedupe_ascending": 1,
+    "dedupe_unique_sparse_unqualified": 1,
+    "total": 3
+  },
+  "live_bson_semantics_validated": false,
+  "matched_tickers": {
+    "length_bins": [
+      {
+        "label": "1",
+        "n": 1
+      },
+      {
+        "label": "2_5",
+        "n": 2
+      },
+      {
+        "label": "6_20",
+        "n": 1
+      },
+      {
+        "label": "gt_20",
+        "n": 1
+      }
+    ],
+    "malformed_elements": 2,
+    "rows_with_exact_duplicates": 1,
+    "shapes": [
+      {
+        "label": "missing",
+        "n": 1
+      },
+      {
+        "label": "non_array",
+        "n": 2
+      },
+      {
+        "label": "empty",
+        "n": 2
+      },
+      {
+        "label": "nonempty",
+        "n": 5
+      }
+    ]
+  },
+  "model_fitting_performed": false,
+  "object_ids": {
+    "future_clock_anomalies": 1,
+    "genuine": 9,
+    "non_object_id": 1,
+    "provider_day_lag_bins": [
+      {
+        "label": "le_minus_2",
+        "n": 1
+      },
+      {
+        "label": "minus_1",
+        "n": 1
+      },
+      {
+        "label": "zero",
+        "n": 1
+      },
+      {
+        "label": "plus_1",
+        "n": 2
+      },
+      {
+        "label": "plus_2_7",
+        "n": 1
+      },
+      {
+        "label": "plus_8_30",
+        "n": 1
+      },
+      {
+        "label": "plus_31_365",
+        "n": 0
+      },
+      {
+        "label": "gt_365",
+        "n": 0
+      },
+      {
+        "label": "provider_day_unknown",
+        "n": 2
+      }
+    ],
+    "semantics": "synthetic_extended_json_not_live_bson_evidence",
+    "structurally_eligible": 9,
+    "utc_months": [
+      {
+        "label": "2024-12",
+        "n": 1
+      },
+      {
+        "label": "2025-01",
+        "n": 7
+      },
+      {
+        "label": "2025-02",
+        "n": 1
+      }
+    ]
+  },
+  "outcome_access_permitted": false,
+  "pipeline_sha256": "4ae55be2684962e67c4b4843b417be1b337f95e70f00219a0712bcba67829114",
+  "production_source_accessed": false,
+  "provider_days": {
+    "origins": [
+      {
+        "label": "raw.publishedDate",
+        "n": 6
+      },
+      {
+        "label": "raw.date",
+        "n": 1
+      },
+      {
+        "label": "date",
+        "n": 2
+      },
+      {
+        "label": "none",
+        "n": 1
+      }
+    ],
+    "parse": [
+      {
+        "label": "parsed",
+        "n": 7
+      },
+      {
+        "label": "invalid",
+        "n": 2
+      },
+      {
+        "label": "no_string",
+        "n": 1
+      }
+    ],
+    "semantics": "diagnostic_calendar_day_not_availability"
+  },
+  "reconciliation": {
+    "dedupe_rows": 10,
+    "field_paths_reconciled": 14,
+    "object_id_rows": 10,
+    "provider_origin_rows": 10,
+    "provider_parse_rows": 10,
+    "status": "PASS",
+    "text_rows": 10,
+    "ticker_rows": 10,
+    "total_documents": 10,
+    "url_rows": 10
+  },
+  "registered_contract": {
+    "amendment_commit": "a1e7ce59d9e99a0b7d36d3989664508536dbb0ae",
+    "initial_registration_commit": "b38b3fc1851e1f636240e7fa418da2dcc933db8d",
+    "initial_sha256": "e9ed93bcd39181f2037227eee39690b9259753a686b3f9e89614243f41d8e5c9",
+    "path": "research/contracts/DTRM_PHASE4_RETROSPECTIVE_SALVAGE_AUDIT_V0.md",
+    "sha256": "331ad4aaa2a60d4f2a3d172963e71052873d5942a475d4d3aa600d05495286f6"
+  },
+  "schema_version": "dtrm.phase4.retrospective_salvage.v0",
+  "scientific_assessment": "RETROSPECTIVE_PROXY_PARTIAL",
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "selection": {
+    "census_count": 10,
+    "complete_within_registered_bound": true,
+    "count_cursor_delta": 0,
+    "cursor_limit": 250001,
+    "preliminary_count": 10,
+    "projection": [
+      "_id",
+      "date",
+      "text",
+      "source",
+      "matched_tickers",
+      "dedupe_key",
+      "raw.id",
+      "raw.articleId",
+      "raw.article_id",
+      "raw.url",
+      "raw.link",
+      "raw.newsUrl",
+      "raw.publishedDate",
+      "raw.date"
+    ],
+    "reads_atomic": false,
+    "registered_cap": 250000,
+    "sort": "ascending_id_not_event_time"
+  },
+  "snapshot_verified": false,
+  "source": {
+    "collection": "trumpNews",
+    "database": "trumpMinMax"
+  },
+  "source_ids": {
+    "first_nonempty_string_origin": [
+      {
+        "label": "raw.id",
+        "n": 1
+      },
+      {
+        "label": "raw.articleId",
+        "n": 1
+      },
+      {
+        "label": "raw.article_id",
+        "n": 1
+      },
+      {
+        "label": "none",
+        "n": 7
+      }
+    ],
+    "mixed_with_url_identity": false,
+    "paths": [
+      {
+        "missing": 9,
+        "null": 0,
+        "path": "raw.id",
+        "present": 1
+      },
+      {
+        "missing": 9,
+        "null": 0,
+        "path": "raw.articleId",
+        "present": 1
+      },
+      {
+        "missing": 9,
+        "null": 0,
+        "path": "raw.article_id",
+        "present": 1
+      }
+    ]
+  },
+  "text": {
+    "classes": [
+      {
+        "label": "missing",
+        "n": 1
+      },
+      {
+        "label": "null",
+        "n": 2
+      },
+      {
+        "label": "string_empty",
+        "n": 1
+      },
+      {
+        "label": "string_nonempty",
+        "n": 5
+      },
+      {
+        "label": "non_string",
+        "n": 1
+      }
+    ],
+    "distinct_exact_utf8_sha256": 5
+  },
+  "total_documents": 10,
+  "training_permitted": false,
+  "urls": {
+    "distinct_hashed_groups": 5,
+    "keyed_rows": 9,
+    "repeated_group_size_bins": [
+      {
+        "label": "2",
+        "n": 4
+      },
+      {
+        "label": "3_5",
+        "n": 0
+      },
+      {
+        "label": "6_20",
+        "n": 0
+      },
+      {
+        "label": "gt_20",
+        "n": 0
+      }
+    ],
+    "repeated_groups": 4,
+    "repeated_groups_with_multiple_content_digests": 1,
+    "repeated_groups_with_no_content_digest": 1,
+    "repeated_groups_with_one_content_digest": 2,
+    "singleton_groups": 1,
+    "unkeyed_rows": 1
+  },
+  "writer_findings": {
+    "atomic_text_tickers": "supported",
+    "client_clock": "unknown",
+    "deployed_intervals": "unknown",
+    "id_assignment": "mongo_default",
+    "later_mutation": "unknown",
+    "mode": "synthetic_only",
+    "relevant_writers": "unknown",
+    "runtime_immutability": "unknown",
+    "write_authority": "unknown",
+    "write_operations": "insert_only"
+  },
+  "writer_manifest_sha256": "3f0c5a5ecb2568071777a3c25cb2571b0fbb3878847fb566e0138c7d30382799",
+  "writer_runtime_evidence_authenticated": false
+}

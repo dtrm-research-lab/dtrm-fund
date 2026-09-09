@@ -1,0 +1,58 @@
+{
+  "schema_version": "dtrm.phase4.retrospective_salvage_validation.v0",
+  "initial_preregistration_commit": "b38b3fc1851e1f636240e7fa418da2dcc933db8d",
+  "contract_amendment_commit": "a1e7ce59d9e99a0b7d36d3989664508536dbb0ae",
+  "contract_integration_commit": "92006f523fd100719e93f837ce5c697ae9a65e83",
+  "tested_implementation_commit": "d289f3c8ff67fbb68922c79deb9a1ed63cdd8e86",
+  "tested_tree": "af9a1614363d5291a2f84cf075bfba4475ca2e7d",
+  "contract_sha256": "331ad4aaa2a60d4f2a3d172963e71052873d5942a475d4d3aa600d05495286f6",
+  "synthetic_fixture_sha256": "96c3d771732ab790145401535f5e906ba95f90d8446589e1d710265c3d4fbd25",
+  "synthetic_report_sha256": "5c25ef1dd4eac262b36523cee31304fd50eceb8c36557dd7eefbc95f761abc7a",
+  "synthetic_pipeline_sha256": "4ae55be2684962e67c4b4843b417be1b337f95e70f00219a0712bcba67829114",
+  "synthetic_evidence_sha256": "78cc1cd525b1990cc9f10352e78af11ecea4fdc86ca8bf09a65918f23488aca0",
+  "agent_environment": {
+    "python": "3.12.14",
+    "unit_functional_new_passed": 81,
+    "full_suite_passed": 534,
+    "isolated_mongo_tests_skipped": 3,
+    "skip_reason": "Existing source-feasibility tests require the dedicated disposable CI Mongo service",
+    "ruff": "PASS",
+    "strict_mypy_source_files": 16,
+    "strict_mypy": "PASS",
+    "synthetic_reports_byte_identical": 4,
+    "collector_lineage_validator": "PASS",
+    "disposable_wheel_build": "PASS",
+    "source_preservation_before_after": "PASS",
+    "inherited_files_preserved": 157
+  },
+  "implemented_scope": {
+    "execution_mode": "synthetic_only",
+    "production_connector_present": false,
+    "configuration_or_environment_read": false,
+    "database_driver_imported_by_salvage_graph": false,
+    "production_connection_attempted": false,
+    "source_queries_executed": 0,
+    "source_values_in_report": false,
+    "synthetic_assessment": "RETROSPECTIVE_PROXY_PARTIAL",
+    "assessment_is_source_evidence": false
+  },
+  "deferred_live_contract_tests": {
+    "missing_configuration_before_driver_import": "PENDING_LIVE_ADAPTER",
+    "explicit_dotenv_no_override": "PENDING_LIVE_ADAPTER",
+    "real_bson_objectid_semantics": "PENDING_LIVE_ADAPTER",
+    "majority_preferred_read_behavior": "PENDING_LIVE_ADAPTER",
+    "isolated_mongo_exact_projection": "PENDING_LIVE_ADAPTER"
+  },
+  "ci_on_current_pr_head": {
+    "status": "PENDING_AFTER_REVIEW_FIX_EVIDENCE_COMMIT",
+    "rule": "Current-head Tests and Phase IV gates plus human review are required before integration"
+  },
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "decision_clock_authenticated": false,
+  "snapshot_verified": false,
+  "history_construction_permitted": false,
+  "training_permitted": false,
+  "outcome_access_permitted": false,
+  "model_fitting_performed": false,
+  "human_review": "pending"
+}

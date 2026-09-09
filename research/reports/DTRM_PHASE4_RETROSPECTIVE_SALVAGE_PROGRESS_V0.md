@@ -69,3 +69,86 @@
   all prior synthetic reports and the 12-finding lineage report reproduced;
   and the wheel built from a disposable archive. No implementation or live
   query occurred while making or validating these clarifications.
+
+## 2026-09-09 — Contract integration and synthetic graph implementation
+
+- The user authorized PR #7 integration by merge commit and continuation with
+  the synthetic implementation. Reviewed head
+  `d24f64e7179d76c55bdce992793ba09c07a01adb` was current and mergeable; both
+  current-head PR workflows passed and all three review threads were resolved.
+- PR #7 was integrated as merge commit
+  `92006f523fd100719e93f837ce5c697ae9a65e83`, with parents
+  `1912cc9685ad7cfaa584c031dd330a46cdac053c` and
+  `d24f64e7179d76c55bdce992793ba09c07a01adb`. Registration
+  `b38b3fc1851e1f636240e7fa418da2dcc933db8d` remains an ancestor. The 157-file
+  preservation gate passed after branching from the exact merge.
+- Opened `feature/phase4-retrospective-salvage-implementation-v0` from that
+  merge. Implemented immutable projected-row state, fixed query metadata,
+  deterministic provider-day/ObjectId diagnostics, exact content and URL
+  grouping, source-ID/ticker/dedupe counters, sanitized index reuse, complete
+  reconciliations and the exactly-one-state decision lattice.
+- The injected census boundary independently enforces the preliminary cap and
+  the cap-plus-one cursor stop, bounds index consumption and closes resources
+  on success and failure. Exceptions expose fixed codes only.
+- The CLI is synthetic-only and refuses overwrites and symlinks. It contains no
+  Mongo connector, driver import, environment lookup or dotenv loading. Live
+  source configuration and real-BSON/isolated-Mongo coverage remain explicitly
+  pending rather than being inferred from synthetic success.
+- The tracked ten-row fixture exercises a synthetic `PARTIAL` state and emits
+  aggregate-only evidence. It is not a source conclusion: production access,
+  history construction, training, outcomes, fitting and MM1 execution remain
+  false and did not occur.
+
+## Synthetic implementation validation
+
+- Authoritative remote implementation commit:
+  `77d80fd47f8cb816d35d4040d8decf2e378b329f`; tree
+  `2e969eaaffd3f93e2b2c3a1a3d7973d4d02e68a6` exactly matched the locally
+  tested implementation tree before publication.
+- Added 80 unit and functional tests. The complete suite passed with 533 tests
+  and the three pre-existing dedicated-CI Mongo tests skipped locally. The new
+  tests cover every day-lag and group-size boundary, calendar parsing,
+  ObjectId/non-ObjectId and future-clock cases, exact UTF-8 hashing, URL/source
+  precedence, ticker/dedupe/version aggregates, reconciliation, immutability,
+  all decision states, cap races, bounded consumption, resource closure,
+  fixed-error redaction and CLI filesystem defenses.
+- Scoped Ruff passed; strict mypy passed for 16 files. All four synthetic
+  reports reproduced byte for byte, the 12-finding collector validator passed,
+  the wheel built from a disposable archive, and the 157 inherited files plus
+  original Stage-0 contract passed preservation before and after validation.
+- Synthetic report SHA-256:
+  `5c25ef1dd4eac262b36523cee31304fd50eceb8c36557dd7eefbc95f761abc7a`;
+  its pipeline and evidence hashes are
+  `4ae55be2684962e67c4b4843b417be1b337f95e70f00219a0712bcba67829114`
+  and `78cc1cd525b1990cc9f10352e78af11ecea4fdc86ca8bf09a65918f23488aca0`.
+- Full machine-readable evidence is recorded in
+  `DTRM_PHASE4_RETROSPECTIVE_SALVAGE_VALIDATION_V0.json`. Current-head remote
+  CI and human review remain pending. The unimplemented live tests are listed
+  explicitly; this increment makes no claim of completing the live audit.
+
+## 2026-09-09 — PR #8 review hardening
+
+- Review found that the census boundary retained all projected documents until
+  cursor completion and that the serializer accepted a mutable nested mapping.
+  Both findings were treated as integration blockers despite prior green CI.
+- The census now normalizes and reduces each document before requesting the
+  next. It retains counters, distinct digests and hashed URL-group summaries
+  only; neither raw projected documents nor a second normalized census are
+  materialized. A regression test enforces consume-before-next semantics.
+- The final graph state is now a frozen `SalvageReport`. Serialization accepts
+  only that typed state and reconstructs the complete nested schema and all
+  hashes on every call. Mutated mappings, nested source injection and stale
+  hashes cannot enter the serializer.
+- Authoritative remote review-fix commit:
+  `d289f3c8ff67fbb68922c79deb9a1ed63cdd8e86`; tree
+  `af9a1614363d5291a2f84cf075bfba4475ca2e7d` exactly matched the locally
+  validated code tree before publication.
+- The focused suite passed 81 tests; the full suite passed 534 tests with the
+  same three expected dedicated-CI Mongo skips. Scoped Ruff and strict mypy
+  passed, the disposable wheel built, collector lineage passed with 12
+  findings, and source preservation passed before and after for all 157 frozen
+  files. The synthetic report remained byte-identical at SHA-256
+  `5c25ef1dd4eac262b36523cee31304fd50eceb8c36557dd7eefbc95f761abc7a`.
+- These changes harden memory, provenance and serialization boundaries only.
+  Scientific status remains `BLOCKED_SOURCE_AUDIT`; no production source,
+  outcome, training, fitting or MM1 execution occurred.
