@@ -1,5 +1,6 @@
 """Live-adapter tests using injected configuration/clients, never operator secrets."""
 
+import ast
 import hashlib
 import importlib
 import json
@@ -349,3 +350,27 @@ def test_driver_loading_uses_majority_with_injected_modules():
                                      "MONGO_URI": io.LOCAL_URI}, importer)
     assert ("options", {"read_concern": "majority"}) in client.calls
     assert result.isolated_test
+
+
+def test_bson_code_is_not_plain_string():
+    bson = pytest.importorskip("bson")
+    row = io.BSONCodec().normalize({"_id": 1, "text": bson.Code("private"),
+                                    "raw": {"url": bson.Code("private"),
+                                            "publishedDate": bson.Code("2025-01-01")},
+                                    "matched_tickers": [bson.Code("private")]})
+    assert row.text_class == "non_string"
+    assert row.content_digest is None and row.url_digest is None
+    assert row.provider_day is None
+    assert row.ticker_malformed_elements == 1
+
+
+def test_transport_has_no_write_calls_and_hashes_recompute(report):
+    tree = ast.parse((ROOT / "src/dtrm/phase4/salvage_live_io.py").read_text())
+    calls = {node.func.attr for node in ast.walk(tree)
+             if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)}
+    assert not calls & {"insert_one", "insert_many", "update_one", "update_many", "replace_one",
+                        "delete_one", "delete_many", "bulk_write", "create_index", "drop", "aggregate"}
+    value = json.loads(serialize_live_report(report))
+    evidence = {key: value[key] for key in (*report.counts.to_dict(), "indexes", "writer_findings")}
+    from dtrm.phase4.source_metadata import canonical_sha256
+    assert value["evidence_sha256"] == canonical_sha256(evidence)

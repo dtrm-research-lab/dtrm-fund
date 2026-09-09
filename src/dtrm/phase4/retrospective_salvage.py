@@ -408,7 +408,7 @@ def _canonical_value_digest(value: object) -> str:
 def _provider_day(document: Mapping[str, object]) -> tuple[date | None, str, str]:
     for path in PROVIDER_PATHS:
         value = _path_value(document, path)
-        if isinstance(value, str):
+        if type(value) is str:
             match = _LEADING_DAY.match(value)
             if match is None:
                 return None, path, "invalid"
@@ -424,7 +424,7 @@ def _first_nonempty_string(
 ) -> tuple[str | None, str]:
     for path in paths:
         value = _path_value(document, path)
-        if isinstance(value, str) and value.strip():
+        if type(value) is str and value.strip():
             return value.strip(), path
     return None, "none"
 
@@ -445,7 +445,7 @@ def _ticker_observation(value: object) -> tuple[str, str | None, int, bool]:
         length_bin = "6_20"
     else:
         length_bin = "gt_20"
-    valid = [item for item in value if isinstance(item, str) and bool(item.strip())]
+    valid = [item for item in value if type(item) is str and bool(item.strip())]
     malformed = size - len(valid)
     duplicate = len(valid) != len(set(valid))
     return "nonempty", length_bin, malformed, duplicate
@@ -498,7 +498,7 @@ def normalize_projected_document(
         text_class, content_digest = "missing", None
     elif text is None:
         text_class, content_digest = "null", None
-    elif isinstance(text, str):
+    elif type(text) is str:
         text_class = "string_empty" if text == "" else "string_nonempty"
         content_digest = _sha256_text(text)
     else:
