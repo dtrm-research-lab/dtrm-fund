@@ -255,3 +255,8 @@ The user supplied the following terminal output from their local Mac validation:
   outcome-blind preregistration for ticker element shape, writer/runtime
   evidence and conservative ObjectId chronology rules before any history is
   built. See the live report, intake validation and interpretation records.
+- PR #11 corrected the interpretation to generation-day—not authenticated
+  insertion—semantics and limited the provider-ID conclusion to the three
+  audited paths. Corrected-head CI passed 580 tests, six disposable-Mongo
+  tests, scoped quality gates, reproductions, lineage, wheel and preservation;
+  both review findings are resolved.

@@ -191,3 +191,10 @@
   remains required for confirmatory Phase IV. Any retrospective chronology is
   exploratory/development-only and needs a separate outcome-blind registration
   closing ticker element shape and writer/runtime provenance first.
+- PR #11 corrected two review overstatements: ObjectId/provider-day bins are
+  generation-day deltas that neither authenticate insertion nor prove backfill,
+  and zero provider IDs applies only to the three audited paths. Corrected head
+  `003da68d06775da495ab98a7f39849ff6aee4c1f`, tree
+  `6318ea5d058329b8dc055734e6812c20bb0dd962`, passed 580 tests plus all six
+  disposable-Mongo tests, Ruff, strict mypy, four reproductions, lineage,
+  wheel and pre/post preservation. Both review threads are resolved.

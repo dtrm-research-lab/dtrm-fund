@@ -42,5 +42,23 @@
   "outcome_access_permitted": false,
   "training_permitted": false,
   "production_source_accessed_by_operator": true,
-  "production_source_accessed_by_agent": false
+  "production_source_accessed_by_agent": false,
+  "repository_validation": {
+    "tested_remote_commit": "003da68d06775da495ab98a7f39849ff6aee4c1f",
+    "tested_tree": "6318ea5d058329b8dc055734e6812c20bb0dd962",
+    "tests_workflow_run": 34528211427,
+    "phase4_workflow_run": 34528211327,
+    "regression_passed": 580,
+    "ordinary_skips_exercised_in_mongo_job": 6,
+    "disposable_mongo_passed": 6,
+    "ruff": "PASS",
+    "strict_mypy_files": 19,
+    "synthetic_reproductions": 4,
+    "collector_lineage": "PASS",
+    "wheel_build": "PASS",
+    "source_preservation_before_after": "PASS",
+    "inherited_files": 157,
+    "review_findings_corrected": 2,
+    "review_threads_unresolved": 0
+  }
 }
