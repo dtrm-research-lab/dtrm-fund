@@ -1,0 +1,43 @@
+{
+  "schema_version": "dtrm.phase4.prospective_capture_validation.v0",
+  "graph": "phase4_prospective_capture_protocol_v0",
+  "validated_commit": "3dda1a39946fd2d073a99d846f610f9d671774f9",
+  "validated_tree": "54dc4b275897c69e098bb0f4518014fb7fba3abf",
+  "registration": {
+    "protocol_commit": "85c02cca5a477b6c68b43dbac35d517e58f66518",
+    "protocol_sha256": "a343f076a9713b5e1b037cf83ecc864d9bc4308a9592bef0dabeafa00617e629",
+    "synthetic_binding_commit": "d058b02fcf2e28c4987954876433b6efa695ab06",
+    "synthetic_binding_sha256": "0ec92acb50d3011063db595e6bc026b99bd9847f8d6e4dcc080ab5266ea65e31",
+    "implementation_descends_from_both": true
+  },
+  "validation": {
+    "targeted_tests_passed": 44,
+    "full_tests_passed": 624,
+    "full_tests_skipped": 6,
+    "ruff": "PASS",
+    "strict_mypy_files": 21,
+    "synthetic_reproductions": 5,
+    "collector_lineage_findings_validated": 12,
+    "wheel_build": "PASS",
+    "source_preservation_before_after": "PASS",
+    "inherited_files_verified": 157
+  },
+  "execution_boundary": {
+    "dataset_role": "synthetic",
+    "production_source_accessed": false,
+    "production_collector_modified": false,
+    "mongo_accessed": false,
+    "network_source_accessed": false,
+    "outcomes_accessed": false,
+    "model_fitting_performed": false
+  },
+  "engineering_status": "PASS_LOCAL_SYNTHETIC_VALIDATION",
+  "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+  "source_authenticated": false,
+  "collector_deployed": false,
+  "clock_authenticated": false,
+  "coverage_authenticated": false,
+  "history_construction_permitted": false,
+  "training_permitted": false,
+  "outcome_access_permitted": false
+}
