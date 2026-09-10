@@ -470,12 +470,14 @@ def normalize_synthetic_document(value: object) -> SalvageRow:
 
     identifier = document["_id"]
     id_time = identifier.generation_time if isinstance(identifier, SyntheticObjectId) else None
-    return normalize_projected_document(document, _bson_type, id_time, _canonical_value_digest)
+    return normalize_projected_document(
+        document, lambda _path, item: _bson_type(item), id_time, _canonical_value_digest,
+    )
 
 
 def normalize_projected_document(
     value: object,
-    type_name: Callable[[object], str],
+    type_name: Callable[[str, object], str],
     id_time: datetime | None,
     dedupe_hash: Callable[[object], str],
 ) -> SalvageRow:
@@ -488,7 +490,7 @@ def normalize_projected_document(
     if isinstance(raw, dict) and not set(raw) <= RAW_PATHS:
         raise SalvageError("document.raw: unexpected projected key")
     field_types = tuple(
-        "missing" if (item := _path_value(document, path)) is _MISSING else type_name(item)
+        "missing" if (item := _path_value(document, path)) is _MISSING else type_name(path, item)
         for path in PROJECTED_PATHS
     )
     provider_day, provider_origin, provider_parse = _provider_day(document)

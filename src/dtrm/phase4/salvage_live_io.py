@@ -9,6 +9,7 @@ import logging
 import os
 from collections.abc import Callable, Mapping
 from contextlib import contextmanager
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from types import ModuleType
@@ -27,6 +28,140 @@ from dtrm.phase4.source_metadata import COLLECTION, DATABASE, MetadataError
 
 LOCAL_URI = "mongodb://127.0.0.1:27017/?directConnection=true"
 Importer = Callable[[str], ModuleType]
+
+_WIRE_NAMES = {
+    1: "double", 2: "string", 3: "object", 4: "array", 5: "binData",
+    6: "undefined", 7: "objectId", 8: "bool", 9: "date", 10: "null",
+    11: "regex", 12: "dbPointer", 13: "javascript", 14: "symbol",
+    15: "javascriptWithScope", 16: "int", 17: "timestamp", 18: "long",
+    19: "decimal", 127: "maxKey", 255: "minKey",
+}
+
+
+@dataclass(frozen=True, slots=True)
+class _WireNode:
+    code: int
+    payload: bytes
+    children: tuple[tuple[str, _WireNode], ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class _OpaqueBSON:
+    """A decoded value whose legacy wire type would otherwise be erased."""
+
+    code: int
+    payload: bytes
+
+
+def _int32(raw: bytes, position: int, limit: int) -> int:
+    if position + 4 > limit:
+        raise domain.SalvageError("invalid raw BSON")
+    return int.from_bytes(raw[position:position + 4], "little", signed=True)
+
+
+def _cstring_end(raw: bytes, position: int, limit: int) -> int:
+    end = raw.find(b"\0", position, limit)
+    if end < 0:
+        raise domain.SalvageError("invalid raw BSON")
+    return end
+
+
+def _sized_end(raw: bytes, position: int, limit: int, minimum: int = 1) -> int:
+    size = _int32(raw, position, limit)
+    end = position + 4 + size
+    if size < minimum or end > limit or raw[end - 1] != 0:
+        raise domain.SalvageError("invalid raw BSON")
+    return end
+
+
+def _value_end(code: int, raw: bytes, position: int, limit: int) -> int:
+    fixed = {1: 8, 7: 12, 8: 1, 9: 8, 16: 4, 17: 8, 18: 8, 19: 16}
+    if code in fixed:
+        end = position + fixed[code]
+    elif code in (6, 10, 127, 255):
+        end = position
+    elif code in (2, 13, 14):
+        end = _sized_end(raw, position, limit)
+    elif code in (3, 4, 15):
+        size = _int32(raw, position, limit)
+        end = position + size
+        if size < 5 or end > limit or raw[end - 1] != 0:
+            raise domain.SalvageError("invalid raw BSON")
+    elif code == 5:
+        size = _int32(raw, position, limit)
+        end = position + 5 + size
+        if size < 0:
+            raise domain.SalvageError("invalid raw BSON")
+    elif code == 11:
+        end = _cstring_end(raw, position, limit) + 1
+        end = _cstring_end(raw, end, limit) + 1
+    elif code == 12:
+        end = _sized_end(raw, position, limit) + 12
+    else:
+        raise domain.SalvageError("unsupported BSON type")
+    if end > limit:
+        raise domain.SalvageError("invalid raw BSON")
+    return end
+
+
+def _parse_wire_document(raw: bytes) -> dict[str, _WireNode]:
+    if len(raw) < 5 or _int32(raw, 0, len(raw)) != len(raw) or raw[-1] != 0:
+        raise domain.SalvageError("invalid raw BSON")
+    result: dict[str, _WireNode] = {}
+    position = 4
+    limit = len(raw) - 1
+    while position < limit:
+        code = raw[position]
+        name_end = _cstring_end(raw, position + 1, limit)
+        try:
+            name = raw[position + 1:name_end].decode("utf-8")
+        except UnicodeDecodeError:
+            raise domain.SalvageError("invalid raw BSON") from None
+        if not name or name in result:
+            raise domain.SalvageError("invalid raw BSON")
+        start = name_end + 1
+        end = _value_end(code, raw, start, limit)
+        payload = raw[start:end]
+        children = tuple(_parse_wire_document(payload).items()) if code in (3, 4) else ()
+        result[name] = _WireNode(code, payload, children)
+        position = end
+    if position != limit:
+        raise domain.SalvageError("invalid raw BSON")
+    return result
+
+
+def _restore_value(value: object, node: _WireNode) -> object:
+    if node.code in (6, 14):
+        return _OpaqueBSON(node.code, node.payload)
+    children = dict(node.children)
+    if node.code == 3:
+        if not isinstance(value, Mapping) or set(value) != set(children):
+            raise domain.SalvageError("invalid decoded BSON document")
+        return {key: _restore_value(value[key], children[key]) for key in value}
+    if node.code == 4:
+        if not isinstance(value, list) or tuple(children) != tuple(map(str, range(len(value)))):
+            raise domain.SalvageError("invalid decoded BSON array")
+        return [_restore_value(item, children[str(index)]) for index, item in enumerate(value)]
+    return value
+
+
+def _restore_document(value: Mapping[str, object], nodes: dict[str, _WireNode]) -> dict[str, object]:
+    if set(value) != set(nodes):
+        raise domain.SalvageError("invalid decoded BSON document")
+    return {key: _restore_value(value[key], nodes[key]) for key in value}
+
+
+def _node_at(nodes: dict[str, _WireNode], path: str) -> _WireNode:
+    current = nodes
+    node: _WireNode | None = None
+    for part in path.split("."):
+        node = current.get(part)
+        if node is None:
+            raise domain.SalvageError("wire path mismatch")
+        current = dict(node.children)
+    if node is None:
+        raise domain.SalvageError("empty wire path")
+    return node
 
 
 def configured_uri(
@@ -67,23 +202,24 @@ class BSONCodec:
     def __init__(self, importer: Importer = importlib.import_module) -> None:
         self.bson = importer("bson")
         self.json_util = importer("bson.json_util")
+        raw_bson = importer("bson.raw_bson")
+        codec_options = importer("bson.codec_options")
+        self.raw_document = raw_bson.RawBSONDocument
+        self.codec_options = codec_options.CodecOptions(document_class=self.raw_document)
 
     def type_name(self, value: object) -> str:
         # First element's wire type distinguishes e.g. Int64(1) from int32(1).
         wire = self.bson.BSON.encode({"v": value})
-        names = {
-            1: "double", 2: "string", 3: "object", 4: "array", 5: "binData",
-            7: "objectId", 8: "bool", 9: "date", 10: "null", 11: "regex",
-            12: "dbPointer", 13: "javascript", 15: "javascriptWithScope",
-            16: "int", 17: "timestamp", 18: "long", 19: "decimal",
-            127: "maxKey", 255: "minKey",
-        }
-        if wire[4] not in names:
+        if wire[4] not in _WIRE_NAMES:
             raise domain.SalvageError("unsupported BSON type")
-        return names[wire[4]]
+        return _WIRE_NAMES[wire[4]]
 
     def dedupe_digest(self, value: object) -> str:
         # Preserve existing JSON-compatible hashing; extended BSON stays type-tagged.
+        if isinstance(value, _OpaqueBSON):
+            return hashlib.sha256(
+                b"dtrm-bson-wire-v0\0" + bytes((value.code,)) + value.payload,
+            ).hexdigest()
         kind = self.type_name(value)
         try:
             encoded = json.dumps({"bson_type": kind, "value": value}, sort_keys=True,
@@ -97,12 +233,23 @@ class BSONCodec:
         return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
     def normalize(self, value: object) -> domain.SalvageRow:
-        if not isinstance(value, dict) or "_id" not in value:
+        if isinstance(value, self.raw_document):
+            raw = value.raw
+        elif isinstance(value, dict):
+            raw = self.bson.BSON.encode(value)
+        else:
             raise domain.SalvageError("invalid projected document")
-        identifier = value["_id"]
+        nodes = _parse_wire_document(raw)
+        document = _restore_document(value, nodes)
+        if "_id" not in document:
+            raise domain.SalvageError("invalid projected document")
+        identifier = document["_id"]
         # Never parse an Extended-JSON wrapper in live data.
         instant = identifier.generation_time if isinstance(identifier, self.bson.ObjectId) else None
-        return domain.normalize_projected_document(value, self.type_name, instant, self.dedupe_digest)
+        return domain.normalize_projected_document(
+            document, lambda path, _item: _WIRE_NAMES[_node_at(nodes, path).code],
+            instant, self.dedupe_digest,
+        )
 
 
 class CollectionPort(Protocol):
@@ -126,8 +273,11 @@ class FactoryPort(Protocol):
 
 
 class MongoCensusPort:
-    def __init__(self, collection: CollectionPort) -> None:
+    def __init__(
+        self, collection: CollectionPort, index_collection: CollectionPort | None = None,
+    ) -> None:
         self.collection = collection
+        self.index_collection = collection if index_collection is None else index_collection
 
     def exact_count(self, spec: domain.CensusQuerySpec) -> int:
         del spec
@@ -142,7 +292,7 @@ class MongoCensusPort:
 
     def open_indexes(self, spec: domain.CensusQuerySpec) -> CursorPort:
         del spec
-        return self.collection.list_indexes()
+        return self.index_collection.list_indexes()
 
     def close(self) -> None:
         # The outer boundary owns and closes the client, including setup failures.
@@ -175,9 +325,15 @@ def fetch_live_audit(
                              serverSelectionTimeoutMS=domain.SERVER_SELECTION_TIMEOUT_MS,
                              socketTimeoutMS=domain.SOCKET_TIMEOUT_MS, retryReads=False)
             try:
-                collection = client[DATABASE][COLLECTION].with_options(read_concern=read_concern)
+                concerned = client[DATABASE][COLLECTION].with_options(read_concern=read_concern)
+                codec_options = getattr(codec, "codec_options", None)
+                collection = (
+                    concerned.with_options(codec_options=codec_options)
+                    if codec_options is not None else concerned
+                )
                 census = read_registered_census(
-                    MongoCensusPort(collection), lambda row: reducer.add(codec.normalize(row)),
+                    MongoCensusPort(collection, concerned),
+                    lambda row: reducer.add(codec.normalize(row)),
                 )
                 counts = reducer.finish()
                 if counts.total_documents != census.census_count:

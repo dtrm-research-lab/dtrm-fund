@@ -19,6 +19,7 @@ BSON_TYPES = frozenset({
     "missing", "null", "objectId", "string", "bool", "int", "long", "double",
     "object", "array", "date", "binData", "decimal", "timestamp", "regex",
     "javascript", "javascriptWithScope", "minKey", "maxKey", "dbPointer",
+    "undefined", "symbol",
 })
 _LABELS = BSON_TYPES | frozenset({
     *domain.PROJECTED_PATHS, *domain.LAG_LABELS, *domain.TICKER_LENGTH_LABELS,
@@ -108,6 +109,12 @@ class LiveSalvageReport:
             raise domain.SalvageError("invalid month bins")
         if sum(b.n for b in self.counts.object_id_months) != self.counts.genuine_object_ids:
             raise domain.SalvageError("ObjectId months mismatch")
+        identifier_types = self.counts.field_types[0]
+        genuine_from_types = next(
+            (item.n for item in identifier_types.bins if item.label == "objectId"), 0,
+        )
+        if genuine_from_types != self.counts.genuine_object_ids:
+            raise domain.SalvageError("ObjectId type count mismatch")
         if not (self.indexes.dedupe_unique_sparse_unqualified <= self.indexes.dedupe_ascending
                 <= self.indexes.total < domain.INDEX_LIMIT):
             raise domain.SalvageError("invalid index counts")

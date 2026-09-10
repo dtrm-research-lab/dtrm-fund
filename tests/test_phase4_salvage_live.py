@@ -253,6 +253,17 @@ def test_report_rejects_nested_source_injection(report):
         serialize_live_report(replace(report, counts=bad))
 
 
+def test_report_rejects_objectid_counter_disagreement(report):
+    identifier = report.counts.field_types[0]
+    bad_identifier = replace(
+        identifier,
+        bins=(domain.CountBin("objectId", 0), domain.CountBin("string", 1)),
+    )
+    bad_counts = replace(report.counts, field_types=(bad_identifier, *report.counts.field_types[1:]))
+    with pytest.raises(domain.SalvageError, match="ObjectId type count mismatch"):
+        serialize_live_report(replace(report, counts=bad_counts))
+
+
 def test_quiet_driver_restores_logging():
     previous = logging.root.manager.disable
     with pytest.raises(RuntimeError), io.quiet_driver():
@@ -362,6 +373,32 @@ def test_bson_code_is_not_plain_string():
     assert row.content_digest is None and row.url_digest is None
     assert row.provider_day is None
     assert row.ticker_malformed_elements == 1
+
+
+@pytest.mark.parametrize(("original_code", "expected_type"), [(2, "symbol"), (10, "undefined")])
+def test_raw_bson_preserves_legacy_wire_type(original_code, expected_type):
+    bson = pytest.importorskip("bson")
+    raw_bson = pytest.importorskip("bson.raw_bson")
+    codec_options = pytest.importorskip("bson.codec_options")
+    value = "private" if original_code == 2 else None
+    encoded = bytearray(bson.BSON.encode({
+        "_id": 1, "text": value, "matched_tickers": [value], "dedupe_key": value,
+    }))
+    target_code = 14 if original_code == 2 else 6
+    for name in (b"text", b"dedupe_key", b"0"):
+        marker = bytes((original_code,)) + name + b"\0"
+        position = encoded.index(marker)
+        encoded[position] = target_code
+    raw = raw_bson.RawBSONDocument(
+        bytes(encoded), codec_options=codec_options.CodecOptions(
+            document_class=raw_bson.RawBSONDocument,
+        ),
+    )
+    row = io.BSONCodec().normalize(raw)
+    assert row.field_types[2] == expected_type
+    assert row.text_class == "non_string" and row.content_digest is None
+    assert row.ticker_malformed_elements == 1
+    assert row.field_types[5] == expected_type and len(row.dedupe_digest or "") == 64
 
 
 def test_transport_has_no_write_calls_and_hashes_recompute(report):
