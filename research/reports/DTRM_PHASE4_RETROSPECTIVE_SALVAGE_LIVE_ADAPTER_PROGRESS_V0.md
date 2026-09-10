@@ -186,7 +186,7 @@
   All three internal hashes and the registered contract identity recompute.
   Operator and transfer scans report no sensitive pattern. The agent made no
   source connection.
-- The evidence supports a structural insertion chronology but not an
+- The evidence supports a structural ObjectId-generation chronology but not an
   authenticated historical information set. A prospective immutable collector
   remains required for confirmatory Phase IV. Any retrospective chronology is
   exploratory/development-only and needs a separate outcome-blind registration

@@ -8,7 +8,7 @@ Canonical report SHA-256:
 ## Decision
 
 The live census succeeds as engineering evidence and rejects neither the
-existence of a useful insertion chronology nor the prospective Phase-IV
+existence of a useful ObjectId-generation chronology nor the prospective Phase-IV
 research question. It does **not** authenticate the historical state that the
 machine knew at a decision cutoff. The confirmatory temporal-state path cannot
 advance to history construction, a representation baseline, a Transformer,
@@ -31,17 +31,17 @@ No outcome, price, target, model score or Phase-III decision was accessed.
 | --- | ---: | --- |
 | Current collection census | 63,873 | Complete within the registered cap; not an atomic historical snapshot |
 | Count/cursor delta | 0 | No observed count drift during the 12.86-second read |
-| Genuine BSON ObjectIds | 63,873 (100%) | A deterministic insertion-time-bearing universe exists structurally |
+| Genuine BSON ObjectIds | 63,873 (100%) | A deterministic generation-time-bearing universe exists structurally |
 | Future ObjectId anomalies | 0 | No ObjectId time later than audit start |
 | Provider-day parse | 63,873 (100%) | Calendar-day diagnostics are complete, but are not availability evidence |
-| ObjectId/provider day equal | 34,173 (53.50%) | About half were inserted on the provider calendar day |
-| Inserted 1–30 days later | 10,965 (17.17%) | Material delayed ingestion exists |
-| Inserted 31–365 days later | 18,735 (29.33%) | Large retrospective backfill makes publication day unsafe as an observation clock |
+| ObjectId-generation/provider day equal | 34,173 (53.50%) | About half have equal generation and provider calendar days; insertion is not authenticated |
+| ObjectId generation 1–30 days later | 10,965 (17.17%) | Material positive generation-day deltas exist; they do not prove delayed ingestion |
+| ObjectId generation 31–365 days later | 18,735 (29.33%) | Large deltas make provider day unsafe as a substitute for this clock; they do not prove backfill |
 | Nonempty text | 63,873 (100%) | Text is structurally available in the current rows |
 | Distinct text digests | 62,527 | Exact current text is not one-to-one with rows |
 | URL-keyed rows | 63,873 (100%) | URL grouping covers the census |
 | Repeated URL groups | 160 | Repeated current URLs exist; one group has multiple content digests |
-| Provider source IDs present | 0 | Identity depends on URL/current document structure rather than a stable provider ID |
+| Provider source IDs present in audited paths | 0 | No stable provider ID was established in `raw.id`, `raw.articleId` or `raw.article_id`; other paths were not audited |
 | Present dedupe keys | 34,035 (53.29%) | Current dedupe identity covers only part of the collection |
 | Missing dedupe keys | 29,838 (46.71%) | Current index definitions cannot establish historical uniqueness for these rows |
 | Nonempty ticker arrays | 63,873 (100%) | Every row has an outer association container |
@@ -60,16 +60,18 @@ not authenticated proof of when every relevant writer made the exact text and
 ticker association available to the frozen decision process. If writer/runtime
 provenance were later bounded, the ObjectId time could support a conservative
 development-only availability proxy: old articles would enter no earlier than
-their supported insertion time plus a preregistered safety margin. The provider
-day must never move them earlier.
+their supported ObjectId-generation proxy plus a preregistered safety margin.
+The provider day must never move them earlier.
 
 That condition is not met in v0. In particular, the current collection exposes
 neither version-observation timestamps nor association timestamps, and a
 present row cannot prove absence of later mutation. All three audited provider
-ID paths are also absent, so URL grouping cannot be cross-checked against a
-stable source identifier. The headline conclusion is therefore:
+ID paths are also absent, so this audit did not establish a stable source
+identifier against which to cross-check URL grouping. It does not establish
+that no provider identifier exists on an unaudited path. The headline
+conclusion is therefore:
 
-> The current database contains a substantial insertion chronology, but not an
+> The current database contains a substantial ObjectId-generation chronology, but not an
 > authenticated reconstruction of the machine's historical information set.
 
 ## Outcome-blind fork
