@@ -27,6 +27,7 @@ from dtrm.phase4.salvage_live_report import (
 ROOT = Path(__file__).resolve().parents[1]
 STARTED = datetime(2025, 2, 1, tzinfo=timezone.utc)
 CLI = ROOT / "research/experiments/run_phase4_retrospective_salvage_live.py"
+LIVE_REPORT = ROOT / "research/reports/DTRM_PHASE4_RETROSPECTIVE_SALVAGE_LIVE_V0.json"
 
 
 def forbidden_import(name):
@@ -36,6 +37,24 @@ def forbidden_import(name):
 def test_registration_identity():
     assert REGISTRATION == "13625046e8b258f085fab59966a31937786a5eec"
     assert hashlib.sha256((ROOT / CONTRACT_PATH).read_bytes()).hexdigest() == CONTRACT_SHA256
+
+
+def test_reviewed_live_evidence_is_pinned_and_scientifically_blocked():
+    raw = LIVE_REPORT.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == (
+        "e061be9a0dea615d87178903d87d997564befc9062341e0be0b096ba31d650cd"
+    )
+    value = json.loads(raw)
+    assert value["total_documents"] == 63873
+    assert value["scientific_assessment"] == "RETROSPECTIVE_PROXY_PARTIAL"
+    assert value["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+    assert value["production_source_accessed"] is True
+    for key in (
+        "decision_clock_authenticated", "snapshot_verified",
+        "writer_runtime_evidence_authenticated", "history_construction_permitted",
+        "training_permitted", "outcome_access_permitted", "model_fitting_performed",
+    ):
+        assert value[key] is False
 
 
 def test_missing_configuration_before_import():
