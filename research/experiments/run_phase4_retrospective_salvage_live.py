@@ -22,16 +22,22 @@ class RedactedParser(argparse.ArgumentParser):
 
 
 def publish_report(output: Path, encoded: str) -> None:
-    """Publish complete aggregate bytes exclusively; failed writes leave no report."""
+    """Publish complete bytes exclusively; post-publication cleanup is best effort."""
     descriptor, temporary = tempfile.mkstemp(prefix=".salvage-aggregate-", dir=output.parent)
+    published = False
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
             stream.write(encoded)
             stream.flush()
             os.fsync(stream.fileno())
         os.link(temporary, output)  # Atomic exclusive creation, never replaces a target.
+        published = True
     finally:
-        os.unlink(temporary)
+        try:
+            os.unlink(temporary)
+        except OSError:
+            if not published:
+                raise
 
 
 def main(argv: list[str] | None = None) -> int:

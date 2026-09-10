@@ -302,6 +302,14 @@ def test_cli_roundtrip_and_partial_write_never_published(tmp_path, monkeypatch, 
     assert sorted(p.name for p in tmp_path.iterdir()) == ["report.json"]
 
 
+def test_post_publication_cleanup_failure_is_success(tmp_path, monkeypatch):
+    entry = runpy.run_path(str(CLI))
+    output = tmp_path / "complete.json"
+    monkeypatch.setattr(entry["os"], "unlink", lambda path: (_ for _ in ()).throw(OSError()))
+    entry["publish_report"](output, "complete\n")
+    assert output.read_text() == "complete\n"
+
+
 def test_bson_objectid_not_extended_json():
     bson = pytest.importorskip("bson")
     codec = io.BSONCodec()
@@ -399,6 +407,24 @@ def test_raw_bson_preserves_legacy_wire_type(original_code, expected_type):
     assert row.text_class == "non_string" and row.content_digest is None
     assert row.ticker_malformed_elements == 1
     assert row.field_types[5] == expected_type and len(row.dedupe_digest or "") == 64
+
+
+@pytest.mark.parametrize("dedupe", [{"legacy": "private"}, ["private"]])
+def test_raw_bson_hashes_nested_legacy_dedupe_without_reencoding(dedupe):
+    bson = pytest.importorskip("bson")
+    raw_bson = pytest.importorskip("bson.raw_bson")
+    codec_options = pytest.importorskip("bson.codec_options")
+    encoded = bytearray(bson.BSON.encode({"_id": 1, "dedupe_key": dedupe}))
+    marker = b"\x02legacy\0" if isinstance(dedupe, dict) else b"\x020\0"
+    encoded[encoded.index(marker)] = 14
+    raw = raw_bson.RawBSONDocument(
+        bytes(encoded), codec_options=codec_options.CodecOptions(
+            document_class=raw_bson.RawBSONDocument,
+        ),
+    )
+    row = io.BSONCodec().normalize(raw)
+    assert row.field_types[5] in {"object", "array"}
+    assert len(row.dedupe_digest or "") == 64
 
 
 def test_transport_has_no_write_calls_and_hashes_recompute(report):

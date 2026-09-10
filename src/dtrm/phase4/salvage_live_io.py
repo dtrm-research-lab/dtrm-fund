@@ -164,6 +164,16 @@ def _node_at(nodes: dict[str, _WireNode], path: str) -> _WireNode:
     return node
 
 
+def _contains_opaque(value: object) -> bool:
+    if isinstance(value, _OpaqueBSON):
+        return True
+    if isinstance(value, dict):
+        return any(_contains_opaque(item) for item in value.values())
+    if isinstance(value, list):
+        return any(_contains_opaque(item) for item in value)
+    return False
+
+
 def configured_uri(
     env_file: Path | None, env: Mapping[str, str] | None = None,
     importer: Importer = importlib.import_module,
@@ -232,6 +242,13 @@ class BSONCodec:
             )
         return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
+    @staticmethod
+    def wire_digest(node: _WireNode) -> str:
+        """Hash one exact BSON value without re-encoding decoded descendants."""
+        return hashlib.sha256(
+            b"dtrm-bson-wire-v0\0" + bytes((node.code,)) + node.payload,
+        ).hexdigest()
+
     def normalize(self, value: object) -> domain.SalvageRow:
         if isinstance(value, self.raw_document):
             raw = value.raw
@@ -246,9 +263,13 @@ class BSONCodec:
         identifier = document["_id"]
         # Never parse an Extended-JSON wrapper in live data.
         instant = identifier.generation_time if isinstance(identifier, self.bson.ObjectId) else None
+        dedupe_node = nodes.get("dedupe_key")
+        dedupe_hash: Callable[[object], str] = self.dedupe_digest
+        if dedupe_node is not None and _contains_opaque(document["dedupe_key"]):
+            dedupe_hash = lambda _item: self.wire_digest(dedupe_node)
         return domain.normalize_projected_document(
             document, lambda path, _item: _WIRE_NAMES[_node_at(nodes, path).code],
-            instant, self.dedupe_digest,
+            instant, dedupe_hash,
         )
 
 
