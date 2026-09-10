@@ -40,6 +40,14 @@ def publish_report(output: Path, encoded: str) -> None:
                 raise
 
 
+def emit_status(value: dict[str, object]) -> None:
+    """Console notification is best effort; the exclusively linked file is authoritative."""
+    try:
+        print(json.dumps(value, sort_keys=True))
+    except Exception:
+        pass
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = RedactedParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--env-file", type=Path)
@@ -52,11 +60,12 @@ def main(argv: list[str] | None = None) -> int:
             raise SalvageIOError("OUTPUT_PARENT_MISSING")
         report = run_live_audit(args.env_file)
         encoded = serialize_live_report(report)
+        success = {"graph": GRAPH, "status": "succeeded",
+                   "scientific_status": "BLOCKED_SOURCE_AUDIT",
+                   "scientific_assessment": report.to_dict()["scientific_assessment"],
+                   "total_documents": report.counts.total_documents}
         publish_report(args.output, encoded)
-        print(json.dumps({"graph": GRAPH, "status": "succeeded",
-                          "scientific_status": "BLOCKED_SOURCE_AUDIT",
-                          "scientific_assessment": report.to_dict()["scientific_assessment"],
-                          "total_documents": report.counts.total_documents}, sort_keys=True))
+        emit_status(success)
         return 0
     except SalvageIOError as exc:
         # Only locally defined fixed codes may reach the public boundary.
@@ -73,7 +82,7 @@ def main(argv: list[str] | None = None) -> int:
         error = "AUDIT_INTERRUPTED"
     except Exception:
         error = "LIVE_AUDIT_FAILED"
-    print(json.dumps({"graph": GRAPH, "status": "failed", "error_code": error}, sort_keys=True))
+    emit_status({"graph": GRAPH, "status": "failed", "error_code": error})
     return 1
 
 

@@ -310,6 +310,15 @@ def test_post_publication_cleanup_failure_is_success(tmp_path, monkeypatch):
     assert output.read_text() == "complete\n"
 
 
+def test_stdout_failure_after_publication_is_success(tmp_path, monkeypatch, report):
+    entry = runpy.run_path(str(CLI))
+    entry["main"].__globals__["run_live_audit"] = lambda *args: report
+    monkeypatch.setitem(entry["main"].__globals__, "print", lambda *args, **kwargs: 1 / 0)
+    output = tmp_path / "published.json"
+    assert entry["main"](["--output", str(output)]) == 0
+    assert output.read_text() == serialize_live_report(report)
+
+
 def test_bson_objectid_not_extended_json():
     bson = pytest.importorskip("bson")
     codec = io.BSONCodec()
