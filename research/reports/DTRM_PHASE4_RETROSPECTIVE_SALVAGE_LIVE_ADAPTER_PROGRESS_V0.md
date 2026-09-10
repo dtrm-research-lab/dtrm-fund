@@ -96,3 +96,30 @@
 - PR #10 awaits human review and explicit merge authorization. No production
   environment or database was accessed. Scientific status remains
   `BLOCKED_SOURCE_AUDIT`; history, outcomes and training remain prohibited.
+
+## Review corrections and final implementation evidence
+
+- Automated review of implementation head `1169058039c6fe1ea3ee2492a1846250afb68a96`
+  raised three findings. Commit `877751ac9fb8d505e16925ed521214be59511532`,
+  tree `9a7cbbf4a9ee83a30faf21377d37553ff35f1d5f`, addresses both valid findings:
+  the live cursor now preserves raw BSON wire codes before PyMongo's legacy
+  `undefined`/`symbol` decoding can erase them, and live report validation
+  reconciles `_id.objectId` type counts with genuine ObjectId evidence.
+- Three regressions cover symbol/undefined field, ticker and dedupe semantics
+  plus inconsistent ObjectId aggregate rejection. Local focused adapter tests
+  now pass 41/41; all local Phase IV tests pass 284 with six dedicated-Mongo
+  skips. Strict mypy passes for the changed source. Local Ruff could not execute
+  because its native binary segfaulted; clean CI is the authoritative lint run.
+- The remaining review claim—that standalone Mongo cannot execute this
+  majority read—was empirically contradicted twice. Most recently the unchanged
+  standalone `mongo:7.0.14` job passed all six functional tests, including the
+  explicit `ReadConcern("majority")` census. No replica-set change was made.
+- Current corrected-head CI passed: Tests run `34446222303`; Phase IV gates run
+  `34446222322`; 575 regression tests passed with six expected skips, all six
+  disposable-Mongo tests passed, and Ruff, strict mypy (19 files), four
+  synthetic reproductions, lineage validation, wheel build and both source
+  preservation checks succeeded.
+- The implementation-validation JSON is updated to this tested code commit and
+  tree. A following evidence-only commit must itself pass current-head CI before
+  merge. PR #10 still requires explicit human authorization; scientific gates
+  remain closed and no production source was accessed.
