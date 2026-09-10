@@ -1,15 +1,15 @@
 {
   "schema_version": "dtrm.phase4.salvage_live_implementation_validation.v0",
-  "tested_remote_commit": "877751ac9fb8d505e16925ed521214be59511532",
-  "tested_tree": "9a7cbbf4a9ee83a30faf21377d37553ff35f1d5f",
+  "tested_remote_commit": "d3da513a163def2ea5c9cdfe985006d90b8ce9b9",
+  "tested_tree": "1a9e9229a669ff529d5e0ffcfd51205fa83e671f",
   "registration_commit": "13625046e8b258f085fab59966a31937786a5eec",
   "contract_sha256": "f98ce5e5d22810618571725d1645806729da358ff7622a7c47150cdc3e5cfcad",
   "pull_request": 10,
   "ci": {
-    "tests_run": 34446222303,
-    "phase4_run": 34446222322,
+    "tests_run": 34447482573,
+    "phase4_run": 34447482628,
     "status": "success",
-    "regression_passed": 575,
+    "regression_passed": 578,
     "regression_skipped_for_dedicated_mongo_job": 6,
     "dedicated_synthetic_mongo_passed": 6,
     "strict_mypy_files": 19,
@@ -21,8 +21,8 @@
     "inherited_files": 157
   },
   "local": {
-    "focused_adapter_tests_passed": 41,
-    "phase4_tests_passed": 284,
+    "focused_adapter_tests_passed": 44,
+    "phase4_tests_passed": 287,
     "phase4_tests_skipped_for_dedicated_mongo_job": 6,
     "full_regression": "BLOCKED_ENVIRONMENT",
     "blocker": "native XGBoost library Bus error during collection",
@@ -32,7 +32,9 @@
   "production_source_accessed": false,
   "review_corrections": {
     "legacy_bson_wire_types_preserved": true,
+    "nested_legacy_bson_dedupe_hashed_from_wire": true,
     "objectid_counter_reconciled": true,
+    "post_publication_cleanup_cannot_report_false_failure": true,
     "standalone_majority_read_verified_by_disposable_ci": true
   },
   "scientific_status": "BLOCKED_SOURCE_AUDIT",

@@ -201,12 +201,12 @@ The user supplied the following terminal output from their local Mac validation:
 - After PR #9 merge `d11b9cff62e656cb64664d126e48dca9381ffc7e`, PR #10
   implements the registered read-only adapter, immutable aggregate report,
   explicit configuration boundary and exclusive atomic report publication.
-- Corrected implementation head `877751ac9fb8d505e16925ed521214be59511532`
-  passed both CI workflows: 575 regression tests, six dedicated synthetic-Mongo functional
+- Final corrected implementation head `d3da513a163def2ea5c9cdfe985006d90b8ce9b9`
+  passed both CI workflows: 578 regression tests, six dedicated synthetic-Mongo functional
   tests, scoped quality checks, four synthetic reproductions, lineage check,
   wheel build and preservation of all 157 inherited files. The six ordinary
   test skips are exercised by the dedicated Mongo job.
-- Local adapter tests: 41 passed; all Phase IV tests pass 284 with six
+- Local adapter tests: 44 passed; all Phase IV tests pass 287 with six
   dedicated-Mongo skips. Full local regression is blocked by native
   XGBoost loading; it is not reported as a local pass. The clean CI regression
   is independently successful. Full details and tested commit/tree are in
@@ -221,3 +221,6 @@ The user supplied the following terminal output from their local Mac validation:
   wire types and enforce ObjectId cross-counter reconciliation. The standalone
   Mongo 7.0.14 CI service passed the explicit majority-read path, so no
   unregistered replica-set change was introduced.
+- Current-head rereview also closed nested legacy BSON dedupe hashing and the
+  post-publication cleanup edge case. All five review threads are answered and
+  resolved; no raw values or scientific gates were changed.

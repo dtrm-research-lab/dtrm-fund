@@ -123,3 +123,27 @@
   tree. A following evidence-only commit must itself pass current-head CI before
   merge. PR #10 still requires explicit human authorization; scientific gates
   remain closed and no production source was accessed.
+
+## Second review corrections and closure
+
+- A requested current-head rereview found two additional edge cases. Commit
+  `d3da513a163def2ea5c9cdfe985006d90b8ce9b9`, tree
+  `1a9e9229a669ff529d5e0ffcfd51205fa83e671f`, hashes an object/array
+  `dedupe_key` containing legacy BSON directly from its exact root wire payload,
+  while retaining pure-graph hash equality for ordinary values. It also treats
+  failure to remove the temporary hard-link source after successful atomic
+  publication as best-effort cleanup, preventing a complete report from being
+  announced as a failed audit.
+- Added two nested BSON regressions and one post-publication cleanup regression.
+  Final local focused adapter tests pass 44/44; all Phase IV tests pass 287 with
+  six dedicated-Mongo skips; strict mypy passes for all 19 scoped files. The
+  synthetic salvage report remains byte-identical and source preservation
+  remains `PASS` for all 157 inherited files.
+- Corrected-head CI is fully green: Tests run `34447482573`; Phase IV gates run
+  `34447482628`; 578 tests passed with six expected skips; all six disposable
+  Mongo tests passed; Ruff, strict mypy, all four reproductions, lineage,
+  disposable wheel and both preservation checks passed.
+- Both new review threads were answered with corrected-head evidence and
+  resolved. No production execution occurred and no scientific permission or
+  assessment changed. The next commit records only this evidence and must pass
+  both current-head workflows before human merge authorization.
