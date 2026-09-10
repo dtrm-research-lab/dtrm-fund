@@ -266,7 +266,9 @@ class BSONCodec:
         dedupe_node = nodes.get("dedupe_key")
         dedupe_hash: Callable[[object], str] = self.dedupe_digest
         if dedupe_node is not None and _contains_opaque(document["dedupe_key"]):
-            dedupe_hash = lambda _item: self.wire_digest(dedupe_node)
+            def _wire_dedupe_hash(_item: object) -> str:
+                return self.wire_digest(dedupe_node)
+            dedupe_hash = _wire_dedupe_hash
         return domain.normalize_projected_document(
             document, lambda path, _item: _WIRE_NAMES[_node_at(nodes, path).code],
             instant, dedupe_hash,
