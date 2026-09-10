@@ -41,6 +41,7 @@ No outcome, price, target, model score or Phase-III decision was accessed.
 | Distinct text digests | 62,527 | Exact current text is not one-to-one with rows |
 | URL-keyed rows | 63,873 (100%) | URL grouping covers the census |
 | Repeated URL groups | 160 | Repeated current URLs exist; one group has multiple content digests |
+| Provider source IDs present | 0 | Identity depends on URL/current document structure rather than a stable provider ID |
 | Present dedupe keys | 34,035 (53.29%) | Current dedupe identity covers only part of the collection |
 | Missing dedupe keys | 29,838 (46.71%) | Current index definitions cannot establish historical uniqueness for these rows |
 | Nonempty ticker arrays | 63,873 (100%) | Every row has an outer association container |
@@ -64,8 +65,9 @@ day must never move them earlier.
 
 That condition is not met in v0. In particular, the current collection exposes
 neither version-observation timestamps nor association timestamps, and a
-present row cannot prove absence of later mutation. The headline conclusion is
-therefore:
+present row cannot prove absence of later mutation. All three audited provider
+ID paths are also absent, so URL grouping cannot be cross-checked against a
+stable source identifier. The headline conclusion is therefore:
 
 > The current database contains a substantial insertion chronology, but not an
 > authenticated reconstruction of the machine's historical information set.

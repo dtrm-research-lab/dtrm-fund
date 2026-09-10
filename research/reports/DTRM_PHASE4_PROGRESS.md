@@ -242,8 +242,8 @@ The user supplied the following terminal output from their local Mac validation:
   `BLOCKED_SOURCE_AUDIT`. All rows have genuine BSON ObjectIds, provider days,
   text, URLs and nonempty outer ticker arrays. However, 29.33% were inserted
   31–365 days after provider day, 46.71% lack `dedupe_key`, one repeated URL
-  group has multiple content digests and 405,565 ticker elements violate the
-  registered string-element assumption.
+  group has multiple content digests, all audited provider-ID paths are absent,
+  and 405,565 ticker elements violate the registered string-element assumption.
 - Database structure still cannot authenticate relevant-writer coverage,
   deployed intervals, later mutation, client clock, runtime immutability or
   exclusive write authority. The report does not authorize history,
