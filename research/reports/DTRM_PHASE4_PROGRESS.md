@@ -227,3 +227,29 @@ The user supplied the following terminal output from their local Mac validation:
 - Final rereview closed stdout failure after publication. All six review
   threads are now answered and resolved, and the published aggregate—not a
   best-effort console notification—is the authoritative completion artifact.
+
+## 2026-09-10 — Retrospective-salvage live evidence
+
+- PR #10 was integrated by authorized merge commit
+  `2b0dbeac662f2c0bd51db24b9045a600be83d0da`. The operator then ran the
+  integrated read-only adapter and supplied the sanitized aggregate plus SHA.
+- Canonical report SHA-256
+  `e061be9a0dea615d87178903d87d997564befc9062341e0be0b096ba31d650cd`
+  covers 63,873 rows with zero count/cursor delta. Canonical bytes, pipeline,
+  writer-manifest, evidence hash, contract identity and reconciliation all
+  validate; no sensitive pattern was reported or observed in the transfer.
+- The fixed decision is `RETROSPECTIVE_PROXY_PARTIAL` /
+  `BLOCKED_SOURCE_AUDIT`. All rows have genuine BSON ObjectIds, provider days,
+  text, URLs and nonempty outer ticker arrays. However, 29.33% were inserted
+  31–365 days after provider day, 46.71% lack `dedupe_key`, one repeated URL
+  group has multiple content digests and 405,565 ticker elements violate the
+  registered string-element assumption.
+- Database structure still cannot authenticate relevant-writer coverage,
+  deployed intervals, later mutation, client clock, runtime immutability or
+  exclusive write authority. The report does not authorize history,
+  representation learning, outcomes, training, Transformer or MM1.
+- Scientific fork: the confirmatory Phase-IV path must be prospective and
+  immutable. An optional retrospective exploratory path requires a separate
+  outcome-blind preregistration for ticker element shape, writer/runtime
+  evidence and conservative ObjectId chronology rules before any history is
+  built. See the live report, intake validation and interpretation records.

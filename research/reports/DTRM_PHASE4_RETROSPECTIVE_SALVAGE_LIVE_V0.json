@@ -1,0 +1,531 @@
+{
+  "assessment_semantics": "live_source_aggregate_audit_not_decision_clock_evidence",
+  "audit_metadata": {
+    "completed_at": "2026-09-10T20:25:00.096746Z",
+    "source_availability_semantics": false,
+    "started_at": "2026-09-10T20:24:47.232175Z"
+  },
+  "decision_clock_authenticated": false,
+  "dedupe_keys": {
+    "distinct_hashed_keys": 34035,
+    "missing": 29838,
+    "present": 34035,
+    "repeated_key_groups": 0
+  },
+  "engineering_status": "PASS_LIVE_AUDIT_SCHEMA",
+  "evidence_sha256": "433b571ef2b7d7eba6cc1454751921bfb44ec6253ba470d02a94a94731181037",
+  "execution_mode": "live_mongo",
+  "field_types": [
+    {
+      "path": "_id",
+      "types": [
+        {
+          "label": "objectId",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "date",
+      "types": [
+        {
+          "label": "string",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "text",
+      "types": [
+        {
+          "label": "string",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "source",
+      "types": [
+        {
+          "label": "string",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "matched_tickers",
+      "types": [
+        {
+          "label": "array",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "dedupe_key",
+      "types": [
+        {
+          "label": "missing",
+          "n": 29838
+        },
+        {
+          "label": "string",
+          "n": 34035
+        }
+      ]
+    },
+    {
+      "path": "raw.id",
+      "types": [
+        {
+          "label": "missing",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "raw.articleId",
+      "types": [
+        {
+          "label": "missing",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "raw.article_id",
+      "types": [
+        {
+          "label": "missing",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "raw.url",
+      "types": [
+        {
+          "label": "missing",
+          "n": 3845
+        },
+        {
+          "label": "string",
+          "n": 60028
+        }
+      ]
+    },
+    {
+      "path": "raw.link",
+      "types": [
+        {
+          "label": "missing",
+          "n": 60028
+        },
+        {
+          "label": "string",
+          "n": 3845
+        }
+      ]
+    },
+    {
+      "path": "raw.newsUrl",
+      "types": [
+        {
+          "label": "missing",
+          "n": 63873
+        }
+      ]
+    },
+    {
+      "path": "raw.publishedDate",
+      "types": [
+        {
+          "label": "missing",
+          "n": 3845
+        },
+        {
+          "label": "string",
+          "n": 60028
+        }
+      ]
+    },
+    {
+      "path": "raw.date",
+      "types": [
+        {
+          "label": "missing",
+          "n": 60028
+        },
+        {
+          "label": "string",
+          "n": 3845
+        }
+      ]
+    }
+  ],
+  "graph": "phase4_retrospective_salvage_v0",
+  "history_construction_permitted": false,
+  "indexes": {
+    "date_ascending": 1,
+    "dedupe_ascending": 1,
+    "dedupe_unique_sparse_unqualified": 1,
+    "total": 3
+  },
+  "live_adapter": {
+    "isolated_test": false,
+    "path": "research/contracts/DTRM_PHASE4_RETROSPECTIVE_SALVAGE_LIVE_ADAPTER_V0.md",
+    "registration_commit": "13625046e8b258f085fab59966a31937786a5eec",
+    "requested_read_concern": "majority",
+    "sha256": "f98ce5e5d22810618571725d1645806729da358ff7622a7c47150cdc3e5cfcad"
+  },
+  "live_bson_semantics_validated": true,
+  "matched_tickers": {
+    "length_bins": [
+      {
+        "label": "1",
+        "n": 12819
+      },
+      {
+        "label": "2_5",
+        "n": 25918
+      },
+      {
+        "label": "6_20",
+        "n": 22968
+      },
+      {
+        "label": "gt_20",
+        "n": 2168
+      }
+    ],
+    "malformed_elements": 405565,
+    "rows_with_exact_duplicates": 0,
+    "shapes": [
+      {
+        "label": "missing",
+        "n": 0
+      },
+      {
+        "label": "non_array",
+        "n": 0
+      },
+      {
+        "label": "empty",
+        "n": 0
+      },
+      {
+        "label": "nonempty",
+        "n": 63873
+      }
+    ]
+  },
+  "model_fitting_performed": false,
+  "object_ids": {
+    "future_clock_anomalies": 0,
+    "genuine": 63873,
+    "non_object_id": 0,
+    "provider_day_lag_bins": [
+      {
+        "label": "le_minus_2",
+        "n": 0
+      },
+      {
+        "label": "minus_1",
+        "n": 0
+      },
+      {
+        "label": "zero",
+        "n": 34173
+      },
+      {
+        "label": "plus_1",
+        "n": 5204
+      },
+      {
+        "label": "plus_2_7",
+        "n": 3812
+      },
+      {
+        "label": "plus_8_30",
+        "n": 1949
+      },
+      {
+        "label": "plus_31_365",
+        "n": 18735
+      },
+      {
+        "label": "gt_365",
+        "n": 0
+      },
+      {
+        "label": "provider_day_unknown",
+        "n": 0
+      }
+    ],
+    "semantics": "bson_generation_time_not_authenticated_availability",
+    "structurally_eligible": 63873,
+    "utc_months": [
+      {
+        "label": "2025-07",
+        "n": 9207
+      },
+      {
+        "label": "2025-08",
+        "n": 501
+      },
+      {
+        "label": "2025-09",
+        "n": 499
+      },
+      {
+        "label": "2025-10",
+        "n": 8179
+      },
+      {
+        "label": "2025-11",
+        "n": 662
+      },
+      {
+        "label": "2025-12",
+        "n": 1456
+      },
+      {
+        "label": "2026-01",
+        "n": 4010
+      },
+      {
+        "label": "2026-02",
+        "n": 3669
+      },
+      {
+        "label": "2026-03",
+        "n": 4393
+      },
+      {
+        "label": "2026-04",
+        "n": 3948
+      },
+      {
+        "label": "2026-05",
+        "n": 4110
+      },
+      {
+        "label": "2026-06",
+        "n": 9732
+      },
+      {
+        "label": "2026-07",
+        "n": 6406
+      },
+      {
+        "label": "2026-08",
+        "n": 5066
+      },
+      {
+        "label": "2026-09",
+        "n": 2035
+      }
+    ]
+  },
+  "outcome_access_permitted": false,
+  "pipeline_sha256": "0d5380813c81aea87ee41bbf369be3b2aae78a05712d7fa8f082fe573e7c396a",
+  "production_source_accessed": true,
+  "provider_days": {
+    "origins": [
+      {
+        "label": "raw.publishedDate",
+        "n": 60028
+      },
+      {
+        "label": "raw.date",
+        "n": 3845
+      },
+      {
+        "label": "date",
+        "n": 0
+      },
+      {
+        "label": "none",
+        "n": 0
+      }
+    ],
+    "parse": [
+      {
+        "label": "parsed",
+        "n": 63873
+      },
+      {
+        "label": "invalid",
+        "n": 0
+      },
+      {
+        "label": "no_string",
+        "n": 0
+      }
+    ],
+    "semantics": "diagnostic_calendar_day_not_availability"
+  },
+  "reconciliation": {
+    "dedupe_rows": 63873,
+    "field_paths_reconciled": 14,
+    "object_id_rows": 63873,
+    "provider_origin_rows": 63873,
+    "provider_parse_rows": 63873,
+    "status": "PASS",
+    "text_rows": 63873,
+    "ticker_rows": 63873,
+    "total_documents": 63873,
+    "url_rows": 63873
+  },
+  "registered_contract": {
+    "amendment_commit": "a1e7ce59d9e99a0b7d36d3989664508536dbb0ae",
+    "initial_registration_commit": "b38b3fc1851e1f636240e7fa418da2dcc933db8d",
+    "initial_sha256": "e9ed93bcd39181f2037227eee39690b9259753a686b3f9e89614243f41d8e5c9",
+    "path": "research/contracts/DTRM_PHASE4_RETROSPECTIVE_SALVAGE_AUDIT_V0.md",
+    "sha256": "331ad4aaa2a60d4f2a3d172963e71052873d5942a475d4d3aa600d05495286f6"
+  },
+  "schema_version": "dtrm.phase4.retrospective_salvage.v0",
+  "scientific_assessment": "RETROSPECTIVE_PROXY_PARTIAL",
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "selection": {
+    "census_count": 63873,
+    "complete_within_registered_bound": true,
+    "count_cursor_delta": 0,
+    "cursor_limit": 250001,
+    "preliminary_count": 63873,
+    "projection": [
+      "_id",
+      "date",
+      "text",
+      "source",
+      "matched_tickers",
+      "dedupe_key",
+      "raw.id",
+      "raw.articleId",
+      "raw.article_id",
+      "raw.url",
+      "raw.link",
+      "raw.newsUrl",
+      "raw.publishedDate",
+      "raw.date"
+    ],
+    "reads_atomic": false,
+    "registered_cap": 250000,
+    "sort": "ascending_id_not_event_time"
+  },
+  "snapshot_verified": false,
+  "source": {
+    "collection": "trumpNews",
+    "database": "trumpMinMax"
+  },
+  "source_ids": {
+    "first_nonempty_string_origin": [
+      {
+        "label": "raw.id",
+        "n": 0
+      },
+      {
+        "label": "raw.articleId",
+        "n": 0
+      },
+      {
+        "label": "raw.article_id",
+        "n": 0
+      },
+      {
+        "label": "none",
+        "n": 63873
+      }
+    ],
+    "mixed_with_url_identity": false,
+    "paths": [
+      {
+        "missing": 63873,
+        "null": 0,
+        "path": "raw.id",
+        "present": 0
+      },
+      {
+        "missing": 63873,
+        "null": 0,
+        "path": "raw.articleId",
+        "present": 0
+      },
+      {
+        "missing": 63873,
+        "null": 0,
+        "path": "raw.article_id",
+        "present": 0
+      }
+    ]
+  },
+  "text": {
+    "classes": [
+      {
+        "label": "missing",
+        "n": 0
+      },
+      {
+        "label": "null",
+        "n": 0
+      },
+      {
+        "label": "string_empty",
+        "n": 0
+      },
+      {
+        "label": "string_nonempty",
+        "n": 63873
+      },
+      {
+        "label": "non_string",
+        "n": 0
+      }
+    ],
+    "distinct_exact_utf8_sha256": 62527
+  },
+  "total_documents": 63873,
+  "training_permitted": false,
+  "urls": {
+    "distinct_hashed_groups": 63713,
+    "keyed_rows": 63873,
+    "repeated_group_size_bins": [
+      {
+        "label": "2",
+        "n": 160
+      },
+      {
+        "label": "3_5",
+        "n": 0
+      },
+      {
+        "label": "6_20",
+        "n": 0
+      },
+      {
+        "label": "gt_20",
+        "n": 0
+      }
+    ],
+    "repeated_groups": 160,
+    "repeated_groups_with_multiple_content_digests": 1,
+    "repeated_groups_with_no_content_digest": 0,
+    "repeated_groups_with_one_content_digest": 159,
+    "singleton_groups": 63553,
+    "unkeyed_rows": 0
+  },
+  "writer_findings": {
+    "atomic_text_tickers": "supported",
+    "client_clock": "unknown",
+    "deployed_intervals": "unknown",
+    "id_assignment": "mongo_default",
+    "later_mutation": "unknown",
+    "mode": "registered_static_evidence_v0",
+    "relevant_writers": "unknown",
+    "runtime_immutability": "unknown",
+    "write_authority": "unknown",
+    "write_operations": "insert_only"
+  },
+  "writer_manifest_sha256": "27d69b74889844ebcc4559c9e77f0e815afc45647576d69a0de02b67bc8bab50",
+  "writer_runtime_evidence_authenticated": false
+}

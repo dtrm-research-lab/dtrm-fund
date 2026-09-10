@@ -169,3 +169,25 @@
 - This record and the machine-readable evidence now point to the final tested
   code commit. A final evidence-only head must be green before explicit human
   merge authorization.
+
+## Integration and operator live evidence
+
+- The user authorized PR #10 and it was integrated by merge commit
+  `2b0dbeac662f2c0bd51db24b9045a600be83d0da`, with base parent
+  `d11b9cff62e656cb64664d126e48dca9381ffc7e` and validated head parent
+  `a4dbb443a1d9ee9b9e8c743be2e771ec1ec5d987`.
+- The operator then executed the integrated live adapter locally. The accepted
+  canonical report contains 63,873 documents, has zero count/cursor delta,
+  passes all reconciliations and selects `RETROSPECTIVE_PROXY_PARTIAL` with
+  `BLOCKED_SOURCE_AUDIT` and every scientific permission false.
+- The transferred terminal rendering reconstructs the exact 10,553 canonical
+  bytes and operator SHA-256
+  `e061be9a0dea615d87178903d87d997564befc9062341e0be0b096ba31d650cd`.
+  All three internal hashes and the registered contract identity recompute.
+  Operator and transfer scans report no sensitive pattern. The agent made no
+  source connection.
+- The evidence supports a structural insertion chronology but not an
+  authenticated historical information set. A prospective immutable collector
+  remains required for confirmatory Phase IV. Any retrospective chronology is
+  exploratory/development-only and needs a separate outcome-blind registration
+  closing ticker element shape and writer/runtime provenance first.
