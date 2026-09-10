@@ -1,0 +1,61 @@
+{
+  "canonical_bundle_sha256": "d77c0f125e59f06407dc126be900cbbd8efe5b2cc752acce2f898327186cb6ad",
+  "clock_authenticated": false,
+  "collector": {
+    "clock_policy": "utc_runner_bracket_v0",
+    "collector_id": "phase4-synthetic-fmp",
+    "commit": "d058b02fcf2e28c4987954876433b6efa695ab06",
+    "mapping_version": "6273bfbbd21e40b3a4b8e4225a5e704f1ffe208707599dc26d77ecab63ce7c3e",
+    "repository": "dtrm-research-lab/dtrm-fund",
+    "source": "fmp_news"
+  },
+  "collector_deployed": false,
+  "completed_nodes": [
+    "normalize_envelope",
+    "reconcile_counters",
+    "validate_versions",
+    "validate_links",
+    "validate_ledger",
+    "serialize_audit"
+  ],
+  "counts": {
+    "asset_link_count": 4,
+    "logical_event_count": 2,
+    "record_count": 3
+  },
+  "coverage_authenticated": false,
+  "dataset_role": "synthetic",
+  "engineering_status": "PASS_SYNTHETIC_PROSPECTIVE_CAPTURE_PROTOCOL",
+  "graph": "phase4_prospective_capture_protocol_v0",
+  "history_construction_permitted": false,
+  "input_ledger_head_sha256": null,
+  "model_fitting_performed": false,
+  "outcome_access_permitted": false,
+  "output_ledger_head_sha256": "3718b6323f6cbdce48ddc1d9a935bf3034602e6e0fccfbd68a63864a7328c3ef",
+  "registered_protocol": {
+    "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_CAPTURE_PROTOCOL_V0.md",
+    "registration_commit": "85c02cca5a477b6c68b43dbac35d517e58f66518",
+    "sha256": "a343f076a9713b5e1b037cf83ecc864d9bc4308a9592bef0dabeafa00617e629"
+  },
+  "registered_synthetic_binding": {
+    "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_CAPTURE_SYNTHETIC_BINDING_V0.md",
+    "prior_version_state": "empty_tuple",
+    "registration_commit": "d058b02fcf2e28c4987954876433b6efa695ab06",
+    "sha256": "0ec92acb50d3011063db595e6bc026b99bd9847f8d6e4dcc080ab5266ea65e31"
+  },
+  "run": {
+    "completed_at": "2026-09-10T10:05:00Z",
+    "new_versions": 3,
+    "observed_candidates": 5,
+    "rejected_candidates": 1,
+    "repeat_sightings": 1,
+    "request_fingerprint_sha256": "a1fc67a9bba21503ad97ffec2691a8da698f2b6ef0431ea437e9bbdacb2f17f1",
+    "response_received_at": "2026-09-10T10:01:00Z",
+    "run_id": "00000000-0000-4000-8000-000000000001",
+    "started_at": "2026-09-10T10:00:00Z"
+  },
+  "schema_version": "dtrm.phase4.prospective_capture_review.v0",
+  "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+  "source_authenticated": false,
+  "training_permitted": false
+}
