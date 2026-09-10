@@ -1,0 +1,46 @@
+{
+  "schema_version": "dtrm.phase4.salvage_live_implementation_validation.v0",
+  "tested_remote_commit": "ff5024c4cc1808d535339e4b362c697a1e892718",
+  "tested_tree": "9b8b56d9ad079020b14c0059a700313994a47ec3",
+  "registration_commit": "13625046e8b258f085fab59966a31937786a5eec",
+  "contract_sha256": "f98ce5e5d22810618571725d1645806729da358ff7622a7c47150cdc3e5cfcad",
+  "pull_request": 10,
+  "ci": {
+    "tests_run": 34448699758,
+    "phase4_run": 34448699736,
+    "status": "success",
+    "regression_passed": 579,
+    "regression_skipped_for_dedicated_mongo_job": 6,
+    "dedicated_synthetic_mongo_passed": 6,
+    "strict_mypy_files": 19,
+    "ruff": "PASS",
+    "synthetic_reproductions": 4,
+    "collector_lineage": "PASS",
+    "wheel_build": "PASS",
+    "source_preservation_before_after": "PASS",
+    "inherited_files": 157
+  },
+  "local": {
+    "focused_adapter_tests_passed": 45,
+    "phase4_tests_passed": 288,
+    "phase4_tests_skipped_for_dedicated_mongo_job": 6,
+    "full_regression": "BLOCKED_ENVIRONMENT",
+    "blocker": "native XGBoost library Bus error during collection",
+    "same_version_reinstall": "blocked by cancelled network approval; not retried"
+  },
+  "production_configuration_accessed": false,
+  "production_source_accessed": false,
+  "review_corrections": {
+    "legacy_bson_wire_types_preserved": true,
+    "nested_legacy_bson_dedupe_hashed_from_wire": true,
+    "objectid_counter_reconciled": true,
+    "post_publication_cleanup_cannot_report_false_failure": true,
+    "post_publication_stdout_cannot_report_false_failure": true,
+    "standalone_majority_read_verified_by_disposable_ci": true
+  },
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "history_construction_permitted": false,
+  "outcome_access_permitted": false,
+  "training_permitted": false,
+  "integration": "pending current-head checks and human authorization"
+}

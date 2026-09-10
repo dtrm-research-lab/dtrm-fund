@@ -6,7 +6,7 @@ import hashlib
 import json
 import re
 from collections import Counter
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from typing import Literal, cast
@@ -408,7 +408,7 @@ def _canonical_value_digest(value: object) -> str:
 def _provider_day(document: Mapping[str, object]) -> tuple[date | None, str, str]:
     for path in PROVIDER_PATHS:
         value = _path_value(document, path)
-        if isinstance(value, str):
+        if type(value) is str:
             match = _LEADING_DAY.match(value)
             if match is None:
                 return None, path, "invalid"
@@ -424,7 +424,7 @@ def _first_nonempty_string(
 ) -> tuple[str | None, str]:
     for path in paths:
         value = _path_value(document, path)
-        if isinstance(value, str) and value.strip():
+        if type(value) is str and value.strip():
             return value.strip(), path
     return None, "none"
 
@@ -445,7 +445,7 @@ def _ticker_observation(value: object) -> tuple[str, str | None, int, bool]:
         length_bin = "6_20"
     else:
         length_bin = "gt_20"
-    valid = [item for item in value if isinstance(item, str) and bool(item.strip())]
+    valid = [item for item in value if type(item) is str and bool(item.strip())]
     malformed = size - len(valid)
     duplicate = len(valid) != len(set(valid))
     return "nonempty", length_bin, malformed, duplicate
@@ -468,9 +468,31 @@ def normalize_synthetic_document(value: object) -> SalvageRow:
     elif isinstance(raw_id, dict) and "$oid" in raw_id:
         raise SalvageError("invalid synthetic ObjectId wrapper")
 
-    field_types = tuple(_bson_type(_path_value(document, path)) for path in PROJECTED_PATHS)
     identifier = document["_id"]
     id_time = identifier.generation_time if isinstance(identifier, SyntheticObjectId) else None
+    return normalize_projected_document(
+        document, lambda _path, item: _bson_type(item), id_time, _canonical_value_digest,
+    )
+
+
+def normalize_projected_document(
+    value: object,
+    type_name: Callable[[str, object], str],
+    id_time: datetime | None,
+    dedupe_hash: Callable[[object], str],
+) -> SalvageRow:
+    """Shared deterministic derivations with explicit transport type semantics."""
+
+    document = _mapping(value, "document")
+    if "_id" not in document or not set(document) <= TOP_LEVEL_PATHS:
+        raise SalvageError("document: missing _id or unexpected projected key")
+    raw = document.get("raw", _MISSING)
+    if isinstance(raw, dict) and not set(raw) <= RAW_PATHS:
+        raise SalvageError("document.raw: unexpected projected key")
+    field_types = tuple(
+        "missing" if (item := _path_value(document, path)) is _MISSING else type_name(path, item)
+        for path in PROJECTED_PATHS
+    )
     provider_day, provider_origin, provider_parse = _provider_day(document)
 
     text = _path_value(document, "text")
@@ -478,7 +500,7 @@ def normalize_synthetic_document(value: object) -> SalvageRow:
         text_class, content_digest = "missing", None
     elif text is None:
         text_class, content_digest = "null", None
-    elif isinstance(text, str):
+    elif type(text) is str:
         text_class = "string_empty" if text == "" else "string_nonempty"
         content_digest = _sha256_text(text)
     else:
@@ -501,7 +523,7 @@ def normalize_synthetic_document(value: object) -> SalvageRow:
         _path_value(document, "matched_tickers")
     )
     dedupe = _path_value(document, "dedupe_key")
-    dedupe_digest = None if dedupe is _MISSING else _canonical_value_digest(dedupe)
+    dedupe_digest = None if dedupe is _MISSING else dedupe_hash(dedupe)
     return SalvageRow(
         field_types,
         id_time,
