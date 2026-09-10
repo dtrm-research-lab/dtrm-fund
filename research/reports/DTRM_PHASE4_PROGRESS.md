@@ -201,12 +201,12 @@ The user supplied the following terminal output from their local Mac validation:
 - After PR #9 merge `d11b9cff62e656cb64664d126e48dca9381ffc7e`, PR #10
   implements the registered read-only adapter, immutable aggregate report,
   explicit configuration boundary and exclusive atomic report publication.
-- Final corrected implementation head `d3da513a163def2ea5c9cdfe985006d90b8ce9b9`
-  passed both CI workflows: 578 regression tests, six dedicated synthetic-Mongo functional
+- Final corrected implementation head `ff5024c4cc1808d535339e4b362c697a1e892718`
+  passed both CI workflows: 579 regression tests, six dedicated synthetic-Mongo functional
   tests, scoped quality checks, four synthetic reproductions, lineage check,
   wheel build and preservation of all 157 inherited files. The six ordinary
   test skips are exercised by the dedicated Mongo job.
-- Local adapter tests: 44 passed; all Phase IV tests pass 287 with six
+- Local adapter tests: 45 passed; all Phase IV tests pass 288 with six
   dedicated-Mongo skips. Full local regression is blocked by native
   XGBoost loading; it is not reported as a local pass. The clean CI regression
   is independently successful. Full details and tested commit/tree are in
@@ -224,3 +224,6 @@ The user supplied the following terminal output from their local Mac validation:
 - Current-head rereview also closed nested legacy BSON dedupe hashing and the
   post-publication cleanup edge case. All five review threads are answered and
   resolved; no raw values or scientific gates were changed.
+- Final rereview closed stdout failure after publication. All six review
+  threads are now answered and resolved, and the published aggregate—not a
+  best-effort console notification—is the authoritative completion artifact.

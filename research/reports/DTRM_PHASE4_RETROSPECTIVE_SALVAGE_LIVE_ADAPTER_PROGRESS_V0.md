@@ -147,3 +147,25 @@
   resolved. No production execution occurred and no scientific permission or
   assessment changed. The next commit records only this evidence and must pass
   both current-head workflows before human merge authorization.
+
+## Final rereview correction
+
+- Final rereview identified one post-publication console edge case. Commit
+  `ff5024c4cc1808d535339e4b362c697a1e892718`, tree
+  `9b8b56d9ad079020b14c0059a700313994a47ec3`, constructs the accepted summary
+  before publication and makes console emission best-effort. Closed or
+  unwritable stdout can no longer report failure after the complete aggregate
+  file has been atomically published.
+- The new regression brings focused adapter validation to 45/45 and all local
+  Phase IV tests to 288 passed with six dedicated-Mongo skips. Corrected-head
+  CI is green: Tests run `34448699758`; Phase IV gates run `34448699736`; 579
+  tests passed with six expected skips and all six disposable-Mongo tests
+  passed. Ruff, strict mypy (19 files), reproductions, lineage, wheel and both
+  157-file preservation checks passed.
+- The sixth review thread was answered and resolved. Across three review
+  rounds, all six threads are closed; five valid edge cases were corrected and
+  the standalone-majority claim was resolved with direct CI evidence. No
+  production source was accessed and scientific status remains blocked.
+- This record and the machine-readable evidence now point to the final tested
+  code commit. A final evidence-only head must be green before explicit human
+  merge authorization.
