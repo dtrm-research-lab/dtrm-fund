@@ -70,3 +70,29 @@
   reinstalled in the isolated environment. This is not recorded as a pass.
 - Current-head CI, full regression and human implementation review remain
   pending. No real-source evidence, history, outcome, fit or MM1 run occurred.
+
+## Implementation validation — PR #10
+
+- Tested remote implementation head `1169058039c6fe1ea3ee2492a1846250afb68a96`
+  has tree `d82ae58efc88e7d83e880863d5bcebd37e32c9f4`. Both workflows passed:
+  Tests run `34391785303` and Phase IV gates run `34391785409`.
+- Authoritative isolated CI: 572 regression tests passed, six skipped in the
+  ordinary job; all six Mongo functional tests passed in the dedicated
+  disposable service job (three existing, three new). Scoped Ruff, strict
+  mypy (19 files), four synthetic reproductions, pinned lineage validation,
+  wheel build and pre/post preservation of 157 inherited files passed.
+- Final local focused adapter run: 38 passed with `PYTHONPATH=src`. An initial
+  invocation without that path failed collection, then the corrected command
+  passed. BSON Code subclasses are explicitly excluded from plain-string
+  text, URL and ticker derivations.
+- Correction to the earlier environment update: the attempted same-version
+  XGBoost reinstall was blocked by a cancelled network approval and was not
+  retried. Full local regression remains `BLOCKED_ENVIRONMENT` (native Bus
+  error), not a pass. Full regression evidence above comes from clean CI.
+- Machine-readable implementation evidence is in
+  `DTRM_PHASE4_RETROSPECTIVE_SALVAGE_LIVE_ADAPTER_IMPLEMENTATION_VALIDATION_V0.json`.
+  This evidence records the tested implementation commit, not its own future
+  documentation commit. Current-head CI must also pass before integration.
+- PR #10 awaits human review and explicit merge authorization. No production
+  environment or database was accessed. Scientific status remains
+  `BLOCKED_SOURCE_AUDIT`; history, outcomes and training remain prohibited.
