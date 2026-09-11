@@ -55,6 +55,10 @@ jobs:
         run: |
           python research/experiments/run_phase4_retrospective_salvage.py --synthetic-input tests/fixtures/phase4_retrospective_salvage_v0.json --output /tmp/phase4-retrospective-salvage.json
           cmp /tmp/phase4-retrospective-salvage.json research/reports/DTRM_PHASE4_RETROSPECTIVE_SALVAGE_SYNTHETIC_V0.json
+      - name: Reproduce synthetic prospective capture review
+        run: |
+          python research/experiments/run_phase4_prospective_capture_review.py --input tests/fixtures/phase4_prospective_capture_bundle_v0.json --output /tmp/phase4-prospective-capture.json
+          cmp /tmp/phase4-prospective-capture.json research/reports/DTRM_PHASE4_PROSPECTIVE_CAPTURE_SYNTHETIC_V0.json
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)

@@ -6,6 +6,9 @@ Parallel contract-only increment (not Stage-2 implementation):
 Current Stage-1 salvage increment:
 [Retrospective salvage audit progress](DTRM_PHASE4_RETROSPECTIVE_SALVAGE_PROGRESS_V0.md).
 
+Current prospective-source increment:
+[Prospective capture protocol v0](../contracts/DTRM_PHASE4_PROSPECTIVE_CAPTURE_PROTOCOL_V0.md).
+
 ## 2026-09-07 — Contract and event ontology
 
 - User accepted the Stage-0 direction and instructed repository persistence and the project's Agentic Graph Engineering validation cycle.
@@ -260,3 +263,28 @@ The user supplied the following terminal output from their local Mac validation:
   audited paths. Corrected-head CI passed 580 tests, six disposable-Mongo
   tests, scoped quality gates, reproductions, lineage, wheel and preservation;
   both review findings are resolved.
+
+## 2026-09-10 — Prospective capture protocol and synthetic conformance graph
+
+- PR #11 was integrated by explicit human authorization as merge commit
+  `6314de2e53f01409918e01e519f5acfa98b7c09f`; both post-merge workflows passed.
+- Registered the prospective capture protocol in commit
+  `85c02cca5a477b6c68b43dbac35d517e58f66518`, then registered the synthetic
+  empty-prior-state binding in `d058b02fcf2e28c4987954876433b6efa695ab06`.
+  Neither registration was rewritten during implementation.
+- Implemented a pure synthetic conformance graph for explicit UTC run brackets,
+  deterministic version identity, complete immutable revision chains,
+  mapping-versioned link times, reconciled counters and chained canonical
+  record hashes. No production writer or data source was touched.
+- The locally validated implementation head
+  `3dda1a39946fd2d073a99d846f610f9d671774f9` passed 44 targeted tests and the
+  complete suite with 624 passed and 6 expected Mongo skips. Ruff, strict mypy
+  over 21 files, five synthetic reproductions, collector lineage, wheel build
+  and source preservation all passed.
+- All 157 inherited Phase-III files and the original Stage-0 contract remain
+  byte-identical. Outcomes, history construction, training, representation and
+  MM1 remain forbidden.
+- Scientific status is `BLOCKED_PROSPECTIVE_DEPLOYMENT`. Next permitted work,
+  after current-head CI and human review, is a separate production-deployment
+  contract binding the actual writer, clock, append-only store, durable prior
+  state, coverage/overlap, retention and run evidence.

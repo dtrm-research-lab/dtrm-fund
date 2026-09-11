@@ -1,0 +1,94 @@
+{
+  "collector": {
+    "clock_policy": "utc_runner_bracket_v0",
+    "collector_id": "phase4-synthetic-fmp",
+    "commit": "d058b02fcf2e28c4987954876433b6efa695ab06",
+    "mapping_version": "6273bfbbd21e40b3a4b8e4225a5e704f1ffe208707599dc26d77ecab63ce7c3e",
+    "repository": "dtrm-research-lab/dtrm-fund",
+    "source": "fmp_news"
+  },
+  "dataset_role": "synthetic",
+  "previous_ledger_head_sha256": null,
+  "records": [
+    {
+      "asset_links": [
+        {
+          "linked_at": "2026-09-10T10:02:00Z",
+          "mapping_version": "6273bfbbd21e40b3a4b8e4225a5e704f1ffe208707599dc26d77ecab63ce7c3e",
+          "ticker": "AAA"
+        }
+      ],
+      "content_sha256": "d37bbeabd63468e17f0a6726cbba9820c646531341e64e108ea267b78ab74446",
+      "first_seen_at": "2026-09-10T10:01:00Z",
+      "identity_method": "provider_id",
+      "payload_sha256": "7e767ca03b228a6174d66e4216b5bfbf7e842c3c098741cb6935019feae63285",
+      "previous_record_sha256": null,
+      "record_sha256": "d0595d22abf2c4dd47789b1b27a832766a3654693147e49667e8a5bdc31d3d89",
+      "run_id": "00000000-0000-4000-8000-000000000001",
+      "sequence_no": 1,
+      "source_event_id": "provider-event-001",
+      "supersedes_version_id": null,
+      "version_id": "3f8e47d278e1888aebfa55d2528e660b6b63a46fd030eb3ff757bc3c2f1fd13d",
+      "version_observed_at": "2026-09-10T10:01:00Z"
+    },
+    {
+      "asset_links": [
+        {
+          "linked_at": "2026-09-10T10:03:00Z",
+          "mapping_version": "6273bfbbd21e40b3a4b8e4225a5e704f1ffe208707599dc26d77ecab63ce7c3e",
+          "ticker": "AAA"
+        },
+        {
+          "linked_at": "2026-09-10T10:03:00Z",
+          "mapping_version": "6273bfbbd21e40b3a4b8e4225a5e704f1ffe208707599dc26d77ecab63ce7c3e",
+          "ticker": "BBB"
+        }
+      ],
+      "content_sha256": "a17f127cb00dbddcd952cb3e6a0a1a9596e329249f634e40b3b1dcca85988308",
+      "first_seen_at": "2026-09-10T10:01:00Z",
+      "identity_method": "provider_id",
+      "payload_sha256": "a0c6a86a752031837b66852a9b1017e2ebd63a48109adb056d50aa3eed18dc38",
+      "previous_record_sha256": "d0595d22abf2c4dd47789b1b27a832766a3654693147e49667e8a5bdc31d3d89",
+      "record_sha256": "19b0c475f1725823c204d9e1d1c8fb33947b76eada89053ce22777b30b4f9c84",
+      "run_id": "00000000-0000-4000-8000-000000000001",
+      "sequence_no": 2,
+      "source_event_id": "provider-event-001",
+      "supersedes_version_id": "3f8e47d278e1888aebfa55d2528e660b6b63a46fd030eb3ff757bc3c2f1fd13d",
+      "version_id": "6a5e8c7a34ad7f41e3a97fa068d50ec7d802e4554e03a38486829a629de2931e",
+      "version_observed_at": "2026-09-10T10:01:00Z"
+    },
+    {
+      "asset_links": [
+        {
+          "linked_at": "2026-09-10T10:04:00Z",
+          "mapping_version": "6273bfbbd21e40b3a4b8e4225a5e704f1ffe208707599dc26d77ecab63ce7c3e",
+          "ticker": "CCC"
+        }
+      ],
+      "content_sha256": "2f7ca11cfd553f91e72513586a0dcade558c4031cfa1515acf79d1630a7171b0",
+      "first_seen_at": "2026-09-10T10:01:00Z",
+      "identity_method": "exact_url_sha256",
+      "payload_sha256": "d48f4cde794344b7f5e5c57d40fed21067cff944648e8c13f3a265252f201827",
+      "previous_record_sha256": "19b0c475f1725823c204d9e1d1c8fb33947b76eada89053ce22777b30b4f9c84",
+      "record_sha256": "3718b6323f6cbdce48ddc1d9a935bf3034602e6e0fccfbd68a63864a7328c3ef",
+      "run_id": "00000000-0000-4000-8000-000000000001",
+      "sequence_no": 3,
+      "source_event_id": "ccf3bd331634bdc9ae4997537efe4dfeadb1f68980bf86716932ab816cccbc6e",
+      "supersedes_version_id": null,
+      "version_id": "472bf48660e708b46b5462239125c5160b65758b3888d9d6c8064cc689883e28",
+      "version_observed_at": "2026-09-10T10:01:00Z"
+    }
+  ],
+  "run": {
+    "completed_at": "2026-09-10T10:05:00Z",
+    "new_versions": 3,
+    "observed_candidates": 5,
+    "rejected_candidates": 1,
+    "repeat_sightings": 1,
+    "request_fingerprint_sha256": "a1fc67a9bba21503ad97ffec2691a8da698f2b6ef0431ea437e9bbdacb2f17f1",
+    "response_received_at": "2026-09-10T10:01:00Z",
+    "run_id": "00000000-0000-4000-8000-000000000001",
+    "started_at": "2026-09-10T10:00:00Z"
+  },
+  "schema_version": "dtrm.phase4.prospective_capture_bundle.v0"
+}
