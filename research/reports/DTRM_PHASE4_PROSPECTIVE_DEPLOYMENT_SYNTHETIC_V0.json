@@ -1,0 +1,55 @@
+{
+  "activation_permitted": false,
+  "clock_authenticated": false,
+  "completed_nodes": [
+    "normalize_manifest",
+    "validate_target_binding",
+    "validate_storage_isolation",
+    "validate_transaction_policy",
+    "validate_clock_coverage_retention",
+    "enforce_permission_floor",
+    "serialize_review"
+  ],
+  "coverage_authenticated": false,
+  "engineering_status": "PASS_PROSPECTIVE_DEPLOYMENT_CONTRACT",
+  "graph": "phase4_prospective_deployment_contract_v0",
+  "history_construction_permitted": false,
+  "implementation_permitted": true,
+  "isolation": {
+    "database": "trumpMinMax",
+    "event_collection": "phase4ProspectiveNewsV0",
+    "legacy_collection": "trumpNews",
+    "legacy_writer_permissions": "none",
+    "run_collection": "phase4ProspectiveRunsV0"
+  },
+  "manifest_sha256": "94b79d894d4acdc9fcec0928c65788ef4092995a22736d5577a52cd678e936a4",
+  "model_fitting_performed": false,
+  "operational_limits": {
+    "bound_exhaustion_action": "reject_entire_run_BOUND_EXHAUSTED",
+    "include_current_partial_day": true,
+    "max_candidates_per_run": 25000,
+    "max_new_versions_per_run": 5000,
+    "max_pages_per_role": 100,
+    "max_payload_bytes_per_candidate": 1048576,
+    "overlap_complete_utc_days": 7
+  },
+  "outcome_access_permitted": false,
+  "production_source_access_permitted": false,
+  "production_storage_mutation_permitted": false,
+  "registered_contract": {
+    "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_DEPLOYMENT_CONTRACT_V0.md",
+    "registration_commit": "541d3cacc77a2551aad088ed054f97f4fca6531e",
+    "sha256": "157aec8cf2cc2ad7f0143d644f2b703744a78ddbee3093baa0110d69b1f6acec"
+  },
+  "schema_version": "dtrm.phase4.prospective_deployment_review.v0",
+  "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+  "source_authenticated": false,
+  "target": {
+    "parent_commit": "7a8107e4451891535366acaf766348785ccc157b",
+    "parent_tree": "f295888372d9ef3c089cc24dd1e72e6b1f2c92cf",
+    "repository": "tech-com-UA00001/theresistance-back",
+    "repository_id": 1128196792,
+    "selected_file_count": 1
+  },
+  "training_permitted": false
+}
