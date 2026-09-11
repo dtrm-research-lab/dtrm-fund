@@ -9,6 +9,9 @@ Current Stage-1 salvage increment:
 Current prospective-source increment:
 [Prospective capture protocol v0](../contracts/DTRM_PHASE4_PROSPECTIVE_CAPTURE_PROTOCOL_V0.md).
 
+Current prospective-deployment increment:
+[Prospective deployment contract v0](../contracts/DTRM_PHASE4_PROSPECTIVE_DEPLOYMENT_CONTRACT_V0.md).
+
 ## 2026-09-07 — Contract and event ontology
 
 - User accepted the Stage-0 direction and instructed repository persistence and the project's Agentic Graph Engineering validation cycle.
