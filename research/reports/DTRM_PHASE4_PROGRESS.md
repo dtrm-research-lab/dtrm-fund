@@ -291,3 +291,41 @@ The user supplied the following terminal output from their local Mac validation:
   after current-head CI and human review, is a separate production-deployment
   contract binding the actual writer, clock, append-only store, durable prior
   state, coverage/overlap, retention and run evidence.
+
+## 2026-09-11 — Prospective deployment contract and offline validator
+
+- PR #12 was integrated by explicit human authorization as merge commit
+  `4870a643f7d4317909997551563fe296970dcccd`; both post-merge workflows passed.
+- Registered the prospective deployment contract before implementation. Remote
+  registration `541d3cacc77a2551aad088ed054f97f4fca6531e` binds the unchanged
+  `theresistance-back` parent `7a8107e4451891535366acaf766348785ccc157b`,
+  tree `f295888372d9ef3c089cc24dd1e72e6b1f2c92cf` and collector blob
+  `700e831db5c1d196a8e7c2c1dc6d10148237e710` without modifying that repository.
+- The contract isolates prospective versions and accepted-run manifests from
+  `trumpNews`, permits only find/insert after a later activation, requires an
+  all-or-nothing majority/journaled transaction, and fixes a seven-complete-day
+  overlap plus fail-closed operational bounds. `completed_at` is recorded after
+  canonical staging and before the immutable transaction; acknowledgement and
+  workflow completion are later auditable bounds.
+- Implemented an immutable, exact-schema deployment manifest and seven-node pure
+  validator. It has no production adapter, environment discovery, endpoint,
+  database or workflow side effect. Secret-shaped inputs fail without echoing
+  rejected values or producing an accepted report.
+- Agent validation at local implementation commit
+  `1c37aef3e0dc04c67ee94ef8dfd1c49643bfe687`, tree
+  `9158d604dfd1208d2eb1ace18a313a81f24c801d`, reproduced remotely by commit
+  `485777208bffda61736af8c9fda575c137b2600d`: 90 targeted tests and the full
+  suite with 714 passed and six expected dedicated-Mongo skips. Scoped Ruff and
+  strict mypy over 23 files passed; six synthetic reports reproduced, the
+  12-finding lineage evidence validated, and the disposable wheel built.
+- Preservation passed before and after validation for all 157 inherited files
+  and the original Stage-0 contract. Full machine-readable evidence is in
+  `DTRM_PHASE4_PROSPECTIVE_DEPLOYMENT_VALIDATION_V0.json`.
+- Engineering state is `PASS_PROSPECTIVE_DEPLOYMENT_CONTRACT`; scientific state
+  remains `BLOCKED_PROSPECTIVE_DEPLOYMENT`. No collector deployment, activation,
+  production source/storage access, history construction, outcome access,
+  training, representation or MM1 execution occurred.
+- Next delivery gate is current-head CI and human review. Approval of this
+  contract does not authorize a writer change; a separate dormant writer PR
+  from the pinned backend parent is required before licence/index/credential and
+  activation review.
