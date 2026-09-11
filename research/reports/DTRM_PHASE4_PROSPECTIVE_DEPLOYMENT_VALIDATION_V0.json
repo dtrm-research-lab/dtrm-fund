@@ -1,0 +1,60 @@
+{
+  "build": {
+    "artifact": "dtrm_fund-0.1.0-py3-none-any.whl",
+    "disposable_staged_tree": true,
+    "status": "passed"
+  },
+  "contract": {
+    "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_DEPLOYMENT_CONTRACT_V0.md",
+    "remote_registration_commit": "541d3cacc77a2551aad088ed054f97f4fca6531e",
+    "sha256": "157aec8cf2cc2ad7f0143d644f2b703744a78ddbee3093baa0110d69b1f6acec"
+  },
+  "external_io": {
+    "environment_inspected": false,
+    "mongo_accessed": false,
+    "production_repository_modified": false,
+    "provider_accessed": false,
+    "workflow_activated": false
+  },
+  "graph": "phase4_prospective_deployment_contract_v0",
+  "implementation": {
+    "local_commit": "1c37aef3e0dc04c67ee94ef8dfd1c49643bfe687",
+    "remote_commit": "485777208bffda61736af8c9fda575c137b2600d",
+    "tree": "9158d604dfd1208d2eb1ace18a313a81f24c801d"
+  },
+  "quality": {
+    "collector_lineage_findings_validated": 12,
+    "full_regression": {
+      "passed": 714,
+      "skipped_dedicated_mongo": 6
+    },
+    "mypy_strict_files": 23,
+    "mypy_status": "passed",
+    "ruff_status": "passed",
+    "synthetic_reproductions": 6,
+    "targeted_tests_passed": 90
+  },
+  "registered_artifacts": {
+    "manifest_path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_DEPLOYMENT_MANIFEST_V0.json",
+    "manifest_sha256": "94b79d894d4acdc9fcec0928c65788ef4092995a22736d5577a52cd678e936a4",
+    "synthetic_report_path": "research/reports/DTRM_PHASE4_PROSPECTIVE_DEPLOYMENT_SYNTHETIC_V0.json",
+    "synthetic_report_sha256": "cdc1129a1b376fda19eb62b98b1001b1f7baa1344c450ba56e5f6d0cbce9d154"
+  },
+  "remote_ci": "pending_current_head",
+  "schema_version": "dtrm.phase4.prospective_deployment_validation.v0",
+  "scientific_state": {
+    "activation_permitted": false,
+    "history_construction_permitted": false,
+    "outcome_access_permitted": false,
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "training_permitted": false
+  },
+  "source_preservation": {
+    "inherited_commit": "a853d5d3f2d6c93a3483a0126ab3475b02960bfc",
+    "inherited_tree": "fae65d7457225dff1601eaf43fb0ef2b2d4b2c19",
+    "stage0_contract_sha256": "1ec55a67aaa89289e7f167564fb9788fde136f6decc8f5dbfebc54e7d6009f03",
+    "status": "PASS_SOURCE_PRESERVATION",
+    "verified_inherited_files": 157
+  },
+  "status": "PASS_LOCAL_SYNTHETIC_VALIDATION"
+}

@@ -1,0 +1,113 @@
+{
+  "clock": {
+    "authenticated": false,
+    "completed_at_semantics": "after_canonical_staging_before_transaction",
+    "policy": "utc_runner_bracket_v0",
+    "workflow_completion_is_later_bound": true
+  },
+  "coverage": {
+    "bound_exhaustion_action": "reject_entire_run_BOUND_EXHAUSTED",
+    "include_current_partial_day": true,
+    "max_candidates_per_run": 25000,
+    "max_new_versions_per_run": 5000,
+    "max_pages_per_role": 100,
+    "max_payload_bytes_per_candidate": 1048576,
+    "overlap_complete_utc_days": 7
+  },
+  "graph": "phase4_prospective_deployment_contract_v0",
+  "permissions": {
+    "activation_permitted": false,
+    "clock_authenticated": false,
+    "coverage_authenticated": false,
+    "history_construction_permitted": false,
+    "implementation_permitted": true,
+    "model_fitting_performed": false,
+    "outcome_access_permitted": false,
+    "production_source_access_permitted": false,
+    "production_storage_mutation_permitted": false,
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "source_authenticated": false,
+    "training_permitted": false
+  },
+  "protocols": [
+    {
+      "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_CAPTURE_PROTOCOL_V0.md",
+      "registration_commit": "85c02cca5a477b6c68b43dbac35d517e58f66518",
+      "role": "prospective_capture_protocol",
+      "sha256": "a343f076a9713b5e1b037cf83ecc864d9bc4308a9592bef0dabeafa00617e629"
+    },
+    {
+      "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_CAPTURE_SYNTHETIC_BINDING_V0.md",
+      "registration_commit": "d058b02fcf2e28c4987954876433b6efa695ab06",
+      "role": "prospective_capture_synthetic_binding",
+      "sha256": "0ec92acb50d3011063db595e6bc026b99bd9847f8d6e4dcc080ab5266ea65e31"
+    }
+  ],
+  "registered_contract": {
+    "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_DEPLOYMENT_CONTRACT_V0.md",
+    "registration_commit": "541d3cacc77a2551aad088ed054f97f4fca6531e",
+    "sha256": "157aec8cf2cc2ad7f0143d644f2b703744a78ddbee3093baa0110d69b1f6acec"
+  },
+  "retention": {
+    "conflict_action": "block_activation",
+    "licence_review_required_before_activation": true,
+    "minimum_years_after_final_artifact": 5,
+    "retain_through_phase4_evaluation": true
+  },
+  "runtime": {
+    "credential_scope": "dedicated_two_namespace_read_insert_only",
+    "environment_inspection_permitted": false,
+    "implementation_mode": "dormant_shadow",
+    "provider_access_permitted": false,
+    "storage_access_permitted": false,
+    "workflow_enabled": false
+  },
+  "schema_version": "dtrm.phase4.prospective_deployment_manifest.v0",
+  "storage": {
+    "database": "trumpMinMax",
+    "event_collection": "phase4ProspectiveNewsV0",
+    "legacy_collection": "trumpNews",
+    "legacy_writer_permissions": "none",
+    "run_collection": "phase4ProspectiveRunsV0",
+    "runtime_allowed_operations": [
+      "find",
+      "insert"
+    ],
+    "runtime_forbidden_operations": [
+      "$merge",
+      "$out",
+      "bulk_rewrite",
+      "delete",
+      "drop",
+      "index_create",
+      "rename",
+      "replace",
+      "server_javascript",
+      "update",
+      "upsert"
+    ],
+    "runtime_schema_mutation_permitted": false
+  },
+  "target_writer": {
+    "branch": "main",
+    "files": [
+      {
+        "blob_sha": "700e831db5c1d196a8e7c2c1dc6d10148237e710",
+        "path": "agent/trump_model/news_collector.py",
+        "role": "collector_parent"
+      }
+    ],
+    "parent_commit": "7a8107e4451891535366acaf766348785ccc157b",
+    "parent_tree": "f295888372d9ef3c089cc24dd1e72e6b1f2c92cf",
+    "repository": "tech-com-UA00001/theresistance-back",
+    "repository_id": 1128196792
+  },
+  "transaction": {
+    "all_or_nothing": true,
+    "journaled": true,
+    "manifest_inserted_last": true,
+    "read_concern": "majority",
+    "write_concern": "majority",
+    "zero_version_manifest_required": true
+  }
+}
