@@ -1,0 +1,38 @@
+{
+  "account_entitlement_status": "BLOCKED",
+  "activation_readiness_status": "BLOCKED",
+  "bindings": {
+    "contract_blob_sha": "67ffde2df83518094b2c97513630102990cde4f6",
+    "parent_integration": "4e64bf27fed918fe0b022c21769e96d500a99d6e",
+    "registration_commit": "0f49321811c3a992d7486dd122e25ae4a9a2a5fd",
+    "statement_sha256": "7ad80458b92353a8079297ddcc99e1e6c51f102229cc783f4d15f09702bafb5d"
+  },
+  "engineering_status": "PASS_ENTITLEMENT_EVIDENCE_INTAKE",
+  "evidence_state": "NO_EVIDENCE",
+  "evidence_summary": {
+    "evidence_class_count": 0,
+    "has_redacted_evidence_digest": false,
+    "no_count": 0,
+    "unknown_count": 8,
+    "yes_count": 0
+  },
+  "graph": "phase4_entitlement_evidence_intake_v0",
+  "human_rights_review_required": true,
+  "permissions": {
+    "history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "model_fitting_performed": false,
+    "outcome_access_permitted": false,
+    "production_provider_access_permitted": false,
+    "production_storage_mutation_permitted": false,
+    "provider_semantics_live_probe_permitted": false,
+    "runtime_adapter_execution_permitted": false,
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "temporal_state_fitting_permitted": false,
+    "training_permitted": false,
+    "workflow_activation_permitted": false
+  },
+  "provider_semantics_probe_permitted": false,
+  "schema_version": "dtrm.phase4.entitlement_evidence_intake_review.v0",
+  "storage_retention_rights_status": "BLOCKED"
+}

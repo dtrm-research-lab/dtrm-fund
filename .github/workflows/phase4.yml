@@ -71,6 +71,10 @@ jobs:
         run: |
           python research/experiments/validate_phase4_provider_evidence.py --output /tmp/phase4-provider-evidence.json
           cmp /tmp/phase4-provider-evidence.json research/reports/DTRM_PHASE4_PROVIDER_EVIDENCE_SYNTHETIC_V0.json
+      - name: Validate entitlement evidence intake
+        run: |
+          python research/experiments/validate_phase4_entitlement_evidence.py --output /tmp/phase4-entitlement-evidence.json
+          cmp /tmp/phase4-entitlement-evidence.json research/reports/DTRM_PHASE4_ENTITLEMENT_EVIDENCE_SYNTHETIC_V0.json
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)

@@ -1,0 +1,50 @@
+{
+  "answers": {
+    "additional_storage_security_controls": "UNKNOWN",
+    "exact_payload_storage": "UNKNOWN",
+    "internal_research_and_derived_analysis": "UNKNOWN",
+    "programmatic_registered_news_access": "UNKNOWN",
+    "publication_display_redistribution_restrictions": "UNKNOWN",
+    "retention_period_constraints": "UNKNOWN",
+    "retention_through_phase4_evaluation": "UNKNOWN",
+    "termination_deletion_or_cessation": "UNKNOWN"
+  },
+  "evidence_classes": {
+    "account_plan_summary": false,
+    "order_form_or_subscription_terms": false,
+    "provider_licensing_statement": false,
+    "written_provider_clarification": false
+  },
+  "evidence_date": null,
+  "evidence_state": "NO_EVIDENCE",
+  "graph": "phase4_entitlement_evidence_intake_v0",
+  "permissions": {
+    "history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "model_fitting_performed": false,
+    "outcome_access_permitted": false,
+    "production_provider_access_permitted": false,
+    "production_storage_mutation_permitted": false,
+    "provider_semantics_live_probe_permitted": false,
+    "runtime_adapter_execution_permitted": false,
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "temporal_state_fitting_permitted": false,
+    "training_permitted": false,
+    "workflow_activation_permitted": false
+  },
+  "provider_scope": "FINANCIAL_MODELING_PREP",
+  "redacted_evidence_sha256": null,
+  "registered_contract": {
+    "blob_sha": "67ffde2df83518094b2c97513630102990cde4f6",
+    "parent_integration": "4e64bf27fed918fe0b022c21769e96d500a99d6e",
+    "path": "research/contracts/DTRM_PHASE4_ENTITLEMENT_EVIDENCE_INTAKE_V0.md",
+    "registration_commit": "0f49321811c3a992d7486dd122e25ae4a9a2a5fd"
+  },
+  "reviewer_attestation": {
+    "contradiction_free": false,
+    "human_review_completed": false,
+    "review_artifact_registered": false,
+    "reviewed_on": null
+  },
+  "schema_version": "dtrm.phase4.entitlement_evidence_intake.v0"
+}
