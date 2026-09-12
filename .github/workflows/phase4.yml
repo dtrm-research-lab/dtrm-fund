@@ -79,6 +79,10 @@ jobs:
         run: |
           python research/experiments/validate_phase4_human_rights_review.py --output /tmp/phase4-human-rights-review.json
           cmp /tmp/phase4-human-rights-review.json research/reports/DTRM_PHASE4_HUMAN_RIGHTS_REVIEW_SYNTHETIC_V0.json
+      - name: Validate evidence-first operational amendment
+        run: |
+          python research/experiments/validate_phase4_evidence_first_operational.py --output /tmp/phase4-evidence-first-operational.json
+          cmp /tmp/phase4-evidence-first-operational.json research/reports/DTRM_PHASE4_EVIDENCE_FIRST_OPERATIONAL_SYNTHETIC_V0.json
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)

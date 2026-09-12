@@ -1,0 +1,40 @@
+{
+  "backend_binding": {
+    "commit": "e6f60c6eaf74a9f4354ca7f9f6aff6dfdd80f8a5",
+    "repository": "tech-com-UA00001/theresistance-back",
+    "tree": "2b5422f554119ecf48663d5506d9fdd38ab7738f"
+  },
+  "graph": "phase4_evidence_first_operational_v0",
+  "permissions": {
+    "confirmatory_history_construction_permitted": false,
+    "live_provider_probe_permitted": true,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "private_raw_evidence_capture_permitted": true,
+    "private_raw_evidence_processing_permitted": true,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+  "provider_roles": {
+    "fmp_articles": "https://financialmodelingprep.com/stable/fmp-articles",
+    "general_latest": "https://financialmodelingprep.com/stable/news/general-latest",
+    "stock_latest": "https://financialmodelingprep.com/stable/news/stock-latest"
+  },
+  "provider_scope": "FINANCIAL_MODELING_PREP",
+  "registered_contract": {
+    "blob_sha": "f80dd1838eb491ed7d0695af1c423c870eef687c",
+    "parent_integration": "c5f5f16d103222e51914140f257f0922966188d1",
+    "path": "research/contracts/DTRM_PHASE4_EVIDENCE_FIRST_OPERATIONAL_AMENDMENT_V0.md",
+    "registration_commit": "0a0d2282d2786cb66f34d047dd864874c8df3ed4"
+  },
+  "safety_bounds": {
+    "max_candidates_per_run": 25000,
+    "max_new_versions_per_run": 5000,
+    "max_pages_per_role": 100,
+    "max_payload_bytes_per_candidate": 1048576
+  },
+  "schema_version": "dtrm.phase4.evidence_first_operational.v0",
+  "scientific_evidence_status": "AUTHORIZED_PROSPECTIVE_EVIDENCE_CAPTURE"
+}
