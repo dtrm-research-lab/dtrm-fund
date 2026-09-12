@@ -63,6 +63,10 @@ jobs:
         run: |
           python research/experiments/validate_phase4_prospective_deployment.py --output /tmp/phase4-prospective-deployment.json
           cmp /tmp/phase4-prospective-deployment.json research/reports/DTRM_PHASE4_PROSPECTIVE_DEPLOYMENT_SYNTHETIC_V0.json
+      - name: Validate prospective activation readiness
+        run: |
+          python research/experiments/validate_phase4_prospective_activation_readiness.py --output /tmp/phase4-prospective-activation-readiness.json
+          cmp /tmp/phase4-prospective-activation-readiness.json research/reports/DTRM_PHASE4_PROSPECTIVE_ACTIVATION_READINESS_SYNTHETIC_V0.json
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)
