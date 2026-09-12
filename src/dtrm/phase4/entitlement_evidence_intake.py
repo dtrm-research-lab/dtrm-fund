@@ -121,7 +121,7 @@ def _require_exact_keys(value: object, expected: set[str], label: str) -> JsonOb
 def _require_bool(value: object, label: str) -> bool:
     if type(value) is not bool:
         raise EntitlementEvidenceError(f"{label}: expected boolean")
-    return cast(bool, value)
+    return value
 
 
 def _validate_iso_date_or_none(value: object, label: str) -> str | None:
