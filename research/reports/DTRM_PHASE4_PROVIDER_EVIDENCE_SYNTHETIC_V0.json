@@ -1,0 +1,52 @@
+{
+  "account_entitlement_status": "BLOCKED",
+  "activation_readiness_status": "BLOCKED",
+  "bindings": {
+    "contract_sha256": "708dcc4e43da77aaa6b5686d1343c1924a557b9e7a19e9734708abf265ad1b84",
+    "manifest_sha256": "bca666a2c232d675d16314c5cd5b80e6fa849fc858e2285fe1cc6efc1dd2491b",
+    "parent_integration": "02bdc19e501697395526bac7a5a661637dd945f8",
+    "registration_commit": "8fbe5301d2cd5a7af219dbf185d69b8d63c991f1"
+  },
+  "blocked_rights": {
+    "account_entitlement": true,
+    "exact_payload_storage": true,
+    "redistribution": true,
+    "research_retention": true,
+    "termination_retention": true
+  },
+  "blocked_semantics": {
+    "date_window_equivalent": true,
+    "decision_interval_completeness": true,
+    "ordering_stability": true,
+    "provider_observation_clock": true,
+    "revision_late_arrival": true,
+    "terminal_page_rule": true
+  },
+  "documentary_endpoint_identity_status": "PASS",
+  "documentary_evidence": {
+    "latest_feed_roles_documented": 3,
+    "limit_parameter_roles_documented": 3,
+    "official_public_sources": 3,
+    "page_parameter_roles_documented": 3,
+    "registered_endpoints": 3
+  },
+  "documentary_pagination_parameter_status": "PASS",
+  "engineering_status": "PASS_PROVIDER_EVIDENCE_AUDIT",
+  "graph": "phase4_provider_evidence_audit_v0",
+  "permissions": {
+    "history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "model_fitting_performed": false,
+    "outcome_access_permitted": false,
+    "production_provider_access_permitted": false,
+    "production_storage_mutation_permitted": false,
+    "runtime_adapter_execution_permitted": false,
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "temporal_state_fitting_permitted": false,
+    "training_permitted": false,
+    "workflow_activation_permitted": false
+  },
+  "provider_request_semantics_status": "BLOCKED",
+  "schema_version": "dtrm.phase4.provider_evidence_review.v0",
+  "unresolved_gate_count": 6
+}

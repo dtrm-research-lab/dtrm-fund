@@ -67,6 +67,10 @@ jobs:
         run: |
           python research/experiments/validate_phase4_prospective_activation_readiness.py --output /tmp/phase4-prospective-activation-readiness.json
           cmp /tmp/phase4-prospective-activation-readiness.json research/reports/DTRM_PHASE4_PROSPECTIVE_ACTIVATION_READINESS_SYNTHETIC_V0.json
+      - name: Validate provider evidence audit
+        run: |
+          python research/experiments/validate_phase4_provider_evidence.py --output /tmp/phase4-provider-evidence.json
+          cmp /tmp/phase4-provider-evidence.json research/reports/DTRM_PHASE4_PROVIDER_EVIDENCE_SYNTHETIC_V0.json
       - name: Build package in disposable source copy
         run: |
           phase4_build_dir=$(mktemp -d)
