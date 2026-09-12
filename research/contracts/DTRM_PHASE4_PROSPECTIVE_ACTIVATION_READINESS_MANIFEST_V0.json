@@ -1,0 +1,117 @@
+{
+  "authority": {
+    "least_privilege_credential_provisioned": false,
+    "secret_material_permitted": false,
+    "writer_authority_enumerated": false
+  },
+  "dormant_writer": {
+    "branch": "main",
+    "files": [
+      {
+        "blob_sha": "ee2d18c88ef7895b93afa4497007352f5b83036e",
+        "path": "docs/architecture/ADR-017B-phase4-prior-state-causality-v0.md",
+        "role": "adr_causality"
+      },
+      {
+        "blob_sha": "8886f1faec2082d86699ac171fb4ff1490ab518c",
+        "path": "docs/architecture/ADR-017A-phase4-prospective-news-clock-binding-v0.md",
+        "role": "adr_clock"
+      },
+      {
+        "blob_sha": "c273bf34555f4bc3f188a0b8b379b0d02264cb79",
+        "path": "docs/architecture/ADR-017-phase4-prospective-news-shadow-v0.md",
+        "role": "adr_shadow"
+      },
+      {
+        "blob_sha": "032490dca027a2b718f47f9ac57d3b843c00f9bf",
+        "path": "src/theresistance_backend/application/plan_prospective_news_capture.py",
+        "role": "application_orchestrator"
+      },
+      {
+        "blob_sha": "aed46c420059642ff1fa4558c07b3532f4adf911",
+        "path": "src/theresistance_backend/domains/markets/prospective_news.py",
+        "role": "domain_graph"
+      },
+      {
+        "blob_sha": "2f25d135a2c9af983f86627e8482a4d59e282eba",
+        "path": "src/theresistance_backend/ports/prospective_news.py",
+        "role": "ports"
+      }
+    ],
+    "merge_commit": "e6f60c6eaf74a9f4354ca7f9f6aff6dfdd80f8a5",
+    "merge_tree": "2b5422f554119ecf48663d5506d9fdd38ab7738f",
+    "pinned_parent": "7a8107e4451891535366acaf766348785ccc157b",
+    "repository": "tech-com-UA00001/theresistance-back",
+    "repository_id": 1128196792,
+    "validated_feature_head": "9eab8ee4b6ac9f7a0f67550a0e75e2489a5bc7d7"
+  },
+  "graph": "phase4_prospective_activation_readiness_v0",
+  "licence": {
+    "account_specific_evidence_present": false,
+    "exact_payload_storage_authorized": false,
+    "licence_retention_authorized": false,
+    "observed_on": "2026-09-12",
+    "proposed_minimum_years_after_final_artifact": 5,
+    "public_terms_account_or_order_scope": true,
+    "public_terms_copy_download_restriction_without_prior_approval": true,
+    "retain_through_phase4_evaluation": true,
+    "terms_url": "https://site.financialmodelingprep.com/terms-of-service"
+  },
+  "permissions": {
+    "activation_permitted": false,
+    "clock_authenticated": false,
+    "coverage_authenticated": false,
+    "history_construction_permitted": false,
+    "model_fitting_performed": false,
+    "outcome_access_permitted": false,
+    "production_source_access_permitted": false,
+    "production_storage_mutation_permitted": false,
+    "readiness_status": "BLOCKED",
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "source_authenticated": false,
+    "training_permitted": false
+  },
+  "provider": {
+    "bounded_exhaustion_authenticated": false,
+    "documentation_url": "https://site.financialmodelingprep.com/developer/docs/stable",
+    "endpoint_identity_status": "DOCUMENTED",
+    "observed_on": "2026-09-12",
+    "page_limit_example_documented": true,
+    "request_semantics_authenticated": false,
+    "roles": [
+      {
+        "endpoint": "https://financialmodelingprep.com/stable/fmp-articles",
+        "role": "fmp_articles"
+      },
+      {
+        "endpoint": "https://financialmodelingprep.com/stable/news/general-latest",
+        "role": "general_latest"
+      },
+      {
+        "endpoint": "https://financialmodelingprep.com/stable/news/stock-latest",
+        "role": "stock_latest"
+      }
+    ]
+  },
+  "registered_contract": {
+    "parent_integration": "cdd78c38f8b543bc8a06f6fbca5f852926682621",
+    "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_ACTIVATION_READINESS_V0.md",
+    "registration_commit": "dde70ab0e58a9c48ba1be0dc2894ac0d2b435e18",
+    "sha256": "81b653ffec1044e27dbaa009349cfa55ee60a2a1e895815b4eb430129fff0ccd"
+  },
+  "runtime": {
+    "prospective_start_registered": false,
+    "runtime_adapter_validated": false,
+    "workflow_activation_ready": false,
+    "workflow_enabled": false
+  },
+  "schema_version": "dtrm.phase4.prospective_activation_readiness_manifest.v0",
+  "storage": {
+    "database": "trumpMinMax",
+    "event_collection": "phase4ProspectiveNewsV0",
+    "legacy_collection": "trumpNews",
+    "run_collection": "phase4ProspectiveRunsV0",
+    "runtime_schema_mutation_permitted": false,
+    "storage_schema_provisioned": false
+  }
+}
