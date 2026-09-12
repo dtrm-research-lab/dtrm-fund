@@ -1,0 +1,51 @@
+{
+  "evidence_classes_reviewed": {
+    "ACCOUNT_PLAN_SUMMARY": false,
+    "ORDER_FORM_OR_SUBSCRIPTION_TERMS": false,
+    "PROVIDER_LICENSING_STATEMENT": false,
+    "PROVIDER_WRITTEN_CLARIFICATION": false
+  },
+  "graph": "phase4_human_rights_review_v0",
+  "permissions": {
+    "history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "model_fitting_performed": false,
+    "outcome_access_permitted": false,
+    "production_provider_access_permitted": false,
+    "production_storage_mutation_permitted": false,
+    "provider_semantics_live_probe_permitted": false,
+    "runtime_adapter_execution_permitted": false,
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "temporal_state_fitting_permitted": false,
+    "training_permitted": false,
+    "workflow_activation_permitted": false
+  },
+  "provider_scope": "FINANCIAL_MODELING_PREP",
+  "redacted_evidence_sha256": null,
+  "registered_contract": {
+    "blob_sha": "e707e7a8d8e5c148d39fe62020cc08e0ba948fbf",
+    "parent_integration": "62c2a2735d663413390aa966a2be3cd934c77ce6",
+    "path": "research/contracts/DTRM_PHASE4_HUMAN_RIGHTS_REVIEW_V0.md",
+    "registration_commit": "173b7d09dd4bd3746e8dbd2223c398f5299d517b"
+  },
+  "review_date": null,
+  "review_state": "PENDING_HUMAN_EVIDENCE",
+  "reviewer_attestation": {
+    "contradiction_free": false,
+    "direct_support_confirmed": false,
+    "human_review_completed": false,
+    "raw_private_material_stored_in_repo": false,
+    "secrets_or_identifiers_stored_in_repo": false
+  },
+  "rights_assessment": {
+    "exact_payload_storage": "UNKNOWN",
+    "internal_research_use": "UNKNOWN",
+    "programmatic_endpoint_access": "UNKNOWN",
+    "publication_display_redistribution_restrictions_known": "UNKNOWN",
+    "retain_through_phase4_evaluation": "UNKNOWN",
+    "retention_duration_compatible_with_phase4": "UNKNOWN",
+    "storage_security_obligations_known": "UNKNOWN",
+    "termination_or_entitlement_loss_obligation_known": "UNKNOWN"
+  },
+  "schema_version": "dtrm.phase4.human_rights_review.v0"
+}
