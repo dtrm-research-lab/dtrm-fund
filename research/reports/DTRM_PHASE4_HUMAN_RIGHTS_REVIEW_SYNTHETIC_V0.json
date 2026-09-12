@@ -1,0 +1,38 @@
+{
+  "account_entitlement_status": "BLOCKED",
+  "activation_readiness_status": "BLOCKED",
+  "bindings": {
+    "contract_blob_sha": "e707e7a8d8e5c148d39fe62020cc08e0ba948fbf",
+    "parent_integration": "62c2a2735d663413390aa966a2be3cd934c77ce6",
+    "registration_commit": "173b7d09dd4bd3746e8dbd2223c398f5299d517b",
+    "statement_sha256": "af430a75ba2618e38c6fd6b93e560da2ee078eefad5560f26d265ccac7d17b07"
+  },
+  "engineering_status": "PASS_HUMAN_RIGHTS_REVIEW_PROTOCOL",
+  "graph": "phase4_human_rights_review_v0",
+  "permissions": {
+    "history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "model_fitting_performed": false,
+    "outcome_access_permitted": false,
+    "production_provider_access_permitted": false,
+    "production_storage_mutation_permitted": false,
+    "provider_semantics_live_probe_permitted": false,
+    "runtime_adapter_execution_permitted": false,
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "temporal_state_fitting_permitted": false,
+    "training_permitted": false,
+    "workflow_activation_permitted": false
+  },
+  "provider_semantics_probe_eligible": false,
+  "review_state": "PENDING_HUMAN_EVIDENCE",
+  "review_summary": {
+    "evidence_class_count": 0,
+    "has_redacted_evidence_digest": false,
+    "human_review_completed": false,
+    "not_supported_count": 0,
+    "supported_count": 0,
+    "unknown_count": 8
+  },
+  "schema_version": "dtrm.phase4.human_rights_review_report.v0",
+  "storage_retention_rights_status": "BLOCKED"
+}
