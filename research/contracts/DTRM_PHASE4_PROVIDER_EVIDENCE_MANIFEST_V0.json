@@ -1,0 +1,126 @@
+{
+  "endpoints": [
+    {
+      "endpoint": "https://financialmodelingprep.com/stable/fmp-articles",
+      "example_query": "?page=0&limit=20",
+      "latest_feed_documented": true,
+      "limit_parameter_documented": true,
+      "page_parameter_documented": true,
+      "role": "fmp_articles"
+    },
+    {
+      "endpoint": "https://financialmodelingprep.com/stable/news/general-latest",
+      "example_query": "?page=0&limit=20",
+      "latest_feed_documented": true,
+      "limit_parameter_documented": true,
+      "page_parameter_documented": true,
+      "role": "general_latest"
+    },
+    {
+      "endpoint": "https://financialmodelingprep.com/stable/news/stock-latest",
+      "example_query": "?page=0&limit=20",
+      "latest_feed_documented": true,
+      "limit_parameter_documented": true,
+      "page_parameter_documented": true,
+      "role": "stock_latest"
+    }
+  ],
+  "graph": "phase4_provider_evidence_audit_v0",
+  "permissions": {
+    "history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "model_fitting_performed": false,
+    "outcome_access_permitted": false,
+    "production_provider_access_permitted": false,
+    "production_storage_mutation_permitted": false,
+    "runtime_adapter_execution_permitted": false,
+    "scientific_status": "BLOCKED_PROSPECTIVE_DEPLOYMENT",
+    "temporal_state_fitting_permitted": false,
+    "training_permitted": false,
+    "workflow_activation_permitted": false
+  },
+  "registered_contract": {
+    "parent_integration": "02bdc19e501697395526bac7a5a661637dd945f8",
+    "path": "research/contracts/DTRM_PHASE4_PROVIDER_EVIDENCE_AUDIT_V0.md",
+    "registration_commit": "8fbe5301d2cd5a7af219dbf185d69b8d63c991f1",
+    "sha256": "708dcc4e43da77aaa6b5686d1343c1924a557b9e7a19e9734708abf265ad1b84"
+  },
+  "rights": {
+    "account_entitlement_evidence_present": false,
+    "account_or_order_scope_required_by_public_terms": true,
+    "display_redistribution_specific_agreement_required": true,
+    "exact_payload_storage_authorized": false,
+    "personal_copy_download_requires_prior_approval": true,
+    "redistribution_authorized": false,
+    "research_retention_authorized": false,
+    "stored_data_security_controls_required": true,
+    "termination_deletion_obligation_documented": true,
+    "termination_retention_authorized": false
+  },
+  "schema_version": "dtrm.phase4.provider_evidence_manifest.v0",
+  "semantics": {
+    "date_window_equivalent_documented": false,
+    "decision_interval_completeness_documented": false,
+    "empty_page_exhaustion_documented": false,
+    "late_arrival_semantics_documented": false,
+    "live_probe_permitted": false,
+    "ordering_stability_documented": false,
+    "provider_observation_clock_authenticated": false,
+    "repeated_page_exhaustion_documented": false,
+    "revision_semantics_documented": false,
+    "short_page_exhaustion_documented": false,
+    "terminal_page_rule_documented": false
+  },
+  "sources": [
+    {
+      "authority": "OFFICIAL_PUBLIC",
+      "observed_on": "2026-09-12",
+      "provider_last_updated": null,
+      "role": "api_documentation",
+      "snapshot_immutable": false,
+      "url": "https://site.financialmodelingprep.com/developer/docs"
+    },
+    {
+      "authority": "OFFICIAL_PUBLIC",
+      "observed_on": "2026-09-12",
+      "provider_last_updated": null,
+      "role": "commercial_pricing",
+      "snapshot_immutable": false,
+      "url": "https://site.financialmodelingprep.com/developer/docs/pricing?planType=commercial"
+    },
+    {
+      "authority": "OFFICIAL_PUBLIC",
+      "observed_on": "2026-09-12",
+      "provider_last_updated": "2023-08-01",
+      "role": "terms_of_service",
+      "snapshot_immutable": false,
+      "url": "https://site.financialmodelingprep.com/terms-of-service"
+    }
+  ],
+  "unresolved_gates": [
+    {
+      "evidence_class": "ACCOUNT_OR_WRITTEN_PROVIDER_EVIDENCE",
+      "gate": "ACCOUNT_ENTITLEMENT"
+    },
+    {
+      "evidence_class": "LIVE_PROVIDER_SEMANTICS_PROBE",
+      "gate": "DATE_WINDOW_SEMANTICS"
+    },
+    {
+      "evidence_class": "LIVE_PROVIDER_SEMANTICS_PROBE",
+      "gate": "EXHAUSTION_SEMANTICS"
+    },
+    {
+      "evidence_class": "LIVE_PROVIDER_SEMANTICS_PROBE",
+      "gate": "ORDERING_STABILITY"
+    },
+    {
+      "evidence_class": "LIVE_PROVIDER_SEMANTICS_PROBE",
+      "gate": "REVISION_LATE_ARRIVAL_SEMANTICS"
+    },
+    {
+      "evidence_class": "ACCOUNT_OR_WRITTEN_PROVIDER_EVIDENCE",
+      "gate": "STORAGE_RETENTION_RIGHTS"
+    }
+  ]
+}
