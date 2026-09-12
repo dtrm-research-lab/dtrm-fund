@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from typing import cast
 
 from dtrm.phase4.provider_evidence_audit import (
     GRAPH,
@@ -58,14 +59,14 @@ def main(argv: list[str] | None = None) -> int:
             else "FILE_IO_FAILED"
         )
     else:
+        report = review.to_dict()
+        permissions = cast(dict[str, object], report["permissions"])
         print(
             json.dumps(
                 {
-                    "engineering_status": review.to_dict()["engineering_status"],
+                    "engineering_status": report["engineering_status"],
                     "graph": GRAPH,
-                    "scientific_status": review.to_dict()["permissions"][
-                        "scientific_status"
-                    ],
+                    "scientific_status": permissions["scientific_status"],
                     "status": "succeeded",
                 },
                 sort_keys=True,
