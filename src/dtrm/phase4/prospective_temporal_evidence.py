@@ -127,6 +127,7 @@ def normalize_statement(payload: object) -> NormalizedTemporalEvidenceStatement:
     }
     if set(root) != expected_keys:
         raise ProspectiveTemporalEvidenceError("statement: unexpected keys")
+
     fixed = {
         "schema_version": STATEMENT_SCHEMA,
         "graph": GRAPH,
@@ -139,6 +140,7 @@ def normalize_statement(payload: object) -> NormalizedTemporalEvidenceStatement:
             raise ProspectiveTemporalEvidenceError(f"{key}: registered value mismatch")
     if root["roles"] != list(ROLES):
         raise ProspectiveTemporalEvidenceError("roles: registered value mismatch")
+
     _require_exact_object(root["anchor"], _expected_anchor(), "anchor")
     _require_exact_object(root["interval"], _expected_interval(), "interval")
     _require_exact_object(root["request_plan"], _expected_request_plan(), "request_plan")
@@ -243,10 +245,11 @@ def _publication_diagnostics(
     current: RoleSnapshot,
     new_to_ledger: set[str],
 ) -> tuple[int, int, int]:
-    previous_keys: list[str] = []
-    for entry in previous.entries:
-        if entry.provider_order_key is not None:
-            previous_keys.append(entry.provider_order_key)
+    previous_keys = [
+        entry.provider_order_key
+        for entry in previous.entries
+        if entry.provider_order_key is not None
+    ]
     oldest_previous = min(previous_keys) if previous_keys else None
     backfills = sum(
         1
@@ -256,6 +259,7 @@ def _publication_diagnostics(
         and oldest_previous is not None
         and entry.provider_order_key < oldest_previous
     )
+
     violations = 0
     unknown = 0
     prior_key: str | None = None
@@ -272,7 +276,9 @@ def _publication_diagnostics(
 
 
 def _inversion_metrics(
-    previous: RoleSnapshot, current: RoleSnapshot, retained: set[str]
+    previous: RoleSnapshot,
+    current: RoleSnapshot,
+    retained: set[str],
 ) -> tuple[int, int, float]:
     previous_order = [
         entry.source_event_id
@@ -309,6 +315,11 @@ def compare_snapshots(
     curr_by_id = {entry.source_event_id: entry for entry in current.entries}
     prev_ids = set(prev_by_id)
     curr_ids = set(curr_by_id)
+    if not prev_ids.issubset(historical_seen):
+        raise ProspectiveTemporalEvidenceError(
+            "transition: previous snapshot missing from historical ledger"
+        )
+
     retained = prev_ids & curr_ids
     new_to_ledger = curr_ids - historical_seen
     reappeared = (curr_ids & historical_seen) - prev_ids
@@ -322,6 +333,7 @@ def compare_snapshots(
     rank_delta_sum = 0
     prev_rank = {entry.source_event_id: index for index, entry in enumerate(previous.entries)}
     curr_rank = {entry.source_event_id: index for index, entry in enumerate(current.entries)}
+
     for identity in retained:
         before = prev_by_id[identity]
         after = curr_by_id[identity]
