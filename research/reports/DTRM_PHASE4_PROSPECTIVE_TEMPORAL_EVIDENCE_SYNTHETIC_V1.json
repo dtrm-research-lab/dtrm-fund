@@ -1,0 +1,81 @@
+{
+  "anchor": {
+    "first_artifact_digest": "sha256:661d8b9b701af85655a14ad49f54dd9c48634ff83411fe0cd8ed94f50b8644b5",
+    "first_live_backend_commit": "79e8d3da1a337141f9097f0b79d45d2de78878c0",
+    "first_live_run": 34777031881,
+    "parent_integration": "281ab0ce2de40128f2d2c8258cfff94fc91d8695",
+    "registration_commit": "243797ee398b43f6684ce7a43057711167ed79ba"
+  },
+  "engineering_status": "PASS_PROSPECTIVE_TEMPORAL_EVIDENCE_V1",
+  "graph": "phase4_prospective_temporal_evidence_v1",
+  "interval": {
+    "early_stopping_permitted": false,
+    "minimum_accepted_slots": 48,
+    "missing_slots_are_not_backfilled": true,
+    "schedule_utc": [
+      "00:15",
+      "06:15",
+      "12:15",
+      "18:15"
+    ],
+    "target_slots": 56
+  },
+  "permissions": {
+    "backend_index_builder_implementation_permitted": true,
+    "confirmatory_history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "periodic_capture_activation_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "scheduled_workflow_configuration_permitted": true,
+    "synthetic_transition_classifier_permitted": true,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+  "request_plan": {
+    "labels": [
+      "page0_a",
+      "page1",
+      "page0_b"
+    ],
+    "limit": 20,
+    "max_role_items": 40,
+    "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
+    "snapshot_labels": [
+      "page0_a",
+      "page1"
+    ]
+  },
+  "roles": [
+    "fmp_articles",
+    "general_latest",
+    "stock_latest"
+  ],
+  "schema_version": "dtrm.phase4.prospective_temporal_evidence_report.v1",
+  "scientific_status": "REGISTERED_REPEATED_SOURCE_EVIDENCE",
+  "statement_sha256": "11f80b8ba919cf80c001b86ab488c4356a3e18c5e921cf2ed04e195af0c7cab1",
+  "synthetic_transition": {
+    "absolute_rank_delta_sum": 2,
+    "comparable_rank_pairs": 1,
+    "current_count": 4,
+    "current_slot": 1,
+    "inversion_count": 1,
+    "inversion_rate": 1.0,
+    "metadata_revision_candidate_count": 1,
+    "narrative_revision_candidate_count": 1,
+    "new_to_ledger_count": 1,
+    "payload_revision_candidate_count": 2,
+    "previous_count": 3,
+    "previous_slot": 0,
+    "publication_backfill_candidate_count": 1,
+    "publication_order_violation_count": 2,
+    "publication_unknown_count": 1,
+    "rank_changed_count": 1,
+    "reappeared_count": 1,
+    "retained_count": 2,
+    "role": "general_latest",
+    "title_revision_candidate_count": 1,
+    "window_absent_count": 1
+  }
+}
