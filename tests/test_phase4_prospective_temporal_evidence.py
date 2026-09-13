@@ -212,6 +212,17 @@ def test_transition_rejects_role_or_slot_mismatch() -> None:
         )
 
 
+def test_transition_rejects_history_that_omits_previous_snapshot() -> None:
+    entry = _entry("a", "p", "c", "t", None)
+    previous = RoleSnapshot("general_latest", 1, (entry,))
+    current = RoleSnapshot("general_latest", 2, (entry,))
+    with pytest.raises(
+        ProspectiveTemporalEvidenceError,
+        match="previous snapshot missing from historical ledger",
+    ):
+        compare_snapshots(previous, current, frozenset())
+
+
 def test_report_is_aggregate_only_and_deterministic() -> None:
     previous = RoleSnapshot(
         "general_latest",
