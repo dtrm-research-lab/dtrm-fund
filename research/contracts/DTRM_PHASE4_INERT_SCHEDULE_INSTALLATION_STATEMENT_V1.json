@@ -22,7 +22,10 @@
     "scheduled_failure_record_permitted_before_statement_verification": false,
     "scheduled_private_write_permitted_when_unarmed": false,
     "scheduled_provider_access_permitted_when_unarmed": false,
-    "scheduled_side_effects_permitted_before_statement_verification": false
+    "scheduled_side_effects_permitted_after_final_slot": false,
+    "scheduled_side_effects_permitted_before_statement_verification": false,
+    "scheduled_target_slot_max": 55,
+    "scheduled_target_slot_min": 0
   },
   "provider": {
     "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
