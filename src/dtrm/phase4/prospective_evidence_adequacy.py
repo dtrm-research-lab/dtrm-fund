@@ -17,6 +17,7 @@ ADEQUACY_PREREGISTRATION = "835f5c6f01825abdaf9a3cc266f9ba1dfb24c55d"
 REVIEW_AMENDMENT = "44d82ac66d283196d1077b799a012a693f9ead7e"
 REVIEW_AMENDMENT_V2 = "ce02affb746f26cbc0121e9ccb5fbed705601209"
 REVIEW_AMENDMENT_V3 = "f0060fab395173eed50d89375caf125fcebd3fd9"
+REVIEW_AMENDMENT_V4 = "10b28e682b694cd8bb5bb57a0b588520b2a9d1e7"
 REQUEST_FINGERPRINT = "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd"
 PROVIDER_RIGHTS_STATUS = "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT"
 ACTIVATION_SCHEMA = "dtrm.phase4.prospective_activation_statement.v2"
@@ -221,6 +222,12 @@ class ActivationBinding:
         writer_authority_evidence = payload.get("writer_authority_evidence_sha256")
         prospective_start = _parse_canonical_utc(payload.get("prospective_start_utc"))
 
+        slot_zero = datetime.combine(prospective_start.date(), time(0, 15, tzinfo=UTC))
+        if prospective_start >= slot_zero:
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: prospective start must precede slot zero"
+            )
+
         if not isinstance(identifier, str):
             raise ProspectiveEvidenceAdequacyError("activation: invalid identifier")
         _require_identifier(identifier, "activation.activation_statement")
@@ -327,6 +334,9 @@ class SlotAttempt:
     target_at_utc: datetime | None
     event_name: str
     cron: str | None
+    workflow_path: str | None
+    workflow_blob_sha: str | None
+    workflow_identity: str | None
     run_id: int
     run_attempt: int
     started_at_utc: datetime
@@ -354,10 +364,24 @@ class SlotAttempt:
             _require_utc(self.target_at_utc, "attempt.target_at_utc")
             if not isinstance(self.cron, str) or self.cron not in SCHEDULE_CRON:
                 raise ProspectiveEvidenceAdequacyError("attempt: invalid cron")
+            if not isinstance(self.workflow_path, str):
+                raise ProspectiveEvidenceAdequacyError("attempt: missing workflow path")
+            _require_workflow_path(self.workflow_path)
+            if not isinstance(self.workflow_blob_sha, str):
+                raise ProspectiveEvidenceAdequacyError("attempt: missing workflow blob")
+            _require_sha40(self.workflow_blob_sha, "attempt.workflow_blob_sha")
+            if not isinstance(self.workflow_identity, str):
+                raise ProspectiveEvidenceAdequacyError(
+                    "attempt: missing workflow identity"
+                )
+            _require_identifier(self.workflow_identity, "attempt.workflow_identity")
         elif (
             self.slot is not None
             or self.target_at_utc is not None
             or self.cron is not None
+            or self.workflow_path is not None
+            or self.workflow_blob_sha is not None
+            or self.workflow_identity is not None
         ):
             raise ProspectiveEvidenceAdequacyError(
                 "attempt: non-counting target mismatch"
@@ -465,6 +489,9 @@ def _classify_nonlate_slot(
         attempt.repository_commit != binding.backend_commit
         or attempt.repository_tree != binding.backend_tree
         or attempt.request_fingerprint_sha256 != REQUEST_FINGERPRINT
+        or attempt.workflow_path != binding.workflow_path
+        or attempt.workflow_blob_sha != binding.workflow_blob_sha
+        or attempt.workflow_identity != binding.workflow_identity
     ):
         return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
     if attempt.failure_code is not None:
@@ -498,6 +525,9 @@ def audit_evidence(
             attempt.slot is None
             or attempt.target_at_utc is None
             or attempt.cron is None
+            or attempt.workflow_path is None
+            or attempt.workflow_blob_sha is None
+            or attempt.workflow_identity is None
         ):
             raise ProspectiveEvidenceAdequacyError("attempt: missing target provenance")
         expected = expected_target(binding, attempt.slot)
@@ -506,6 +536,14 @@ def audit_evidence(
         ):
             raise ProspectiveEvidenceAdequacyError(
                 "attempt: contradictory target provenance"
+            )
+        if (
+            attempt.workflow_path != binding.workflow_path
+            or attempt.workflow_blob_sha != binding.workflow_blob_sha
+            or attempt.workflow_identity != binding.workflow_identity
+        ) and attempt.run_attempt != 1:
+            raise ProspectiveEvidenceAdequacyError(
+                "attempt: contradictory rerun workflow provenance"
             )
         if attempt.run_attempt != 1:
             ignored_scheduled_reruns += 1

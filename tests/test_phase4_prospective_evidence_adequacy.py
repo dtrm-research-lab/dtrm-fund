@@ -88,6 +88,9 @@ def _attempt(
         "target_at_utc": target,
         "event_name": "schedule",
         "cron": expected_cron(base_slot),
+        "workflow_path": binding.workflow_path,
+        "workflow_blob_sha": binding.workflow_blob_sha,
+        "workflow_identity": binding.workflow_identity,
         "run_id": 10_000 + base_slot,
         "run_attempt": 1,
         "started_at_utc": target + timedelta(minutes=5),
@@ -106,6 +109,9 @@ def _attempt(
         target_at_utc=cast(datetime | None, values["target_at_utc"]),
         event_name=cast(str, values["event_name"]),
         cron=cast(str | None, values["cron"]),
+        workflow_path=cast(str | None, values["workflow_path"]),
+        workflow_blob_sha=cast(str | None, values["workflow_blob_sha"]),
+        workflow_identity=cast(str | None, values["workflow_identity"]),
         run_id=cast(int, values["run_id"]),
         run_attempt=cast(int, values["run_attempt"]),
         started_at_utc=cast(datetime, values["started_at_utc"]),
@@ -313,6 +319,9 @@ def test_manual_run_never_counts_toward_threshold() -> None:
         target_at_utc=None,
         event_name="workflow_dispatch",
         cron=None,
+        workflow_path=None,
+        workflow_blob_sha=None,
+        workflow_identity=None,
     )
     report = audit_evidence(binding, tuple(attempts), _final_clock(binding))
     assert _counts(report)["ACCEPTED"] == 55
@@ -551,9 +560,72 @@ def test_canonical_audit_json_is_deterministic() -> None:
     assert first.endswith("\n")
 
 
-def test_attempts_before_prospective_start_cannot_count() -> None:
-    binding = _binding(prospective_start_utc="2026-09-15T12:00:00Z")
+@pytest.mark.parametrize(
+    "prospective_start_utc",
+    ("2026-09-15T00:15:00Z", "2026-09-15T12:00:00Z"),
+)
+def test_activation_at_or_after_slot_zero_is_rejected(
+    prospective_start_utc: str,
+) -> None:
+    with pytest.raises(
+        ProspectiveEvidenceAdequacyError,
+        match="prospective start must precede slot zero",
+    ):
+        _binding(prospective_start_utc=prospective_start_utc)
+
+
+def test_activation_immediately_before_slot_zero_preserves_all_56_slots() -> None:
+    binding = _binding(prospective_start_utc="2026-09-15T00:14:59.999999Z")
     report = audit_evidence(binding, _all_attempts(binding), _final_clock(binding))
-    assert _counts(report)["CONTRACT_MISMATCH"] == 2
-    assert _counts(report)["ACCEPTED"] == 54
-    assert report["first_day_accepted_slots"] == 2
+    assert _counts(report)["ACCEPTED"] == 56
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    (
+        ("workflow_path", "workflow.yml", "invalid workflow path"),
+        ("workflow_blob_sha", "not-a-sha", "invalid sha"),
+        ("workflow_identity", "", "invalid identifier"),
+    ),
+)
+def test_malformed_scheduled_workflow_provenance_is_rejected(
+    field: str,
+    value: str,
+    message: str,
+) -> None:
+    binding = _binding()
+    with pytest.raises(ProspectiveEvidenceAdequacyError, match=message):
+        _attempt(binding, 0, **{field: value})
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("workflow_path", ".github/workflows/different.yml"),
+        ("workflow_blob_sha", "9" * 40),
+        ("workflow_identity", "different-workflow"),
+    ),
+)
+def test_wrong_first_attempt_workflow_provenance_is_contract_mismatch(
+    field: str,
+    value: str,
+) -> None:
+    binding = _binding()
+    attempt = _attempt(binding, 0, **{field: value})
+    report = audit_evidence(binding, (attempt,), _final_clock(binding))
+    assert _counts(report)["CONTRACT_MISMATCH"] == 1
+
+
+def test_rerun_with_contradictory_workflow_provenance_fails_closed() -> None:
+    binding = _binding()
+    rerun = _attempt(
+        binding,
+        0,
+        run_attempt=2,
+        workflow_identity="different-workflow",
+    )
+    with pytest.raises(
+        ProspectiveEvidenceAdequacyError,
+        match="contradictory rerun workflow provenance",
+    ):
+        audit_evidence(binding, (rerun,), _final_clock(binding))
