@@ -71,7 +71,11 @@ def _timestamp(value: datetime) -> str:
 
 
 def _require_identifier(value: str, label: str) -> None:
-    if not value or len(value) > 256 or any(character in value for character in "\r\n\t"):
+    if (
+        not value
+        or len(value) > 256
+        or any(character in value for character in "\r\n\t")
+    ):
         raise ProspectiveEvidenceAdequacyError(f"{label}: invalid identifier")
 
 
@@ -210,10 +214,9 @@ def _classify_slot(
     completion_lag = attempt.completed_at_utc - target
     if run_duration < timedelta(0):
         return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
-    if (
-        run_duration > timedelta(minutes=MAX_RUN_DURATION_MINUTES)
-        or completion_lag > timedelta(minutes=MAX_COMPLETION_LAG_MINUTES)
-    ):
+    if run_duration > timedelta(
+        minutes=MAX_RUN_DURATION_MINUTES
+    ) or completion_lag > timedelta(minutes=MAX_COMPLETION_LAG_MINUTES):
         return SlotAssessment(slot, target, "LATE", attempt.run_id)
     if (
         attempt.repository_commit != binding.backend_commit
