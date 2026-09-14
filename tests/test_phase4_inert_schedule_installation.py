@@ -11,6 +11,8 @@ from dtrm.phase4.inert_schedule_installation import (
     CRON,
     DORMANT_BACKEND_COMMIT,
     DORMANT_WORKFLOW_BLOB,
+    TARGET_SLOT_MAX,
+    TARGET_SLOT_MIN,
     InertScheduleInstallationError,
     expected_statement,
     verify_statement_bytes,
@@ -18,7 +20,7 @@ from dtrm.phase4.inert_schedule_installation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 STATEMENT = ROOT / "research/contracts/DTRM_PHASE4_INERT_SCHEDULE_INSTALLATION_STATEMENT_V1.json"
-EXPECTED_SHA256 = "9cd7f66c028ba6b61088c0639a8360fbac6e1e939ee33f72c877f6b2ea9e8df2"
+EXPECTED_SHA256 = "375c04c4e537095df21db10919f9f3d8e827a6886a4c1db902dc30ccbcb11c3c"
 
 
 def _bytes(payload: object) -> bytes:
@@ -51,6 +53,9 @@ def test_schedule_installation_is_distinct_from_capture_activation() -> None:
     assert guards["scheduled_artifact_upload_permitted_before_statement_verification"] is False
     assert guards["scheduled_failure_record_permitted_before_statement_verification"] is False
     assert guards["scheduled_counting_decision_permitted_before_statement_verification"] is False
+    assert guards["scheduled_side_effects_permitted_after_final_slot"] is False
+    assert guards["scheduled_target_slot_min"] == TARGET_SLOT_MIN == 0
+    assert guards["scheduled_target_slot_max"] == TARGET_SLOT_MAX == 55
     assert guards["preactivation_schedule_runs_counting_eligible"] is False
     assert guards["prospective_start_bound"] is False
 
@@ -93,6 +98,9 @@ def test_dormant_lineage_remains_frozen() -> None:
             "scheduled_counting_decision_permitted_before_statement_verification",
             True,
         ),
+        ("pre_activation_guards", "scheduled_side_effects_permitted_after_final_slot", True),
+        ("pre_activation_guards", "scheduled_target_slot_min", -1),
+        ("pre_activation_guards", "scheduled_target_slot_max", 56),
         ("pre_activation_guards", "preactivation_schedule_runs_counting_eligible", True),
         ("pre_activation_guards", "prospective_start_bound", True),
     ],
