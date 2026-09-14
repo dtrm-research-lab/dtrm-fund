@@ -161,7 +161,9 @@ class ActivationBinding:
         try:
             start_day = date.fromisoformat(start_text)
         except ValueError:
-            raise ProspectiveEvidenceAdequacyError("activation: invalid start day") from None
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: invalid start day"
+            ) from None
         if start_day.isoformat() != start_text:
             raise ProspectiveEvidenceAdequacyError("activation: invalid start day")
         if not isinstance(commit, str) or not isinstance(tree, str):
@@ -169,7 +171,9 @@ class ActivationBinding:
         _require_sha40(commit, "activation.backend_commit")
         _require_sha40(tree, "activation.backend_tree")
         if fingerprint != REQUEST_FINGERPRINT:
-            raise ProspectiveEvidenceAdequacyError("activation: request fingerprint mismatch")
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: request fingerprint mismatch"
+            )
 
         object.__setattr__(self, "activation_statement", identifier)
         object.__setattr__(self, "activation_statement_sha256", digest)
@@ -217,7 +221,9 @@ class SlotAttempt:
                 raise ProspectiveEvidenceAdequacyError("attempt: missing target clock")
             _require_utc(self.target_at_utc, "attempt.target_at_utc")
         elif self.slot is not None or self.target_at_utc is not None:
-            raise ProspectiveEvidenceAdequacyError("attempt: non-counting target mismatch")
+            raise ProspectiveEvidenceAdequacyError(
+                "attempt: non-counting target mismatch"
+            )
         _require_utc(self.started_at_utc, "attempt.started_at_utc")
         _require_utc(self.completed_at_utc, "attempt.completed_at_utc")
         _require_utc(self.recorded_at_utc, "attempt.recorded_at_utc")
@@ -350,7 +356,9 @@ def audit_evidence(
         if attempt.slot is None:
             raise ProspectiveEvidenceAdequacyError("attempt: missing slot")
         by_slot[attempt.slot].append(attempt)
-        scheduled_run_counts[attempt.run_id] = scheduled_run_counts.get(attempt.run_id, 0) + 1
+        scheduled_run_counts[attempt.run_id] = (
+            scheduled_run_counts.get(attempt.run_id, 0) + 1
+        )
     duplicate_run_ids = frozenset(
         run_id for run_id, count in scheduled_run_counts.items() if count > 1
     )
