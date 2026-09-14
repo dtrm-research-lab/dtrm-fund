@@ -13,6 +13,7 @@ REPORT_SCHEMA = "dtrm.phase4.prospective_evidence_adequacy_report.v1"
 SCIENTIFIC_PARENT_INTEGRATION = "ca7ef0570281f6a1143d7a93efae5d69edc2b8a4"
 PROSPECTIVE_EVIDENCE_REGISTRATION = "243797ee398b43f6684ce7a43057711167ed79ba"
 ADEQUACY_PREREGISTRATION = "835f5c6f01825abdaf9a3cc266f9ba1dfb24c55d"
+REVIEW_AMENDMENT = "44d82ac66d283196d1077b799a012a693f9ead7e"
 REQUEST_FINGERPRINT = "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd"
 PROVIDER_RIGHTS_STATUS = "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT"
 
@@ -20,7 +21,11 @@ SCHEDULE_UTC = ("00:15", "06:15", "12:15", "18:15")
 SCHEDULE_CRON = ("15 0 * * *", "15 6 * * *", "15 12 * * *", "15 18 * * *")
 TARGET_SLOTS = 56
 MIN_ACCEPTED_SLOTS = 48
+MIN_FIRST_DAY_ACCEPTED_SLOTS = 1
+MIN_LAST_DAY_ACCEPTED_SLOTS = 1
 MAX_SCHEDULE_LAG_MINUTES = 120
+MAX_RUN_DURATION_MINUTES = 60
+MAX_COMPLETION_LAG_MINUTES = 180
 
 SlotStatus = Literal[
     "ACCEPTED",
@@ -65,15 +70,27 @@ def _timestamp(value: datetime) -> str:
     return value.astimezone(UTC).isoformat().replace("+00:00", "Z")
 
 
+def _require_identifier(value: str, label: str) -> None:
+    if not value or len(value) > 256 or any(character in value for character in "\r\n\t"):
+        raise ProspectiveEvidenceAdequacyError(f"{label}: invalid identifier")
+
+
 @dataclass(frozen=True, slots=True)
 class ActivationBinding:
     """Exact source-value-free lineage fixed by the later activation statement."""
 
+    activation_statement: str
+    activation_statement_sha256: str
     start_utc_day: date
     backend_commit: str
     backend_tree: str
 
     def __post_init__(self) -> None:
+        _require_identifier(self.activation_statement, "binding.activation_statement")
+        _require_sha256(
+            self.activation_statement_sha256,
+            "binding.activation_statement_sha256",
+        )
         if isinstance(self.start_utc_day, datetime):
             raise ProspectiveEvidenceAdequacyError("binding: expected UTC date")
         _require_sha40(self.backend_commit, "binding.backend_commit")
@@ -94,6 +111,7 @@ class SlotAttempt:
     cron: str | None
     run_id: int
     started_at_utc: datetime
+    completed_at_utc: datetime
     repository_commit: str
     repository_tree: str
     request_fingerprint_sha256: str
@@ -110,6 +128,7 @@ class SlotAttempt:
             raise ProspectiveEvidenceAdequacyError("attempt: invalid run id")
         _require_utc(self.target_at_utc, "attempt.target_at_utc")
         _require_utc(self.started_at_utc, "attempt.started_at_utc")
+        _require_utc(self.completed_at_utc, "attempt.completed_at_utc")
         _require_sha40(self.repository_commit, "attempt.repository_commit")
         _require_sha40(self.repository_tree, "attempt.repository_tree")
         _require_sha256(self.request_fingerprint_sha256, "attempt.request_fingerprint")
@@ -159,7 +178,7 @@ def expected_cron(slot: int) -> str:
 
 def finalization_at(binding: ActivationBinding) -> datetime:
     return expected_target(binding, TARGET_SLOTS - 1) + timedelta(
-        minutes=MAX_SCHEDULE_LAG_MINUTES
+        minutes=MAX_COMPLETION_LAG_MINUTES
     )
 
 
@@ -182,10 +201,19 @@ def _classify_slot(
         return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
     if attempt.target_at_utc != target or attempt.cron != expected_cron(slot):
         return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
-    lag = attempt.started_at_utc - target
-    if lag < timedelta(0):
+    start_lag = attempt.started_at_utc - target
+    if start_lag < timedelta(0):
         return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
-    if lag > timedelta(minutes=MAX_SCHEDULE_LAG_MINUTES):
+    if start_lag > timedelta(minutes=MAX_SCHEDULE_LAG_MINUTES):
+        return SlotAssessment(slot, target, "LATE", attempt.run_id)
+    run_duration = attempt.completed_at_utc - attempt.started_at_utc
+    completion_lag = attempt.completed_at_utc - target
+    if run_duration < timedelta(0):
+        return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
+    if (
+        run_duration > timedelta(minutes=MAX_RUN_DURATION_MINUTES)
+        or completion_lag > timedelta(minutes=MAX_COMPLETION_LAG_MINUTES)
+    ):
         return SlotAssessment(slot, target, "LATE", attempt.run_id)
     if (
         attempt.repository_commit != binding.backend_commit
@@ -244,11 +272,21 @@ def audit_evidence(
         )
     }
     accepted = counts["ACCEPTED"]
+    first_day_accepted = sum(
+        item.status == "ACCEPTED" for item in assessments[: len(SCHEDULE_UTC)]
+    )
+    last_day_accepted = sum(
+        item.status == "ACCEPTED" for item in assessments[-len(SCHEDULE_UTC) :]
+    )
     finalize_at = finalization_at(binding)
     final_status: FinalStatus
     if audit_clock_utc < finalize_at:
         final_status = "PENDING_INTERVAL"
-    elif accepted >= MIN_ACCEPTED_SLOTS:
+    elif (
+        accepted >= MIN_ACCEPTED_SLOTS
+        and first_day_accepted >= MIN_FIRST_DAY_ACCEPTED_SLOTS
+        and last_day_accepted >= MIN_LAST_DAY_ACCEPTED_SLOTS
+    ):
         final_status = "PASS_PROSPECTIVE_EVIDENCE_ADEQUACY_V1"
     else:
         final_status = "FAIL_PROSPECTIVE_EVIDENCE_ADEQUACY_V1"
@@ -259,21 +297,32 @@ def audit_evidence(
         "scientific_parent_integration": SCIENTIFIC_PARENT_INTEGRATION,
         "prospective_evidence_registration": PROSPECTIVE_EVIDENCE_REGISTRATION,
         "adequacy_preregistration_commit": ADEQUACY_PREREGISTRATION,
+        "review_amendment_commit": REVIEW_AMENDMENT,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
         "request_fingerprint_sha256": REQUEST_FINGERPRINT,
+        "activation_statement": binding.activation_statement,
+        "activation_statement_sha256": binding.activation_statement_sha256,
         "start_utc_day": binding.start_utc_day.isoformat(),
         "end_utc_day": binding.end_utc_day.isoformat(),
         "backend_commit": binding.backend_commit,
         "backend_tree": binding.backend_tree,
         "target_slots": TARGET_SLOTS,
         "minimum_accepted_slots": MIN_ACCEPTED_SLOTS,
+        "minimum_first_day_accepted_slots": MIN_FIRST_DAY_ACCEPTED_SLOTS,
+        "minimum_last_day_accepted_slots": MIN_LAST_DAY_ACCEPTED_SLOTS,
+        "first_day_accepted_slots": first_day_accepted,
+        "last_day_accepted_slots": last_day_accepted,
         "maximum_schedule_lag_minutes": MAX_SCHEDULE_LAG_MINUTES,
+        "maximum_run_duration_minutes": MAX_RUN_DURATION_MINUTES,
+        "maximum_completion_lag_minutes": MAX_COMPLETION_LAG_MINUTES,
         "finalization_at_utc": _timestamp(finalize_at),
         "audit_clock_utc": _timestamp(audit_clock_utc),
         "ignored_nonscheduled_attempts": ignored_nonscheduled,
         "counts": counts,
         "final_status": final_status,
         "slots": [item.to_dict() for item in assessments],
+        "confirmatory_history_construction_permitted": False,
+        "temporal_state_outcome_fitting_permitted": False,
         "outcome_access_permitted": False,
         "mm1_execution_permitted": False,
         "phase3_policy_mutation_permitted": False,
