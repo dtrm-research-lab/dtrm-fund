@@ -4,15 +4,29 @@
   "scientific_parent_integration": "ca7ef0570281f6a1143d7a93efae5d69edc2b8a4",
   "prospective_evidence_registration": "243797ee398b43f6684ce7a43057711167ed79ba",
   "adequacy_preregistration_commit": "835f5c6f01825abdaf9a3cc266f9ba1dfb24c55d",
+  "review_amendment_commit": "44d82ac66d283196d1077b799a012a693f9ead7e",
   "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
   "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+  "activation_binding": {
+    "required_fields": [
+      "activation_statement",
+      "activation_statement_sha256",
+      "start_utc_day",
+      "backend_commit",
+      "backend_tree"
+    ]
+  },
   "interval": {
     "utc_days": 14,
     "schedule_utc": ["00:15", "06:15", "12:15", "18:15"],
     "schedule_cron": ["15 0 * * *", "15 6 * * *", "15 12 * * *", "15 18 * * *"],
     "target_slots": 56,
     "minimum_accepted_slots": 48,
+    "minimum_first_day_accepted_slots": 1,
+    "minimum_last_day_accepted_slots": 1,
     "maximum_schedule_lag_minutes": 120,
+    "maximum_run_duration_minutes": 60,
+    "maximum_completion_lag_minutes": 180,
     "missing_slots_are_not_backfilled": true,
     "early_stopping_permitted": false
   },
