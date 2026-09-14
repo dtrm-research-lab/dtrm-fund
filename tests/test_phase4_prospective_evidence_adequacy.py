@@ -549,3 +549,11 @@ def test_canonical_audit_json_is_deterministic() -> None:
     second = canonical_audit_json(binding, attempts, _final_clock(binding))
     assert first == second
     assert first.endswith("\n")
+
+
+def test_attempts_before_prospective_start_cannot_count() -> None:
+    binding = _binding(prospective_start_utc="2026-09-15T12:00:00Z")
+    report = audit_evidence(binding, _all_attempts(binding), _final_clock(binding))
+    assert _counts(report)["CONTRACT_MISMATCH"] == 2
+    assert _counts(report)["ACCEPTED"] == 54
+    assert report["first_day_accepted_slots"] == 2

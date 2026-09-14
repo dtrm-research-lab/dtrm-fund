@@ -459,6 +459,8 @@ def _classify_nonlate_slot(
     attempt = attempts[0]
     if attempt.run_id in duplicate_run_ids:
         return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
+    if attempt.started_at_utc < binding.prospective_start_utc:
+        return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
     if (
         attempt.repository_commit != binding.backend_commit
         or attempt.repository_tree != binding.backend_tree
