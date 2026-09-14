@@ -20,7 +20,7 @@ from dtrm.phase4.inert_schedule_installation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 STATEMENT = ROOT / "research/contracts/DTRM_PHASE4_INERT_SCHEDULE_INSTALLATION_STATEMENT_V1.json"
-EXPECTED_SHA256 = "f5956de2878871e12cd6d03b54c1cbf0b0c29137ebc118ae1eed4ea2bb3eacea"
+EXPECTED_SHA256 = "7a24b86266cb3c0e19fea12b71d271f6867fb6b2f87ce0d5d18832a0504fd041"
 
 
 def _bytes(payload: object) -> bytes:
@@ -57,6 +57,13 @@ def test_schedule_installation_is_distinct_from_capture_activation() -> None:
     assert guards["scheduled_rerun_target_must_retain_original"] is True
     assert guards["scheduled_rerun_target_derivation_from_rerun_clock_permitted"] is False
     assert guards["scheduled_rerun_side_effects_permitted_without_original_target_provenance"] is False
+    assert guards["scheduled_rerun_attempt1_record_must_be_immutable"] is True
+    assert guards["scheduled_rerun_run_id_must_equal_attempt1"] is True
+    assert guards["scheduled_rerun_slot_must_equal_attempt1"] is True
+    assert guards["scheduled_rerun_target_at_utc_must_equal_attempt1"] is True
+    assert guards["scheduled_rerun_cron_must_equal_attempt1"] is True
+    assert guards["scheduled_rerun_workflow_path_must_equal_attempt1"] is True
+    assert guards["scheduled_rerun_workflow_identity_must_equal_attempt1"] is True
     assert guards["scheduled_side_effects_permitted_after_final_slot"] is False
     assert guards["scheduled_target_slot_min"] == TARGET_SLOT_MIN == 0
     assert guards["scheduled_target_slot_max"] == TARGET_SLOT_MAX == 55
@@ -82,42 +89,21 @@ def test_dormant_lineage_remains_frozen() -> None:
         ("pre_activation_guards", "periodic_capture_activation_permitted", True),
         ("pre_activation_guards", "scheduled_provider_access_permitted_when_unarmed", True),
         ("pre_activation_guards", "scheduled_private_write_permitted_when_unarmed", True),
-        (
-            "pre_activation_guards",
-            "scheduled_side_effects_permitted_before_statement_verification",
-            True,
-        ),
-        (
-            "pre_activation_guards",
-            "scheduled_artifact_upload_permitted_before_statement_verification",
-            True,
-        ),
-        (
-            "pre_activation_guards",
-            "scheduled_failure_record_permitted_before_statement_verification",
-            True,
-        ),
-        (
-            "pre_activation_guards",
-            "scheduled_counting_decision_permitted_before_statement_verification",
-            True,
-        ),
-        (
-            "pre_activation_guards",
-            "scheduled_first_attempt_target_derived_from_runner_clock",
-            False,
-        ),
+        ("pre_activation_guards", "scheduled_side_effects_permitted_before_statement_verification", True),
+        ("pre_activation_guards", "scheduled_artifact_upload_permitted_before_statement_verification", True),
+        ("pre_activation_guards", "scheduled_failure_record_permitted_before_statement_verification", True),
+        ("pre_activation_guards", "scheduled_counting_decision_permitted_before_statement_verification", True),
+        ("pre_activation_guards", "scheduled_first_attempt_target_derived_from_runner_clock", False),
         ("pre_activation_guards", "scheduled_rerun_target_must_retain_original", False),
-        (
-            "pre_activation_guards",
-            "scheduled_rerun_target_derivation_from_rerun_clock_permitted",
-            True,
-        ),
-        (
-            "pre_activation_guards",
-            "scheduled_rerun_side_effects_permitted_without_original_target_provenance",
-            True,
-        ),
+        ("pre_activation_guards", "scheduled_rerun_target_derivation_from_rerun_clock_permitted", True),
+        ("pre_activation_guards", "scheduled_rerun_side_effects_permitted_without_original_target_provenance", True),
+        ("pre_activation_guards", "scheduled_rerun_attempt1_record_must_be_immutable", False),
+        ("pre_activation_guards", "scheduled_rerun_run_id_must_equal_attempt1", False),
+        ("pre_activation_guards", "scheduled_rerun_slot_must_equal_attempt1", False),
+        ("pre_activation_guards", "scheduled_rerun_target_at_utc_must_equal_attempt1", False),
+        ("pre_activation_guards", "scheduled_rerun_cron_must_equal_attempt1", False),
+        ("pre_activation_guards", "scheduled_rerun_workflow_path_must_equal_attempt1", False),
+        ("pre_activation_guards", "scheduled_rerun_workflow_identity_must_equal_attempt1", False),
         ("pre_activation_guards", "scheduled_side_effects_permitted_after_final_slot", True),
         ("pre_activation_guards", "scheduled_target_slot_min", -1),
         ("pre_activation_guards", "scheduled_target_slot_max", 56),
