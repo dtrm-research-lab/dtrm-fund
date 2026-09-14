@@ -9,11 +9,16 @@ from typing import cast
 from dtrm.phase4.prospective_evidence_adequacy import (
     ADEQUACY_PREREGISTRATION,
     GRAPH,
+    MAX_COMPLETION_LAG_MINUTES,
+    MAX_RUN_DURATION_MINUTES,
     MAX_SCHEDULE_LAG_MINUTES,
     MIN_ACCEPTED_SLOTS,
+    MIN_FIRST_DAY_ACCEPTED_SLOTS,
+    MIN_LAST_DAY_ACCEPTED_SLOTS,
     PROSPECTIVE_EVIDENCE_REGISTRATION,
     PROVIDER_RIGHTS_STATUS,
     REQUEST_FINGERPRINT,
+    REVIEW_AMENDMENT,
     SCHEDULE_CRON,
     SCHEDULE_UTC,
     SCIENTIFIC_PARENT_INTEGRATION,
@@ -27,6 +32,8 @@ from dtrm.phase4.prospective_evidence_adequacy import (
 )
 
 JsonObject = dict[str, object]
+_SYNTHETIC_ACTIVATION_STATEMENT = "synthetic-activation-v1"
+_SYNTHETIC_ACTIVATION_SHA256 = "9" * 64
 
 
 def _expected_statement() -> JsonObject:
@@ -36,15 +43,29 @@ def _expected_statement() -> JsonObject:
         "scientific_parent_integration": SCIENTIFIC_PARENT_INTEGRATION,
         "prospective_evidence_registration": PROSPECTIVE_EVIDENCE_REGISTRATION,
         "adequacy_preregistration_commit": ADEQUACY_PREREGISTRATION,
+        "review_amendment_commit": REVIEW_AMENDMENT,
         "request_fingerprint_sha256": REQUEST_FINGERPRINT,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
+        "activation_binding": {
+            "required_fields": [
+                "activation_statement",
+                "activation_statement_sha256",
+                "start_utc_day",
+                "backend_commit",
+                "backend_tree",
+            ]
+        },
         "interval": {
             "utc_days": 14,
             "schedule_utc": list(SCHEDULE_UTC),
             "schedule_cron": list(SCHEDULE_CRON),
             "target_slots": TARGET_SLOTS,
             "minimum_accepted_slots": MIN_ACCEPTED_SLOTS,
+            "minimum_first_day_accepted_slots": MIN_FIRST_DAY_ACCEPTED_SLOTS,
+            "minimum_last_day_accepted_slots": MIN_LAST_DAY_ACCEPTED_SLOTS,
             "maximum_schedule_lag_minutes": MAX_SCHEDULE_LAG_MINUTES,
+            "maximum_run_duration_minutes": MAX_RUN_DURATION_MINUTES,
+            "maximum_completion_lag_minutes": MAX_COMPLETION_LAG_MINUTES,
             "missing_slots_are_not_backfilled": True,
             "early_stopping_permitted": False,
         },
@@ -85,13 +106,15 @@ def _load_and_validate_statement(path: Path) -> None:
 
 
 def _synthetic_attempt(binding: ActivationBinding, slot: int) -> SlotAttempt:
+    target = expected_target(binding, slot)
     return SlotAttempt(
         slot=slot,
-        target_at_utc=expected_target(binding, slot),
+        target_at_utc=target,
         event_name="schedule",
         cron=expected_cron(slot),
         run_id=20_000 + slot,
-        started_at_utc=expected_target(binding, slot) + timedelta(minutes=5),
+        started_at_utc=target + timedelta(minutes=5),
+        completed_at_utc=target + timedelta(minutes=10),
         repository_commit=binding.backend_commit,
         repository_tree=binding.backend_tree,
         request_fingerprint_sha256=REQUEST_FINGERPRINT,
@@ -102,13 +125,14 @@ def _synthetic_attempt(binding: ActivationBinding, slot: int) -> SlotAttempt:
 
 def build_synthetic_report() -> JsonObject:
     binding = ActivationBinding(
+        activation_statement=_SYNTHETIC_ACTIVATION_STATEMENT,
+        activation_statement_sha256=_SYNTHETIC_ACTIVATION_SHA256,
         start_utc_day=date(2026, 9, 15),
         backend_commit="a" * 40,
         backend_tree="b" * 40,
     )
-    attempts = tuple(
-        _synthetic_attempt(binding, slot) for slot in range(MIN_ACCEPTED_SLOTS)
-    )
+    accepted_slots = tuple(range(MIN_ACCEPTED_SLOTS - 1)) + (TARGET_SLOTS - 1,)
+    attempts = tuple(_synthetic_attempt(binding, slot) for slot in accepted_slots)
     audit = audit_evidence(
         binding,
         attempts,
@@ -121,9 +145,18 @@ def build_synthetic_report() -> JsonObject:
         "synthetic_final_status": cast(str, audit["final_status"]),
         "target_slots": TARGET_SLOTS,
         "minimum_accepted_slots": MIN_ACCEPTED_SLOTS,
+        "minimum_first_day_accepted_slots": MIN_FIRST_DAY_ACCEPTED_SLOTS,
+        "minimum_last_day_accepted_slots": MIN_LAST_DAY_ACCEPTED_SLOTS,
         "accepted_slots": counts["ACCEPTED"],
         "missing_slots": counts["MISSING"],
+        "first_day_accepted_slots": cast(int, audit["first_day_accepted_slots"]),
+        "last_day_accepted_slots": cast(int, audit["last_day_accepted_slots"]),
         "maximum_schedule_lag_minutes": MAX_SCHEDULE_LAG_MINUTES,
+        "maximum_run_duration_minutes": MAX_RUN_DURATION_MINUTES,
+        "maximum_completion_lag_minutes": MAX_COMPLETION_LAG_MINUTES,
+        "activation_statement": binding.activation_statement,
+        "activation_statement_sha256": binding.activation_statement_sha256,
+        "review_amendment_commit": REVIEW_AMENDMENT,
         "start_utc_day": binding.start_utc_day.isoformat(),
         "end_utc_day": binding.end_utc_day.isoformat(),
         "finalization_at_utc": finalization_at(binding)
@@ -134,6 +167,8 @@ def build_synthetic_report() -> JsonObject:
         "missing_slots_are_not_backfilled": True,
         "early_stopping_permitted": False,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
+        "confirmatory_history_construction_permitted": False,
+        "temporal_state_outcome_fitting_permitted": False,
         "outcome_access_permitted": False,
         "mm1_execution_permitted": False,
         "phase3_policy_mutation_permitted": False,
