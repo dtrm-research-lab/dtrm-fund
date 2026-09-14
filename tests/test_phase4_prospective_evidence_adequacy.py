@@ -135,7 +135,10 @@ def test_activation_binding_is_derived_from_verified_exact_bytes() -> None:
     assert binding.start_utc_day == date(2026, 9, 15)
     assert binding.backend_commit == _COMMIT
     assert binding.backend_tree == _TREE
-    assert binding.activation_statement_sha256 == hashlib.sha256(_activation_bytes()).hexdigest()
+    assert (
+        binding.activation_statement_sha256
+        == hashlib.sha256(_activation_bytes()).hexdigest()
+    )
 
 
 def test_activation_bytes_wrong_trusted_digest_fail_closed() -> None:
@@ -447,7 +450,10 @@ def test_pass_report_preserves_all_downstream_prohibitions() -> None:
     assert report["mm1_execution_permitted"] is False
     assert report["phase3_policy_mutation_permitted"] is False
     assert report["public_raw_provider_data_redistribution_permitted"] is False
-    assert report["maximum_record_publication_lag_minutes"] == MAX_RECORD_PUBLICATION_LAG_MINUTES
+    assert (
+        report["maximum_record_publication_lag_minutes"]
+        == MAX_RECORD_PUBLICATION_LAG_MINUTES
+    )
 
 
 def test_binding_end_day_is_exactly_14_utc_days_inclusive() -> None:
