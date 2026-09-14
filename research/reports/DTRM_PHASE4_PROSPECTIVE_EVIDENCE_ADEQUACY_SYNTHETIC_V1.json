@@ -1,0 +1,21 @@
+{
+  "accepted_slots": 48,
+  "early_stopping_permitted": false,
+  "end_utc_day": "2026-09-28",
+  "engineering_status": "PASS_PROSPECTIVE_EVIDENCE_ADEQUACY_AUDITOR_V1",
+  "finalization_at_utc": "2026-09-28T20:15:00Z",
+  "graph": "phase4_prospective_evidence_adequacy_v1",
+  "manual_runs_count_toward_threshold": false,
+  "maximum_schedule_lag_minutes": 120,
+  "minimum_accepted_slots": 48,
+  "missing_slots": 8,
+  "missing_slots_are_not_backfilled": true,
+  "mm1_execution_permitted": false,
+  "outcome_access_permitted": false,
+  "phase3_policy_mutation_permitted": false,
+  "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+  "public_raw_provider_data_redistribution_permitted": false,
+  "start_utc_day": "2026-09-15",
+  "synthetic_final_status": "PASS_PROSPECTIVE_EVIDENCE_ADEQUACY_V1",
+  "target_slots": 56
+}
