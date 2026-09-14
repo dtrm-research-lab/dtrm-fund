@@ -633,6 +633,7 @@ def audit_evidence(
         "review_amendment_commit": REVIEW_AMENDMENT,
         "review_amendment_v2_commit": REVIEW_AMENDMENT_V2,
         "review_amendment_v3_commit": REVIEW_AMENDMENT_V3,
+        "review_amendment_v4_commit": REVIEW_AMENDMENT_V4,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
         "request_fingerprint_sha256": REQUEST_FINGERPRINT,
         "activation_statement": binding.activation_statement,
