@@ -1,0 +1,48 @@
+{
+  "activation_contract": {
+    "credential_scope_evidence_sha256": null,
+    "credential_scope_status": "UNVERIFIED",
+    "human_activation_authorized": false,
+    "periodic_capture_activation_permitted": false,
+    "prospective_start_utc": null,
+    "provisioned_schema_identity": null,
+    "schema_version": "dtrm.phase4.prospective_activation_statement.v2",
+    "writer_authority_evidence_sha256": null,
+    "writer_authority_status": "UNVERIFIED"
+  },
+  "backend": {
+    "merge_commit": "974a7a744642cc8268ca5972df4ef208f629ed2b",
+    "merge_tree": "0edcbca9d38b3a35b9b6a7b5fbb32b04d67119c9",
+    "repository": "tech-com-UA00001/theresistance-back"
+  },
+  "downstream_permissions": {
+    "confirmatory_history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "graph": "phase4_postmerge_activation_binding_readiness_v1",
+  "provider": {
+    "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
+    "roles": [
+      "fmp_articles",
+      "general_latest",
+      "stock_latest"
+    ]
+  },
+  "readiness_status": "BLOCKED_AUTHORITY_AND_START_BINDING",
+  "schema_version": "dtrm.phase4.postmerge_activation_binding_readiness.v1",
+  "scientific_parent": {
+    "commit": "6e5b73b971a26db28c10802852bc82d38b0b8b61",
+    "tree": "caafe2951dfd004245cba0f0a140bfd1c2748e07"
+  },
+  "workflow": {
+    "blob_sha": "5ab8f5b2c7ca9d89f4bf613355d97ad5f12ffc2b",
+    "identity": "phase4_fmp_news_temporal_capture_v1",
+    "path": ".github/workflows/phase4_fmp_news_temporal_capture_v1.yml",
+    "schedule_present": false,
+    "workflow_dispatch_present": true
+  }
+}
