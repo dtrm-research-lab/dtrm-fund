@@ -26,6 +26,8 @@ ARM_VALUE = "true"
 ACTIVATION_B64_VARIABLE = "PHASE4_ACTIVATION_STATEMENT_B64"
 ACTIVATION_ID_VARIABLE = "PHASE4_ACTIVATION_STATEMENT_ID"
 ACTIVATION_SHA256_VARIABLE = "PHASE4_ACTIVATION_STATEMENT_SHA256"
+TARGET_SLOT_MIN = 0
+TARGET_SLOT_MAX = 55
 FORBIDDEN_SECRET_FRAGMENTS = (
     "mongodb://",
     "mongodb+srv://",
@@ -91,6 +93,9 @@ def expected_statement() -> JsonObject:
             "scheduled_artifact_upload_permitted_before_statement_verification": False,
             "scheduled_failure_record_permitted_before_statement_verification": False,
             "scheduled_counting_decision_permitted_before_statement_verification": False,
+            "scheduled_side_effects_permitted_after_final_slot": False,
+            "scheduled_target_slot_min": TARGET_SLOT_MIN,
+            "scheduled_target_slot_max": TARGET_SLOT_MAX,
             "preactivation_schedule_runs_counting_eligible": False,
             "prospective_start_bound": False,
             "periodic_capture_activation_permitted": False,
