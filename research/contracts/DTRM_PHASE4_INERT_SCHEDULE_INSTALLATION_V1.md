@@ -35,11 +35,11 @@ The decoded statement must pass the existing fail-closed backend `dtrm.phase4.pr
 
 For scheduled **attempt 1**, the runner derives the target from the first-attempt runner start clock and registered cron. A scheduled side effect is permitted only when that derived target is one of the frozen campaign slots **0 through 55 inclusive**. A target before slot 0 or after slot 55 is outside the activation interval and must fail closed before every campaign side effect.
 
-For every scheduled **rerun** (`run_attempt > 1`), the original frozen target provenance must be retained. The rerun target must never be re-derived from the rerun execution clock. If the implementation cannot independently recover and validate the original target provenance, the rerun must fail closed before provider access, private evidence mutation, failure-record emission, artifact upload or counting decision. Such a rerun remains diagnostic/non-counting and cannot create campaign evidence with a guessed or rebound target.
+For every scheduled **rerun** (`run_attempt > 1`), the original frozen target provenance must be retained. The rerun target must never be re-derived from the rerun execution clock. Any future recovery path is valid only from an **immutable attempt-1 record keyed by the same GitHub `run_id`**. Before any rerun side effect, that trusted record must match the rerun exactly on original slot, canonical `target_at_utc`, cron expression, workflow path and workflow identity, and the rerun must retain the same `run_id`. If the attempt-1 record is missing, mutable, belongs to another run, or any equality check fails, the rerun must fail closed before provider access, private evidence mutation, failure-record emission, artifact upload or counting decision. Until such a recovery mechanism is separately implemented and validated, reruns remain diagnostic/non-counting and fail closed with no campaign side effects.
 
-If the statement is missing, malformed, stale, expired, digest-mismatched, not activation-permitted, outside its registered 14-day interval, inconsistent with runtime provenance, or a rerun lacks validated original target provenance, the scheduled event must terminate without a campaign artifact, slot/failure record, counting decision, provider request or private evidence write. Such an event is not a new campaign opportunity and cannot later be backfilled.
+If the statement is missing, malformed, stale, expired, digest-mismatched, not activation-permitted, outside its registered 14-day interval, inconsistent with runtime provenance, or a rerun lacks the exact same-run immutable attempt-1 provenance described above, the scheduled event must terminate without a campaign artifact, slot/failure record, counting decision, provider request or private evidence write. Such an event is not a new campaign opportunity and cannot later be backfilled.
 
-No secret value belongs in the activation statement. The FMP credential remains a GitHub secret and is never copied into scientific evidence, contracts, logs or arguments.
+No secret value belongs in the activation statement. The FMP credential remains a GitHub secret and is never copied into scientific evidence, contracts, logs or arguments. Scheduled installation and activation preflight must execute without exposing that secret; the credential may be scoped only to the provider-capture step after successful runtime/statement binding verification.
 
 ## Pre- and post-campaign scheduled events
 
@@ -60,13 +60,13 @@ After the inert schedule-bearing backend increment is merged, but before arming,
 - exact four cron expressions;
 - ordered provider roles and registered request fingerprint;
 - ancestry to dormant backend merge `974a7a744642cc8268ca5972df4ef208f629ed2b`;
-- exact runtime arm-gate, statement-verification, finite-slot and rerun-provenance semantics.
+- exact runtime arm-gate, statement-verification, finite-slot, credential-scoping and rerun-provenance semantics.
 
 The final activation statement v2 must bind that exact merged schedule-bearing revision. A PR-head SHA or pre-merge prediction is insufficient.
 
 ## Frozen campaign geometry
 
-No scientific parameter changes here: 14 consecutive UTC days, targets `00:15`, `06:15`, `12:15`, `18:15`, exactly 56 opportunities (slots 0–55), minimum 48 accepted slots, at least one accepted first-day slot and one accepted last-day slot, no backfill, no early stopping, and only scheduled attempt 1 may be counting-eligible. Reruns retain the original target provenance and are always non-counting; if original target provenance cannot be recovered and validated, they fail closed without campaign side effects.
+No scientific parameter changes here: 14 consecutive UTC days, targets `00:15`, `06:15`, `12:15`, `18:15`, exactly 56 opportunities (slots 0–55), minimum 48 accepted slots, at least one accepted first-day slot and one accepted last-day slot, no backfill, no early stopping, and only scheduled attempt 1 may be counting-eligible. Reruns retain the original target provenance and are always non-counting; if exact same-run immutable attempt-1 provenance cannot be recovered and validated, they fail closed without campaign side effects.
 
 ## Frozen prohibitions
 
@@ -78,4 +78,4 @@ This amendment does **not** authorize setting the arm variable, selecting `prosp
 
 `research/contracts/DTRM_PHASE4_INERT_SCHEDULE_INSTALLATION_STATEMENT_V1.json`
 
-Canonical SHA-256: `f5956de2878871e12cd6d03b54c1cbf0b0c29137ebc118ae1eed4ea2bb3eacea`.
+Canonical SHA-256: `7a24b86266cb3c0e19fea12b71d271f6867fb6b2f87ce0d5d18832a0504fd041`.
