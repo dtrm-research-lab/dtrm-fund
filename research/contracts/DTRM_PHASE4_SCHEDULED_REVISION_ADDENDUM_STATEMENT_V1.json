@@ -1,0 +1,66 @@
+{
+  "backend_revision": {
+    "dormant_ancestor_commit": "974a7a744642cc8268ca5972df4ef208f629ed2b",
+    "merge_commit": "bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "merge_tree": "c090c3cb41165ee513de812dec562f497407df62",
+    "repository": "tech-com-UA00001/theresistance-back",
+    "validated_pr_head": "ce04527c9a36c9055c9180a534dda0d91ba69952"
+  },
+  "downstream_permissions": {
+    "confirmatory_history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "graph": "phase4_scheduled_revision_addendum_v1",
+  "provider": {
+    "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
+    "roles": [
+      "fmp_articles",
+      "general_latest",
+      "stock_latest"
+    ]
+  },
+  "runtime_semantics": {
+    "activation_statement_provisioned": false,
+    "credential_or_writer_authority_claimed": false,
+    "manual_workflow_dispatch_counting_eligible": false,
+    "periodic_capture_activation_permitted": false,
+    "prospective_start_bound": false,
+    "provider_credential_available_during_checkout_setup_install_or_preflight": false,
+    "provider_credential_scoped_only_to_post_verification_capture_step": true,
+    "schedule_default_armed": false,
+    "scheduled_first_attempt_target_derived_from_runner_clock": true,
+    "scheduled_rerun_counting_eligible": false,
+    "scheduled_rerun_target_derivation_from_rerun_clock_permitted": false,
+    "scheduled_rerun_without_same_run_immutable_attempt1_provenance_fails_closed": true,
+    "scheduled_side_effects_permitted_after_final_slot": false,
+    "scheduled_side_effects_require_arm_and_exact_statement_verification": true,
+    "scheduled_target_slot_max": 55,
+    "scheduled_target_slot_min": 0
+  },
+  "schema_version": "dtrm.phase4.scheduled_revision_addendum.v1",
+  "scientific_parent": {
+    "commit": "a7e03fdd72e4b2132d877d7e30785803398650a9",
+    "tree": "02e4517b021a0337fef49416e0d5fba76b8182f4"
+  },
+  "status": "PREREGISTERED_SCHEDULED_REVISION_BOUND_UNARMED",
+  "workflow": {
+    "activation_statement_b64_variable": "PHASE4_ACTIVATION_STATEMENT_B64",
+    "activation_statement_id_variable": "PHASE4_ACTIVATION_STATEMENT_ID",
+    "activation_statement_sha256_variable": "PHASE4_ACTIVATION_STATEMENT_SHA256",
+    "arm_value": "true",
+    "arm_variable": "PHASE4_PROSPECTIVE_CAPTURE_ARMED",
+    "blob_sha": "0ea9b53b300ea8bbd8f14d3d309cf1d73ecc6c22",
+    "cron": [
+      "15 0 * * *",
+      "15 6 * * *",
+      "15 12 * * *",
+      "15 18 * * *"
+    ],
+    "identity": "phase4_fmp_news_temporal_capture_v1",
+    "path": ".github/workflows/phase4_fmp_news_temporal_capture_v1.yml"
+  }
+}
