@@ -1,0 +1,46 @@
+{
+  "schema_version": "dtrm.phase4.prospective_evidence_adequacy_statement.v1",
+  "graph": "phase4_prospective_evidence_adequacy_v1",
+  "scientific_parent_integration": "ca7ef0570281f6a1143d7a93efae5d69edc2b8a4",
+  "prospective_evidence_registration": "243797ee398b43f6684ce7a43057711167ed79ba",
+  "adequacy_preregistration_commit": "835f5c6f01825abdaf9a3cc266f9ba1dfb24c55d",
+  "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
+  "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+  "interval": {
+    "utc_days": 14,
+    "schedule_utc": ["00:15", "06:15", "12:15", "18:15"],
+    "schedule_cron": ["15 0 * * *", "15 6 * * *", "15 12 * * *", "15 18 * * *"],
+    "target_slots": 56,
+    "minimum_accepted_slots": 48,
+    "maximum_schedule_lag_minutes": 120,
+    "missing_slots_are_not_backfilled": true,
+    "early_stopping_permitted": false
+  },
+  "accepted_event": "schedule",
+  "manual_runs_count_toward_threshold": false,
+  "final_statuses": [
+    "PENDING_INTERVAL",
+    "PASS_PROSPECTIVE_EVIDENCE_ADEQUACY_V1",
+    "FAIL_PROSPECTIVE_EVIDENCE_ADEQUACY_V1"
+  ],
+  "slot_statuses": [
+    "ACCEPTED",
+    "MISSING",
+    "FAILED",
+    "LATE",
+    "DUPLICATE",
+    "CONTRACT_MISMATCH"
+  ],
+  "permissions": {
+    "adequacy_auditor_implementation_permitted": true,
+    "source_value_free_slot_record_implementation_permitted": true,
+    "scheduled_workflow_configuration_permitted": true,
+    "periodic_capture_activation_permitted": false,
+    "confirmatory_history_construction_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false,
+    "outcome_access_permitted": false,
+    "mm1_execution_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false
+  }
+}
