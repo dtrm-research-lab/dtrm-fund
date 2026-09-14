@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
-from datetime import UTC, date, timedelta
+from datetime import UTC, timedelta
 from pathlib import Path
 from typing import cast
 
 from dtrm.phase4.prospective_evidence_adequacy import (
+    ACTIVATION_SCHEMA,
     ADEQUACY_PREREGISTRATION,
     GRAPH,
     MAX_COMPLETION_LAG_MINUTES,
+    MAX_RECORD_PUBLICATION_LAG_MINUTES,
     MAX_RUN_DURATION_MINUTES,
     MAX_SCHEDULE_LAG_MINUTES,
     MIN_ACCEPTED_SLOTS,
@@ -19,6 +22,7 @@ from dtrm.phase4.prospective_evidence_adequacy import (
     PROVIDER_RIGHTS_STATUS,
     REQUEST_FINGERPRINT,
     REVIEW_AMENDMENT,
+    REVIEW_AMENDMENT_V2,
     SCHEDULE_CRON,
     SCHEDULE_UTC,
     SCIENTIFIC_PARENT_INTEGRATION,
@@ -33,7 +37,26 @@ from dtrm.phase4.prospective_evidence_adequacy import (
 
 JsonObject = dict[str, object]
 _SYNTHETIC_ACTIVATION_STATEMENT = "synthetic-activation-v1"
-_SYNTHETIC_ACTIVATION_SHA256 = "9" * 64
+_SYNTHETIC_COMMIT = "a" * 40
+_SYNTHETIC_TREE = "b" * 40
+_SYNTHETIC_START_DAY = "2026-09-15"
+
+
+def _synthetic_activation_bytes() -> bytes:
+    return json.dumps(
+        {
+            "schema_version": ACTIVATION_SCHEMA,
+            "activation_statement": _SYNTHETIC_ACTIVATION_STATEMENT,
+            "start_utc_day": _SYNTHETIC_START_DAY,
+            "backend_commit": _SYNTHETIC_COMMIT,
+            "backend_tree": _SYNTHETIC_TREE,
+            "request_fingerprint_sha256": REQUEST_FINGERPRINT,
+            "periodic_capture_activation_permitted": True,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
 
 
 def _expected_statement() -> JsonObject:
@@ -44,16 +67,22 @@ def _expected_statement() -> JsonObject:
         "prospective_evidence_registration": PROSPECTIVE_EVIDENCE_REGISTRATION,
         "adequacy_preregistration_commit": ADEQUACY_PREREGISTRATION,
         "review_amendment_commit": REVIEW_AMENDMENT,
+        "review_amendment_v2_commit": REVIEW_AMENDMENT_V2,
         "request_fingerprint_sha256": REQUEST_FINGERPRINT,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
         "activation_binding": {
-            "required_fields": [
+            "statement_schema": ACTIVATION_SCHEMA,
+            "exact_statement_bytes_required": True,
+            "trusted_reference_fields": [
                 "activation_statement",
                 "activation_statement_sha256",
+            ],
+            "derived_fields": [
                 "start_utc_day",
                 "backend_commit",
                 "backend_tree",
-            ]
+                "request_fingerprint_sha256",
+            ],
         },
         "interval": {
             "utc_days": 14,
@@ -66,11 +95,17 @@ def _expected_statement() -> JsonObject:
             "maximum_schedule_lag_minutes": MAX_SCHEDULE_LAG_MINUTES,
             "maximum_run_duration_minutes": MAX_RUN_DURATION_MINUTES,
             "maximum_completion_lag_minutes": MAX_COMPLETION_LAG_MINUTES,
+            "maximum_record_publication_lag_minutes": MAX_RECORD_PUBLICATION_LAG_MINUTES,
+            "maximum_total_record_lag_minutes": (
+                MAX_COMPLETION_LAG_MINUTES + MAX_RECORD_PUBLICATION_LAG_MINUTES
+            ),
             "missing_slots_are_not_backfilled": True,
             "early_stopping_permitted": False,
         },
         "accepted_event": "schedule",
+        "accepted_run_attempt": 1,
         "manual_runs_count_toward_threshold": False,
+        "scheduled_reruns_count_toward_threshold": False,
         "final_statuses": [
             "PENDING_INTERVAL",
             "PASS_PROSPECTIVE_EVIDENCE_ADEQUACY_V1",
@@ -105,6 +140,15 @@ def _load_and_validate_statement(path: Path) -> None:
         raise RuntimeError("PROSPECTIVE_EVIDENCE_ADEQUACY_STATEMENT_MISMATCH")
 
 
+def _synthetic_binding() -> ActivationBinding:
+    statement = _synthetic_activation_bytes()
+    return ActivationBinding(
+        statement_bytes=statement,
+        trusted_activation_statement=_SYNTHETIC_ACTIVATION_STATEMENT,
+        trusted_activation_statement_sha256=hashlib.sha256(statement).hexdigest(),
+    )
+
+
 def _synthetic_attempt(binding: ActivationBinding, slot: int) -> SlotAttempt:
     target = expected_target(binding, slot)
     return SlotAttempt(
@@ -113,8 +157,10 @@ def _synthetic_attempt(binding: ActivationBinding, slot: int) -> SlotAttempt:
         event_name="schedule",
         cron=expected_cron(slot),
         run_id=20_000 + slot,
+        run_attempt=1,
         started_at_utc=target + timedelta(minutes=5),
         completed_at_utc=target + timedelta(minutes=10),
+        recorded_at_utc=target + timedelta(minutes=11),
         repository_commit=binding.backend_commit,
         repository_tree=binding.backend_tree,
         request_fingerprint_sha256=REQUEST_FINGERPRINT,
@@ -124,13 +170,7 @@ def _synthetic_attempt(binding: ActivationBinding, slot: int) -> SlotAttempt:
 
 
 def build_synthetic_report() -> JsonObject:
-    binding = ActivationBinding(
-        activation_statement=_SYNTHETIC_ACTIVATION_STATEMENT,
-        activation_statement_sha256=_SYNTHETIC_ACTIVATION_SHA256,
-        start_utc_day=date(2026, 9, 15),
-        backend_commit="a" * 40,
-        backend_tree="b" * 40,
-    )
+    binding = _synthetic_binding()
     accepted_slots = tuple(range(MIN_ACCEPTED_SLOTS - 1)) + (TARGET_SLOTS - 1,)
     attempts = tuple(_synthetic_attempt(binding, slot) for slot in accepted_slots)
     audit = audit_evidence(
@@ -154,16 +194,23 @@ def build_synthetic_report() -> JsonObject:
         "maximum_schedule_lag_minutes": MAX_SCHEDULE_LAG_MINUTES,
         "maximum_run_duration_minutes": MAX_RUN_DURATION_MINUTES,
         "maximum_completion_lag_minutes": MAX_COMPLETION_LAG_MINUTES,
+        "maximum_record_publication_lag_minutes": MAX_RECORD_PUBLICATION_LAG_MINUTES,
+        "maximum_total_record_lag_minutes": (
+            MAX_COMPLETION_LAG_MINUTES + MAX_RECORD_PUBLICATION_LAG_MINUTES
+        ),
         "activation_statement": binding.activation_statement,
         "activation_statement_sha256": binding.activation_statement_sha256,
         "review_amendment_commit": REVIEW_AMENDMENT,
+        "review_amendment_v2_commit": REVIEW_AMENDMENT_V2,
         "start_utc_day": binding.start_utc_day.isoformat(),
         "end_utc_day": binding.end_utc_day.isoformat(),
         "finalization_at_utc": finalization_at(binding)
         .astimezone(UTC)
         .isoformat()
         .replace("+00:00", "Z"),
+        "accepted_run_attempt": 1,
         "manual_runs_count_toward_threshold": False,
+        "scheduled_reruns_count_toward_threshold": False,
         "missing_slots_are_not_backfilled": True,
         "early_stopping_permitted": False,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
