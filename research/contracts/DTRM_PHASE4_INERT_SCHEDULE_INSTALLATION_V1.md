@@ -19,25 +19,27 @@ A descendant backend increment may add exactly these four GitHub Actions cron ex
 
 The workflow identity remains `phase4_fmp_news_temporal_capture_v1`.
 
-Schedule installation is permitted only if scheduled capture is fail-closed and inert by default. The scheduled capture job must not make an FMP request, mutate private evidence, upload a campaign artifact, or emit a counting-eligible slot record unless the repository variable `PHASE4_PROSPECTIVE_CAPTURE_ARMED` is exactly the lowercase string `true`.
+Schedule installation is permitted only if scheduled capture is fail-closed and inert by default. The scheduled capture job must not make an FMP request, mutate private evidence, upload a campaign artifact, emit a failure record, or make a counting decision unless the repository variable `PHASE4_PROSPECTIVE_CAPTURE_ARMED` is exactly the lowercase string `true` **and** the exact activation statement v2 has first been successfully verified against the runtime revision and registered start.
 
-Missing, empty, malformed or any other value means **unarmed**. The default state is unarmed. Manual `workflow_dispatch` may remain available only as diagnostic/non-counting behavior under the previously registered rules.
+Missing, empty, malformed or any other arm value means **unarmed**. The default state is unarmed. Manual `workflow_dispatch` may remain available only as diagnostic/non-counting behavior under the previously registered rules.
 
 ## Activation material
 
-Arming alone is insufficient. Before any scheduled provider request, the runner must obtain and validate the exact source-value-free activation statement v2 using these repository-variable names:
+Arming alone is insufficient. Before **any scheduled side effect**, the runner must obtain and validate the exact source-value-free activation statement v2 using these repository-variable names:
 
 - `PHASE4_ACTIVATION_STATEMENT_B64`
 - `PHASE4_ACTIVATION_STATEMENT_ID`
 - `PHASE4_ACTIVATION_STATEMENT_SHA256`
 
-The decoded statement must pass the existing fail-closed backend `dtrm.phase4.prospective_activation_statement.v2` verifier before provider access. The verified binding must match the actual schedule-bearing backend commit/tree, workflow path/blob/identity, ordered provider roles and registered request fingerprint.
+The decoded statement must pass the existing fail-closed backend `dtrm.phase4.prospective_activation_statement.v2` verifier before any provider access, private evidence mutation, artifact upload, failure-record emission, or counting decision. The verified binding must match the actual schedule-bearing backend commit/tree, workflow path/blob/identity, ordered provider roles, registered request fingerprint and canonical `prospective_start_utc`.
+
+If the statement is missing, malformed, stale, digest-mismatched, not activation-permitted, not yet in its registered campaign interval, or inconsistent with runtime provenance, the scheduled event must terminate without a campaign artifact, slot/failure record, counting decision, provider request or private evidence write. Such an event is not a campaign opportunity and cannot later be backfilled.
 
 No secret value belongs in the activation statement. The FMP credential remains a GitHub secret and is never copied into scientific evidence, contracts, logs or arguments.
 
 ## Pre-activation scheduled events
 
-GitHub may emit cron events after the schedule-bearing workflow reaches the default branch but before the campaign is armed. Such events are **pre-activation scheduler observations only**. They must be skipped before provider access and are never campaign opportunities, missing slots, failures, reruns or backfill candidates.
+GitHub may emit cron events after the schedule-bearing workflow reaches the default branch but before the campaign is armed and fully statement-verified. Such events are **pre-activation scheduler observations only**. They must be skipped before all campaign side effects and are never campaign opportunities, missing slots, failures, reruns or backfill candidates.
 
 The 14-day/56-opportunity interval begins only from the separately registered `prospective_start_utc` in the exact activation statement v2, after the final human activation authorization. The activation instant must remain on the selected UTC day and strictly before `00:15:00Z`.
 
@@ -52,7 +54,7 @@ After the inert schedule-bearing backend increment is merged, but before arming,
 - exact four cron expressions;
 - ordered provider roles and registered request fingerprint;
 - ancestry to dormant backend merge `974a7a744642cc8268ca5972df4ef208f629ed2b`;
-- exact runtime arm-gate semantics.
+- exact runtime arm-gate and statement-verification semantics.
 
 The final activation statement v2 must bind that exact merged schedule-bearing revision. A PR-head SHA or pre-merge prediction is insufficient.
 
@@ -70,4 +72,4 @@ This amendment does **not** authorize setting the arm variable, selecting `prosp
 
 `research/contracts/DTRM_PHASE4_INERT_SCHEDULE_INSTALLATION_STATEMENT_V1.json`
 
-Canonical SHA-256: `adf47fae8e50524263e76aa8432d48fa62143c9da32f8553e198982d4bd5a8e9`.
+Canonical SHA-256: `9cd7f66c028ba6b61088c0639a8360fbac6e1e939ee33f72c877f6b2ea9e8df2`.
