@@ -119,7 +119,10 @@ class SlotAttempt:
         ):
             if digest is not None:
                 _require_sha256(digest, label)
-        if self.failure_code is not None and _ERROR_RE.fullmatch(self.failure_code) is None:
+        if (
+            self.failure_code is not None
+            and _ERROR_RE.fullmatch(self.failure_code) is None
+        ):
             raise ProspectiveEvidenceAdequacyError("attempt: invalid failure code")
 
 
@@ -211,7 +214,9 @@ def audit_evidence(
     for attempt in attempts:
         by_slot[attempt.slot].append(attempt)
         if attempt.event_name == "schedule":
-            scheduled_run_counts[attempt.run_id] = scheduled_run_counts.get(attempt.run_id, 0) + 1
+            scheduled_run_counts[attempt.run_id] = (
+                scheduled_run_counts.get(attempt.run_id, 0) + 1
+            )
         else:
             ignored_nonscheduled += 1
     duplicate_run_ids = frozenset(
@@ -281,9 +286,12 @@ def canonical_audit_json(
     attempts: tuple[SlotAttempt, ...],
     audit_clock_utc: datetime,
 ) -> str:
-    return json.dumps(
-        audit_evidence(binding, attempts, audit_clock_utc),
-        sort_keys=True,
-        indent=2,
-        ensure_ascii=False,
-    ) + "\n"
+    return (
+        json.dumps(
+            audit_evidence(binding, attempts, audit_clock_utc),
+            sort_keys=True,
+            indent=2,
+            ensure_ascii=False,
+        )
+        + "\n"
+    )
