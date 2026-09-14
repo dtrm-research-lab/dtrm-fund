@@ -20,7 +20,7 @@ from dtrm.phase4.inert_schedule_installation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 STATEMENT = ROOT / "research/contracts/DTRM_PHASE4_INERT_SCHEDULE_INSTALLATION_STATEMENT_V1.json"
-EXPECTED_SHA256 = "375c04c4e537095df21db10919f9f3d8e827a6886a4c1db902dc30ccbcb11c3c"
+EXPECTED_SHA256 = "f5956de2878871e12cd6d03b54c1cbf0b0c29137ebc118ae1eed4ea2bb3eacea"
 
 
 def _bytes(payload: object) -> bytes:
@@ -53,6 +53,10 @@ def test_schedule_installation_is_distinct_from_capture_activation() -> None:
     assert guards["scheduled_artifact_upload_permitted_before_statement_verification"] is False
     assert guards["scheduled_failure_record_permitted_before_statement_verification"] is False
     assert guards["scheduled_counting_decision_permitted_before_statement_verification"] is False
+    assert guards["scheduled_first_attempt_target_derived_from_runner_clock"] is True
+    assert guards["scheduled_rerun_target_must_retain_original"] is True
+    assert guards["scheduled_rerun_target_derivation_from_rerun_clock_permitted"] is False
+    assert guards["scheduled_rerun_side_effects_permitted_without_original_target_provenance"] is False
     assert guards["scheduled_side_effects_permitted_after_final_slot"] is False
     assert guards["scheduled_target_slot_min"] == TARGET_SLOT_MIN == 0
     assert guards["scheduled_target_slot_max"] == TARGET_SLOT_MAX == 55
@@ -96,6 +100,22 @@ def test_dormant_lineage_remains_frozen() -> None:
         (
             "pre_activation_guards",
             "scheduled_counting_decision_permitted_before_statement_verification",
+            True,
+        ),
+        (
+            "pre_activation_guards",
+            "scheduled_first_attempt_target_derived_from_runner_clock",
+            False,
+        ),
+        ("pre_activation_guards", "scheduled_rerun_target_must_retain_original", False),
+        (
+            "pre_activation_guards",
+            "scheduled_rerun_target_derivation_from_rerun_clock_permitted",
+            True,
+        ),
+        (
+            "pre_activation_guards",
+            "scheduled_rerun_side_effects_permitted_without_original_target_provenance",
             True,
         ),
         ("pre_activation_guards", "scheduled_side_effects_permitted_after_final_slot", True),
