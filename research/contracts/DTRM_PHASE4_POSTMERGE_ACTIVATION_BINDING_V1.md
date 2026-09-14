@@ -26,13 +26,31 @@ The following values are frozen by this increment:
 - registered request fingerprint: `932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd`;
 - target activation schema: `dtrm.phase4.prospective_activation_statement.v2`.
 
-`workflow_identity` is frozen here as the stable extension-free basename of the pinned workflow path. It is a scientific provenance identifier, not the human-readable GitHub Actions display name. All scheduled slot evidence must later match this exact identity.
+`workflow_identity` is frozen here as the stable extension-free basename of the pinned workflow path. It is a scientific provenance identifier, not the human-readable GitHub Actions display name.
+
+The backend commit/tree and workflow blob above are **dormant-lineage anchors only**. They identify the exact reviewed implementation from which the schedule-bearing revision must descend. Because adding `schedule:` necessarily changes the backend revision and workflow blob, these dormant identifiers MUST NOT be reused as the final scheduled-run provenance after that edit.
 
 ## Verified dormant workflow state
 
 At the pinned backend merge, the workflow is `workflow_dispatch` only. The exact pinned workflow blob contains no periodic `schedule:` trigger. Therefore this increment cannot start the evidence campaign.
 
-Adding or enabling a periodic schedule requires a separate backend increment after the final activation statement has been human-approved. The scheduled workflow must preserve the preregistered four daily cron opportunities and exact workflow provenance.
+Adding or enabling a periodic schedule requires a separate backend increment. That increment must preserve the preregistered four daily cron opportunities, workflow path/identity, provider-role order, request fingerprint, source-value-free slot-record semantics and all downstream prohibitions.
+
+## Required scheduled-revision addendum
+
+Before any periodic activation, a separate scientific addendum MUST register the exact schedule-bearing backend revision produced by that backend increment. The addendum must bind, at minimum:
+
+- the descendant backend commit and tree;
+- the schedule-bearing workflow path, blob SHA and stable workflow identity;
+- the exact four preregistered cron expressions;
+- the ordered provider roles;
+- the registered request fingerprint;
+- the ancestry relation back to the dormant backend merge commit above;
+- confirmation that no scientific geometry, downstream permission, provider role or request semantics changed while adding the schedule trigger.
+
+The final `dtrm.phase4.prospective_activation_statement.v2` must bind to the exact **schedule-bearing revision registered by that addendum**, not to the dormant commit/tree/blob frozen in this readiness record. Scheduled slot evidence must then match that final activation provenance exactly.
+
+If no such addendum exists, periodic activation is forbidden.
 
 ## Deliberately unresolved activation fields
 
@@ -56,11 +74,12 @@ A later activation candidate may be constructed only if all of the following are
 1. a provisioned schema identity exists for the registered private evidence collections;
 2. least-privilege credential scope is explicitly `AUTHORIZED` and represented only by a sanitized SHA-256 evidence digest;
 3. writer authority is explicitly `AUTHORIZED` and represented only by a sanitized SHA-256 evidence digest;
-4. a canonical `prospective_start_utc` is chosen on its UTC day in the interval `[00:00:00Z, 00:15:00Z)`;
-5. the backend commit/tree and workflow path/blob/identity still equal the bindings above;
-6. provider-role order and registered request fingerprint still match;
-7. the exact activation-statement bytes pass the backend v2 fail-closed verifier;
-8. the human gives a separate explicit authorization to activate periodic capture.
+4. a schedule-bearing backend revision has been created as a descendant of the dormant backend merge and preserves the frozen workflow path/identity, provider-role order, request fingerprint and campaign geometry;
+5. a separate scientific scheduled-revision addendum has registered that exact descendant backend commit/tree and schedule-bearing workflow blob before activation;
+6. a canonical `prospective_start_utc` is chosen on its UTC day in the interval `[00:00:00Z, 00:15:00Z)`;
+7. provider-role order and registered request fingerprint still match;
+8. the exact activation-statement bytes bind the registered schedule-bearing revision and pass the backend v2 fail-closed verifier;
+9. the human gives a separate explicit authorization to activate periodic capture.
 
 Any mismatch means no activation. The campaign is never shortened, shifted, backfilled, or partially counted to accommodate a late or incompatible activation.
 
@@ -99,8 +118,10 @@ Its canonical SHA-256 is:
 
 `7f3c668bce9866a2eb8483c270e8ae23a26a1ca0cb3bd8d40c11a5f7e924c442`
 
-The pure validator in `src/dtrm/phase4/postmerge_activation_binding.py` rejects duplicate JSON keys, secret-shaped material, unexpected keys, immutable-binding drift, and any attempt to promote an unresolved activation field inside this preregistration increment.
+The pure validator in `src/dtrm/phase4/postmerge_activation_binding.py` rejects duplicate JSON keys, secret-shaped material, unexpected keys, immutable dormant-binding drift, and any attempt to promote an unresolved activation field inside this preregistration increment.
+
+The machine-checkable backend/workflow values in that statement describe only the current dormant lineage. They do not authorize a future scheduled revision. The required scheduled-revision addendum is the sole bridge from these dormant anchors to the exact provenance that the final activation statement may use.
 
 ## Scientific interpretation
 
-After this increment is reviewed and integrated, the remaining pre-campaign work is operational evidence plus the explicit human activation gate, not further redesign of the scientific comparison. The later 14-day collection is itself part of the preregistered experiment. Outcomes and MM1 remain protected until the campaign and adequacy gate are complete.
+After this increment is reviewed and integrated, the remaining pre-campaign work is operational evidence, the schedule-bearing backend increment, its exact scientific addendum, and the explicit human activation gate—not redesign of the scientific comparison. The later 14-day collection is itself part of the preregistered experiment. Outcomes and MM1 remain protected until the campaign and adequacy gate are complete.
