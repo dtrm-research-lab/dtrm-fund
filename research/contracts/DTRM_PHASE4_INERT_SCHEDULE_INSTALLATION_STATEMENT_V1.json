@@ -17,8 +17,12 @@
     "periodic_capture_activation_permitted": false,
     "preactivation_schedule_runs_counting_eligible": false,
     "prospective_start_bound": false,
+    "scheduled_artifact_upload_permitted_before_statement_verification": false,
+    "scheduled_counting_decision_permitted_before_statement_verification": false,
+    "scheduled_failure_record_permitted_before_statement_verification": false,
     "scheduled_private_write_permitted_when_unarmed": false,
-    "scheduled_provider_access_permitted_when_unarmed": false
+    "scheduled_provider_access_permitted_when_unarmed": false,
+    "scheduled_side_effects_permitted_before_statement_verification": false
   },
   "provider": {
     "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
