@@ -87,6 +87,10 @@ def expected_statement() -> JsonObject:
         "pre_activation_guards": {
             "scheduled_provider_access_permitted_when_unarmed": False,
             "scheduled_private_write_permitted_when_unarmed": False,
+            "scheduled_side_effects_permitted_before_statement_verification": False,
+            "scheduled_artifact_upload_permitted_before_statement_verification": False,
+            "scheduled_failure_record_permitted_before_statement_verification": False,
+            "scheduled_counting_decision_permitted_before_statement_verification": False,
             "preactivation_schedule_runs_counting_eligible": False,
             "prospective_start_bound": False,
             "periodic_capture_activation_permitted": False,
