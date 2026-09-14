@@ -106,7 +106,9 @@ def build_synthetic_report() -> JsonObject:
         backend_commit="a" * 40,
         backend_tree="b" * 40,
     )
-    attempts = tuple(_synthetic_attempt(binding, slot) for slot in range(MIN_ACCEPTED_SLOTS))
+    attempts = tuple(
+        _synthetic_attempt(binding, slot) for slot in range(MIN_ACCEPTED_SLOTS)
+    )
     audit = audit_evidence(
         binding,
         attempts,
@@ -124,9 +126,10 @@ def build_synthetic_report() -> JsonObject:
         "maximum_schedule_lag_minutes": MAX_SCHEDULE_LAG_MINUTES,
         "start_utc_day": binding.start_utc_day.isoformat(),
         "end_utc_day": binding.end_utc_day.isoformat(),
-        "finalization_at_utc": finalization_at(binding).astimezone(UTC).isoformat().replace(
-            "+00:00", "Z"
-        ),
+        "finalization_at_utc": finalization_at(binding)
+        .astimezone(UTC)
+        .isoformat()
+        .replace("+00:00", "Z"),
         "manual_runs_count_toward_threshold": False,
         "missing_slots_are_not_backfilled": True,
         "early_stopping_permitted": False,
