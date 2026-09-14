@@ -18,11 +18,13 @@ from dtrm.phase4.prospective_evidence_adequacy import (
     MIN_ACCEPTED_SLOTS,
     MIN_FIRST_DAY_ACCEPTED_SLOTS,
     MIN_LAST_DAY_ACCEPTED_SLOTS,
+    PROVIDER_ROLES,
     PROSPECTIVE_EVIDENCE_REGISTRATION,
     PROVIDER_RIGHTS_STATUS,
     REQUEST_FINGERPRINT,
     REVIEW_AMENDMENT,
     REVIEW_AMENDMENT_V2,
+    REVIEW_AMENDMENT_V3,
     SCHEDULE_CRON,
     SCHEDULE_UTC,
     SCIENTIFIC_PARENT_INTEGRATION,
@@ -36,10 +38,16 @@ from dtrm.phase4.prospective_evidence_adequacy import (
 )
 
 JsonObject = dict[str, object]
-_SYNTHETIC_ACTIVATION_STATEMENT = "synthetic-activation-v1"
+_SYNTHETIC_ACTIVATION_STATEMENT = "synthetic-activation-v2"
 _SYNTHETIC_COMMIT = "a" * 40
 _SYNTHETIC_TREE = "b" * 40
-_SYNTHETIC_START_DAY = "2026-09-15"
+_SYNTHETIC_WORKFLOW_BLOB = "e" * 40
+_SYNTHETIC_CREDENTIAL_EVIDENCE = "f" * 64
+_SYNTHETIC_WRITER_EVIDENCE = "1" * 64
+_SYNTHETIC_START_UTC = "2026-09-15T00:00:00Z"
+_SYNTHETIC_WORKFLOW_PATH = ".github/workflows/phase4-prospective-temporal-evidence-v1.yml"
+_SYNTHETIC_WORKFLOW_IDENTITY = "phase4-prospective-temporal-evidence-v1"
+_SYNTHETIC_SCHEMA_IDENTITY = "synthetic-prospective-schema-v1"
 
 
 def _synthetic_activation_bytes() -> bytes:
@@ -47,10 +55,19 @@ def _synthetic_activation_bytes() -> bytes:
         {
             "schema_version": ACTIVATION_SCHEMA,
             "activation_statement": _SYNTHETIC_ACTIVATION_STATEMENT,
-            "start_utc_day": _SYNTHETIC_START_DAY,
             "backend_commit": _SYNTHETIC_COMMIT,
             "backend_tree": _SYNTHETIC_TREE,
+            "workflow_path": _SYNTHETIC_WORKFLOW_PATH,
+            "workflow_blob_sha": _SYNTHETIC_WORKFLOW_BLOB,
+            "workflow_identity": _SYNTHETIC_WORKFLOW_IDENTITY,
+            "provider_roles": list(PROVIDER_ROLES),
             "request_fingerprint_sha256": REQUEST_FINGERPRINT,
+            "provisioned_schema_identity": _SYNTHETIC_SCHEMA_IDENTITY,
+            "credential_scope_status": "AUTHORIZED",
+            "credential_scope_evidence_sha256": _SYNTHETIC_CREDENTIAL_EVIDENCE,
+            "writer_authority_status": "AUTHORIZED",
+            "writer_authority_evidence_sha256": _SYNTHETIC_WRITER_EVIDENCE,
+            "prospective_start_utc": _SYNTHETIC_START_UTC,
             "periodic_capture_activation_permitted": True,
         },
         sort_keys=True,
@@ -68,6 +85,7 @@ def _expected_statement() -> JsonObject:
         "adequacy_preregistration_commit": ADEQUACY_PREREGISTRATION,
         "review_amendment_commit": REVIEW_AMENDMENT,
         "review_amendment_v2_commit": REVIEW_AMENDMENT_V2,
+        "review_amendment_v3_commit": REVIEW_AMENDMENT_V3,
         "request_fingerprint_sha256": REQUEST_FINGERPRINT,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
         "activation_binding": {
@@ -77,12 +95,23 @@ def _expected_statement() -> JsonObject:
                 "activation_statement",
                 "activation_statement_sha256",
             ],
-            "derived_fields": [
-                "start_utc_day",
+            "required_statement_fields": [
                 "backend_commit",
                 "backend_tree",
+                "workflow_path",
+                "workflow_blob_sha",
+                "workflow_identity",
+                "provider_roles",
                 "request_fingerprint_sha256",
+                "provisioned_schema_identity",
+                "credential_scope_status",
+                "credential_scope_evidence_sha256",
+                "writer_authority_status",
+                "writer_authority_evidence_sha256",
+                "prospective_start_utc",
+                "periodic_capture_activation_permitted",
             ],
+            "derived_fields": ["start_utc_day", "end_utc_day"],
         },
         "interval": {
             "utc_days": 14,
@@ -101,11 +130,15 @@ def _expected_statement() -> JsonObject:
             ),
             "missing_slots_are_not_backfilled": True,
             "early_stopping_permitted": False,
+            "finalization_boundary_is_pending": True,
         },
         "accepted_event": "schedule",
         "accepted_run_attempt": 1,
         "manual_runs_count_toward_threshold": False,
         "scheduled_reruns_count_toward_threshold": False,
+        "scheduled_rerun_target_provenance_required": True,
+        "late_first_attempt_records_serialized": True,
+        "late_records_partitioned_before_duplicate_resolution": True,
         "final_statuses": [
             "PENDING_INTERVAL",
             "PASS_PROSPECTIVE_EVIDENCE_ADEQUACY_V1",
@@ -200,8 +233,22 @@ def build_synthetic_report() -> JsonObject:
         ),
         "activation_statement": binding.activation_statement,
         "activation_statement_sha256": binding.activation_statement_sha256,
+        "prospective_start_utc": binding.prospective_start_utc
+        .astimezone(UTC)
+        .isoformat()
+        .replace("+00:00", "Z"),
+        "workflow_path": binding.workflow_path,
+        "workflow_blob_sha": binding.workflow_blob_sha,
+        "workflow_identity": binding.workflow_identity,
+        "provider_roles": list(binding.provider_roles),
+        "provisioned_schema_identity": binding.provisioned_schema_identity,
+        "credential_scope_status": binding.credential_scope_status,
+        "credential_scope_evidence_sha256": binding.credential_scope_evidence_sha256,
+        "writer_authority_status": binding.writer_authority_status,
+        "writer_authority_evidence_sha256": binding.writer_authority_evidence_sha256,
         "review_amendment_commit": REVIEW_AMENDMENT,
         "review_amendment_v2_commit": REVIEW_AMENDMENT_V2,
+        "review_amendment_v3_commit": REVIEW_AMENDMENT_V3,
         "start_utc_day": binding.start_utc_day.isoformat(),
         "end_utc_day": binding.end_utc_day.isoformat(),
         "finalization_at_utc": finalization_at(binding)
@@ -211,6 +258,10 @@ def build_synthetic_report() -> JsonObject:
         "accepted_run_attempt": 1,
         "manual_runs_count_toward_threshold": False,
         "scheduled_reruns_count_toward_threshold": False,
+        "scheduled_rerun_target_provenance_required": True,
+        "late_first_attempt_records": cast(int, audit["late_first_attempt_records"]),
+        "late_records_partitioned_before_duplicate_resolution": True,
+        "finalization_boundary_is_pending": True,
         "missing_slots_are_not_backfilled": True,
         "early_stopping_permitted": False,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
