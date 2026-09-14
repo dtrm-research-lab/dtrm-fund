@@ -11,7 +11,6 @@ import pytest
 from dtrm.phase4.prospective_evidence_adequacy import (
     ACTIVATION_SCHEMA,
     MAX_COMPLETION_LAG_MINUTES,
-    MAX_RECORD_PUBLICATION_LAG_MINUTES,
     MAX_SCHEDULE_LAG_MINUTES,
     MIN_ACCEPTED_SLOTS,
     PROVIDER_ROLES,
