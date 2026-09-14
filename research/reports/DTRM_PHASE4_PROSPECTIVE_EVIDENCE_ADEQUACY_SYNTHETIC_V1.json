@@ -42,6 +42,8 @@
   "review_amendment_commit": "44d82ac66d283196d1077b799a012a693f9ead7e",
   "review_amendment_v2_commit": "ce02affb746f26cbc0121e9ccb5fbed705601209",
   "review_amendment_v3_commit": "f0060fab395173eed50d89375caf125fcebd3fd9",
+  "review_amendment_v4_commit": "10b28e682b694cd8bb5bb57a0b588520b2a9d1e7",
+  "scheduled_attempt_workflow_provenance_required": true,
   "scheduled_rerun_target_provenance_required": true,
   "scheduled_reruns_count_toward_threshold": false,
   "start_utc_day": "2026-09-15",
