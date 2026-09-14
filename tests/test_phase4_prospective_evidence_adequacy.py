@@ -90,7 +90,9 @@ def test_all_56_slots_pass_after_finalization() -> None:
 
 def test_exactly_48_slots_pass_without_backfill() -> None:
     binding = _binding()
-    report = audit_evidence(binding, _attempts(binding, MIN_ACCEPTED_SLOTS), _final_clock(binding))
+    report = audit_evidence(
+        binding, _attempts(binding, MIN_ACCEPTED_SLOTS), _final_clock(binding)
+    )
     assert report["final_status"] == "PASS_PROSPECTIVE_EVIDENCE_ADEQUACY_V1"
     assert _counts(report)["ACCEPTED"] == 48
     assert _counts(report)["MISSING"] == 8
@@ -98,7 +100,9 @@ def test_exactly_48_slots_pass_without_backfill() -> None:
 
 def test_47_slots_fail_after_finalization() -> None:
     binding = _binding()
-    report = audit_evidence(binding, _attempts(binding, MIN_ACCEPTED_SLOTS - 1), _final_clock(binding))
+    report = audit_evidence(
+        binding, _attempts(binding, MIN_ACCEPTED_SLOTS - 1), _final_clock(binding)
+    )
     assert report["final_status"] == "FAIL_PROSPECTIVE_EVIDENCE_ADEQUACY_V1"
     assert _counts(report)["ACCEPTED"] == 47
 
