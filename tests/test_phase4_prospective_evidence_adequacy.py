@@ -61,14 +61,18 @@ def _binding() -> ActivationBinding:
     )
 
 
-def _attempt(binding: ActivationBinding, slot: int, **overrides: object) -> SlotAttempt:
-    target = expected_target(binding, slot)
+def _attempt(
+    binding: ActivationBinding,
+    base_slot: int,
+    **overrides: object,
+) -> SlotAttempt:
+    target = expected_target(binding, base_slot)
     values: dict[str, object] = {
-        "slot": slot,
+        "slot": base_slot,
         "target_at_utc": target,
         "event_name": "schedule",
-        "cron": expected_cron(slot),
-        "run_id": 10_000 + slot,
+        "cron": expected_cron(base_slot),
+        "run_id": 10_000 + base_slot,
         "run_attempt": 1,
         "started_at_utc": target + timedelta(minutes=5),
         "completed_at_utc": target + timedelta(minutes=10),
