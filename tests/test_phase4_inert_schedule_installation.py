@@ -18,7 +18,7 @@ from dtrm.phase4.inert_schedule_installation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 STATEMENT = ROOT / "research/contracts/DTRM_PHASE4_INERT_SCHEDULE_INSTALLATION_STATEMENT_V1.json"
-EXPECTED_SHA256 = "adf47fae8e50524263e76aa8432d48fa62143c9da32f8553e198982d4bd5a8e9"
+EXPECTED_SHA256 = "9cd7f66c028ba6b61088c0639a8360fbac6e1e939ee33f72c877f6b2ea9e8df2"
 
 
 def _bytes(payload: object) -> bytes:
@@ -47,6 +47,10 @@ def test_schedule_installation_is_distinct_from_capture_activation() -> None:
     assert guards["periodic_capture_activation_permitted"] is False
     assert guards["scheduled_provider_access_permitted_when_unarmed"] is False
     assert guards["scheduled_private_write_permitted_when_unarmed"] is False
+    assert guards["scheduled_side_effects_permitted_before_statement_verification"] is False
+    assert guards["scheduled_artifact_upload_permitted_before_statement_verification"] is False
+    assert guards["scheduled_failure_record_permitted_before_statement_verification"] is False
+    assert guards["scheduled_counting_decision_permitted_before_statement_verification"] is False
     assert guards["preactivation_schedule_runs_counting_eligible"] is False
     assert guards["prospective_start_bound"] is False
 
@@ -69,6 +73,26 @@ def test_dormant_lineage_remains_frozen() -> None:
         ("pre_activation_guards", "periodic_capture_activation_permitted", True),
         ("pre_activation_guards", "scheduled_provider_access_permitted_when_unarmed", True),
         ("pre_activation_guards", "scheduled_private_write_permitted_when_unarmed", True),
+        (
+            "pre_activation_guards",
+            "scheduled_side_effects_permitted_before_statement_verification",
+            True,
+        ),
+        (
+            "pre_activation_guards",
+            "scheduled_artifact_upload_permitted_before_statement_verification",
+            True,
+        ),
+        (
+            "pre_activation_guards",
+            "scheduled_failure_record_permitted_before_statement_verification",
+            True,
+        ),
+        (
+            "pre_activation_guards",
+            "scheduled_counting_decision_permitted_before_statement_verification",
+            True,
+        ),
         ("pre_activation_guards", "preactivation_schedule_runs_counting_eligible", True),
         ("pre_activation_guards", "prospective_start_bound", True),
     ],
