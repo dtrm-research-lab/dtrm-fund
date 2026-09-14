@@ -45,7 +45,9 @@ _SYNTHETIC_WORKFLOW_BLOB = "e" * 40
 _SYNTHETIC_CREDENTIAL_EVIDENCE = "f" * 64
 _SYNTHETIC_WRITER_EVIDENCE = "1" * 64
 _SYNTHETIC_START_UTC = "2026-09-15T00:00:00Z"
-_SYNTHETIC_WORKFLOW_PATH = ".github/workflows/phase4-prospective-temporal-evidence-v1.yml"
+_SYNTHETIC_WORKFLOW_PATH = (
+    ".github/workflows/phase4-prospective-temporal-evidence-v1.yml"
+)
 _SYNTHETIC_WORKFLOW_IDENTITY = "phase4-prospective-temporal-evidence-v1"
 _SYNTHETIC_SCHEMA_IDENTITY = "synthetic-prospective-schema-v1"
 
@@ -233,8 +235,7 @@ def build_synthetic_report() -> JsonObject:
         ),
         "activation_statement": binding.activation_statement,
         "activation_statement_sha256": binding.activation_statement_sha256,
-        "prospective_start_utc": binding.prospective_start_utc
-        .astimezone(UTC)
+        "prospective_start_utc": binding.prospective_start_utc.astimezone(UTC)
         .isoformat()
         .replace("+00:00", "Z"),
         "workflow_path": binding.workflow_path,

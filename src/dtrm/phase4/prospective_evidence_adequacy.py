@@ -237,14 +237,18 @@ class ActivationBinding:
             raise ProspectiveEvidenceAdequacyError("activation: invalid workflow blob")
         _require_sha40(workflow_blob_sha, "activation.workflow_blob_sha")
         if not isinstance(workflow_identity, str):
-            raise ProspectiveEvidenceAdequacyError("activation: invalid workflow identity")
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: invalid workflow identity"
+            )
         _require_identifier(workflow_identity, "activation.workflow_identity")
         if (
             not isinstance(provider_roles, list)
             or tuple(provider_roles) != PROVIDER_ROLES
             or not all(isinstance(role, str) for role in provider_roles)
         ):
-            raise ProspectiveEvidenceAdequacyError("activation: provider roles mismatch")
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: provider roles mismatch"
+            )
         if fingerprint != REQUEST_FINGERPRINT:
             raise ProspectiveEvidenceAdequacyError(
                 "activation: request fingerprint mismatch"
@@ -350,8 +354,14 @@ class SlotAttempt:
             _require_utc(self.target_at_utc, "attempt.target_at_utc")
             if not isinstance(self.cron, str) or self.cron not in SCHEDULE_CRON:
                 raise ProspectiveEvidenceAdequacyError("attempt: invalid cron")
-        elif self.slot is not None or self.target_at_utc is not None or self.cron is not None:
-            raise ProspectiveEvidenceAdequacyError("attempt: non-counting target mismatch")
+        elif (
+            self.slot is not None
+            or self.target_at_utc is not None
+            or self.cron is not None
+        ):
+            raise ProspectiveEvidenceAdequacyError(
+                "attempt: non-counting target mismatch"
+            )
         _require_utc(self.started_at_utc, "attempt.started_at_utc")
         _require_utc(self.completed_at_utc, "attempt.completed_at_utc")
         _require_utc(self.recorded_at_utc, "attempt.recorded_at_utc")
@@ -482,10 +492,16 @@ def audit_evidence(
         if attempt.event_name != "schedule":
             ignored_nonscheduled += 1
             continue
-        if attempt.slot is None or attempt.target_at_utc is None or attempt.cron is None:
+        if (
+            attempt.slot is None
+            or attempt.target_at_utc is None
+            or attempt.cron is None
+        ):
             raise ProspectiveEvidenceAdequacyError("attempt: missing target provenance")
         expected = expected_target(binding, attempt.slot)
-        if attempt.target_at_utc != expected or attempt.cron != expected_cron(attempt.slot):
+        if attempt.target_at_utc != expected or attempt.cron != expected_cron(
+            attempt.slot
+        ):
             raise ProspectiveEvidenceAdequacyError(
                 "attempt: contradictory target provenance"
             )

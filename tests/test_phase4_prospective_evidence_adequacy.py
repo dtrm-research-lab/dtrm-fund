@@ -188,7 +188,9 @@ def test_activation_schema_extra_key_fails_closed() -> None:
 
 
 def test_activation_wrong_provider_roles_fail_closed() -> None:
-    with pytest.raises(ProspectiveEvidenceAdequacyError, match="provider roles mismatch"):
+    with pytest.raises(
+        ProspectiveEvidenceAdequacyError, match="provider roles mismatch"
+    ):
         _binding(provider_roles=["general_latest", "fmp_articles", "stock_latest"])
 
 
