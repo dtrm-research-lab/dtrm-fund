@@ -7,6 +7,7 @@
   "review_amendment_commit": "44d82ac66d283196d1077b799a012a693f9ead7e",
   "review_amendment_v2_commit": "ce02affb746f26cbc0121e9ccb5fbed705601209",
   "review_amendment_v3_commit": "f0060fab395173eed50d89375caf125fcebd3fd9",
+  "review_amendment_v4_commit": "10b28e682b694cd8bb5bb57a0b588520b2a9d1e7",
   "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
   "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
   "activation_binding": {
@@ -35,7 +36,8 @@
     "derived_fields": [
       "start_utc_day",
       "end_utc_day"
-    ]
+    ],
+    "prospective_start_must_precede_slot_zero": true
   },
   "interval": {
     "utc_days": 14,
@@ -69,6 +71,7 @@
   "manual_runs_count_toward_threshold": false,
   "scheduled_reruns_count_toward_threshold": false,
   "scheduled_rerun_target_provenance_required": true,
+  "scheduled_attempt_workflow_provenance_required": true,
   "late_first_attempt_records_serialized": true,
   "late_records_partitioned_before_duplicate_resolution": true,
   "final_statuses": [
