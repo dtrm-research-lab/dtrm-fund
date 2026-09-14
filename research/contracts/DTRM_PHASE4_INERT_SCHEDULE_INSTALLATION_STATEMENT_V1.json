@@ -1,0 +1,55 @@
+{
+  "backend_lineage": {
+    "dormant_merge_commit": "974a7a744642cc8268ca5972df4ef208f629ed2b",
+    "dormant_merge_tree": "0edcbca9d38b3a35b9b6a7b5fbb32b04d67119c9",
+    "repository": "tech-com-UA00001/theresistance-back"
+  },
+  "downstream_permissions": {
+    "confirmatory_history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "graph": "phase4_inert_schedule_installation_v1",
+  "pre_activation_guards": {
+    "periodic_capture_activation_permitted": false,
+    "preactivation_schedule_runs_counting_eligible": false,
+    "prospective_start_bound": false,
+    "scheduled_private_write_permitted_when_unarmed": false,
+    "scheduled_provider_access_permitted_when_unarmed": false
+  },
+  "provider": {
+    "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
+    "roles": [
+      "fmp_articles",
+      "general_latest",
+      "stock_latest"
+    ]
+  },
+  "schema_version": "dtrm.phase4.inert_schedule_installation.v1",
+  "scientific_parent": {
+    "commit": "56952d9c9a6f00a79e8ee2e52765853be58edaae",
+    "tree": "9ba1bd4f7565268af0f5c409d073fa7672bb58f8"
+  },
+  "status": "PREREGISTERED_INERT_SCHEDULE_INSTALLATION",
+  "workflow": {
+    "activation_statement_b64_variable": "PHASE4_ACTIVATION_STATEMENT_B64",
+    "activation_statement_id_variable": "PHASE4_ACTIVATION_STATEMENT_ID",
+    "activation_statement_sha256_variable": "PHASE4_ACTIVATION_STATEMENT_SHA256",
+    "arm_value": "true",
+    "arm_variable": "PHASE4_PROSPECTIVE_CAPTURE_ARMED",
+    "cron": [
+      "15 0 * * *",
+      "15 6 * * *",
+      "15 12 * * *",
+      "15 18 * * *"
+    ],
+    "dormant_blob_sha": "5ab8f5b2c7ca9d89f4bf613355d97ad5f12ffc2b",
+    "identity": "phase4_fmp_news_temporal_capture_v1",
+    "path": ".github/workflows/phase4_fmp_news_temporal_capture_v1.yml",
+    "schedule_default_armed": false,
+    "schedule_installation_permitted": true
+  }
+}
