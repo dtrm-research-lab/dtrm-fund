@@ -25,6 +25,7 @@ from dtrm.phase4.prospective_evidence_adequacy import (
     REVIEW_AMENDMENT,
     REVIEW_AMENDMENT_V2,
     REVIEW_AMENDMENT_V3,
+    REVIEW_AMENDMENT_V4,
     SCHEDULE_CRON,
     SCHEDULE_UTC,
     SCIENTIFIC_PARENT_INTEGRATION,
@@ -88,6 +89,7 @@ def _expected_statement() -> JsonObject:
         "review_amendment_commit": REVIEW_AMENDMENT,
         "review_amendment_v2_commit": REVIEW_AMENDMENT_V2,
         "review_amendment_v3_commit": REVIEW_AMENDMENT_V3,
+        "review_amendment_v4_commit": REVIEW_AMENDMENT_V4,
         "request_fingerprint_sha256": REQUEST_FINGERPRINT,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
         "activation_binding": {
@@ -114,6 +116,7 @@ def _expected_statement() -> JsonObject:
                 "periodic_capture_activation_permitted",
             ],
             "derived_fields": ["start_utc_day", "end_utc_day"],
+            "prospective_start_must_precede_slot_zero": True,
         },
         "interval": {
             "utc_days": 14,
@@ -139,6 +142,7 @@ def _expected_statement() -> JsonObject:
         "manual_runs_count_toward_threshold": False,
         "scheduled_reruns_count_toward_threshold": False,
         "scheduled_rerun_target_provenance_required": True,
+        "scheduled_attempt_workflow_provenance_required": True,
         "late_first_attempt_records_serialized": True,
         "late_records_partitioned_before_duplicate_resolution": True,
         "final_statuses": [
@@ -191,6 +195,9 @@ def _synthetic_attempt(binding: ActivationBinding, slot: int) -> SlotAttempt:
         target_at_utc=target,
         event_name="schedule",
         cron=expected_cron(slot),
+        workflow_path=binding.workflow_path,
+        workflow_blob_sha=binding.workflow_blob_sha,
+        workflow_identity=binding.workflow_identity,
         run_id=20_000 + slot,
         run_attempt=1,
         started_at_utc=target + timedelta(minutes=5),
@@ -250,6 +257,7 @@ def build_synthetic_report() -> JsonObject:
         "review_amendment_commit": REVIEW_AMENDMENT,
         "review_amendment_v2_commit": REVIEW_AMENDMENT_V2,
         "review_amendment_v3_commit": REVIEW_AMENDMENT_V3,
+        "review_amendment_v4_commit": REVIEW_AMENDMENT_V4,
         "start_utc_day": binding.start_utc_day.isoformat(),
         "end_utc_day": binding.end_utc_day.isoformat(),
         "finalization_at_utc": finalization_at(binding)
@@ -260,6 +268,7 @@ def build_synthetic_report() -> JsonObject:
         "manual_runs_count_toward_threshold": False,
         "scheduled_reruns_count_toward_threshold": False,
         "scheduled_rerun_target_provenance_required": True,
+        "scheduled_attempt_workflow_provenance_required": True,
         "late_first_attempt_records": cast(int, audit["late_first_attempt_records"]),
         "late_records_partitioned_before_duplicate_resolution": True,
         "finalization_boundary_is_pending": True,
