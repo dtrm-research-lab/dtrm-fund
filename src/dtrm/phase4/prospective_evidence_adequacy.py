@@ -16,9 +16,11 @@ PROSPECTIVE_EVIDENCE_REGISTRATION = "243797ee398b43f6684ce7a43057711167ed79ba"
 ADEQUACY_PREREGISTRATION = "835f5c6f01825abdaf9a3cc266f9ba1dfb24c55d"
 REVIEW_AMENDMENT = "44d82ac66d283196d1077b799a012a693f9ead7e"
 REVIEW_AMENDMENT_V2 = "ce02affb746f26cbc0121e9ccb5fbed705601209"
+REVIEW_AMENDMENT_V3 = "f0060fab395173eed50d89375caf125fcebd3fd9"
 REQUEST_FINGERPRINT = "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd"
 PROVIDER_RIGHTS_STATUS = "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT"
-ACTIVATION_SCHEMA = "dtrm.phase4.prospective_activation_statement.v1"
+ACTIVATION_SCHEMA = "dtrm.phase4.prospective_activation_statement.v2"
+PROVIDER_ROLES = ("fmp_articles", "general_latest", "stock_latest")
 
 SCHEDULE_UTC = ("00:15", "06:15", "12:15", "18:15")
 SCHEDULE_CRON = ("15 0 * * *", "15 6 * * *", "15 12 * * *", "15 18 * * *")
@@ -53,10 +55,19 @@ _ACTIVATION_KEYS = frozenset(
     {
         "schema_version",
         "activation_statement",
-        "start_utc_day",
         "backend_commit",
         "backend_tree",
+        "workflow_path",
+        "workflow_blob_sha",
+        "workflow_identity",
+        "provider_roles",
         "request_fingerprint_sha256",
+        "provisioned_schema_identity",
+        "credential_scope_status",
+        "credential_scope_evidence_sha256",
+        "writer_authority_status",
+        "writer_authority_evidence_sha256",
+        "prospective_start_utc",
         "periodic_capture_activation_permitted",
     }
 )
@@ -95,8 +106,43 @@ def _require_identifier(value: str, label: str) -> None:
         raise ProspectiveEvidenceAdequacyError(f"{label}: invalid identifier")
 
 
+def _require_workflow_path(value: str) -> None:
+    if (
+        not value.startswith(".github/workflows/")
+        or len(value) > 512
+        or ".." in value
+        or any(character in value for character in "\r\n\t")
+        or not value.endswith((".yml", ".yaml"))
+    ):
+        raise ProspectiveEvidenceAdequacyError("activation: invalid workflow path")
+
+
 def _reject_non_finite(_value: str) -> object:
     raise ProspectiveEvidenceAdequacyError("activation: invalid json")
+
+
+def _unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ProspectiveEvidenceAdequacyError("activation: invalid json")
+        result[key] = value
+    return result
+
+
+def _parse_canonical_utc(value: object) -> datetime:
+    if not isinstance(value, str) or not value.endswith("Z"):
+        raise ProspectiveEvidenceAdequacyError("activation: invalid prospective start")
+    try:
+        parsed = datetime.fromisoformat(value.removesuffix("Z") + "+00:00")
+    except ValueError:
+        raise ProspectiveEvidenceAdequacyError(
+            "activation: invalid prospective start"
+        ) from None
+    _require_utc(parsed, "activation.prospective_start_utc")
+    if _timestamp(parsed) != value:
+        raise ProspectiveEvidenceAdequacyError("activation: invalid prospective start")
+    return parsed
 
 
 @dataclass(frozen=True, slots=True)
@@ -108,9 +154,19 @@ class ActivationBinding:
     trusted_activation_statement_sha256: str
     activation_statement: str = field(init=False)
     activation_statement_sha256: str = field(init=False)
+    prospective_start_utc: datetime = field(init=False)
     start_utc_day: date = field(init=False)
     backend_commit: str = field(init=False)
     backend_tree: str = field(init=False)
+    workflow_path: str = field(init=False)
+    workflow_blob_sha: str = field(init=False)
+    workflow_identity: str = field(init=False)
+    provider_roles: tuple[str, ...] = field(init=False)
+    provisioned_schema_identity: str = field(init=False)
+    credential_scope_status: str = field(init=False)
+    credential_scope_evidence_sha256: str = field(init=False)
+    writer_authority_status: str = field(init=False)
+    writer_authority_evidence_sha256: str = field(init=False)
 
     def __post_init__(self) -> None:
         _require_identifier(
@@ -131,7 +187,11 @@ class ActivationBinding:
             raise ProspectiveEvidenceAdequacyError("activation: digest mismatch")
         try:
             decoded = self.statement_bytes.decode("utf-8")
-            value = json.loads(decoded, parse_constant=_reject_non_finite)
+            value = json.loads(
+                decoded,
+                parse_constant=_reject_non_finite,
+                object_pairs_hook=_unique_json_object,
+            )
         except ProspectiveEvidenceAdequacyError:
             raise
         except (UnicodeDecodeError, json.JSONDecodeError, RecursionError, ValueError):
@@ -147,39 +207,108 @@ class ActivationBinding:
             raise ProspectiveEvidenceAdequacyError("activation: permission mismatch")
 
         identifier = payload.get("activation_statement")
-        start_text = payload.get("start_utc_day")
         commit = payload.get("backend_commit")
         tree = payload.get("backend_tree")
+        workflow_path = payload.get("workflow_path")
+        workflow_blob_sha = payload.get("workflow_blob_sha")
+        workflow_identity = payload.get("workflow_identity")
+        provider_roles = payload.get("provider_roles")
         fingerprint = payload.get("request_fingerprint_sha256")
+        provisioned_schema_identity = payload.get("provisioned_schema_identity")
+        credential_scope_status = payload.get("credential_scope_status")
+        credential_scope_evidence = payload.get("credential_scope_evidence_sha256")
+        writer_authority_status = payload.get("writer_authority_status")
+        writer_authority_evidence = payload.get("writer_authority_evidence_sha256")
+        prospective_start = _parse_canonical_utc(payload.get("prospective_start_utc"))
+
         if not isinstance(identifier, str):
             raise ProspectiveEvidenceAdequacyError("activation: invalid identifier")
         _require_identifier(identifier, "activation.activation_statement")
         if identifier != self.trusted_activation_statement:
             raise ProspectiveEvidenceAdequacyError("activation: identifier mismatch")
-        if not isinstance(start_text, str):
-            raise ProspectiveEvidenceAdequacyError("activation: invalid start day")
-        try:
-            start_day = date.fromisoformat(start_text)
-        except ValueError:
-            raise ProspectiveEvidenceAdequacyError(
-                "activation: invalid start day"
-            ) from None
-        if start_day.isoformat() != start_text:
-            raise ProspectiveEvidenceAdequacyError("activation: invalid start day")
         if not isinstance(commit, str) or not isinstance(tree, str):
             raise ProspectiveEvidenceAdequacyError("activation: invalid lineage")
         _require_sha40(commit, "activation.backend_commit")
         _require_sha40(tree, "activation.backend_tree")
+        if not isinstance(workflow_path, str):
+            raise ProspectiveEvidenceAdequacyError("activation: invalid workflow path")
+        _require_workflow_path(workflow_path)
+        if not isinstance(workflow_blob_sha, str):
+            raise ProspectiveEvidenceAdequacyError("activation: invalid workflow blob")
+        _require_sha40(workflow_blob_sha, "activation.workflow_blob_sha")
+        if not isinstance(workflow_identity, str):
+            raise ProspectiveEvidenceAdequacyError("activation: invalid workflow identity")
+        _require_identifier(workflow_identity, "activation.workflow_identity")
+        if (
+            not isinstance(provider_roles, list)
+            or tuple(provider_roles) != PROVIDER_ROLES
+            or not all(isinstance(role, str) for role in provider_roles)
+        ):
+            raise ProspectiveEvidenceAdequacyError("activation: provider roles mismatch")
         if fingerprint != REQUEST_FINGERPRINT:
             raise ProspectiveEvidenceAdequacyError(
                 "activation: request fingerprint mismatch"
             )
+        if not isinstance(provisioned_schema_identity, str):
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: invalid provisioned schema"
+            )
+        _require_identifier(
+            provisioned_schema_identity,
+            "activation.provisioned_schema_identity",
+        )
+        if credential_scope_status != "AUTHORIZED":
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: credential scope not authorized"
+            )
+        if not isinstance(credential_scope_evidence, str):
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: invalid credential scope evidence"
+            )
+        _require_sha256(
+            credential_scope_evidence,
+            "activation.credential_scope_evidence_sha256",
+        )
+        if writer_authority_status != "AUTHORIZED":
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: writer authority not authorized"
+            )
+        if not isinstance(writer_authority_evidence, str):
+            raise ProspectiveEvidenceAdequacyError(
+                "activation: invalid writer authority evidence"
+            )
+        _require_sha256(
+            writer_authority_evidence,
+            "activation.writer_authority_evidence_sha256",
+        )
 
         object.__setattr__(self, "activation_statement", identifier)
         object.__setattr__(self, "activation_statement_sha256", digest)
-        object.__setattr__(self, "start_utc_day", start_day)
+        object.__setattr__(self, "prospective_start_utc", prospective_start)
+        object.__setattr__(self, "start_utc_day", prospective_start.date())
         object.__setattr__(self, "backend_commit", commit)
         object.__setattr__(self, "backend_tree", tree)
+        object.__setattr__(self, "workflow_path", workflow_path)
+        object.__setattr__(self, "workflow_blob_sha", workflow_blob_sha)
+        object.__setattr__(self, "workflow_identity", workflow_identity)
+        object.__setattr__(self, "provider_roles", PROVIDER_ROLES)
+        object.__setattr__(
+            self,
+            "provisioned_schema_identity",
+            provisioned_schema_identity,
+        )
+        object.__setattr__(self, "credential_scope_status", "AUTHORIZED")
+        object.__setattr__(
+            self,
+            "credential_scope_evidence_sha256",
+            credential_scope_evidence,
+        )
+        object.__setattr__(self, "writer_authority_status", "AUTHORIZED")
+        object.__setattr__(
+            self,
+            "writer_authority_evidence_sha256",
+            writer_authority_evidence,
+        )
 
     @property
     def end_utc_day(self) -> date:
@@ -213,17 +342,16 @@ class SlotAttempt:
             raise ProspectiveEvidenceAdequacyError("attempt: invalid run id")
         if type(self.run_attempt) is not int or self.run_attempt <= 0:
             raise ProspectiveEvidenceAdequacyError("attempt: invalid run attempt")
-        counting_candidate = self.event_name == "schedule" and self.run_attempt == 1
-        if counting_candidate:
+        if self.event_name == "schedule":
             if type(self.slot) is not int or not 0 <= self.slot < TARGET_SLOTS:
                 raise ProspectiveEvidenceAdequacyError("attempt: invalid slot")
             if not isinstance(self.target_at_utc, datetime):
                 raise ProspectiveEvidenceAdequacyError("attempt: missing target clock")
             _require_utc(self.target_at_utc, "attempt.target_at_utc")
-        elif self.slot is not None or self.target_at_utc is not None:
-            raise ProspectiveEvidenceAdequacyError(
-                "attempt: non-counting target mismatch"
-            )
+            if not isinstance(self.cron, str) or self.cron not in SCHEDULE_CRON:
+                raise ProspectiveEvidenceAdequacyError("attempt: invalid cron")
+        elif self.slot is not None or self.target_at_utc is not None or self.cron is not None:
+            raise ProspectiveEvidenceAdequacyError("attempt: non-counting target mismatch")
         _require_utc(self.started_at_utc, "attempt.started_at_utc")
         _require_utc(self.completed_at_utc, "attempt.completed_at_utc")
         _require_utc(self.recorded_at_utc, "attempt.recorded_at_utc")
@@ -280,7 +408,32 @@ def finalization_at(binding: ActivationBinding) -> datetime:
     )
 
 
-def _classify_slot(
+def _timing_is_late(
+    *,
+    target: datetime,
+    attempt: SlotAttempt,
+) -> bool:
+    start_lag = attempt.started_at_utc - target
+    run_duration = attempt.completed_at_utc - attempt.started_at_utc
+    completion_lag = attempt.completed_at_utc - target
+    publication_lag = attempt.recorded_at_utc - attempt.completed_at_utc
+    total_record_lag = attempt.recorded_at_utc - target
+    return (
+        start_lag < timedelta(0)
+        or start_lag > timedelta(minutes=MAX_SCHEDULE_LAG_MINUTES)
+        or run_duration < timedelta(0)
+        or run_duration > timedelta(minutes=MAX_RUN_DURATION_MINUTES)
+        or completion_lag > timedelta(minutes=MAX_COMPLETION_LAG_MINUTES)
+        or publication_lag < timedelta(0)
+        or publication_lag > timedelta(minutes=MAX_RECORD_PUBLICATION_LAG_MINUTES)
+        or total_record_lag
+        > timedelta(
+            minutes=MAX_COMPLETION_LAG_MINUTES + MAX_RECORD_PUBLICATION_LAG_MINUTES
+        )
+    )
+
+
+def _classify_nonlate_slot(
     *,
     binding: ActivationBinding,
     slot: int,
@@ -296,31 +449,6 @@ def _classify_slot(
     attempt = attempts[0]
     if attempt.run_id in duplicate_run_ids:
         return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
-    if attempt.target_at_utc != target or attempt.cron != expected_cron(slot):
-        return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
-    start_lag = attempt.started_at_utc - target
-    if start_lag < timedelta(0):
-        return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
-    if start_lag > timedelta(minutes=MAX_SCHEDULE_LAG_MINUTES):
-        return SlotAssessment(slot, target, "LATE", attempt.run_id)
-    run_duration = attempt.completed_at_utc - attempt.started_at_utc
-    completion_lag = attempt.completed_at_utc - target
-    if run_duration < timedelta(0):
-        return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
-    if run_duration > timedelta(
-        minutes=MAX_RUN_DURATION_MINUTES
-    ) or completion_lag > timedelta(minutes=MAX_COMPLETION_LAG_MINUTES):
-        return SlotAssessment(slot, target, "LATE", attempt.run_id)
-    publication_lag = attempt.recorded_at_utc - attempt.completed_at_utc
-    total_record_lag = attempt.recorded_at_utc - target
-    if publication_lag < timedelta(0):
-        return SlotAssessment(slot, target, "CONTRACT_MISMATCH", attempt.run_id)
-    if publication_lag > timedelta(
-        minutes=MAX_RECORD_PUBLICATION_LAG_MINUTES
-    ) or total_record_lag > timedelta(
-        minutes=MAX_COMPLETION_LAG_MINUTES + MAX_RECORD_PUBLICATION_LAG_MINUTES
-    ):
-        return SlotAssessment(slot, target, "LATE", attempt.run_id)
     if (
         attempt.repository_commit != binding.backend_commit
         or attempt.repository_tree != binding.backend_tree
@@ -342,36 +470,73 @@ def audit_evidence(
     """Classify all 56 registered slots without reading provider values or outcomes."""
 
     _require_utc(audit_clock_utc, "audit_clock_utc")
-    by_slot: dict[int, list[SlotAttempt]] = {slot: [] for slot in range(TARGET_SLOTS)}
-    scheduled_run_counts: dict[int, int] = {}
+    nonlate_by_slot: dict[int, list[SlotAttempt]] = {
+        slot: [] for slot in range(TARGET_SLOTS)
+    }
+    late_by_slot: dict[int, list[SlotAttempt]] = {
+        slot: [] for slot in range(TARGET_SLOTS)
+    }
     ignored_nonscheduled = 0
     ignored_scheduled_reruns = 0
     for attempt in attempts:
         if attempt.event_name != "schedule":
             ignored_nonscheduled += 1
             continue
+        if attempt.slot is None or attempt.target_at_utc is None or attempt.cron is None:
+            raise ProspectiveEvidenceAdequacyError("attempt: missing target provenance")
+        expected = expected_target(binding, attempt.slot)
+        if attempt.target_at_utc != expected or attempt.cron != expected_cron(attempt.slot):
+            raise ProspectiveEvidenceAdequacyError(
+                "attempt: contradictory target provenance"
+            )
         if attempt.run_attempt != 1:
             ignored_scheduled_reruns += 1
             continue
-        if attempt.slot is None:
-            raise ProspectiveEvidenceAdequacyError("attempt: missing slot")
-        by_slot[attempt.slot].append(attempt)
-        scheduled_run_counts[attempt.run_id] = (
-            scheduled_run_counts.get(attempt.run_id, 0) + 1
-        )
+        if _timing_is_late(target=expected, attempt=attempt):
+            late_by_slot[attempt.slot].append(attempt)
+        else:
+            nonlate_by_slot[attempt.slot].append(attempt)
+
+    scheduled_run_counts: dict[int, int] = {}
+    for attempts_for_slot in nonlate_by_slot.values():
+        for attempt in attempts_for_slot:
+            scheduled_run_counts[attempt.run_id] = (
+                scheduled_run_counts.get(attempt.run_id, 0) + 1
+            )
     duplicate_run_ids = frozenset(
         run_id for run_id, count in scheduled_run_counts.items() if count > 1
     )
 
-    assessments = tuple(
-        _classify_slot(
-            binding=binding,
-            slot=slot,
-            attempts=tuple(by_slot[slot]),
-            duplicate_run_ids=duplicate_run_ids,
-        )
-        for slot in range(TARGET_SLOTS)
-    )
+    assessments_list: list[SlotAssessment] = []
+    late_first_attempt_records = 0
+    for slot in range(TARGET_SLOTS):
+        nonlate = tuple(nonlate_by_slot[slot])
+        late = tuple(late_by_slot[slot])
+        late_first_attempt_records += len(late)
+        if nonlate:
+            assessments_list.append(
+                _classify_nonlate_slot(
+                    binding=binding,
+                    slot=slot,
+                    attempts=nonlate,
+                    duplicate_run_ids=duplicate_run_ids,
+                )
+            )
+        elif late:
+            assessments_list.append(
+                SlotAssessment(
+                    slot,
+                    expected_target(binding, slot),
+                    "LATE",
+                    late[0].run_id if len(late) == 1 else None,
+                )
+            )
+        else:
+            assessments_list.append(
+                SlotAssessment(slot, expected_target(binding, slot), "MISSING", None)
+            )
+    assessments = tuple(assessments_list)
+
     counts: dict[str, int] = {
         status: sum(item.status == status for item in assessments)
         for status in (
@@ -392,7 +557,7 @@ def audit_evidence(
     )
     finalize_at = finalization_at(binding)
     final_status: FinalStatus
-    if audit_clock_utc < finalize_at:
+    if audit_clock_utc <= finalize_at:
         final_status = "PENDING_INTERVAL"
     elif (
         accepted >= MIN_ACCEPTED_SLOTS
@@ -411,14 +576,25 @@ def audit_evidence(
         "adequacy_preregistration_commit": ADEQUACY_PREREGISTRATION,
         "review_amendment_commit": REVIEW_AMENDMENT,
         "review_amendment_v2_commit": REVIEW_AMENDMENT_V2,
+        "review_amendment_v3_commit": REVIEW_AMENDMENT_V3,
         "provider_rights_status": PROVIDER_RIGHTS_STATUS,
         "request_fingerprint_sha256": REQUEST_FINGERPRINT,
         "activation_statement": binding.activation_statement,
         "activation_statement_sha256": binding.activation_statement_sha256,
+        "prospective_start_utc": _timestamp(binding.prospective_start_utc),
         "start_utc_day": binding.start_utc_day.isoformat(),
         "end_utc_day": binding.end_utc_day.isoformat(),
         "backend_commit": binding.backend_commit,
         "backend_tree": binding.backend_tree,
+        "workflow_path": binding.workflow_path,
+        "workflow_blob_sha": binding.workflow_blob_sha,
+        "workflow_identity": binding.workflow_identity,
+        "provider_roles": list(binding.provider_roles),
+        "provisioned_schema_identity": binding.provisioned_schema_identity,
+        "credential_scope_status": binding.credential_scope_status,
+        "credential_scope_evidence_sha256": binding.credential_scope_evidence_sha256,
+        "writer_authority_status": binding.writer_authority_status,
+        "writer_authority_evidence_sha256": binding.writer_authority_evidence_sha256,
         "target_slots": TARGET_SLOTS,
         "minimum_accepted_slots": MIN_ACCEPTED_SLOTS,
         "minimum_first_day_accepted_slots": MIN_FIRST_DAY_ACCEPTED_SLOTS,
@@ -433,6 +609,7 @@ def audit_evidence(
         "audit_clock_utc": _timestamp(audit_clock_utc),
         "ignored_nonscheduled_attempts": ignored_nonscheduled,
         "ignored_scheduled_reruns": ignored_scheduled_reruns,
+        "late_first_attempt_records": late_first_attempt_records,
         "counts": counts,
         "final_status": final_status,
         "slots": [item.to_dict() for item in assessments],
