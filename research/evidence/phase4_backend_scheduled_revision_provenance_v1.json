@@ -1,0 +1,165 @@
+{
+  "schema_version": "dtrm.phase4.backend_scheduled_revision_provenance.v1",
+  "source_repository": "tech-com-UA00001/theresistance-back",
+  "source_kind": "independent_github_git_object_read",
+  "retrieved_utc": "2026-09-15T10:46:00Z",
+  "merge_commit": {
+    "sha": "bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "tree_sha": "c090c3cb41165ee513de812dec562f497407df62",
+    "parents": [
+      "974a7a744642cc8268ca5972df4ef208f629ed2b",
+      "ce04527c9a36c9055c9180a534dda0d91ba69952"
+    ],
+    "github_signature_verified": true
+  },
+  "tree_path_evidence": {
+    "root_tree_sha": "c090c3cb41165ee513de812dec562f497407df62",
+    "dot_github_tree_sha": "ac87a39269d0fd91c6054dbd1564f2e736fc3d82",
+    "workflows_tree_sha": "da6273f747db49470ba3b255eed8ec54818ea4cd",
+    "workflow_path": ".github/workflows/phase4_fmp_news_temporal_capture_v1.yml",
+    "workflow_mode": "100644",
+    "workflow_blob_sha": "0ea9b53b300ea8bbd8f14d3d309cf1d73ecc6c22",
+    "workflow_size_bytes": 5763
+  },
+  "workflow_observations": {
+    "name": "Phase IV FMP temporal capture v1",
+    "cron": [
+      "15 0 * * *",
+      "15 6 * * *",
+      "15 12 * * *",
+      "15 18 * * *"
+    ],
+    "scheduled_job_arm_expression": "github.event_name == 'schedule' && vars.PHASE4_PROSPECTIVE_CAPTURE_ARMED == 'true'",
+    "workflow_identity_argument": "phase4_fmp_news_temporal_capture_v1",
+    "activation_preflight_before_provider_credential": true,
+    "provider_credential_step_scoped": true,
+    "provider_credential_present_in_checkout_setup_install_or_preflight": false,
+    "rerun_attempt_forwarded_to_fail_closed_runner": true
+  },
+  "runner_path_evidence": {
+    "runner_path": "src/theresistance_backend/interfaces/run_phase4_temporal_capture.py",
+    "runner_mode": "100644",
+    "runner_blob_sha": "80353d591a50b570b4923a2f886c939d4c3f567c",
+    "runner_size_bytes": 13670,
+    "slot_domain_path": "src/theresistance_backend/domains/markets/prospective_temporal_slot.py",
+    "slot_domain_mode": "100644",
+    "slot_domain_blob_sha": "5f04843e0f611dccee7121746780e7f74a21b9f2",
+    "slot_domain_size_bytes": 16130,
+    "dormant_slot_domain_blob_sha": "5f04843e0f611dccee7121746780e7f74a21b9f2"
+  },
+  "runner_observations": {
+    "activation_binding_verified_before_marker_or_provider_access": true,
+    "repository_commit_tree_workflow_path_blob_identity_checked_before_target_derivation": true,
+    "run_attempt_requires_positive_integer": true,
+    "rerun_attempts_fail_closed_error_code": "RERUN_TARGET_PROVENANCE_UNAVAILABLE",
+    "rerun_failure_occurs_before_scheduled_slot_derivation": true,
+    "outside_interval_error_code": "OUTSIDE_ACTIVATION_INTERVAL",
+    "outside_interval_failure_occurs_before_marker_or_provider_access": true,
+    "activation_verified_marker_written_only_after_successful_preflight": true,
+    "provider_credential_read_only_after_successful_preflight_and_marker": true,
+    "preflight_failure_reports_provider_access_performed_false": true,
+    "preflight_only_never_reads_provider_credential": true,
+    "runner_success_counting_eligible_requires_run_attempt_1": true
+  },
+  "slot_domain_observations": {
+    "target_days": 14,
+    "target_slots": 56,
+    "target_slot_min": 0,
+    "target_slot_max": 55,
+    "cron": [
+      "15 0 * * *",
+      "15 6 * * *",
+      "15 12 * * *",
+      "15 18 * * *"
+    ],
+    "scheduled_slot_derives_target_from_runner_started_at_utc": true,
+    "scheduled_slot_rejects_day_offset_outside_0_through_13": true,
+    "scheduled_slot_requires_exact_expected_target_match": true,
+    "attempt1_slot_record_revalidates_runner_clock_provenance": true,
+    "scheduled_counting_eligible_requires_run_attempt_1": true,
+    "request_fingerprint_derived_from_probe_plan": true,
+    "provider_roles": [
+      "fmp_articles",
+      "general_latest",
+      "stock_latest"
+    ]
+  },
+  "request_semantics_evidence": {
+    "dormant_commit": "974a7a744642cc8268ca5972df4ef208f629ed2b",
+    "merged_commit": "bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "request_construction_unchanged_from_dormant": true,
+    "blob_equality": [
+      {
+        "path": "src/theresistance_backend/domains/markets/prospective_news.py",
+        "dormant_blob_sha": "aed46c420059642ff1fa4558c07b3532f4adf911",
+        "merged_blob_sha": "aed46c420059642ff1fa4558c07b3532f4adf911",
+        "equal": true
+      },
+      {
+        "path": "src/theresistance_backend/domains/markets/prospective_news_probe.py",
+        "dormant_blob_sha": "db8e2db900eddd49c946b2de62bdd6c1350214c8",
+        "merged_blob_sha": "db8e2db900eddd49c946b2de62bdd6c1350214c8",
+        "equal": true
+      },
+      {
+        "path": "src/theresistance_backend/adapters/fmp_news_probe.py",
+        "dormant_blob_sha": "7b0c25262d45471b3e03164d1d760f1517cbfec8",
+        "merged_blob_sha": "7b0c25262d45471b3e03164d1d760f1517cbfec8",
+        "equal": true
+      },
+      {
+        "path": "src/theresistance_backend/application/capture_fmp_news_probe.py",
+        "dormant_blob_sha": "a9170d6f8a5ae90f9060a20ab0d10f8c6b5b3456",
+        "merged_blob_sha": "a9170d6f8a5ae90f9060a20ab0d10f8c6b5b3456",
+        "equal": true
+      }
+    ],
+    "provider_role_order": [
+      "fmp_articles",
+      "general_latest",
+      "stock_latest"
+    ],
+    "probe_observations_per_role": [
+      {"label": "page0_a", "page": 0, "limit": 20},
+      {"label": "page1", "page": 1, "limit": 20},
+      {"label": "page0_b", "page": 0, "limit": 20}
+    ],
+    "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
+    "adapter_role_endpoint_mapping": {
+      "fmp_articles": "https://financialmodelingprep.com/stable/fmp-articles",
+      "general_latest": "https://financialmodelingprep.com/stable/news/general-latest",
+      "stock_latest": "https://financialmodelingprep.com/stable/news/stock-latest"
+    },
+    "adapter_query_fields": [
+      "page",
+      "limit",
+      "apikey"
+    ],
+    "capture_application_iterates_exact_probe_plan": true
+  },
+  "source_endpoints": [
+    "git/commits/bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "git/trees/c090c3cb41165ee513de812dec562f497407df62",
+    "git/trees/ac87a39269d0fd91c6054dbd1564f2e736fc3d82",
+    "git/trees/da6273f747db49470ba3b255eed8ec54818ea4cd",
+    "git/blobs/0ea9b53b300ea8bbd8f14d3d309cf1d73ecc6c22",
+    "git/blobs/80353d591a50b570b4923a2f886c939d4c3f567c",
+    "git/blobs/5f04843e0f611dccee7121746780e7f74a21b9f2",
+    "git/blobs/aed46c420059642ff1fa4558c07b3532f4adf911",
+    "git/blobs/db8e2db900eddd49c946b2de62bdd6c1350214c8",
+    "git/blobs/7b0c25262d45471b3e03164d1d760f1517cbfec8",
+    "git/blobs/a9170d6f8a5ae90f9060a20ab0d10f8c6b5b3456",
+    "contents/.github/workflows/phase4_fmp_news_temporal_capture_v1.yml?ref=bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "contents/src/theresistance_backend/interfaces/run_phase4_temporal_capture.py?ref=bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "contents/src/theresistance_backend/domains/markets/prospective_temporal_slot.py?ref=bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "contents/src/theresistance_backend/domains/markets/prospective_news.py?ref=bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "contents/src/theresistance_backend/domains/markets/prospective_news.py?ref=974a7a744642cc8268ca5972df4ef208f629ed2b",
+    "contents/src/theresistance_backend/domains/markets/prospective_news_probe.py?ref=bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "contents/src/theresistance_backend/domains/markets/prospective_news_probe.py?ref=974a7a744642cc8268ca5972df4ef208f629ed2b",
+    "contents/src/theresistance_backend/adapters/fmp_news_probe.py?ref=bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "contents/src/theresistance_backend/adapters/fmp_news_probe.py?ref=974a7a744642cc8268ca5972df4ef208f629ed2b",
+    "contents/src/theresistance_backend/application/capture_fmp_news_probe.py?ref=bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "contents/src/theresistance_backend/application/capture_fmp_news_probe.py?ref=974a7a744642cc8268ca5972df4ef208f629ed2b"
+  ],
+  "activation_authority": false
+}
