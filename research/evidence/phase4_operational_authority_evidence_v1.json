@@ -1,0 +1,77 @@
+{
+  "backend_runtime": {
+    "commit": "bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "provider_roles": [
+      "fmp_articles",
+      "general_latest",
+      "stock_latest"
+    ],
+    "repository": "tech-com-UA00001/theresistance-back",
+    "request_fingerprint_sha256": "932aef0ac257a9622562d2255a9c3c453ce43ab3f897bb3f0a6166192fcee9fd",
+    "slot_domain_blob_sha": "5f04843e0f611dccee7121746780e7f74a21b9f2",
+    "slot_schema_identity": "dtrm.phase4.prospective_temporal_slot.v1",
+    "tree": "c090c3cb41165ee513de812dec562f497407df62",
+    "workflow_blob_sha": "0ea9b53b300ea8bbd8f14d3d309cf1d73ecc6c22",
+    "workflow_identity": "phase4_fmp_news_temporal_capture_v1",
+    "workflow_path": ".github/workflows/phase4_fmp_news_temporal_capture_v1.yml"
+  },
+  "credential_scope_evidence": {
+    "checkout_setup_install_exposed_to_provider_credential": false,
+    "credential_name": "FMP_API_KEY",
+    "credential_value_observed": false,
+    "credential_value_persisted": false,
+    "credential_value_present_in_repository_evidence": false,
+    "diagnostic_capture_step_exposed_to_provider_credential": true,
+    "github_logs_masked_provider_credential": true,
+    "network_probe_completed_with_registered_roles": true,
+    "scheduled_activation_preflight_exposed_to_provider_credential": false,
+    "scheduled_capture_step_exposed_to_provider_credential": true,
+    "scope_authorization_basis": "exact_workflow_step_scope_and_successful_masked_diagnostic"
+  },
+  "diagnostic_run": {
+    "artifact_digest_sha256": "f42fc8bc1d23bf1a42b312b577dead856605fedc2dfc7c43b69edecca1f6c16e",
+    "artifact_id": 10409798325,
+    "artifact_name": "phase4-fmp-news-temporal-diagnostic-35001927608",
+    "artifact_retention_days": 90,
+    "artifact_size_bytes": 117868,
+    "diagnostic_conclusion": "success",
+    "event_name": "workflow_dispatch",
+    "github_job_id": 104492136726,
+    "github_run_id": 35001927608,
+    "head_branch": "main",
+    "head_sha": "bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "provider_probe_status": "succeeded",
+    "scheduled_capture_conclusion": "skipped",
+    "temporal_index_periodic_capture_activation_permitted": false,
+    "temporal_index_status": "succeeded"
+  },
+  "downstream_permissions": {
+    "confirmatory_history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "graph": "phase4_operational_authority_evidence_v1",
+  "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+  "schema_version": "dtrm.phase4.operational_authority_evidence.v1",
+  "scientific_parent": {
+    "commit": "28b4e787c7b208d810245deda1b37d7881ab50e9",
+    "tree": "c90cd63641efc2606f6ede0a6d2fb6274b120830"
+  },
+  "writer_authority_evidence": {
+    "counting_writer_boundary": "github_actions_private_artifact",
+    "diagnostic_artifact_write_succeeded": true,
+    "diagnostic_run_is_counting_eligible": false,
+    "legacy_news_namespace_mutation_performed": false,
+    "mongo_write_performed": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "scheduled_capture_skipped_on_diagnostic_run": true,
+    "scheduled_writer_requires_arm_exact_true": true,
+    "scheduled_writer_requires_exact_activation_preflight": true,
+    "scheduled_writer_requires_schedule_event": true,
+    "workflow_github_token_contents_permission": "read",
+    "writer_authorization_basis": "exact_workflow_private_artifact_sink_and_noncounting_diagnostic"
+  }
+}

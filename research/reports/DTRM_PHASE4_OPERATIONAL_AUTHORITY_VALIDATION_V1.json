@@ -1,0 +1,58 @@
+{
+  "authority_boundary": {
+    "human_activation_authorized": false,
+    "periodic_capture_activation_permitted": false,
+    "prospective_start_utc": null,
+    "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+    "scientific_permissions_all_false": true
+  },
+  "implementation_head": "4fafb102ceaa9f9e50ec9987a68bf826f2d21a4d",
+  "pr_number": 25,
+  "quality": {
+    "disposable_wheel_build": "PASS",
+    "mypy_strict": "PASS",
+    "mypy_source_files": 40,
+    "phase4_gate_pytest_passed": 1112,
+    "phase4_gate_pytest_skipped": 6,
+    "ruff_scoped": "PASS",
+    "synthetic_mongo": "PASS",
+    "tests_workflow_passed": 1098,
+    "tests_workflow_skipped": 20
+  },
+  "schema_version": "dtrm.phase4.operational_authority_validation.v1",
+  "scientific_parent": {
+    "commit": "28b4e787c7b208d810245deda1b37d7881ab50e9",
+    "tree": "c90cd63641efc2606f6ede0a6d2fb6274b120830"
+  },
+  "source_preservation": {
+    "after_validation": "PASS_SOURCE_PRESERVATION",
+    "before_validation": "PASS_SOURCE_PRESERVATION",
+    "inherited_commit": "a853d5d3f2d6c93a3483a0126ab3475b02960bfc",
+    "inherited_tree": "fae65d7457225dff1601eaf43fb0ef2b2d4b2c19",
+    "stage0_contract_sha256": "1ec55a67aaa89289e7f167564fb9788fde136f6decc8f5dbfebc54e7d6009f03",
+    "verified_inherited_files": 157
+  },
+  "status": "PASS_OPERATIONAL_AUTHORITY_EVIDENCE_VALIDATION",
+  "workflow_runs": [
+    {
+      "conclusion": "success",
+      "name": "Phase IV temporal evidence v1 gates",
+      "run_id": 35003014458
+    },
+    {
+      "conclusion": "success",
+      "name": "Phase IV evidence adequacy v1 gates",
+      "run_id": 35003014461
+    },
+    {
+      "conclusion": "success",
+      "name": "Tests",
+      "run_id": 35003014470
+    },
+    {
+      "conclusion": "success",
+      "name": "Phase IV gates",
+      "run_id": 35003014466
+    }
+  ]
+}
