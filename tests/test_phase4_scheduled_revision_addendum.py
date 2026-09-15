@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -29,11 +30,37 @@ STATEMENT = (
 )
 PROVENANCE = ROOT / "research/evidence/phase4_backend_scheduled_revision_provenance_v1.json"
 EXPECTED_SHA256 = "98e245830a08b79423fc95c67033fa47aa066e00beaa1d4bf47f110e0ca93ac7"
+RUNNER_BLOB = "80353d591a50b570b4923a2f886c939d4c3f567c"
+SLOT_DOMAIN_BLOB = "5f04843e0f611dccee7121746780e7f74a21b9f2"
+REQUEST_CHAIN_BLOBS = {
+    "src/theresistance_backend/domains/markets/prospective_news.py": (
+        "aed46c420059642ff1fa4558c07b3532f4adf911"
+    ),
+    "src/theresistance_backend/domains/markets/prospective_news_probe.py": (
+        "db8e2db900eddd49c946b2de62bdd6c1350214c8"
+    ),
+    "src/theresistance_backend/adapters/fmp_news_probe.py": (
+        "7b0c25262d45471b3e03164d1d760f1517cbfec8"
+    ),
+    "src/theresistance_backend/application/capture_fmp_news_probe.py": (
+        "a9170d6f8a5ae90f9060a20ab0d10f8c6b5b3456"
+    ),
+}
 
 
 def _bytes(payload: object) -> bytes:
     return (
         json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n"
+    ).encode("utf-8")
+
+
+def _canonical_bytes(payload: object) -> bytes:
+    return json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
     ).encode("utf-8")
 
 
@@ -75,6 +102,101 @@ def test_independent_backend_git_object_evidence_gates_registered_revision() -> 
     assert credential_before_preflight is False
     assert observed["rerun_attempt_forwarded_to_fail_closed_runner"] is True
     assert evidence["activation_authority"] is False
+
+
+def test_independent_runner_objects_gate_fail_closed_runtime_semantics() -> None:
+    evidence = json.loads(PROVENANCE.read_text())
+    path = evidence["runner_path_evidence"]
+    runner = evidence["runner_observations"]
+    slot = evidence["slot_domain_observations"]
+
+    assert path["runner_path"] == (
+        "src/theresistance_backend/interfaces/run_phase4_temporal_capture.py"
+    )
+    assert path["runner_mode"] == "100644"
+    assert path["runner_blob_sha"] == RUNNER_BLOB
+    assert path["runner_size_bytes"] == 13670
+    assert path["slot_domain_path"] == (
+        "src/theresistance_backend/domains/markets/prospective_temporal_slot.py"
+    )
+    assert path["slot_domain_mode"] == "100644"
+    assert path["slot_domain_blob_sha"] == SLOT_DOMAIN_BLOB
+    assert path["slot_domain_size_bytes"] == 16130
+    assert path["dormant_slot_domain_blob_sha"] == SLOT_DOMAIN_BLOB
+
+    assert runner["activation_binding_verified_before_marker_or_provider_access"] is True
+    assert (
+        runner[
+            "repository_commit_tree_workflow_path_blob_identity_checked_before_target_derivation"
+        ]
+        is True
+    )
+    assert runner["run_attempt_requires_positive_integer"] is True
+    assert (
+        runner["rerun_attempts_fail_closed_error_code"]
+        == "RERUN_TARGET_PROVENANCE_UNAVAILABLE"
+    )
+    assert runner["rerun_failure_occurs_before_scheduled_slot_derivation"] is True
+    assert runner["outside_interval_error_code"] == "OUTSIDE_ACTIVATION_INTERVAL"
+    assert runner["outside_interval_failure_occurs_before_marker_or_provider_access"] is True
+    assert runner["activation_verified_marker_written_only_after_successful_preflight"] is True
+    assert runner["provider_credential_read_only_after_successful_preflight_and_marker"] is True
+    assert runner["preflight_failure_reports_provider_access_performed_false"] is True
+    assert runner["preflight_only_never_reads_provider_credential"] is True
+    assert runner["runner_success_counting_eligible_requires_run_attempt_1"] is True
+
+    assert slot["target_days"] == 14
+    assert slot["target_slots"] == 56
+    assert slot["target_slot_min"] == TARGET_SLOT_MIN == 0
+    assert slot["target_slot_max"] == TARGET_SLOT_MAX == 55
+    assert slot["cron"] == list(CRON)
+    assert slot["scheduled_slot_derives_target_from_runner_started_at_utc"] is True
+    assert slot["scheduled_slot_rejects_day_offset_outside_0_through_13"] is True
+    assert slot["scheduled_slot_requires_exact_expected_target_match"] is True
+    assert slot["attempt1_slot_record_revalidates_runner_clock_provenance"] is True
+    assert slot["scheduled_counting_eligible_requires_run_attempt_1"] is True
+    assert slot["request_fingerprint_derived_from_probe_plan"] is True
+    assert slot["provider_roles"] == list(PROVIDER_ROLES)
+
+
+def test_independent_request_chain_preserves_dormant_provider_semantics() -> None:
+    evidence = json.loads(PROVENANCE.read_text())
+    request = evidence["request_semantics_evidence"]
+
+    assert request["dormant_commit"] == BACKEND_DORMANT_ANCESTOR
+    assert request["merged_commit"] == BACKEND_MERGE_COMMIT
+    assert request["request_construction_unchanged_from_dormant"] is True
+
+    observed = {item["path"]: item for item in request["blob_equality"]}
+    assert set(observed) == set(REQUEST_CHAIN_BLOBS)
+    for path, expected_blob in REQUEST_CHAIN_BLOBS.items():
+        item = observed[path]
+        assert item["dormant_blob_sha"] == expected_blob
+        assert item["merged_blob_sha"] == expected_blob
+        assert item["equal"] is True
+
+    assert request["provider_role_order"] == list(PROVIDER_ROLES)
+    per_role = request["probe_observations_per_role"]
+    assert per_role == [
+        {"label": "page0_a", "page": 0, "limit": 20},
+        {"label": "page1", "page": 1, "limit": 20},
+        {"label": "page0_b", "page": 0, "limit": 20},
+    ]
+    plan = [
+        {"role": role, **observation}
+        for role in request["provider_role_order"]
+        for observation in per_role
+    ]
+    independently_recomputed = hashlib.sha256(_canonical_bytes(plan)).hexdigest()
+    assert independently_recomputed == REQUEST_FINGERPRINT
+    assert request["request_fingerprint_sha256"] == REQUEST_FINGERPRINT
+    assert request["adapter_role_endpoint_mapping"] == {
+        "fmp_articles": "https://financialmodelingprep.com/stable/fmp-articles",
+        "general_latest": "https://financialmodelingprep.com/stable/news/general-latest",
+        "stock_latest": "https://financialmodelingprep.com/stable/news/stock-latest",
+    }
+    assert request["adapter_query_fields"] == ["page", "limit", "apikey"]
+    assert request["capture_application_iterates_exact_probe_plan"] is True
 
 
 def test_exact_merged_backend_revision_and_workflow_are_bound() -> None:
