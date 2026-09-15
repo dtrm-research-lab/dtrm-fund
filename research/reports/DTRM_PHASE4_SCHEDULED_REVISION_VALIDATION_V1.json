@@ -1,0 +1,61 @@
+{
+  "schema_version": "dtrm.phase4.scheduled_revision_validation.v1",
+  "validated_feature_head": "c99188e5d4bcf7859cd253bb3d8ff03a13fb644f",
+  "pull_request": 24,
+  "validation_scope": "scheduled_revision_addendum_v1",
+  "remote_ci": {
+    "tests": {
+      "run_id": 34963178260,
+      "head_sha": "c99188e5d4bcf7859cd253bb3d8ff03a13fb644f",
+      "conclusion": "success"
+    },
+    "phase4_gates": {
+      "run_id": 34963178258,
+      "head_sha": "c99188e5d4bcf7859cd253bb3d8ff03a13fb644f",
+      "conclusion": "success"
+    },
+    "temporal_evidence_gates": {
+      "run_id": 34963178200,
+      "head_sha": "c99188e5d4bcf7859cd253bb3d8ff03a13fb644f",
+      "conclusion": "success"
+    },
+    "evidence_adequacy_gates": {
+      "run_id": 34963178082,
+      "head_sha": "c99188e5d4bcf7859cd253bb3d8ff03a13fb644f",
+      "conclusion": "success"
+    }
+  },
+  "quality_evidence": {
+    "source_preservation_before": "PASS_SOURCE_PRESERVATION",
+    "source_preservation_after": "PASS_SOURCE_PRESERVATION",
+    "verified_inherited_files": 157,
+    "scoped_ruff": "PASS",
+    "strict_mypy": "PASS",
+    "strict_mypy_source_files": 40,
+    "deterministic_and_inherited_pytest": {
+      "passed": 1108,
+      "skipped": 6
+    },
+    "synthetic_phase4_evidence_reproductions": "PASS",
+    "collector_lineage_findings": 12,
+    "disposable_wheel_build": "PASS",
+    "synthetic_mongo": "PASS"
+  },
+  "scientific_boundary": {
+    "prospective_start_bound": false,
+    "periodic_capture_activation_permitted": false,
+    "activation_statement_provisioned": false,
+    "credential_or_writer_authority_claimed": false,
+    "provider_access_performed_by_this_validation": false,
+    "outcome_access_permitted": false,
+    "mm1_execution_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "activation_authority": false
+  },
+  "evidence_basis": [
+    "GitHub Actions run 34963178258 on validated_feature_head",
+    "GitHub Actions run 34963178260 on validated_feature_head",
+    "GitHub Actions run 34963178200 on validated_feature_head",
+    "GitHub Actions run 34963178082 on validated_feature_head"
+  ]
+}
