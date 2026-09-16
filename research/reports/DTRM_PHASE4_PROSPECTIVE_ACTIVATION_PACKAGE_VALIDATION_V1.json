@@ -1,0 +1,67 @@
+{
+  "activation_package": {
+    "activation_statement_id": "phase4-prospective-capture-2026-09-18-v1",
+    "activation_statement_sha256": "540a46f4b80e73cb776596936fd2d30fdf7d74d8a64d2c6ed2bd565deb8ed2b1",
+    "first_slot_utc": "2026-09-18T00:15:00Z",
+    "prospective_start_utc": "2026-09-18T00:00:00Z",
+    "status": "PREPARED_NOT_PROVISIONED_NOT_ARMED"
+  },
+  "ci_evidence": {
+    "phase4_evidence_adequacy_v1_gates": {
+      "conclusion": "success",
+      "run_id": 35064689005
+    },
+    "phase4_gates": {
+      "conclusion": "success",
+      "run_id": 35064688990
+    },
+    "phase4_temporal_evidence_v1_gates": {
+      "conclusion": "success",
+      "run_id": 35064689050
+    },
+    "tests": {
+      "conclusion": "success",
+      "run_id": 35064689074
+    }
+  },
+  "downstream_permissions": {
+    "confirmatory_history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "graph": "phase4_prospective_activation_package_validation_v1",
+  "operational_boundary": {
+    "arm_variable_set_to_true": false,
+    "campaign_started": false,
+    "human_activation_authorized": false,
+    "operational_activation_effective": false,
+    "provider_access_performed_by_this_validation": false,
+    "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+    "statement_prepared": true,
+    "statement_provisioned": false
+  },
+  "quality_evidence": {
+    "collector_lineage_findings": 12,
+    "disposable_wheel_build": "PASS",
+    "inherited_source_files": 157,
+    "mypy_source_files": 41,
+    "mypy_strict": "PASS",
+    "pytest_passed": 1116,
+    "pytest_skipped": 6,
+    "ruff_scoped": "PASS",
+    "source_preservation_after": "PASS",
+    "source_preservation_before": "PASS",
+    "synthetic_mongo": "PASS",
+    "synthetic_phase4_evidence_reproductions": "PASS"
+  },
+  "schema_version": "dtrm.phase4.prospective_activation_package_validation.v1",
+  "scope": "PR-26-PREPARED-ACTIVATION-PACKAGE",
+  "validated_implementation": {
+    "commit": "eadbbb2b64eeb158c9b5f8bceb3ae44b385753de",
+    "tree": "01b7d2742514e8bd14d954d9e40a860a52ede3e9"
+  },
+  "validation_status": "PASS_PREPARED_ACTIVATION_PACKAGE_VALIDATION"
+}
