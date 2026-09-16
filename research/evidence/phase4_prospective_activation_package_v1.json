@@ -1,0 +1,45 @@
+{
+  "activation_statement": {
+    "id": "phase4-prospective-capture-2026-09-18-v1",
+    "path": "research/contracts/DTRM_PHASE4_PROSPECTIVE_ACTIVATION_STATEMENT_V2.json",
+    "schema_version": "dtrm.phase4.prospective_activation_statement.v2",
+    "sha256": "540a46f4b80e73cb776596936fd2d30fdf7d74d8a64d2c6ed2bd565deb8ed2b1"
+  },
+  "campaign_window": {
+    "backfill_permitted": false,
+    "counting_attempt": 1,
+    "earliest_finalization_utc": "2026-10-01T22:15:00Z",
+    "early_stopping_permitted": false,
+    "first_day_acceptance_required": true,
+    "first_slot_utc": "2026-09-18T00:15:00Z",
+    "last_day_acceptance_required": true,
+    "last_slot_utc": "2026-10-01T18:15:00Z",
+    "minimum_accepted_slots": 48,
+    "prospective_start_utc": "2026-09-18T00:00:00Z",
+    "target_days": 14,
+    "target_slots": 56
+  },
+  "downstream_permissions": {
+    "confirmatory_history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "graph": "phase4_prospective_activation_package_v1",
+  "operational_state": {
+    "arm_variable_set_to_true": false,
+    "campaign_started": false,
+    "human_activation_authorized": false,
+    "operational_activation_effective": false,
+    "statement_prepared": true,
+    "statement_provisioned": false
+  },
+  "schema_version": "dtrm.phase4.prospective_activation_package.v1",
+  "scientific_parent": {
+    "commit": "dcd60c90d866cb43683934f9a174c057aea70717",
+    "tree": "a95ac8b96bfac8736ae7ea70ae5407c5fe8dedf6"
+  },
+  "status": "PREPARED_NOT_PROVISIONED_NOT_ARMED"
+}
