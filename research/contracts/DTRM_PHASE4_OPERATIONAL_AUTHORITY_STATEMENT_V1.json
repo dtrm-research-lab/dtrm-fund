@@ -1,0 +1,44 @@
+{
+  "activation_candidate": {
+    "credential_scope_evidence_sha256": "e1203bb38fd1c03448d5d622bceb791f3a1bc5ad325fa89e566889c6b37cbdf3",
+    "credential_scope_status": "AUTHORIZED",
+    "human_activation_authorized": false,
+    "periodic_capture_activation_permitted": false,
+    "prospective_start_utc": null,
+    "provisioned_schema_identity": "dtrm.phase4.prospective_temporal_slot.v1",
+    "schema_version": "dtrm.phase4.prospective_activation_statement.v2",
+    "writer_authority_evidence_sha256": "f4b9d64046b6529a94313734d77f8766320c8a00b5047d0968ab0d2bdfa21390",
+    "writer_authority_status": "AUTHORIZED"
+  },
+  "backend_runtime": {
+    "commit": "bf844932f8bb3e6773c329a45135fd754c6d8342",
+    "repository": "tech-com-UA00001/theresistance-back",
+    "tree": "c090c3cb41165ee513de812dec562f497407df62",
+    "workflow_blob_sha": "0ea9b53b300ea8bbd8f14d3d309cf1d73ecc6c22",
+    "workflow_identity": "phase4_fmp_news_temporal_capture_v1",
+    "workflow_path": ".github/workflows/phase4_fmp_news_temporal_capture_v1.yml"
+  },
+  "diagnostic_run": {
+    "artifact_digest_sha256": "f42fc8bc1d23bf1a42b312b577dead856605fedc2dfc7c43b69edecca1f6c16e",
+    "artifact_id": 10409798325,
+    "diagnostic_conclusion": "success",
+    "github_run_id": 35001927608,
+    "scheduled_capture_conclusion": "skipped"
+  },
+  "downstream_permissions": {
+    "confirmatory_history_construction_permitted": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "phase3_policy_mutation_permitted": false,
+    "public_raw_provider_data_redistribution_permitted": false,
+    "temporal_state_outcome_fitting_permitted": false
+  },
+  "graph": "phase4_operational_authority_binding_v1",
+  "provider_rights_status": "DEFERRED_UNRESOLVED_PENDING_VALUE_ASSESSMENT",
+  "readiness_status": "AUTHORIZED_AUTHORITY_EVIDENCE_START_UNBOUND",
+  "schema_version": "dtrm.phase4.operational_authority_binding.v1",
+  "scientific_parent": {
+    "commit": "28b4e787c7b208d810245deda1b37d7881ab50e9",
+    "tree": "c90cd63641efc2606f6ede0a6d2fb6274b120830"
+  }
+}
