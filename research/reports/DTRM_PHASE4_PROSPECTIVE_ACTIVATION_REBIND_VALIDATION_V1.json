@@ -1,0 +1,65 @@
+{
+  "graph": "phase4_prospective_activation_rebind_validation_v1",
+  "observed_checks": {
+    "collector_lineage": {
+      "finding_count": 12,
+      "status": "PASS_STATIC_EVIDENCE_BOUNDARY"
+    },
+    "evidence_first_operational_amendment": {
+      "status": "PASS_EVIDENCE_FIRST_OPERATIONAL_AMENDMENT"
+    },
+    "mypy_strict": {
+      "source_files": 42,
+      "status": "PASS"
+    },
+    "pytest": {
+      "passed": 1124,
+      "skipped": 6,
+      "status": "PASS"
+    },
+    "ruff": {
+      "status": "PASS"
+    },
+    "source_preservation": {
+      "status": "PASS_SOURCE_PRESERVATION",
+      "verified_inherited_files": 157
+    },
+    "synthetic_mongo": {
+      "status": "PASS"
+    },
+    "wheel_build": {
+      "status": "PASS"
+    }
+  },
+  "operational_boundary": {
+    "arm_variable_set_to_true": false,
+    "campaign_started": false,
+    "mm1_execution_permitted": false,
+    "outcome_access_permitted": false,
+    "provider_call_performed_by_rebind": false,
+    "statement_provisioned": false
+  },
+  "schema_version": "dtrm.phase4.prospective_activation_rebind_validation.v1",
+  "status": "PASS_EXACT_HEAD_VALIDATION",
+  "validated_implementation_head": "7066af5f79a6e87147ec1ce16f25a75ff7164ffc",
+  "validated_rebind_evidence_sha256": "9b090069961f262f21da66ba2a646837f7f4af9fbc6f31dd1d7b74abdadb9d73",
+  "validated_statement_sha256": "5625b8930f5c6aefd9aa6193c5211c74ec61d96a4d88ea72307c42bbe654dbd5",
+  "workflow_runs": {
+    "phase4_evidence_adequacy_v1_gates": {
+      "conclusion": "success",
+      "run_id": 35073445569
+    },
+    "phase4_gates": {
+      "conclusion": "success",
+      "run_id": 35073445579
+    },
+    "phase4_temporal_evidence_v1_gates": {
+      "conclusion": "success",
+      "run_id": 35073445692
+    },
+    "tests": {
+      "conclusion": "success",
+      "run_id": 35073445680
+    }
+  }
+}
