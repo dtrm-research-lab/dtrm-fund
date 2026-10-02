@@ -4,7 +4,7 @@
   "campaign_activation_statement_sha256": "5625b8930f5c6aefd9aa6193c5211c74ec61d96a4d88ea72307c42bbe654dbd5",
   "confirmatory_history_construction_permitted": false,
   "decisive_failure_evidence_path": "research/evidence/phase4_prospective_campaign_v2_decisive_failure_v1.json",
-  "decisive_failure_evidence_sha256": "21d3e984ded3adcf20247ad08a99264965ae21218e50b07fd87a5cf6aa6aa722",
+  "decisive_failure_evidence_sha256": "d47f193d95346e24a5f271cf7c3a9c095403254d80e044c270c2531885bd78d5",
   "failure_class": "OPERATIONAL_SCHEDULER_LATENCY",
   "final_status": "FAIL_PROSPECTIVE_EVIDENCE_ADEQUACY_V1",
   "frozen_maximum_schedule_lag_minutes": 120,
