@@ -2,7 +2,7 @@
   "activation_permitted": false,
   "campaign_scheduler_readiness_satisfied": false,
   "diagnostic_evidence_path": "research/evidence/phase4_v3_repository_dispatch_diagnostic_evidence_v1.json",
-  "diagnostic_evidence_sha256": "dc9e023b9a2473c0b4debe8887ba9baa70e06be9d459ad976c2fc073d1ec8e0c",
+  "diagnostic_evidence_sha256": "be548f233551dc6055c317ad8cddb5bbda55bc89b2398ecdb807b86737783681",
   "diagnostic_status": "PASS_REPOSITORY_DISPATCH_DIAGNOSTIC_V1",
   "frozen_start_lag_limit_microseconds": 7200000000,
   "observed_dispatch_lag_microseconds": 30566,
