@@ -1,0 +1,23 @@
+{
+  "activation_permitted": false,
+  "campaign_scheduler_readiness_satisfied": false,
+  "diagnostic_evidence_path": "research/evidence/phase4_v3_repository_dispatch_diagnostic_evidence_v1.json",
+  "diagnostic_evidence_sha256": "dc9e023b9a2473c0b4debe8887ba9baa70e06be9d459ad976c2fc073d1ec8e0c",
+  "diagnostic_status": "PASS_REPOSITORY_DISPATCH_DIAGNOSTIC_V1",
+  "frozen_start_lag_limit_microseconds": 7200000000,
+  "observed_dispatch_lag_microseconds": 30566,
+  "observed_start_lag_microseconds": 16784152,
+  "outcome_access_permitted": false,
+  "provider_access_performed": false,
+  "repository_dispatch_transport_diagnostic_satisfied": true,
+  "schema_version": "dtrm.phase4.v3_repository_dispatch_diagnostic_statement.v1",
+  "scheduler_identity_observed": "phase4-v3-local-diagnostic-v1",
+  "scheduler_identity_role": "DIAGNOSTIC_ONLY_NOT_CAMPAIGN_SCHEDULER",
+  "scheduler_identity_for_campaign_bound": false,
+  "scientific_counting_permitted": false,
+  "temporal_state_outcome_fitting_permitted": false,
+  "workflow_blob_sha": "a83d288c9312fe9260f9237b7857f45ca0ad4c21",
+  "workflow_identity": "phase4_fmp_news_temporal_capture_v3",
+  "workflow_repository_commit": "c3fa45a790676b02fe208ad7e52f8079c2be6e10",
+  "workflow_repository_tree": "2c338fefd1fd9b16cc79bc6e290027f2c7fc903a"
+}
