@@ -113,7 +113,7 @@ def validate_decisive_failure(
 
     digest = hashlib.sha256(evidence_bytes).hexdigest()
     if statement.get("decisive_failure_evidence_sha256") != digest:
-        raise CampaignV2ClosureError("evidence digest mismatch")
+        raise CampaignV2ClosureError(f"evidence digest mismatch:{digest}")
     if statement.get("campaign_activation_statement") != EXPECTED_ACTIVATION:
         raise CampaignV2ClosureError("statement activation mismatch")
     if statement.get("campaign_activation_statement_sha256") != EXPECTED_ACTIVATION_SHA256:
