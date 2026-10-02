@@ -2,7 +2,7 @@
   "activation_permitted": false,
   "campaign_scheduler_readiness_satisfied": false,
   "diagnostic_api_provenance_path": "research/evidence/phase4_v3_repository_dispatch_diagnostic_run_37005569048/github_api_provenance.json",
-  "diagnostic_api_provenance_sha256": "03219ff161a90da75d29c75e2be8265d1979751a142881d64e8b1de27e66c24a",
+  "diagnostic_api_provenance_sha256": "ba4c97858626bb8689aadecf7ba30cd45e75b291f73eddc7a7f1972417f0b206",
   "diagnostic_artifact_archive_path": "research/evidence/phase4_v3_repository_dispatch_diagnostic_run_37005569048/phase4-v3-dispatch-diagnostic-37005569048-1.zip",
   "diagnostic_artifact_archive_sha256": "08897569da7e72ab657c7782b416afd7a5ede1575ce6c7d9623f4c0f87505efe",
   "diagnostic_artifact_entry_path": "research/evidence/phase4_v3_repository_dispatch_diagnostic_run_37005569048/dispatch_diagnostic.json",
