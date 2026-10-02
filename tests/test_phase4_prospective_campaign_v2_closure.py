@@ -31,30 +31,49 @@ def _payloads() -> tuple[dict[str, object], dict[str, object], bytes]:
     return evidence, statement, evidence_bytes
 
 
+def _rebind_mutated_evidence(
+    evidence: dict[str, object], statement: dict[str, object]
+) -> tuple[bytes, dict[str, object]]:
+    evidence_bytes = (
+        json.dumps(evidence, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
+    rebound = copy.deepcopy(statement)
+    rebound["decisive_failure_evidence_sha256"] = hashlib.sha256(
+        evidence_bytes
+    ).hexdigest()
+    return evidence_bytes, rebound
+
+
 def test_committed_closure_is_valid() -> None:
     validate_files(EVIDENCE, STATEMENT)
 
 
 def test_relaxing_a_late_record_fails_closed() -> None:
-    evidence, statement, evidence_bytes = _payloads()
+    evidence, statement, _ = _payloads()
     mutated = copy.deepcopy(evidence)
     records = mutated["records"]
     assert isinstance(records, list)
     record = records[0]
     assert isinstance(record, dict)
     record["start_lag_microseconds"] = 120 * 60 * 1_000_000
+    mutated_bytes, rebound_statement = _rebind_mutated_evidence(mutated, statement)
     with pytest.raises(CampaignV2ClosureError, match="does not prove lateness"):
-        validate_decisive_failure(mutated, statement, evidence_bytes=evidence_bytes)
+        validate_decisive_failure(
+            mutated, rebound_statement, evidence_bytes=mutated_bytes
+        )
 
 
 def test_threshold_tamper_fails_closed() -> None:
-    evidence, statement, evidence_bytes = _payloads()
+    evidence, statement, _ = _payloads()
     mutated = copy.deepcopy(evidence)
     frozen = mutated["frozen_adequacy_rule"]
     assert isinstance(frozen, dict)
     frozen["minimum_accepted_slots"] = 14
+    mutated_bytes, rebound_statement = _rebind_mutated_evidence(mutated, statement)
     with pytest.raises(CampaignV2ClosureError, match="frozen adequacy rule mismatch"):
-        validate_decisive_failure(mutated, statement, evidence_bytes=evidence_bytes)
+        validate_decisive_failure(
+            mutated, rebound_statement, evidence_bytes=mutated_bytes
+        )
 
 
 def test_statement_must_bind_exact_evidence_digest() -> None:
@@ -64,6 +83,14 @@ def test_statement_must_bind_exact_evidence_digest() -> None:
     assert hashlib.sha256(evidence_bytes).hexdigest() != "0" * 64
     with pytest.raises(CampaignV2ClosureError, match="evidence digest mismatch"):
         validate_decisive_failure(evidence, mutated_statement, evidence_bytes=evidence_bytes)
+
+
+def test_evidence_object_must_match_bound_bytes() -> None:
+    evidence, statement, evidence_bytes = _payloads()
+    mutated = copy.deepcopy(evidence)
+    mutated["source_kind"] = "tampered"
+    with pytest.raises(CampaignV2ClosureError, match="evidence bytes mismatch"):
+        validate_decisive_failure(mutated, statement, evidence_bytes=evidence_bytes)
 
 
 def test_outcome_access_cannot_be_unlocked() -> None:

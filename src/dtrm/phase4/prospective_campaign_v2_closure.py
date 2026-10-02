@@ -104,6 +104,13 @@ def validate_decisive_failure(
     if proof.get("minimum_required_accepted_slots") != MIN_ACCEPTED_SLOTS:
         raise CampaignV2ClosureError("minimum-required mismatch")
 
+    try:
+        parsed_bytes = json.loads(evidence_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        raise CampaignV2ClosureError("invalid evidence bytes") from None
+    if parsed_bytes != evidence:
+        raise CampaignV2ClosureError("evidence bytes mismatch")
+
     digest = hashlib.sha256(evidence_bytes).hexdigest()
     if statement.get("decisive_failure_evidence_sha256") != digest:
         raise CampaignV2ClosureError("evidence digest mismatch")
