@@ -17,6 +17,12 @@ ARTIFACT_ENTRY = RUN_DIR / "dispatch_diagnostic.json"
 DIAGNOSTIC_STATEMENT = RUN_DIR / "diagnostic_statement.json"
 API_PROVENANCE = RUN_DIR / "github_api_provenance.json"
 
+EXPECTED_REPOSITORY = "tech-com-UA00001/theresistance-back"
+EXPECTED_REPOSITORY_ID = 1128196792
+EXPECTED_WORKFLOW_ID = 372997917
+EXPECTED_WORKFLOW_NAME = "Phase IV FMP temporal dispatch v3 dormant"
+EXPECTED_WORKFLOW_PATH = ".github/workflows/phase4_fmp_news_temporal_capture_v3.yml"
+
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -41,6 +47,19 @@ def test_committed_v3_dispatch_diagnostic_is_bound_and_noncounting() -> None:
     artifact = json.loads(artifact_entry_bytes)
     diagnostic_statement = json.loads(DIAGNOSTIC_STATEMENT.read_text(encoding="utf-8"))
     api_provenance = json.loads(API_PROVENANCE.read_text(encoding="utf-8"))
+
+    assert api_provenance["repository_full_name"] == EXPECTED_REPOSITORY
+    assert api_provenance["repository_id"] == EXPECTED_REPOSITORY_ID
+    assert api_provenance["workflow_id"] == EXPECTED_WORKFLOW_ID
+    assert api_provenance["workflow_name"] == EXPECTED_WORKFLOW_NAME
+    assert api_provenance["workflow_path"] == EXPECTED_WORKFLOW_PATH
+    assert api_provenance["run_api_url"] == (
+        f"https://api.github.com/repos/{EXPECTED_REPOSITORY}/actions/runs/37005569048"
+    )
+    assert api_provenance["workflow_url"] == (
+        f"https://api.github.com/repos/{EXPECTED_REPOSITORY}/actions/workflows/{EXPECTED_WORKFLOW_ID}"
+    )
+    assert api_provenance["workflow_path"] == artifact["workflow_path"]
 
     assert api_provenance["artifact_archive_sha256"] == statement["diagnostic_artifact_archive_sha256"]
     assert api_provenance["artifact_entry_sha256"] == statement["diagnostic_artifact_entry_sha256"]
