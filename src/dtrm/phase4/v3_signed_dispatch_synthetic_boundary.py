@@ -116,9 +116,9 @@ def _target_at(start_day: date, slot: int) -> datetime:
     try:
         datetime.combine(start_day, time(18, 15, tzinfo=UTC)) + timedelta(days=13)
         hour, minute = SLOT_CLOCKS[slot % 4]
-        return datetime.combine(
-            start_day, time(hour, minute, tzinfo=UTC)
-        ) + timedelta(days=slot // 4)
+        return datetime.combine(start_day, time(hour, minute, tzinfo=UTC)) + timedelta(
+            days=slot // 4
+        )
     except (OverflowError, ValueError):
         _bad("INVALID_TARGET")
 
