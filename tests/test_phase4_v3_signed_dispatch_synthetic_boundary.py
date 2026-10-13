@@ -159,6 +159,20 @@ def test_invalid_wire_bytes_fail_closed(wire: bytes, error: str) -> None:
         _check(wire=wire)
 
 
+@pytest.mark.parametrize(
+    "wire",
+    (
+        b'{"overflow":1e999}',
+        b'{"overflow":-1e999}',
+        b'{"overflow":1e309}',
+    ),
+)
+def test_json_exponent_overflow_produces_fixed_error(wire: bytes) -> None:
+    # Digest intentionally matches the exact malformed synthetic bytes.
+    with pytest.raises(SyntheticV3EnvelopeError, match="^INVALID_JSON$"):
+        _check(wire=wire)
+
+
 def test_noncanonical_bytes_fail_closed() -> None:
     payload = json.loads(_signed_wire())
     wire = json.dumps(payload, indent=2, sort_keys=True).encode("utf-8")
