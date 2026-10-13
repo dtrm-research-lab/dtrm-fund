@@ -112,10 +112,15 @@ def _require_sha256(value: object) -> str:
 def _target_at(start_day: date, slot: int) -> datetime:
     if type(start_day) is not date or type(slot) is not int or not 0 <= slot < 56:
         _bad("INVALID_TARGET")
-    hour, minute = SLOT_CLOCKS[slot % 4]
-    return datetime.combine(start_day, time(hour, minute, tzinfo=UTC)) + timedelta(
-        days=slot // 4
-    )
+    # Fail closed if ANY of the preregistered 14 UTC days cannot exist.
+    try:
+        datetime.combine(start_day, time(18, 15, tzinfo=UTC)) + timedelta(days=13)
+        hour, minute = SLOT_CLOCKS[slot % 4]
+        return datetime.combine(
+            start_day, time(hour, minute, tzinfo=UTC)
+        ) + timedelta(days=slot // 4)
+    except (OverflowError, ValueError):
+        _bad("INVALID_TARGET")
 
 
 def check_synthetic_signed_dispatch(
