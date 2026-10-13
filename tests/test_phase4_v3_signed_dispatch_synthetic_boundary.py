@@ -12,6 +12,7 @@ import pytest
 
 from dtrm.phase4.v3_signed_dispatch_synthetic_boundary import (
     SyntheticV3EnvelopeError,
+    _target_at,
     check_synthetic_signed_dispatch,
 )
 
@@ -231,6 +232,20 @@ def test_noncanonical_arguments_fail_closed(
 ) -> None:
     with pytest.raises(SyntheticV3EnvelopeError, match=f"^{error}$"):
         _check(**changes)
+
+
+@pytest.mark.parametrize("slot", (0, 55))
+def test_unrepresentable_14_day_window_fails_even_for_first_slot(slot: int) -> None:
+    with pytest.raises(SyntheticV3EnvelopeError, match="^INVALID_TARGET$"):
+        _check(slot=slot, start_utc_day=date.max)
+
+
+def test_full_window_exact_maximum_representable_start_day() -> None:
+    assert _target_at(date(9999, 12, 18), 55) == datetime(
+        9999, 12, 31, 18, 15, tzinfo=UTC
+    )
+    with pytest.raises(SyntheticV3EnvelopeError, match="^INVALID_TARGET$"):
+        _target_at(date(9999, 12, 19), 0)
 
 
 def test_synthetic_results_deterministic_and_noncounting() -> None:
