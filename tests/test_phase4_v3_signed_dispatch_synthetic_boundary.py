@@ -72,7 +72,9 @@ def _signed_wire(
     }
     if payload_changes is not None:
         payload.update(payload_changes)
-    payload["signature"] = hmac.new(_KEY, _canonical(payload), hashlib.sha256).hexdigest()
+    payload["signature"] = hmac.new(
+        _KEY, _canonical(payload), hashlib.sha256
+    ).hexdigest()
     return _canonical(payload)
 
 
