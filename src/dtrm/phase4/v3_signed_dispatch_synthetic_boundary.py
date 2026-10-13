@@ -12,8 +12,10 @@ import hmac
 import json
 import math
 import re
-from datetime import UTC, date, datetime, time, timedelta
-from typing import Never, cast
+from datetime import date, datetime, time, timedelta, timezone
+from typing import NoReturn, cast
+
+UTC = timezone.utc
 
 SCHEMA = "dtrm.phase4.repository_dispatch_envelope.v1"
 EVENT_TYPE = "phase4_fmp_news_temporal_capture_v3"
@@ -43,7 +45,7 @@ class SyntheticV3EnvelopeError(ValueError):
     """Fixed-code failure, without echoing source values or cryptographic keys."""
 
 
-def _bad(code: str) -> Never:
+def _bad(code: str) -> NoReturn:
     raise SyntheticV3EnvelopeError(code)
 
 
