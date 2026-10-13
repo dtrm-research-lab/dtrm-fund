@@ -10,6 +10,22 @@ permissions:
   contents: read
 
 jobs:
+  v3-signed-envelope-python310:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install Python 3.10 scoped test dependency
+        run: python -m pip install pytest
+      - name: Python 3.10 import and synthetic signed-dispatch regression
+        run: |
+          python -c "import dtrm.phase4.v3_signed_dispatch_synthetic_boundary"
+          python -m pytest -q tests/test_phase4_v3_signed_dispatch_synthetic_boundary.py
   evidence-adequacy-v1:
     runs-on: ubuntu-latest
     env:
