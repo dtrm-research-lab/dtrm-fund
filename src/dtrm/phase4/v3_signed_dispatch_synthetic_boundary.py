@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import math
 import re
 from datetime import UTC, date, datetime, time, timedelta
 from typing import Never, cast
@@ -57,6 +58,13 @@ def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
 
 def _reject_constant(_value: str) -> object:
     _bad("INVALID_JSON")
+
+
+def _finite_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        _bad("INVALID_JSON")
+    return parsed
 
 
 def _canonical(payload: dict[str, object]) -> bytes:
@@ -154,6 +162,7 @@ def check_synthetic_signed_dispatch(
             envelope_bytes.decode("utf-8"),
             object_pairs_hook=_unique_object,
             parse_constant=_reject_constant,
+            parse_float=_finite_float,
         )
     except SyntheticV3EnvelopeError:
         raise
