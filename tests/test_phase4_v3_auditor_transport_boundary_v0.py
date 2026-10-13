@@ -118,7 +118,9 @@ def test_v3_dispatch_cannot_smuggle_target_fields_into_v1_slot() -> None:
     binding = _binding()
     diagnostic = _diagnostic_attempt(binding)
     target = expected_target(binding, 0)
-    with pytest.raises(ProspectiveEvidenceAdequacyError, match="non-counting target mismatch"):
+    with pytest.raises(
+        ProspectiveEvidenceAdequacyError, match="non-counting target mismatch"
+    ):
         SlotAttempt(
             slot=0,
             target_at_utc=target,
