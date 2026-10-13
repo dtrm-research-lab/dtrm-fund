@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
-from datetime import UTC, date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone
 from typing import Any
 
 import pytest
@@ -16,6 +16,7 @@ from dtrm.phase4.v3_signed_dispatch_synthetic_boundary import (
     check_synthetic_signed_dispatch,
 )
 
+UTC = timezone.utc
 _KEY = b"synthetic-only-hmac-key-not-for-production!"[:32]
 _ID = "synthetic-campaign-v3"
 _DIGEST = "a" * 64
