@@ -123,7 +123,7 @@ def assess_synthetic_b_mechanics(fixture: Any) -> SyntheticBAssessment:
         days = case["lookback_days"]
         if type(days) is not int or not 1 <= days <= 365:
             _reject()
-        lookback_days = cast(int, days)
+        lookback_days = days
         cutoff = _instant(case["decision_cutoff"])
         try:
             start = cutoff - timedelta(days=lookback_days)
