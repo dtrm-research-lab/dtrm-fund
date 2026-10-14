@@ -69,6 +69,9 @@ def test_news_link_mapping_clocks_fail_closed(path) -> None:
     field, value, state = path
     case = fixture()
     case["cases"][0][field] = value
+    # Keep causal link ordering valid when testing equality at the decision cutoff.
+    if field == "news_version_observed_at":
+        case["cases"][0]["news_linked_at"] = value
     report = _result(case)
     assert report["cases"][0]["conclusion"] == "SYNTHETIC_BLOCKED"
     key = {"news_version_observed_at": "news_version", "news_linked_at": "news_link", "mapping_available_at": "mapping"}[field]
@@ -85,6 +88,10 @@ def test_news_link_mapping_clocks_fail_closed(path) -> None:
 def test_price_date_does_not_authenticate_close(field, value, expected) -> None:
     case = fixture()
     case["cases"][0]["price_dependencies"][0][field] = value
+    # A first-availability after cutoff cannot precede an already-known vintage.
+    # Test the AFTER/AT_CUTOFF state with a consistent revised-vintage clock.
+    if field == "price_first_available_at" and value is not None:
+        case["cases"][0]["price_dependencies"][0]["price_vintage_available_at"] = value
     report = _result(case)
     price = report["cases"][0]["price_dependencies"][0]
     assert report["cases"][0]["conclusion"] == "SYNTHETIC_BLOCKED"
