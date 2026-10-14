@@ -1,0 +1,14 @@
+# Phase IV authenticated-history coverage design — review addendum v1
+
+**2026-10-14. Preregistered before revising the contract in PR #36.** Parent: `DTRM_PHASE4_AUTHENTICATED_HISTORY_COVERAGE_DESIGN_V0.md`, target `research/phase4-temporal-state`. This is design clarification only and confers no source/clock authority or fitting permission.
+
+## Codex review corrections
+
+1. **Freeze the entire coverage denominator before computing any bins.** A later acquisition PR shall separate prospectively registered inclusion **rule**, candidate schedule, universe and cutoff from the *exact candidate manifest*. If future observations prevent naming candidates before capture, bind the source- and outcome-blind deterministic inclusion rule before acquisition; after the permitted acquisition, freeze the full exact `(news_id,ticker,vintage,cutoff)` manifest and its SHA-256 **before executing any per-candidate history-count/availability assessment**. Freeze inclusion/exclusion logic, historical window, and all cutoff semantics alongside that manifest. Every subsequent bin and missingness report reconciles to precisely this immutable manifest. No later selecting dates/assets, reweighting bins, or removing unknowns after observing coverage. This is a G5 **coverage manifest lock**, not full model preregistration, model-fit permission, actions lock or future outcome lock.
+2. **Keep historical lookback independent of financial forward horizon.** The reference to prior **60 days** in §3 of v0 was inaccurate. The 60-calendar-day + five-day tolerance belongs exclusively to the **future realized target**; lookback `L`, truncation, left-censoring, tie handling and empty history policy require a separately registered, outcome-blind binding **before** the §4 manifest and bins. In the absence of binding `L`, classify window-specific history sufficiency as **UNRESOLVED_LOOKBACK** / `UNKNOWN_AVAILABILITY` and do not treat 60 as a default. A 14-day prospective transport check also does not constitute any automatically valid lookback length.
+3. **Ordering of activities:** Design and prospective evidence capture (Step B) can precede actual identities; freeze deterministic candidate generation in advance. After the approved source has been captured, freeze exact complete cohort and `L` and only **then** run coverage bins (Step C). Full G5 model parameters and TRAIN/VALID/CALIBRATION/TEST partitions, statistical inference and protected-outcome gates may remain later Step D, but cannot retroactively alter the coverage manifest.
+4. **No revised claims:** still no actual source authentication, as-of history, MM1 execution, training, outcomes, publication or AWS deployment.
+
+## Acceptance
+
+Verify v0 contract amended only where listed; prior observed 63,873 collection rows remain `RETROSPECTIVE_PROXY_PARTIAL`, never authentic as-of examples. CI must pass and Codex exact-head re-review; human review before merge.
