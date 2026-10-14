@@ -10,7 +10,7 @@ import json
 import re
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
-from typing import Any, cast
+from typing import Any, NoReturn, cast
 
 SCHEMA = "dtrm.phase4.shared_cutoff_fixture.v0"
 CASE_TAGS = frozenset(f"case_{i:02d}" for i in range(1, 65))
@@ -23,7 +23,7 @@ class SharedCutoffError(ValueError):
     """Sanitized invalid synthetic metadata boundary."""
 
 
-def _reject() -> None:
+def _reject() -> NoReturn:
     raise SharedCutoffError("INVALID_SYNTHETIC_SHARED_CUTOFF_FIXTURE")
 
 
@@ -56,7 +56,7 @@ def _date_only(value: Any) -> str:
         _reject()
     if parsed.isoformat() != value:
         _reject()
-    return value
+    return cast(str, value)
 
 
 def _utc(value: datetime | None) -> str | None:
