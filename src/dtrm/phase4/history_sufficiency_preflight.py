@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -165,8 +167,27 @@ def run_cli(argv: list[str] | None = None) -> int:
         encoded = (json.dumps(result.to_json(), sort_keys=True, indent=2, ensure_ascii=True) + "\n").encode(
             "utf-8"
         )
-        with args.output.open("xb") as handle:
-            handle.write(encoded)
+        # Stage in the same directory; publish only fully flushed bytes.
+        # An atomic hard link will never overwrite an existing destination.
+        temp_path: Path | None = None
+        staged_fd: int | None = None
+        try:
+            fd, temp_name = tempfile.mkstemp(
+                prefix=".phase4-history-", suffix=".tmp", dir=args.output.parent
+            )
+            staged_fd = fd
+            temp_path = Path(temp_name)
+            with os.fdopen(fd, "wb") as handle:
+                staged_fd = None
+                handle.write(encoded)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.link(temp_path, args.output)
+        finally:
+            if staged_fd is not None:
+                os.close(staged_fd)
+            if temp_path is not None:
+                temp_path.unlink(missing_ok=True)
     except (OSError, ValueError, TypeError) as exc:
         if isinstance(exc, PreflightError) and str(exc) == "OUTPUT_EXISTS":
             parser.error("OUTPUT_EXISTS")
