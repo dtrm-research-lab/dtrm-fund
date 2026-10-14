@@ -125,7 +125,10 @@ def assess_synthetic_b_mechanics(fixture: Any) -> SyntheticBAssessment:
             _reject()
         lookback_days = cast(int, days)
         cutoff = _instant(case["decision_cutoff"])
-        start = cutoff - timedelta(days=lookback_days)
+        try:
+            start = cutoff - timedelta(days=lookback_days)
+        except OverflowError:
+            _reject()
         raw_events = case["events"]
         if not isinstance(raw_events, list) or len(raw_events) > 64:
             _reject()
