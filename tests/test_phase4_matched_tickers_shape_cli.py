@@ -2,12 +2,22 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
+from pathlib import Path
 
 import pytest
 
 from dtrm.phase4.matched_tickers_shape_audit import normalize_shape_counts
-from research.experiments import run_phase4_matched_tickers_shape_audit as cli
+
+_RUNNER_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "research" / "experiments" / "run_phase4_matched_tickers_shape_audit.py"
+)
+_SPEC = importlib.util.spec_from_file_location("phase4_matched_shape_cli", _RUNNER_PATH)
+assert _SPEC is not None and _SPEC.loader is not None
+cli = importlib.util.module_from_spec(_SPEC)
+_SPEC.loader.exec_module(cli)
 
 
 def fake_report():
