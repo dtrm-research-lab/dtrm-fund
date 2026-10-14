@@ -25,6 +25,7 @@ def publish_exclusively(output: Path, data: bytes) -> None:
     """Stage and fsync aggregate bytes, then publish by no-clobber hardlink."""
     staged: str | None = None
     fd: int | None = None
+    published = False
     try:
         fd, staged = tempfile.mkstemp(prefix=".phase4-shape-", dir=output.parent)
         with os.fdopen(fd, "wb") as stream:
@@ -33,15 +34,24 @@ def publish_exclusively(output: Path, data: bytes) -> None:
             stream.flush()
             os.fsync(stream.fileno())
         os.link(staged, output)
+        published = True
     finally:
         if fd is not None:
             os.close(fd)
         if staged is not None:
-            os.unlink(staged)
+            try:
+                os.unlink(staged)
+            except OSError:
+                if not published:
+                    raise
 
 
 def _emit(payload: dict[str, object]) -> None:
-    print(json.dumps(payload, sort_keys=True))
+    """Console notification never overrides authoritative on-disk evidence."""
+    try:
+        print(json.dumps(payload, sort_keys=True))
+    except (OSError, ValueError):
+        pass
 
 
 def main(argv: list[str] | None = None) -> int:
