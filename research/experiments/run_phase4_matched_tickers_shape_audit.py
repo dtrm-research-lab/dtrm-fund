@@ -54,7 +54,7 @@ def _write_status(data: bytes) -> None:
 def _emit(payload: dict[str, object]) -> None:
     """Use one unbuffered OS write; never override authoritative on-disk evidence."""
     try:
-        content = (json.dumps(payload, sort_keys=True) + "\\n").encode("ascii")
+        content = (json.dumps(payload, sort_keys=True) + "\n").encode("ascii")
         _write_status(content)
     except OSError:
         pass
