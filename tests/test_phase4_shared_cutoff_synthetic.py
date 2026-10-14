@@ -158,3 +158,69 @@ def test_malformed_fixtures_fail_closed(mutation) -> None:
     mutation(raw)
     with pytest.raises(SharedCutoffError, match="INVALID_SYNTHETIC_SHARED_CUTOFF_FIXTURE"):
         assess_shared_cutoff(raw)
+
+
+@pytest.mark.parametrize("news_clock,link_clock", [
+    ("2026-10-14T09:31:00Z", "2026-10-14T09:30:00Z"),
+    ("2026-10-14T09:30:00+00:00", "2026-10-14T09:29:59Z"),
+])
+def test_link_before_exact_news_vintage_rejected(news_clock, link_clock) -> None:
+    data = fixture()
+    data["cases"][0]["news_version_observed_at"] = news_clock
+    data["cases"][0]["news_linked_at"] = link_clock
+    with pytest.raises(SharedCutoffError, match="INVALID_SYNTHETIC_SHARED_CUTOFF_FIXTURE"):
+        assess_shared_cutoff(data)
+
+
+def test_link_at_exact_news_observation_allowed_as_synthetic_ordering() -> None:
+    data = fixture()
+    data["cases"][0]["news_linked_at"] = data["cases"][0]["news_version_observed_at"]
+    assert _result(data)["cases"][0]["conclusion"] == "SYNTHETIC_ALL_BEFORE"
+
+
+def test_missing_news_clock_does_not_backfill_from_link() -> None:
+    data = fixture()
+    data["cases"][0]["news_version_observed_at"] = None
+    report = _result(data)
+    assert report["cases"][0]["news_version"] == "UNKNOWN"
+    assert report["synthetic_all_before"] == 0
+
+
+def test_price_vintage_before_first_availability_rejected() -> None:
+    data = fixture()
+    data["cases"][0]["price_dependencies"][0]["price_vintage_available_at"] = (
+        "2026-10-14T09:39:59Z"
+    )
+    with pytest.raises(SharedCutoffError, match="INVALID_SYNTHETIC_SHARED_CUTOFF_FIXTURE"):
+        assess_shared_cutoff(data)
+
+
+def test_price_vintage_equal_first_availability_allowed_before_cutoff() -> None:
+    data = fixture()
+    price = data["cases"][0]["price_dependencies"][0]
+    price["price_vintage_available_at"] = price["price_first_available_at"]
+    assert _result(data)["cases"][0]["conclusion"] == "SYNTHETIC_ALL_BEFORE"
+
+
+@pytest.mark.parametrize("bad_instant", [
+    "2026-10-14 09:00:00Z",
+    "2026-10-14T09:00Z",
+    "2026-10-14",
+    "2026-10-14T09:00:00",
+    "2026-10-14T09:00:00.1234567Z",
+    "2026-10-14T09:00:00+0000",
+    "2026-10-14T09:00:00Z ",
+])
+def test_strict_full_iso_clock_input(bad_instant: str) -> None:
+    data = fixture()
+    data["cases"][0]["news_version_observed_at"] = bad_instant
+    with pytest.raises(SharedCutoffError, match="INVALID_SYNTHETIC_SHARED_CUTOFF_FIXTURE"):
+        assess_shared_cutoff(data)
+
+
+def test_fractional_iso_offsets_can_be_normalized() -> None:
+    data = fixture()
+    data["cases"][0]["decision_cutoff"] = "2026-10-14T12:00:00.000000+02:00"
+    data["cases"][0]["news_linked_at"] = "2026-10-14T11:30:00.000+02:00"
+    result = _result(data)
+    assert result["synthetic_all_before"] == 1
