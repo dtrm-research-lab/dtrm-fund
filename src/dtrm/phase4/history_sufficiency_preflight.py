@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
@@ -18,7 +18,8 @@ BINS = (
 )
 MAX_COHORTS = 64
 MAX_CANDIDATES = 1_000_000
-TAG_RE = re.compile(r"[a-z][a-z0-9_]{0,31}\Z")
+SYNTHETIC_TAGS = frozenset(f"case_{number:02d}" for number in range(1, MAX_COHORTS + 1))
+BinCounts = tuple[int, int, int, int, int]
 
 
 class PreflightError(ValueError):
@@ -27,6 +28,51 @@ class PreflightError(ValueError):
 
 def _reject() -> None:
     raise PreflightError("INVALID_SYNTHETIC_HISTORY_FIXTURE")
+
+
+@dataclass(frozen=True, slots=True)
+class SyntheticCohort:
+    """Immutable aggregate for an invented synthetic case, never a real ticker."""
+
+    cohort_tag: str
+    candidate_count: int
+    bin_counts: BinCounts
+
+    def to_json(self) -> dict[str, Any]:
+        """Allocate fresh serializable values; do not expose internal mutable state."""
+        return {
+            "cohort_tag": self.cohort_tag,
+            "candidate_count": self.candidate_count,
+            "bins": dict(zip(BINS, self.bin_counts, strict=True)),
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class SyntheticCoverageAssessment:
+    """Immutable domain result; constant scientific non-authorizations."""
+
+    input_sha256: str
+    cohorts: tuple[SyntheticCohort, ...]
+    candidate_total: int
+    grand_counts: BinCounts
+
+    def to_json(self) -> dict[str, Any]:
+        """Serialization belongs to the outer boundary, not the domain state."""
+        return {
+            "schema_version": "dtrm.phase4.history_sufficiency_report.v0",
+            "engineering_status": "PASS_SYNTHETIC_HISTORY_COUNTERS",
+            "scientific_status": "BLOCKED_SOURCE_AUDIT",
+            "source_authenticated": False,
+            "history_construction_permitted": False,
+            "training_permitted": False,
+            "outcome_access_permitted": False,
+            "scientific_counting_permitted": False,
+            "input_sha256": self.input_sha256,
+            "cohort_count": len(self.cohorts),
+            "candidate_total": self.candidate_total,
+            "bins_total": dict(zip(BINS, self.grand_counts, strict=True)),
+            "cohorts": [cohort.to_json() for cohort in self.cohorts],
+        }
 
 
 def _exact_keys(value: Any, keys: frozenset[str]) -> dict[str, Any]:
@@ -41,8 +87,18 @@ def _strict_counter(value: Any, minimum: int = 0) -> int:
     return cast(int, value)
 
 
-def assess_synthetic_coverage(fixture: Any) -> dict[str, Any]:
-    """Check arithmetic of *synthetic* disjoint count bins, never raw events."""
+def _unique_object_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    """Reject duplicate JSON keys before nested fields can be silently collapsed."""
+    obj: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in obj:
+            _reject()
+        obj[key] = value
+    return obj
+
+
+def assess_synthetic_coverage(fixture: Any) -> SyntheticCoverageAssessment:
+    """Check synthetic count arithmetic. No as-of historical claim is made."""
     document = _exact_keys(fixture, frozenset(("schema_version", "dataset_role", "cohorts")))
     if document["schema_version"] != SCHEMA or document["dataset_role"] != "synthetic":
         _reject()
@@ -50,47 +106,43 @@ def assess_synthetic_coverage(fixture: Any) -> dict[str, Any]:
     if not isinstance(cohorts, list) or not 1 <= len(cohorts) <= MAX_COHORTS:
         _reject()
 
-    canonical: list[dict[str, Any]] = []
+    canonical: list[SyntheticCohort] = []
     seen: set[str] = set()
-    grand = {key: 0 for key in BINS}
+    grand = [0] * len(BINS)
     total = 0
     for item in cohorts:
         cohort = _exact_keys(item, frozenset(("cohort_tag", "candidate_count", "bins")))
         tag = cohort["cohort_tag"]
-        if not isinstance(tag, str) or not TAG_RE.fullmatch(tag) or tag in seen:
+        if not isinstance(tag, str) or tag not in SYNTHETIC_TAGS or tag in seen:
             _reject()
         seen.add(tag)
         n = _strict_counter(cohort["candidate_count"], minimum=1)
         raw_bins = _exact_keys(cohort["bins"], frozenset(BINS))
-        counts = {key: _strict_counter(raw_bins[key]) for key in BINS}
-        if sum(counts.values()) != n:
+        counts = cast(BinCounts, tuple(_strict_counter(raw_bins[key]) for key in BINS))
+        if sum(counts) != n:
             _reject()
         total += n
         if total > MAX_CANDIDATES:
             _reject()
-        for key in BINS:
-            grand[key] += counts[key]
-        canonical.append({"cohort_tag": tag, "candidate_count": n, "bins": counts})
-    canonical.sort(key=lambda item: item["cohort_tag"])
-    normalized = {"schema_version": SCHEMA, "dataset_role": "synthetic", "cohorts": canonical}
+        for index, count in enumerate(counts):
+            grand[index] += count
+        canonical.append(SyntheticCohort(tag, n, counts))
+    canonical.sort(key=lambda item: item.cohort_tag)
+    state = tuple(canonical)
+    normalized = {
+        "schema_version": SCHEMA,
+        "dataset_role": "synthetic",
+        "cohorts": [cohort.to_json() for cohort in state],
+    }
     digest = hashlib.sha256(
         json.dumps(normalized, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("ascii")
     ).hexdigest()
-    return {
-        "schema_version": "dtrm.phase4.history_sufficiency_report.v0",
-        "engineering_status": "PASS_SYNTHETIC_HISTORY_COUNTERS",
-        "scientific_status": "BLOCKED_SOURCE_AUDIT",
-        "source_authenticated": False,
-        "history_construction_permitted": False,
-        "training_permitted": False,
-        "outcome_access_permitted": False,
-        "scientific_counting_permitted": False,
-        "input_sha256": digest,
-        "cohort_count": len(canonical),
-        "candidate_total": total,
-        "bins_total": grand,
-        "cohorts": canonical,
-    }
+    return SyntheticCoverageAssessment(
+        input_sha256=digest,
+        cohorts=state,
+        candidate_total=total,
+        grand_counts=cast(BinCounts, tuple(grand)),
+    )
 
 
 def run_cli(argv: list[str] | None = None) -> int:
@@ -102,12 +154,17 @@ def run_cli(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        # Never follow an existing output path, including symlinks.
+        # "xb" prevents replacing a file even across a time-of-check race.
         if args.output.is_symlink() or args.output.exists():
             raise PreflightError("OUTPUT_EXISTS")
-        fixture = json.loads(args.fixture.read_text(encoding="utf-8"))
+        fixture = json.loads(
+            args.fixture.read_text(encoding="utf-8"),
+            object_pairs_hook=_unique_object_pairs,
+        )
         result = assess_synthetic_coverage(fixture)
-        encoded = (json.dumps(result, sort_keys=True, indent=2, ensure_ascii=True) + "\n").encode("utf-8")
+        encoded = (json.dumps(result.to_json(), sort_keys=True, indent=2, ensure_ascii=True) + "\n").encode(
+            "utf-8"
+        )
         with args.output.open("xb") as handle:
             handle.write(encoded)
     except (OSError, ValueError, TypeError) as exc:
