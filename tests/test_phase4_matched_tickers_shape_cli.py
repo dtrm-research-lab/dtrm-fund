@@ -80,3 +80,54 @@ def test_cli_symlink_is_rejected_before_mongo(tmp_path, monkeypatch, capsys) -> 
     assert cli.main(["--output", str(symlink)]) == 1
     assert target.read_bytes() == b"original"
     assert json.loads(capsys.readouterr().out)["error_code"] == "OUTPUT_EXISTS"
+
+
+def test_post_publish_unlink_failure_preserves_success(tmp_path, monkeypatch, capsys) -> None:
+    """Published report is authoritative even if staging cleanup is interrupted."""
+    original_unlink = cli.os.unlink
+
+    def fail_unlink(path, *args, **kwargs):
+        if str(path).endswith(".tmp") or ".phase4-shape-" in str(path):
+            raise OSError("simulated sensitive stage cleanup exception")
+        return original_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(cli.os, "unlink", fail_unlink)
+    monkeypatch.setattr(cli, "operator_local_shape_audit", lambda _env_file: fake_report())
+    output = tmp_path / "final.json"
+    assert cli.main(["--output", str(output)]) == 0
+    assert json.loads(output.read_text())["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+    assert json.loads(capsys.readouterr().out)["status"] == "succeeded"
+    # An orphan stage may remain; cleanup is a private operator concern only.
+
+
+def test_success_status_stdout_failure_is_advisory(tmp_path, monkeypatch) -> None:
+    def no_stdout(*_args, **_kwargs):
+        raise BrokenPipeError("simulated terminal closed")
+
+    monkeypatch.setattr(cli, "operator_local_shape_audit", lambda _env_file: fake_report())
+    monkeypatch.setattr("builtins.print", no_stdout)
+    output = tmp_path / "published.json"
+    assert cli.main(["--output", str(output)]) == 0
+    assert json.loads(output.read_text())["asset_mapping_authenticated"] is False
+
+
+def test_failure_status_stdout_failure_is_redacted_and_nonthrowing(tmp_path, monkeypatch) -> None:
+    def no_stdout(*_args, **_kwargs):
+        raise OSError("simulated terminal failure")
+
+    monkeypatch.setattr("builtins.print", no_stdout)
+    output = tmp_path / "does-not-exist" / "report.json"
+    assert cli.main(["--output", str(output)]) == 1
+    assert not output.exists()
+
+
+def test_publish_stage_fsync_error_creates_no_final(tmp_path, monkeypatch) -> None:
+    def fail_fsync(_fd):
+        raise OSError("simulated disk write failure")
+
+    monkeypatch.setattr(cli.os, "fsync", fail_fsync)
+    output = tmp_path / "not-published.json"
+    with pytest.raises(OSError):
+        cli.publish_exclusively(output, b"synthetic")
+    assert not output.exists()
+    assert list(tmp_path.glob(".phase4-shape-*")) == []
