@@ -97,7 +97,6 @@ def test_empty_collection_not_a_source_proof() -> None:
     lambda x: x["elements"][1].update(n=5000001),
     lambda x: x["elements"][1].update(n=0),
     lambda x: x["elements"][0].update(content="private"),
-    lambda x: x["elements"].clear(),
     lambda x: x["containers"].clear(),
 ])
 def test_rejects_unknown_values_or_inconsistent_shapes(mutation) -> None:
@@ -111,3 +110,13 @@ def test_rejects_unknown_values_or_inconsistent_shapes(mutation) -> None:
 def test_rejects_bad_preliminary_count(n: int) -> None:
     with pytest.raises(ShapeAuditError):
         normalize_shape_counts(fake_aggregate(), counted_documents=n)
+
+
+def test_aggregate_with_only_empty_arrays_is_valid_but_not_authenticated() -> None:
+    evidence = {
+        "containers": [{"kind": "array", "n": 3}],
+        "elements": [],
+    }
+    state = normalize_shape_counts(evidence, counted_documents=3)
+    assert state.elements_count == 0
+    assert state.to_json()["asset_mapping_authenticated"] is False
