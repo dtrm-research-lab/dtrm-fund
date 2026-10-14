@@ -18,7 +18,8 @@ def aggregate() -> dict:
         "containers": [{"kind": "array", "n": 3}],
         "elements": [{
             "kind": "object", "ticker": "string", "symbol": "missing",
-            "name": "missing", "score": "missing", "confidence": "missing", "n": 5,
+            "name": "missing", "score": "missing", "confidence": "missing",
+            "match_type": "string", "n": 5,
         }],
     }
 
