@@ -6,7 +6,7 @@ import hashlib
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 SCHEMA = "dtrm.phase4.history_sufficiency_fixture.v0"
 BINS = (
@@ -32,13 +32,13 @@ def _reject() -> None:
 def _exact_keys(value: Any, keys: frozenset[str]) -> dict[str, Any]:
     if not isinstance(value, dict) or set(value) != keys:
         _reject()
-    return value
+    return cast(dict[str, Any], value)
 
 
 def _strict_counter(value: Any, minimum: int = 0) -> int:
     if type(value) is not int or not minimum <= value <= MAX_CANDIDATES:
         _reject()
-    return value
+    return cast(int, value)
 
 
 def assess_synthetic_coverage(fixture: Any) -> dict[str, Any]:
