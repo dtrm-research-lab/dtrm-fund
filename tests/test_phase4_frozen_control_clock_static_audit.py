@@ -10,10 +10,10 @@ import pytest
 
 from dtrm.phase4.frozen_control_clock_static_audit import (
     BASE,
-    V5,
-    V6,
     FINDINGS,
     FROZEN_BLOBS,
+    V5,
+    V6,
     StaticClockAuditError,
     assess_frozen_control_clock,
     check_blobs,
