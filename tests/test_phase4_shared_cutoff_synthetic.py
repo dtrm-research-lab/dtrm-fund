@@ -224,3 +224,38 @@ def test_fractional_iso_offsets_can_be_normalized() -> None:
     data["cases"][0]["news_linked_at"] = "2026-10-14T11:30:00.000+02:00"
     result = _result(data)
     assert result["synthetic_all_before"] == 1
+
+
+@pytest.mark.parametrize("field,case", [
+    ("decision_cutoff", "cutoff"),
+    ("news_version_observed_at", "news"),
+    ("news_linked_at", "link"),
+    ("mapping_available_at", "mapping"),
+    ("price_first_available_at", "price_first"),
+    ("price_vintage_available_at", "price_vintage"),
+])
+def test_unknown_negative_zero_offset_rejected(field: str, case: str) -> None:
+    data = fixture()
+    if case.startswith("price"):
+        data["cases"][0]["price_dependencies"][0][field] = "2026-10-14T09:00:00-00:00"
+    else:
+        data["cases"][0][field] = "2026-10-14T09:00:00-00:00"
+    with pytest.raises(SharedCutoffError, match="INVALID_SYNTHETIC_SHARED_CUTOFF_FIXTURE"):
+        assess_shared_cutoff(data)
+
+
+@pytest.mark.parametrize("time", [
+    "0001-01-01T00:00:00+14:00",
+    "9999-12-31T23:59:59-14:00",
+])
+def test_timezone_normalization_boundary_errors_fail_closed(time: str) -> None:
+    data = fixture()
+    data["cases"][0]["news_version_observed_at"] = time
+    with pytest.raises(SharedCutoffError, match="INVALID_SYNTHETIC_SHARED_CUTOFF_FIXTURE"):
+        assess_shared_cutoff(data)
+
+
+def test_explicit_utc_plus_offset_is_not_unknown() -> None:
+    data = fixture()
+    data["cases"][0]["news_version_observed_at"] = "2026-10-14T09:00:00+00:00"
+    assert _result(data)["synthetic_all_before"] == 1
