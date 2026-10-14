@@ -37,3 +37,9 @@ If the required local configuration is only in an explicitly named dotenv file, 
 - Human inspection is mandatory before transferring any report. Type-only grouping can be safely discussed; never share secrets or original Mongo documents.
 
 Scientific next step: use verified aggregate structural results to propose a **new, outcome-blind mapping ontology**, then separate evidence for **when** any such mappings became available. Source structure does not establish availability; retrospective ObjectId-generation time remains only a partial proxy. The prospective 14-day/56-slot transport campaign and AWS activation remain independently blocked.
+
+## Additional source-code evidence: structure does not imply point-in-time integrity
+
+The reviewed backend code at commit `05cbae1a074c4b23e445d6c313299b6b622054a3` has a `match_news_to_tickers` writer that explicitly produces objects with `ticker` and `match_type` fields (source blob `868e3f0fcb118eef18ecb110c4dbc36922c6d055`). The audit includes **only the BSON type** of `match_type`, never its value. This corrects the preliminary temptation to label object elements malformed; no source schema count has yet been observed.
+
+A distinct optional script `precohort_news_identity_backfill.py` (Git blob `073648fedd6ad6c20331beb7268d5a897c111256`) supports dry-run by default, and *if* invoked with `--apply` can `update_one` a pre-existing document's `matched_tickers`, rather than inserting a new event. This is a **potential link-mutation mechanism**, not evidence it ran, was deployed or affected any particular record. A future independent audit must establish actual writer execution, mutation/audit records, source revision clocks, historical mapping availability, and authorization. No ObjectId/date field upgrades this missing evidence.
