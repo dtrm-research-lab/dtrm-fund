@@ -17,6 +17,7 @@ CASE_TAGS = frozenset(f"case_{i:02d}" for i in range(1, 65))
 PRICE_TAGS = frozenset(f"price_{i:02d}" for i in range(1, 21))
 TIMING = frozenset(("BEFORE", "AT_CUTOFF", "AFTER", "UNKNOWN"))
 DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
+INSTANT_RE = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})\Z")
 
 
 class SharedCutoffError(ValueError):
@@ -36,7 +37,7 @@ def _exact(value: Any, keys: frozenset[str]) -> dict[str, Any]:
 def _instant(value: Any, *, required: bool = False) -> datetime | None:
     if value is None and not required:
         return None
-    if not isinstance(value, str) or not value or value.strip() != value:
+    if not isinstance(value, str) or not INSTANT_RE.fullmatch(value):
         _reject()
     try:
         timestamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -161,6 +162,9 @@ def assess_shared_cutoff(fixture: Any) -> SharedCutoffAssessment:
         news = _instant(item["news_version_observed_at"])
         link = _instant(item["news_linked_at"])
         mapping = _instant(item["mapping_available_at"])
+        # A specific asset association cannot precede its own content vintage.
+        if news is not None and link is not None and link < news:
+            _reject()
         prices = item["price_dependencies"]
         if not isinstance(prices, list) or not 1 <= len(prices) <= 20:
             _reject()
@@ -179,6 +183,9 @@ def assess_shared_cutoff(fixture: Any) -> SharedCutoffAssessment:
             session_day = _date_only(price["price_session_date"])
             first = _instant(price["price_first_available_at"])
             vintage = _instant(price["price_vintage_available_at"])
+            # A revision vintage cannot be available before the first price observation.
+            if first is not None and vintage is not None and vintage < first:
+                _reject()
             price_nodes.append(PriceClockAssessment(
                 dependency_tag=name,
                 first_availability=_status(first, cutoff),
