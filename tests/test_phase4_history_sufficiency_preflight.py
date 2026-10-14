@@ -147,3 +147,51 @@ def test_cli_rejects_duplicate_json_keys(tmp_path, original, replacement) -> Non
     with pytest.raises(SystemExit):
         run_cli(["--fixture", str(fixture_path), "--output", str(output_path)])
     assert not output_path.exists()
+
+
+def test_cli_fsync_failure_leaves_no_report_or_temp(tmp_path, monkeypatch) -> None:
+    fixture_path = tmp_path / "fixture.json"
+    output_path = tmp_path / "output.json"
+    fixture_path.write_text(json.dumps(sample()), encoding="utf-8")
+
+    def fail_durability(_fd):
+        raise OSError("simulated private durability failure")
+
+    monkeypatch.setattr("dtrm.phase4.history_sufficiency_preflight.os.fsync", fail_durability)
+    with pytest.raises(SystemExit):
+        run_cli(["--fixture", str(fixture_path), "--output", str(output_path)])
+    assert not output_path.exists()
+    assert list(tmp_path.glob(".phase4-history-*")) == []
+
+
+def test_cli_link_failure_leaves_no_report_or_temp(tmp_path, monkeypatch) -> None:
+    fixture_path = tmp_path / "fixture.json"
+    output_path = tmp_path / "output.json"
+    fixture_path.write_text(json.dumps(sample()), encoding="utf-8")
+
+    def fail_publish(_source, _dest):
+        raise OSError("simulated private publish failure")
+
+    monkeypatch.setattr("dtrm.phase4.history_sufficiency_preflight.os.link", fail_publish)
+    with pytest.raises(SystemExit):
+        run_cli(["--fixture", str(fixture_path), "--output", str(output_path)])
+    assert not output_path.exists()
+    assert list(tmp_path.glob(".phase4-history-*")) == []
+
+
+def test_cli_external_destination_race_never_overwrites(tmp_path, monkeypatch) -> None:
+    from pathlib import Path
+
+    fixture_path = tmp_path / "fixture.json"
+    output_path = tmp_path / "output.json"
+    fixture_path.write_text(json.dumps(sample()), encoding="utf-8")
+
+    def racing_writer(_source, target):
+        Path(target).write_text("other writer", encoding="utf-8")
+        raise FileExistsError("simulated concurrent destination")
+
+    monkeypatch.setattr("dtrm.phase4.history_sufficiency_preflight.os.link", racing_writer)
+    with pytest.raises(SystemExit):
+        run_cli(["--fixture", str(fixture_path), "--output", str(output_path)])
+    assert output_path.read_text(encoding="utf-8") == "other writer"
+    assert list(tmp_path.glob(".phase4-history-*")) == []
