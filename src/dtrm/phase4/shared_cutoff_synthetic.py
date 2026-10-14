@@ -39,13 +39,16 @@ def _instant(value: Any, *, required: bool = False) -> datetime | None:
         return None
     if not isinstance(value, str) or not INSTANT_RE.fullmatch(value):
         _reject()
+    # RFC 3339 -00:00 explicitly denotes an unknown local offset, not proven UTC.
+    if value.endswith("-00:00"):
+        _reject()
     try:
         timestamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
+        if timestamp.tzinfo is None or timestamp.utcoffset() is None:
+            _reject()
+        return timestamp.astimezone(timezone.utc)
+    except (ValueError, OverflowError):
         _reject()
-    if timestamp.tzinfo is None or timestamp.utcoffset() is None:
-        _reject()
-    return timestamp.astimezone(timezone.utc)
 
 
 def _date_only(value: Any) -> str:
