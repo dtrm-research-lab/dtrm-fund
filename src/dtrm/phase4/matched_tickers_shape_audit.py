@@ -10,7 +10,7 @@ from typing import Any, NoReturn, cast
 CENSUS_CAP = 250_000
 ELEMENT_CAP = 5_000_000
 GROUP_CAP = 128
-FIELDS = ("ticker", "symbol", "name", "score", "confidence")
+FIELDS = ("ticker", "symbol", "name", "score", "confidence", "match_type")
 BSON_TYPES = frozenset((
     "double", "string", "object", "array", "binData", "undefined", "objectId",
     "bool", "date", "null", "regex", "dbPointer", "javascript", "symbol",
@@ -79,7 +79,7 @@ def _count(value: object, maximum: int) -> int:
 class ShapeGroup:
     kind: str
     n: int
-    fields: tuple[str, str, str, str, str] | None = None
+    fields: tuple[str, str, str, str, str, str] | None = None
 
     def to_json(self) -> dict[str, object]:
         value: dict[str, object] = {"kind": self.kind, "n": self.n}
@@ -168,7 +168,7 @@ def normalize_shape_counts(raw: object, *, counted_documents: int) -> ShapeAsses
         element_total += n
         if element_total > ELEMENT_CAP:
             _reject()
-        elements.append(ShapeGroup(kind, n, cast(tuple[str, str, str, str, str], values)))
+        elements.append(ShapeGroup(kind, n, cast(tuple[str, str, str, str, str, str], values)))
     if element_total and "array" not in seen:
         _reject()
     containers.sort(key=lambda x: x.kind)
