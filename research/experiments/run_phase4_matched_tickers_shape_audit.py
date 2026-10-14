@@ -46,11 +46,17 @@ def publish_exclusively(output: Path, data: bytes) -> None:
                     raise
 
 
+def _write_status(data: bytes) -> None:
+    """Do not leave advisory bytes in Python stdout's shutdown buffer."""
+    os.write(1, data)
+
+
 def _emit(payload: dict[str, object]) -> None:
-    """Console notification never overrides authoritative on-disk evidence."""
+    """Use one unbuffered OS write; never override authoritative on-disk evidence."""
     try:
-        print(json.dumps(payload, sort_keys=True))
-    except (OSError, ValueError):
+        content = (json.dumps(payload, sort_keys=True) + "\\n").encode("ascii")
+        _write_status(content)
+    except OSError:
         pass
 
 
