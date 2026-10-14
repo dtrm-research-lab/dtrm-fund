@@ -56,7 +56,7 @@ def _date_only(value: Any) -> str:
         _reject()
     if parsed.isoformat() != value:
         _reject()
-    return cast(str, value)
+    return value
 
 
 def _utc(value: datetime | None) -> str | None:
