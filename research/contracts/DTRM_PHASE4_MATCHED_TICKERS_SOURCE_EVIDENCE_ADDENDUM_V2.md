@@ -19,3 +19,8 @@ Expand the fixed **allowlisted object field type** set from five keys `ticker, s
 No live Mongo read, pricing, protected targets, FMP, AWS or deployment is authorized. Source shape success would **not** prove historical link availability or B/T training sufficiency. The existence of a potential mutable writer is referred to a separate source/write-authority audit; do not erase original unknown runtime/write-authority fields.
 
 Acceptance: contract-before-code ancestry, 4/4 exact-head CI, Codex review, no inherited Phase-III/MM1 change and human approval before merge; operator-only actual read still requires separate explicit approval.
+
+
+## Later correction, 2026-10-15 — execution attested
+
+The earlier “no proof it ran with --apply” statement is **superseded**: authenticated GitHub Actions run [35439965103](https://github.com/tech-com-UA00001/theresistance-back/actions/runs/35439965103) on **2026-09-19** at exact head `87f21b985ec03d2ba24819bce787b0cb7f2d58e4` completed the `--apply` workflow; its checked script report claimed **3 inserted rows and 3 completed update requests** (`addedMatchCounts={"AON":2,"MCO":4}`). A separate repair run 35439978926 failed **before** its apply step. This is **positive procedure-level evidence**; exact Mongo modifiedCount, affected IDs, actual changed history, writer exhaustiveness and `linked_at` remain unproven. See [PR #41](https://github.com/dtrm-research-lab/dtrm-fund/pull/41) for the full pinned evidence report. Scientific status unchanged.
