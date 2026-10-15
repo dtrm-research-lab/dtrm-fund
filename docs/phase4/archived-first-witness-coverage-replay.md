@@ -31,6 +31,14 @@ The output is created once (fail on existing path) and contains **ONLY aggregate
 
 Expected on real data only, **not verified by CI**: `PASS_CANONICAL_FIRST_WITNESS_COVERAGE_REPRODUCED`; 21 original captures, 3 families, global union 36,440, family-summed 38,968, and four cutoff sums 6,783 / 21,350 / 33,994 / 38,968. The new operator run is necessary to demonstrate actual *per-family cutoff appearance counts* and reproducibility; do not write assumed counts into the public report before it occurs.
 
+## Full-protocol metrics and reproducibility after the 21-ZIP first replay
+
+The real archived coverage v1 **already replayed successfully** on the operator's Mac at prior head `03a119f48f477792c2d75c76495ebe6bf2da9097`: 21 ZIPs, global selected positive union 36,440, cutoff counts 6,783/21,350/33,994/38,968, and all per-family appearances/repeats reproduced. The aggregate-only, user-supplied terminal excerpt is committed at `research/reports/DTRM_PHASE4_OPERATOR_FIRST_WITNESS_CUTOFF_EXCERPT_20261015.json`; it is explicitly NOT the original locally written v1 JSON bytes or a cryptographic receipt of that output.
+
+A later **protocol-completeness** implementation amendment now additionally emits every capture's `first_witness_within_family`, `repeat_witness_within_family`, `cumulative_distinct_family_witnesses`, `positive_representations_in_capture`, `capped_2d`, `capped_5d`, and `elapsed_days_since_first_family_artifact` (as well as old exact scientific gate keys and manifest SHA256). The per-capture details are safe aggregate counts/known capture times only; they must never include article IDs, tickers, news text, URLs or link hashes. On the real original 21 ZIPs the locked cap totals are **13** capped 2d and **21** capped 5d; the full output must not be claimed locally reproduced until the operator reruns this exact amended head.
+
+Because the earlier output already exists and outputs cannot be overwritten, use a **new local output path** when replaying. Record its SHA256 locally and share only the digest plus redacted counters; never upload the ZIPs.
+
 ## Share only a safe aggregate summary
 
 On success, the following prints only the family SHA and the approved integer counts; no private link tuple is printed:
