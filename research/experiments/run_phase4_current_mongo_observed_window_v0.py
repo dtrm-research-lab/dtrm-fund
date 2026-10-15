@@ -15,7 +15,10 @@ from pathlib import Path
 from typing import NoReturn
 
 from dtrm.phase4.current_mongo_observation import (
-    GRAPH, MAX_ROWS, ObservationError, ObservedWindowReducer,
+    GRAPH,
+    MAX_ROWS,
+    ObservationError,
+    ObservedWindowReducer,
 )
 from dtrm.phase4.salvage_live_io import configured_uri, quiet_driver
 from dtrm.phase4.source_metadata import COLLECTION, DATABASE
