@@ -35,7 +35,7 @@ The observed positive archive witness coverage is increasing across available ca
 
 1. Independently authenticate each artifact-created UTC and storage/right-to-use at the chosen decision cutoff, and bind the content-vintage/source selection-policy manifests.
 2. Preserve an append-only, time-stamped *positive-only* ledger of article-version-to-asset links. Any absence from filtered/capped exports remains UNKNOWN; two captures do not prove uninterrupted link persistence.
-3. Establish source mutation / revision chronology, especially actual documents involved in the verified September 19 backfill, or leave original link `first_available_at` unknown. No direct Mongo read/write authorized here.
+3. Establish source mutation / revision chronology, including any documents potentially affected by the September 19 workflow-reported backfill calls (see **separately unmerged PR #41** for pinned workflow/run provenance). This does **not** prove Mongo matched/modified counts or per-document original linkage timing; leave original link `first_available_at` unknown unless independently evidenced. No direct Mongo read/write authorized here.
 4. Independently verify price-vintage availability, common eligible universe and C0/S/B/T/O clocks, and preregister fixed lookback L, partitions, embargo, outcome maturity and eligibility **before any real model training**.
 5. Preserve isolation: Phase III/MM1 157 frozen blobs and humanclause.com remain unchanged, AWS Lambda approved quota does not authorize deployment, capture activation or scientific counting.
 
