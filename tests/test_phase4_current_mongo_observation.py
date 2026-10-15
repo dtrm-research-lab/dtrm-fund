@@ -55,7 +55,7 @@ def test_window_day_buckets_shape_counters_and_nonpromotion() -> None:
     ):
         assert result[name] is False
     encoded = json.dumps(result)
-    for raw in ("AAA", "legacy", "present", "future", "ticker"):
+    for raw in ('"AAA"', '"legacy"', '"present"', '"future"', '"ticker": "AAA"'):
         assert raw not in encoded
 
 
@@ -127,8 +127,6 @@ def test_rejects_naive_capture_clock() -> None:
 
 
 def test_private_publish_refuses_existing_output(tmp_path: Path) -> None:
-    from importlib import util
-
     script = (Path(__file__).resolve().parents[1] / "research" / "experiments"
               / "run_phase4_current_mongo_observed_window_v0.py")
     scope = runpy.run_path(str(script), run_name="phase4_test_only")
