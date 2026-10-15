@@ -14,15 +14,22 @@ from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
 from typing import Any, NoReturn, Sequence, cast
-from zipfile import BadZipFile, ZipFile
+from zipfile import ZIP_LZMA, BadZipFile, ZipFile
 
+
+class _UnavailableLZMAError(Exception):
+    """An inert exception placeholder when optional _lzma is absent."""
+
+
+_LZMA_AVAILABLE = False
+_LZMA_EXCEPTION: type[Exception] = _UnavailableLZMAError
 try:
-    from lzma import LZMAError
+    from lzma import LZMAError as _StdLZMAError
 except ImportError:
-    # Some Python builds omit the optional native _lzma extension.
-    # Any ZIP member that actually requires it still fails closed.
-    class LZMAError(Exception):
-        """Unreachable placeholder to keep the failure boundary well-typed."""
+    pass
+else:
+    _LZMA_AVAILABLE = True
+    _LZMA_EXCEPTION = _StdLZMAError
 
 
 CANONICAL_MANIFEST_BLOB_SHA1 = "eb7c91b462ddb822835c20fc126492bfcae5eea0"
@@ -234,6 +241,8 @@ def read_one_archive(directory: Path, row: dict[str, Any]) -> Snapshot:
     try:
         with ZipFile(BytesIO(raw)) as z:
             infos = z.infolist()
+            if not _LZMA_AVAILABLE and any(i.compress_type == ZIP_LZMA for i in infos):
+                _reject()
             names = [x.filename for x in infos]
             if (
                 len(names) != len(set(names)) or len(names) > 100
@@ -282,7 +291,7 @@ def read_one_archive(directory: Path, row: dict[str, Any]) -> Snapshot:
                     _reject()
                 full.update(positives)
     except (OSError, ValueError, KeyError, UnicodeError, RuntimeError, BadZipFile,
-            EOFError, zlib.error, LZMAError, ImportError, RecursionError):
+            EOFError, zlib.error, _LZMA_EXCEPTION, ImportError, RecursionError):
         _reject()
     return Snapshot(family, dt.strftime("%Y-%m-%dT%H:%M:%SZ"), asof, aid,
                     frozenset(full))
