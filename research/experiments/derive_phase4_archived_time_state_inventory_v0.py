@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, NoReturn, cast
 from zipfile import BadZipFile, ZipFile
 
+CANONICAL_SOURCE_MANIFEST_GIT_BLOB_SHA1 = "eb7c91b462ddb822835c20fc126492bfcae5eea0"
 MAX_ZIP = 10 * 1024 * 1024
 MAX_ENTRY = 8 * 1024 * 1024
 MAX_TOTAL = 20 * 1024 * 1024
@@ -266,6 +267,43 @@ def census_aggregate_only(manifest: dict[str, Any], archive_dir: Path) -> dict[s
     }
 
 
+def verify_canonical_source_manifest(raw: bytes) -> None:
+    """Git-blob-pin every historical source identity before any private ZIP I/O."""
+    if len(raw) > 256_000:
+        _stop()
+    # Git object header terminates with a NUL byte, not the characters backslash-zero.
+    header = b"blob " + str(len(raw)).encode("ascii") + b"\\x00"
+    if hashlib.sha1(header + raw).hexdigest() != CANONICAL_SOURCE_MANIFEST_GIT_BLOB_SHA1:
+        _stop()
+    doc = _json(raw)
+    if not isinstance(doc.get("archives"), list) or len(doc["archives"]) != 21:
+        _stop()
+
+
+def verify_canonical_aggregate(report: dict[str, Any]) -> None:
+    """Only the canonical 21-capture aggregate may be called reproduced."""
+    required = {
+        "snapshot_count": 21,
+        "asof_first": "2026-09-15",
+        "asof_last": "2026-10-13",
+        "2d_capped_count": 13,
+        "5d_capped_count": 21,
+        "same_family_adjacent_count": 18,
+        "unique_selected_positive_triples_union": 36440,
+        "same_family_sum_repeated_links_2d": 22348,
+        "same_family_sum_repeated_links_5d": 26396,
+    }
+    if any(report.get(key) != val for key, val in required.items()):
+        _stop()
+    family_groups = report.get("family_groups")
+    if (
+        not isinstance(family_groups, list) or len(family_groups) != 3
+        or sorted(row.get("snapshots") for row in family_groups if isinstance(row, dict))
+        != [4, 8, 9]
+    ):
+        _stop()
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -275,14 +313,15 @@ def main(argv: list[str] | None = None) -> int:
         if args.manifest.is_symlink() or not args.manifest.is_file():
             _stop()
         data = args.manifest.read_bytes()
-        if len(data) > 256_000:
-            _stop()
+        verify_canonical_source_manifest(data)
         manifest = _json(data)
         report = census_aggregate_only(manifest, args.archive_dir)
+        verify_canonical_aggregate(report)
+        report["reproduction_status"] = "PASS_CANONICAL_21_SOURCE_AGGREGATE_REPRODUCED"
         print(json.dumps(report, sort_keys=True, separators=(",", ":"), ensure_ascii=True))
         return 0
     except (ArchiveCensusError, OSError, ValueError, BadZipFile, EOFError, zlib.error):
-        print('{"error_code":"INVALID_ARCHIVED_RANKING_CENSUS","status":"failed"}')
+        print('{"error_code":"REPRODUCTION_NOT_CONFIRMED","status":"failed"}')
         return 1
 
 
