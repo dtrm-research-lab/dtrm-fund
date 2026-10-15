@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import lzma
 import zlib
 from dataclasses import FrozenInstanceError
 from io import BytesIO
@@ -322,3 +323,43 @@ def test_shadow_evidence_at_zip_top_level_is_rejected() -> None:
             z.writestr(name.split("/")[-1], value)
     with pytest.raises(ArchivedWitnessError, match="INVALID_PHASE4_ARCHIVED_WITNESS"):
         _compare(early, out.getvalue())
+
+
+def test_lzma_decompressor_error_is_fail_closed(monkeypatch) -> None:
+    first = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    second = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    original_read = ZipFile.read
+
+    def fail_lzma(self, name, *args, **kwargs):
+        if name == "ranking_news_evidence/daily_news_candidates_2d_v1.json":
+            raise lzma.LZMAError("sensitive fake decompression content")
+        return original_read(self, name, *args, **kwargs)
+
+    monkeypatch.setattr(ZipFile, "read", fail_lzma)
+    with pytest.raises(ArchivedWitnessError, match="^INVALID_PHASE4_ARCHIVED_WITNESS$"):
+        _compare(first, second)
+
+
+def test_corrupted_lzma_zip_member_with_valid_outer_digest_rejected() -> None:
+    from zipfile import ZIP_LZMA
+
+    first = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    raw = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with ZipFile(BytesIO(raw)) as original:
+        entries = [(name, original.read(name)) for name in original.namelist()]
+    compressed = BytesIO()
+    with ZipFile(compressed, "w", compression=ZIP_LZMA) as archive:
+        for name, value in entries:
+            archive.writestr(name, value)
+    valid_lzma = compressed.getvalue()
+    assert _compare(first, valid_lzma).to_json()["windows"][0]["stable_article_ticker_links"] == 1
+    with ZipFile(BytesIO(valid_lzma)) as archive:
+        item = archive.getinfo("ranking_news_evidence/daily_news_candidates_2d_v1.json")
+        offset = item.header_offset
+    name_size = int.from_bytes(valid_lzma[offset + 26:offset + 28], "little")
+    extra_size = int.from_bytes(valid_lzma[offset + 28:offset + 30], "little")
+    payload_start = offset + 30 + name_size + extra_size
+    damaged = bytearray(valid_lzma)
+    damaged[payload_start + 8] ^= 0xA5
+    with pytest.raises(ArchivedWitnessError, match="^INVALID_PHASE4_ARCHIVED_WITNESS$"):
+        _compare(first, bytes(damaged))
