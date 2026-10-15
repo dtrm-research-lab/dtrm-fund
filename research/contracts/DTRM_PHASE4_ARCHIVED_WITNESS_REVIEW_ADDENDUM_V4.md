@@ -1,0 +1,5 @@
+# Phase IV archive ZIP root ambiguity — top-level evidence fix v4
+
+2026-10-15, contract before code following exact-head Codex P2 review of `c07639b98ebfdacd39d186ec44918490f1637a7c`. An additional **top-level** `daily_news_freeze_manifest_v1.json` or any of the other five expected evidence file basenames is an ambiguous shadow copy just like `unknown/ranking_news_evidence/` root. The previously registered root-scanner must reject any expected evidence basename found **outside the uniquely chosen pinned root**, regardless of whether its entry has a slash.
+
+Amend the suffix predicate to match `name == expected_basename` **or** `name.endswith("/"+expected_basename)`; keep unrelated ZIP entries permitted. Tests create synthetic valid pinned root plus all six shadow names at ZIP top-level and reject without positive witness output, while valid 20/1 archive layouts and different-family no-witness blocked assessment remain valid. All source/clock/model/target/MM1 permissions remain false; no real-source/cloud operations.
