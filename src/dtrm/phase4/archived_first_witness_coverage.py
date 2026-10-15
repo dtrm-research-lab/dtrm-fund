@@ -260,7 +260,7 @@ def read_one_archive(directory: Path, row: dict[str, Any]) -> Snapshot:
             for days, leaf in zip((2, 5), _CANDIDATES):
                 body, encoded = _sealed(z, root, leaf)
                 positives = _positive_items(body)
-                count = body.get("items")
+                count = body["items"]
                 if (
                     body.get("schemaVersion") != "1.0"
                     or body.get("provider") != "financial-modeling-prep"
@@ -324,15 +324,15 @@ def calculate_coverage(snapshots: Sequence[Snapshot]) -> dict[str, Any]:
             detail.append({"family_sha256": family, **_family_summary(eligible)})
         cuts.append({
             "cutoff_utc": cutoff,
-            "admitted_snapshots": sum(d["admitted_snapshots"] for d in detail),
+            "admitted_snapshots": sum(cast(int, d["admitted_snapshots"]) for d in detail),
             "family_summed_distinct_positive": sum(
-                d["distinct_positive_representations"] for d in detail
+                cast(int, d["distinct_positive_representations"]) for d in detail
             ),
             "family_summed_capture_appearances": sum(
-                d["captured_positive_appearances"] for d in detail
+                cast(int, d["captured_positive_appearances"]) for d in detail
             ),
             "family_summed_repeat_appearances": sum(
-                d["repeat_positive_appearances"] for d in detail
+                cast(int, d["repeat_positive_appearances"]) for d in detail
             ),
             "families": detail,
         })
