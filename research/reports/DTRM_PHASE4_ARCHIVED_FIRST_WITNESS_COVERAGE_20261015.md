@@ -31,6 +31,30 @@ Each cutoff was fixed before this exploratory computation. An archive is availab
 
 The observed positive archive witness coverage is increasing across available captures. This is a **monotonic cumulative union of archived *selected evidence*** by construction, and is NOT proof that a model knew each link as of the historical market-date, nor a test of increasing predictive signal, temporal causality or a robust strategy's returns. Most archived five-day views were capped; full 60-day historical source observation is *not* demonstrated by 21 captures spanning only 29 market-calendar dates. Family breaks constrain longitudinal comparability.
 
+## Reproduction v1 on real archives — operator evidence, 2026-10-15
+
+**Source:** operator's Mac terminal, at git head `03a119f48f477792c2d75c76495ebe6bf2da9097` after a fast-forward update and before any source-only release/merge. The `_lzma` portability failure on the earlier head was corrected by a contract-first amendment; rerun returned `PASS_CANONICAL_FIRST_WITNESS_COVERAGE_REPRODUCED`. The operator privately retained 21 originals, and the v1 code pins exact ZIP SHA256 and the canonical 21-source manifest Git blob `eb7c91b462ddb822835c20fc126492bfcae5eea0`. **This is an independently runnable, operator-executed v1 reproduction of original descriptive family/cutoff figures, not a repository CI replay of private inputs**. The new v1 JSON output's SHA256 has **not** been supplied; it must not be equated to the older descriptive v0 SHA.
+
+The independently frozen full family identifiers were abbreviated in the user-shared summary. Each cell below is `admitted snapshots / distinct positives within family / total selected capture appearances / repeated positive witness appearances`.
+
+| Cutoff UTC | September I: `bfe784a3e76f` | September II: `ee19badac6cc` | October: `debddfd23c42` |
+| --- | --- | --- | --- |
+| 2026-09-19T00:00:00Z | 3 / 6,783 / 9,877 / 3,094 | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |
+| 2026-10-01T00:00:00Z | 4 / 8,248 / 13,082 / 4,834 | 7 / 13,102 / 22,244 / 9,142 | 0 / 0 / 0 / 0 |
+| 2026-10-10T00:00:00Z | 4 / 8,248 / 13,082 / 4,834 | 8 / 14,604 / 25,391 / 10,787 | 6 / 11,142 / 17,842 / 6,700 |
+| 2026-10-15T00:00:00Z | 4 / 8,248 / 13,082 / 4,834 | 8 / 14,604 / 25,391 / 10,787 | 9 / 16,116 / 26,891 / 10,775 |
+
+| Cutoff UTC | Total captures | Family-summed distinct (not cross-family union) | Selected appearances | Repeated appearances |
+| --- | ---: | ---: | ---: | ---: |
+| 2026-09-19T00:00:00Z | 3 | 6,783 | 9,877 | 3,094 |
+| 2026-10-01T00:00:00Z | 11 | 21,350 | 35,326 | 13,976 |
+| 2026-10-10T00:00:00Z | 18 | 33,994 | 56,315 | 22,321 |
+| 2026-10-15T00:00:00Z | 21 | 38,968 | 65,364 | 26,396 |
+
+**Consistency checks:** within each family/cutoff, `appearances = distinct + repeats`; the final family sum `38,968` exceeds the globally deduplicated union `36,440` by `2,528` cross-family duplicated **representation-count units**, not by 2,528 independent historical observations. All preregistered strict-cutoff figures matched the expected descriptive v0 totals. This settles the observed family-cutoff detail requested in Codex's P2 without changing source admission status.
+
+**Still pending for full registered computation parity:** Codex later noted that v1 currently omits the v0 protocol's per-capture first/cumulative/elapsed/cap outputs and the mandatory exact negative-authority gate keys; these require correction and a new exact-head replay. Nothing here implies original link first-seen, continuous availability, source absence, 60-day lookback completion, licensed re-use, eligible historical decisions, prices, fitting or financial results. `BLOCKED_SOURCE_AUDIT` remains.
+
 ## Necessary next evidence
 
 1. Independently authenticate each artifact-created UTC and storage/right-to-use at the chosen decision cutoff, and bind the content-vintage/source selection-policy manifests.
