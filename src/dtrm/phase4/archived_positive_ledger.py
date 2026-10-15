@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any, NoReturn, cast
+from typing import NoReturn, cast
 
 SCHEMA = "dtrm.phase4.archived_positive_ledger_fixture.v0"
 SHA_RE = re.compile(r"[0-9a-f]{64}\Z")
