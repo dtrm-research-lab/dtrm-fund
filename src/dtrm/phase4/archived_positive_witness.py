@@ -155,8 +155,17 @@ def _read_archive(
             if len(roots) != 1:
                 _reject()
             root = roots[0]
-            if any(name.startswith(other) for other in ARCHIVE_ROOTS if other != root for name in names):
-                _reject()
+            evidence_names = {
+                "daily_news_freeze_manifest_v1.json",
+                "daily_news_candidates_2d_v1.json",
+                "daily_news_candidates_5d_v1.json",
+            }
+            receipt_names = evidence_names | {name + ".sha256" for name in evidence_names}
+            # Evidence under ANY extra directory tree is ambiguous, not harmless metadata.
+            for name in names:
+                if any(name.endswith("/" + leaf) for leaf in receipt_names):
+                    if name not in {root + leaf for leaf in receipt_names}:
+                        _reject()
             manifest = _json(_sealed_read(z, root + "daily_news_freeze_manifest_v1.json"))
             asof = _date(manifest.get("asOf"))
             family = _sha(manifest.get("familyManifestSha256"))
@@ -255,14 +264,23 @@ class ArchivedWitnessAssessment:
     early_asof: str
     late_asof: str
     family_sha256: str
+    late_family_sha256: str
     windows: tuple[WindowWitness, ...]
 
     def to_json(self) -> dict[str, object]:
         return {
             "schema_version": "dtrm.phase4.archived_positive_witness_report.v0",
-            "engineering_status": "PASS_ARCHIVED_POSITIVE_WITNESS_COMPARISON",
+            "engineering_status": (
+                "PASS_ARCHIVED_POSITIVE_WITNESS_COMPARISON"
+                if self.family_sha256 == self.late_family_sha256
+                else "BLOCKED_FAMILY_LINEAGE_MISMATCH"
+            ),
             "scientific_status": "BLOCKED_SOURCE_AUDIT",
-            "witness_type": "POSITIVE_SHARED_FROZEN_REPRESENTATION",
+            "witness_type": (
+                "POSITIVE_SHARED_FROZEN_REPRESENTATION"
+                if self.family_sha256 == self.late_family_sha256
+                else "NO_COMPARABLE_WITNESS"
+            ),
             "nonobserved_link_state": "UNKNOWN_NOT_OBSERVED_IN_SELECTED_EXPORT",
             "snapshot_metadata_independently_authenticated": False,
             "original_link_first_seen_authenticated": False,
@@ -282,6 +300,7 @@ class ArchivedWitnessAssessment:
             "early_asof": self.early_asof,
             "late_asof": self.late_asof,
             "family_sha256": self.family_sha256,
+            "late_family_sha256": self.late_family_sha256,
             "windows": [w.to_json() for w in self.windows],
         }
 
@@ -308,9 +327,16 @@ def compare_archived_positive_witnesses(
     )
     if (
         early.run_id == late.run_id or early.created_at >= late.created_at
-        or early.asof >= late.asof or early.family_sha256 != late.family_sha256
+        or early.asof >= late.asof
     ):
         _reject()
+    if early.family_sha256 != late.family_sha256:
+        return ArchivedWitnessAssessment(
+            early.run_id, late.run_id, early.zip_sha256, late.zip_sha256,
+            early.created_at.isoformat(), late.created_at.isoformat(),
+            early.asof.isoformat(), late.asof.isoformat(),
+            early.family_sha256, late.family_sha256, (),
+        )
     results: list[WindowWitness] = []
     for (tag_a, vals_a), (tag_b, vals_b) in zip(early.snapshots, late.snapshots, strict=True):
         if tag_a != tag_b:
@@ -336,6 +362,6 @@ def compare_archived_positive_witnesses(
     return ArchivedWitnessAssessment(
         early.run_id, late.run_id, early.zip_sha256, late.zip_sha256,
         early.created_at.isoformat(), late.created_at.isoformat(),
-        early.asof.isoformat(), late.asof.isoformat(), early.family_sha256,
-        tuple(results),
+        early.asof.isoformat(), late.asof.isoformat(),
+        early.family_sha256, late.family_sha256, tuple(results),
     )
