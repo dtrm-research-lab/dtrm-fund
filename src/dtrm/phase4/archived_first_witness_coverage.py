@@ -30,7 +30,7 @@ MAX_ZIP_BYTES = 10_000_000
 MAX_MEMBER_BYTES = 8_000_000
 MAX_TOTAL_UNCOMPRESSED_BYTES = 20_000_000
 _SHA = re.compile(r"^[a-f0-9]{64}$")
-_UTC = re.compile(r"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$")
+_UTC = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 ERROR = "REPRODUCTION_NOT_CONFIRMED"
 _FREEZE = "daily_news_freeze_manifest_v1.json"
 _CANDIDATES = ("daily_news_candidates_2d_v1.json", "daily_news_candidates_5d_v1.json")
@@ -115,7 +115,7 @@ class Snapshot:
 def verify_canonical_manifest(raw: bytes) -> list[dict[str, Any]]:
     if len(raw) > 256_000:
         _reject()
-    header = b"blob " + str(len(raw)).encode("ascii") + b"\\x00"
+    header = b"blob " + str(len(raw)).encode("ascii") + b"\x00"
     if hashlib.sha1(header + raw).hexdigest() != CANONICAL_MANIFEST_BLOB_SHA1:
         _reject()
     m = _json(raw)
@@ -233,7 +233,7 @@ def read_one_archive(directory: Path, row: dict[str, Any]) -> Snapshot:
                 or sum(x.file_size for x in infos) > MAX_TOTAL_UNCOMPRESSED_BYTES
                 or any(
                     x.file_size > MAX_MEMBER_BYTES or x.filename.startswith("/")
-                    or "\\\\" in x.filename or ".." in x.filename.split("/")
+                    or "\\" in x.filename or ".." in x.filename.split("/")
                     for x in infos
                 )
             ):
