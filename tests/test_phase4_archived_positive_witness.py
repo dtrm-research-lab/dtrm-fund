@@ -164,7 +164,6 @@ def test_rejects_changed_zip_bytes() -> None:
 
 
 @pytest.mark.parametrize("change", [
-    lambda x: _zip("2026-10-13", [_article("x", tickers=["T1"])], family="f" * 64),
     lambda x: _zip("2026-10-12", [_article("x", tickers=["T1"])]),
     lambda x: _zip("2026-10-13", [_article("x", tickers=["T1"]), _article("x", tickers=["T1"])]),
     lambda x: _zip("2026-10-13", [_article("x", tickers=["T1", "T1"])]),
@@ -278,4 +277,34 @@ def test_archive_with_mixed_roots_is_rejected() -> None:
                 name = "Outputs/" + name
             z.writestr(name, value)
     with pytest.raises(ArchivedWitnessError):
+        _compare(early, out.getvalue())
+
+
+def test_distinct_frozen_family_is_a_no_witness_block_not_corruption() -> None:
+    first = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    second = _zip("2026-10-13", [_article("x", tickers=["T1"])], family="f" * 64)
+    report = _compare(first, second).to_json()
+    assert report["engineering_status"] == "BLOCKED_FAMILY_LINEAGE_MISMATCH"
+    assert report["family_sha256"] == FAMILY
+    assert report["late_family_sha256"] == "f" * 64
+    assert report["windows"] == []
+    assert report["witness_type"] == "NO_COMPARABLE_WITNESS"
+    assert report["scientific_counting_permitted"] is False
+    assert report["original_link_first_seen_authenticated"] is False
+    assert report["model_fitting_permitted"] is False
+    assert report["outcome_access_permitted"] is False
+    assert report["mm1_execution_permitted"] is False
+
+
+def test_unrecognized_second_complete_evidence_root_is_rejected() -> None:
+    early = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    later = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with ZipFile(BytesIO(later)) as z:
+        entries = [(name, z.read(name)) for name in z.namelist()]
+    out = BytesIO()
+    with ZipFile(out, "w") as z:
+        for name, value in entries:
+            z.writestr(name, value)
+            z.writestr("unknown/" + name, value)
+    with pytest.raises(ArchivedWitnessError, match="INVALID_PHASE4_ARCHIVED_WITNESS"):
         _compare(early, out.getvalue())
