@@ -10,7 +10,6 @@ import json
 import lzma
 import re
 import zlib
-from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from io import BytesIO
