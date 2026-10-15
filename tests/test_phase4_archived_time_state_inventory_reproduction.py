@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 from io import BytesIO
 from pathlib import Path
@@ -10,10 +11,16 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
 
-from research.experiments.derive_phase4_archived_time_state_inventory_v0 import (
-    ArchiveCensusError,
-    census_aggregate_only,
+_RUNNER = (
+    Path(__file__).resolve().parents[1]
+    / "research" / "experiments" / "derive_phase4_archived_time_state_inventory_v0.py"
 )
+_SPEC = importlib.util.spec_from_file_location("phase4_archive_inventory_cli", _RUNNER)
+assert _SPEC is not None and _SPEC.loader is not None
+_MODULE = importlib.util.module_from_spec(_SPEC)
+_SPEC.loader.exec_module(_MODULE)
+ArchiveCensusError = _MODULE.ArchiveCensusError
+census_aggregate_only = _MODULE.census_aggregate_only
 
 FAMILY = hashlib.sha256(b"fixed fictional family").hexdigest()
 
