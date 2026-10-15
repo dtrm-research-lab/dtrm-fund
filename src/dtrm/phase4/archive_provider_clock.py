@@ -8,8 +8,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
+import tempfile
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -75,6 +77,27 @@ def _utc(value: object) -> datetime:
     return parsed.replace(tzinfo=timezone.utc)
 
 
+def _decode_json(raw: bytes) -> object:
+    """Reject duplicate keys at any depth rather than accepting overwritten bytes."""
+    def unique(pairs: list[tuple[str, object]]) -> dict[str, object]:
+        obj: dict[str, object] = {}
+        for key, value in pairs:
+            if key in obj:
+                _reject()
+            obj[key] = value
+        return obj
+
+    def reject_constant(_: str) -> NoReturn:
+        _reject()
+
+    try:
+        return json.loads(
+            raw, object_pairs_hook=unique, parse_constant=reject_constant
+        )
+    except (ValueError, UnicodeError, TypeError, RecursionError):
+        _reject()
+
+
 def _git_blob_sha1(raw: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + b"\x00" + raw).hexdigest()
 
@@ -88,10 +111,7 @@ def verify_provider_clock(
     checked = _utc(inspected_at_utc)
     if _git_blob_sha1(manifest_raw) != MANIFEST_GIT_BLOB_SHA1:
         _reject()
-    try:
-        manifest = _object(json.loads(manifest_raw))
-    except (ValueError, UnicodeError, TypeError):
-        _reject()
+    manifest = _object(_decode_json(manifest_raw))
     if (
         manifest.get("schema_version") != MANIFEST_SCHEMA
         or manifest.get("repository") != BACKEND_REPO
@@ -170,7 +190,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        if args.output.exists() or not args.pages_dir.is_dir():
+        if os.path.lexists(args.output) or not args.pages_dir.is_dir():
             _reject()
         manifest_raw = _read_limited(args.manifest)
         filenames = sorted(args.pages_dir.glob("*.json"))
@@ -178,15 +198,38 @@ def main(argv: Sequence[str] | None = None) -> int:
             _reject()
         pages: dict[int, object] = {}
         for path in filenames:
-            pages[int(path.stem)] = json.loads(_read_limited(path))
+            pages[int(path.stem)] = _decode_json(_read_limited(path))
         result = verify_provider_clock(manifest_raw, pages, args.inspected_at_utc)
         report = json.dumps(asdict(result), sort_keys=True, indent=2) + "\n"
-        with args.output.open("x", encoding="utf-8") as target:
-            target.write(report)
-        print(result.status)
+        # Durable staging first; hardlink publication is atomic and no-clobber.
+        temp_name: str | None = None
+        try:
+            fd, temp_name = tempfile.mkstemp(
+                dir=args.output.parent,
+                prefix=f".{args.output.name}.",
+                suffix=".tmp",
+            )
+            with os.fdopen(fd, "w", encoding="utf-8") as staged:
+                staged.write(report)
+                staged.flush()
+                os.fsync(staged.fileno())
+            os.link(temp_name, args.output)
+        finally:
+            if temp_name is not None:
+                try:
+                    os.unlink(temp_name)
+                except OSError:
+                    pass  # Cleanup cannot turn an already-published report into failure.
+        try:
+            print(result.status)
+        except OSError:
+            pass  # Publication is already authoritative.
         return 0
-    except (ClockAttestationError, OSError, UnicodeError, ValueError, TypeError):
-        print(FAILURE, file=sys.stderr)
+    except (ClockAttestationError, OSError, UnicodeError, ValueError, TypeError, RecursionError):
+        try:
+            print(FAILURE, file=sys.stderr)
+        except OSError:
+            pass
         return 2
 
 
