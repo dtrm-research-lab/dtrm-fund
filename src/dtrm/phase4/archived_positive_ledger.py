@@ -191,13 +191,13 @@ def build_synthetic_positive_ledger(raw: object) -> SyntheticPositiveLedger:
             unique: set[str] = set()
             latest_nonempty: datetime | None = None
             appearances = 0
-            for row in available:
-                unique.update(row.links)
-                appearances += len(row.links)
-                if row.links and (
-                    latest_nonempty is None or row.observed_at > latest_nonempty
+            for snapshot in available:
+                unique.update(snapshot.links)
+                appearances += len(snapshot.links)
+                if snapshot.links and (
+                    latest_nonempty is None or snapshot.observed_at > latest_nonempty
                 ):
-                    latest_nonempty = row.observed_at
+                    latest_nonempty = snapshot.observed_at
             age = None
             if latest_nonempty is not None:
                 delta = cutoff - latest_nonempty
