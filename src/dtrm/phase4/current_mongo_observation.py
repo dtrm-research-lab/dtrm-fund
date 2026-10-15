@@ -8,6 +8,7 @@ import hashlib
 import re
 from collections import Counter
 from datetime import date, datetime, timedelta, timezone
+from typing import NoReturn
 
 GRAPH = "phase4_current_mongo_observed_window_v0"
 MAX_ROWS = 250_000
@@ -20,7 +21,7 @@ class ObservationError(ValueError):
     """Fixed input error, never include source values."""
 
 
-def _fail() -> None:
+def _fail() -> NoReturn:
     raise ObservationError("BLOCKED_CURRENT_MONGO_OBSERVATION")
 
 
