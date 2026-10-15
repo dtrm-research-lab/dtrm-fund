@@ -13,7 +13,7 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Mapping, NoReturn, Sequence
 
 MANIFEST_GIT_BLOB_SHA1 = "eb7c91b462ddb822835c20fc126492bfcae5eea0"
 BACKEND_REPO = "tech-com-UA00001/theresistance-back"
@@ -32,7 +32,8 @@ class ClockReadback:
     status: str
     scientific_status: str
     canonical_manifest_git_blob_sha1: str
-    independently_rechecked_capture_clocks: bool
+    provider_metadata_matches_supplied_readbacks: bool
+    metadata_independently_authenticated: bool = False
     verified_archives: int
     distinct_runs: int
     earliest_expiry_at_utc: str
@@ -46,7 +47,7 @@ class ClockReadback:
     scientific_counting_permitted: bool = False
 
 
-def _reject() -> None:
+def _reject() -> NoReturn:
     raise ClockAttestationError(FAILURE)
 
 
@@ -57,7 +58,7 @@ def _object(value: object) -> dict[str, object]:
 
 
 def _integer(value: object) -> int:
-    if type(value) is not int or value <= 0:
+    if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
         _reject()
     return value
 
@@ -148,7 +149,7 @@ def verify_provider_clock(
         status="PASS_PROVIDER_METADATA_MATCH",
         scientific_status="BLOCKED_SOURCE_AUDIT",
         canonical_manifest_git_blob_sha1=MANIFEST_GIT_BLOB_SHA1,
-        independently_rechecked_capture_clocks=True,
+        provider_metadata_matches_supplied_readbacks=True,
         verified_archives=len(archives),
         distinct_runs=len(entries),
         earliest_expiry_at_utc=min(expiries).strftime("%Y-%m-%dT%H:%M:%SZ"),
