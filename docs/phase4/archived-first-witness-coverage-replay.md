@@ -21,30 +21,32 @@ From a checkout of PR #44, and with Python 3.11:
 ```bash
 set -euo pipefail
 export PYTHONPATH=src
+REPORT="$HOME/Phase4-private-archive-backup/phase4_coverage_recheck_$(date -u +%Y%m%dT%H%M%SZ).json"
 python3 research/experiments/run_phase4_archived_first_witness_coverage_v1.py \
   --manifest research/evidence/DTRM_PHASE4_21_ARCHIVED_RANKING_SOURCE_MANIFEST_V0.json \
   --archive-dir "$HOME/Phase4-private-archive-backup" \
-  --output "$HOME/Phase4-private-archive-backup/phase4_coverage_v1_private_aggregate.json"
+  --output "$REPORT"
+shasum -a 256 "$REPORT"
 ```
 
 The output is created once (fail on existing path) and contains **ONLY aggregate numbers**: per-family SHA, count of snapshots, distinct represented triples, total archive appearances and repeat appearances; and at each of the four UTC cutoffs the same counts per family and sums over families. The file is not the original old report SHA. Failure returns only `REPRODUCTION_NOT_CONFIRMED` and writes no final output. If a prior verified output exists, choose a **new** local filename, never overwrite or loosen the source metadata.
 
-Expected on real data only, **not verified by CI**: `PASS_CANONICAL_FIRST_WITNESS_COVERAGE_REPRODUCED`; 21 original captures, 3 families, global union 36,440, family-summed 38,968, and four cutoff sums 6,783 / 21,350 / 33,994 / 38,968. The new operator run is necessary to demonstrate actual *per-family cutoff appearance counts* and reproducibility; do not write assumed counts into the public report before it occurs.
+Operator evidence **already verified on Mac at exact head `ee0b9e0b3a31df70e6f3227cfada8ca0d0d9e44d`**: `PASS_CANONICAL_FIRST_WITNESS_COVERAGE_REPRODUCED`, 21 original captures, 3 families, global selected union 36,440, family-summed 38,968; four cutoff sums 6,783 / 21,350 / 33,994 / 38,968. This is an operator-reported local PASS, **not a CI run against private inputs**. New future repetitions must use unique output filenames and explicitly record their SHA256.
 
 ## Full-protocol metrics and reproducibility after the 21-ZIP first replay
 
 The real archived coverage v1 **already replayed successfully** on the operator's Mac at prior head `03a119f48f477792c2d75c76495ebe6bf2da9097`: 21 ZIPs, global selected positive union 36,440, cutoff counts 6,783/21,350/33,994/38,968, and all per-family appearances/repeats reproduced. The aggregate-only, user-supplied terminal excerpt is committed at `research/reports/DTRM_PHASE4_OPERATOR_FIRST_WITNESS_CUTOFF_EXCERPT_20261015.json`; it is explicitly NOT the original locally written v1 JSON bytes or a cryptographic receipt of that output.
 
-A later **protocol-completeness** implementation amendment now additionally emits every capture's `first_witness_within_family`, `repeat_witness_within_family`, `cumulative_distinct_family_witnesses`, `positive_representations_in_capture`, `capped_2d`, `capped_5d`, and `elapsed_days_since_first_family_artifact` (as well as old exact scientific gate keys and manifest SHA256). The per-capture details are safe aggregate counts/known capture times only; they must never include article IDs, tickers, news text, URLs or link hashes. On the real original 21 ZIPs the locked cap totals are **13** capped 2d and **21** capped 5d; the full output must not be claimed locally reproduced until the operator reruns this exact amended head.
+A later **protocol-completeness** implementation amendment now additionally emits every capture's `first_witness_within_family`, `repeat_witness_within_family`, `cumulative_distinct_family_witnesses`, `positive_representations_in_capture`, `capped_2d`, `capped_5d`, and `elapsed_days_since_first_family_artifact` (as well as old exact scientific gate keys and manifest SHA256). The per-capture details are safe aggregate counts/known capture times only; they must never include article IDs, tickers, news text, URLs or link hashes. On the real original 21 ZIPs the locked cap totals are **13** capped 2d and **21** capped 5d; the full-protocol output was **reproduced locally on the amended head `ee0b9e0`**, with 21 capture records and both registered negative-history/first-seen flags `false`. Operator-reported private output SHA256: `3324efbb6cb8540b74c89af0c633b15656fd04260058b1ebed217b1c6484b1cb`. This digest cannot be independently checked without the private bytes and does not authenticate external historical availability.
 
-Because the earlier output already exists and outputs cannot be overwritten, use a **new local output path** when replaying. Record its SHA256 locally and share only the digest plus redacted counters; never upload the ZIPs.
+The original v1 output and full-protocol output already exist on the operator's Mac; the example above therefore chooses a new time-stamped path. Reusing the old path intentionally fails closed. Record each new output's SHA256 locally and share only digests and redacted aggregate counters; never upload the ZIPs.
 
 ## Share only a safe aggregate summary
 
 On success, the following prints only the family SHA and the approved integer counts; no private link tuple is printed:
 
 ```bash
-python3 - "$HOME/Phase4-private-archive-backup/phase4_coverage_v1_private_aggregate.json" <<'PY'
+python3 - "${REPORT:-$HOME/Phase4-private-archive-backup/phase4_coverage_full_protocol_20261015.json}" <<'PY'
 import json,sys
 from pathlib import Path
 r=json.loads(Path(sys.argv[1]).read_text())
