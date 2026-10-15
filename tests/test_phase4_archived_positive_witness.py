@@ -1,0 +1,197 @@
+"""Fully synthetic archived witness tests; no real news/tickers are checked in."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from dataclasses import FrozenInstanceError
+from io import BytesIO
+from zipfile import ZIP_DEFLATED, ZipFile
+
+import pytest
+
+from dtrm.phase4.archived_positive_witness import (
+    ArchivedWitnessError,
+    compare_archived_positive_witnesses,
+)
+
+FAMILY = hashlib.sha256(b"family").hexdigest()
+
+
+def _dump(value: object) -> bytes:
+    return (json.dumps(value, sort_keys=True) + "\n").encode("utf-8")
+
+
+def _article(article_id: str, *, tickers: list[str], text: str = "original") -> dict:
+    return {
+        "fmpArticleId": article_id,
+        "textSha256": hashlib.sha256(text.encode()).hexdigest(),
+        "tickers": tickers,
+        "headline": "synthetic secret headline must not appear",
+        "text": "synthetic confidential content must not appear",
+        "sourceUrl": "https://example.invalid/private-test",
+    }
+
+
+def _zip(asof: str, articles: list[dict], *, family: str = FAMILY) -> bytes:
+    root = "ranking_news_evidence/"
+    news_sha = hashlib.sha256(asof.encode()).hexdigest()
+    manifest = {
+        "schemaVersion": "1.0",
+        "asOf": asof,
+        "familyManifestSha256": family,
+        "sourceNewsSha256": news_sha,
+    }
+    output = BytesIO()
+    with ZipFile(output, "w", compression=ZIP_DEFLATED) as z:
+        for window in (2, 5):
+            doc = {
+                "schemaVersion": "1.0",
+                "asOfDate": asof,
+                "familyManifestSha256": family,
+                "sourceNewsSha256": news_sha,
+                "provider": "financial-modeling-prep",
+                "windowDays": window,
+                "items": articles,
+            }
+            raw = _dump(doc)
+            basename = root + f"daily_news_candidates_{window}d_v1.json"
+            digest = hashlib.sha256(raw).hexdigest()
+            manifest[f"candidate{window}dCount"] = len(articles)
+            manifest[f"candidate{window}dSha256"] = digest
+            z.writestr(basename, raw)
+            z.writestr(basename + ".sha256", digest + "\n")
+        raw_manifest = _dump(manifest)
+        filename = root + "daily_news_freeze_manifest_v1.json"
+        z.writestr(filename, raw_manifest)
+        z.writestr(filename + ".sha256", hashlib.sha256(raw_manifest).hexdigest() + "\n")
+    return output.getvalue()
+
+
+def _compare(first: bytes, second: bytes, *, late_id: int = 2):
+    return compare_archived_positive_witnesses(
+        first, second, early_run_id=1, late_run_id=late_id,
+        early_sha256=hashlib.sha256(first).hexdigest(),
+        late_sha256=hashlib.sha256(second).hexdigest(),
+        early_artifact_created_at="2026-10-13T03:11:15Z",
+        late_artifact_created_at="2026-10-14T01:24:19Z",
+    )
+
+
+def test_exact_archive_witnesses_and_no_source_value_in_report() -> None:
+    pre = _zip("2026-10-12", [
+        _article("private-article-alpha", tickers=["FAKE1", "FAKE2"]),
+        _article("private-article-beta", tickers=["FAKE3"]),
+    ])
+    post = _zip("2026-10-13", [
+        _article("private-article-alpha", tickers=["FAKE1", "FAKE4"]),
+        _article("private-article-beta", tickers=["FAKE3"]),
+    ])
+    state = _compare(pre, post)
+    report = state.to_json()
+    assert report["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+    assert len(report["windows"]) == 2
+    for window in report["windows"]:
+        assert window["shared_article_ids"] == 2
+        assert window["shared_exact_text_versions"] == 2
+        assert window["articles_with_unchanged_ticker_set"] == 1
+        assert window["stable_article_ticker_links"] == 2
+        assert window["changed_link_set_on_exact_text"] == 1
+        assert window["later_only_pairs_on_shared_text"] == 1
+        assert window["earlier_only_pairs_on_shared_text"] == 1
+        assert window["earlier_potentially_truncated"] is False
+        assert window["later_potentially_truncated"] is False
+    encoded = json.dumps(report)
+    for secret in ("private-article-", "FAKE", "synthetic secret", "private-test"):
+        assert secret not in encoded
+    for gate in (
+        "snapshot_metadata_independently_authenticated",
+        "original_link_first_seen_authenticated",
+        "absence_authenticated",
+        "source_completeness_authenticated",
+        "price_clock_authenticated",
+        "model_fitting_permitted",
+        "outcome_access_permitted",
+        "mm1_execution_permitted",
+        "scientific_counting_permitted",
+    ):
+        assert report[gate] is False
+
+
+def test_text_revision_is_not_same_vintage() -> None:
+    first = _zip("2026-10-12", [_article("same-id", tickers=["T1"], text="old")])
+    second = _zip("2026-10-13", [_article("same-id", tickers=["T1"], text="new")])
+    result = _compare(first, second).to_json()["windows"][0]
+    assert result["shared_article_ids"] == 1
+    assert result["shared_exact_text_versions"] == 0
+    assert result["stable_article_ticker_links"] == 0
+
+
+def test_absence_from_later_selected_export_is_never_negative_evidence() -> None:
+    pre = _zip("2026-10-12", [_article("present-earlier", tickers=["T1"])])
+    post = _zip("2026-10-13", [_article("different-later", tickers=["T2"])])
+    result = _compare(pre, post).to_json()
+    assert result["windows"][0]["shared_article_ids"] == 0
+    assert result["absence_authenticated"] is False
+    assert result["nonobserved_link_state"] == "UNKNOWN_NOT_OBSERVED_IN_SELECTED_EXPORT"
+
+
+def test_inmemory_state_is_immutable_and_report_detached() -> None:
+    source = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    later = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    frozen = _compare(source, later)
+    with pytest.raises(FrozenInstanceError):
+        frozen.early_run_id = 123
+    public = frozen.to_json()
+    public["windows"][0]["stable_article_ticker_links"] = 900
+    public["source_completeness_authenticated"] = True
+    assert frozen.to_json()["source_completeness_authenticated"] is False
+    assert frozen.to_json()["windows"][0]["stable_article_ticker_links"] == 1
+
+
+def test_rejects_changed_zip_bytes() -> None:
+    first = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    second = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with pytest.raises(ArchivedWitnessError, match="INVALID_PHASE4_ARCHIVED_WITNESS"):
+        compare_archived_positive_witnesses(
+            first, second, early_run_id=1, late_run_id=2,
+            early_sha256="0" * 64,
+            late_sha256=hashlib.sha256(second).hexdigest(),
+            early_artifact_created_at="2026-10-13T03:11:15Z",
+            late_artifact_created_at="2026-10-14T01:24:19Z",
+        )
+
+
+@pytest.mark.parametrize("change", [
+    lambda x: _zip("2026-10-13", [_article("x", tickers=["T1"])], family="f" * 64),
+    lambda x: _zip("2026-10-12", [_article("x", tickers=["T1"])]),
+    lambda x: _zip("2026-10-13", [_article("x", tickers=["T1"]), _article("x", tickers=["T1"])]),
+    lambda x: _zip("2026-10-13", [_article("x", tickers=["T1", "T1"])]),
+])
+def test_fail_closed_on_family_date_duplicate_id_or_ticker(change) -> None:
+    first = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    bad = change(first)
+    with pytest.raises(ArchivedWitnessError):
+        _compare(first, bad)
+
+
+def test_identical_run_ids_are_not_independent_witnesses() -> None:
+    first = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    later = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with pytest.raises(ArchivedWitnessError):
+        _compare(first, later, late_id=1)
+
+
+def test_corrupted_digest_or_duplicate_zip_entry_rejected() -> None:
+    first = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    second = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with ZipFile(BytesIO(second)) as z:
+        files = {name: z.read(name) for name in z.namelist()}
+    receipt = "ranking_news_evidence/daily_news_candidates_2d_v1.json.sha256"
+    files[receipt] = b"f" * 64
+    out = BytesIO()
+    with ZipFile(out, "w") as z:
+        for name, value in files.items():
+            z.writestr(name, value)
+    with pytest.raises(ArchivedWitnessError):
+        _compare(first, out.getvalue())
