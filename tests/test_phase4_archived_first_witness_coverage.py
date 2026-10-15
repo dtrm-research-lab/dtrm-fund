@@ -22,7 +22,6 @@ from dtrm.phase4.archived_first_witness_coverage import (
     verify_original_coverage_targets,
 )
 
-
 F1 = hashlib.sha256(b"fictional family 1").hexdigest()
 F2 = hashlib.sha256(b"fictional family 2").hexdigest()
 ARTICLE = "private-fake-id"
