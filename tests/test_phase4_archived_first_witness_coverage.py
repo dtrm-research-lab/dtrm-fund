@@ -11,7 +11,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
 
-from dtrm.phase4 import archived_first_witness_coverage as cov
+import dtrm.phase4.archived_first_witness_coverage as cov
 
 
 F1 = hashlib.sha256(b"fictional family 1").hexdigest()
