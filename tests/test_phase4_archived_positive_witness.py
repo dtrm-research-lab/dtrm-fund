@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import zlib
 from dataclasses import FrozenInstanceError
 from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -195,3 +196,45 @@ def test_corrupted_digest_or_duplicate_zip_entry_rejected() -> None:
             z.writestr(name, value)
     with pytest.raises(ArchivedWitnessError):
         _compare(first, out.getvalue())
+
+
+@pytest.mark.parametrize("bad_ticker", ["   ", " X", "X ", "\t", "\n"])
+def test_whitespace_ticker_never_becomes_positive_witness(bad_ticker: str) -> None:
+    early = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    later = _zip("2026-10-13", [_article("x", tickers=[bad_ticker])])
+    with pytest.raises(ArchivedWitnessError, match="INVALID_PHASE4_ARCHIVED_WITNESS"):
+        _compare(early, later)
+
+
+@pytest.mark.parametrize("broken", [
+    lambda: zlib.error("synthetic inflate exception containing private content"),
+    lambda: ValueError("synthetic invalid compressed bytes"),
+])
+def test_member_read_decompression_errors_are_fixed_domain_errors(monkeypatch, broken) -> None:
+    before = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    after = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    original = ZipFile.read
+
+    def fail_selected_member(self, name, *args, **kwargs):
+        if name == "ranking_news_evidence/daily_news_candidates_2d_v1.json":
+            raise broken()
+        return original(self, name, *args, **kwargs)
+
+    monkeypatch.setattr(ZipFile, "read", fail_selected_member)
+    with pytest.raises(ArchivedWitnessError, match="^INVALID_PHASE4_ARCHIVED_WITNESS$"):
+        _compare(before, after)
+
+
+def test_corrupt_member_with_matching_new_zip_digest_is_rejected() -> None:
+    early = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    later = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with ZipFile(BytesIO(later)) as z:
+        item = z.getinfo("ranking_news_evidence/daily_news_candidates_2d_v1.json")
+        offset = item.header_offset
+    local_name_bytes = int.from_bytes(later[offset + 26:offset + 28], "little")
+    extra_bytes = int.from_bytes(later[offset + 28:offset + 30], "little")
+    payload_offset = offset + 30 + local_name_bytes + extra_bytes
+    corrupted = bytearray(later)
+    corrupted[payload_offset + 2] ^= 0xFF
+    with pytest.raises(ArchivedWitnessError, match="^INVALID_PHASE4_ARCHIVED_WITNESS$"):
+        _compare(early, bytes(corrupted))
