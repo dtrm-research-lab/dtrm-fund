@@ -13,7 +13,7 @@ from typing import NoReturn
 GRAPH = "phase4_current_mongo_observed_window_v0"
 MAX_ROWS = 250_000
 MAX_PROJECTED_BSON_BYTES = 1_048_576
-LEADING_DAY = re.compile(r"^(\\d{4}-\\d{2}-\\d{2})(?:$|T|\\s)")
+LEADING_DAY = re.compile(r"^(\d{4}-\d{2}-\d{2})(?:$|T|\s)")
 STATUS = "PASS_CURRENT_MONGO_WINDOW_OBSERVATION"
 
 
