@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import zlib
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from io import BytesIO
@@ -100,7 +101,7 @@ def _sealed_read(z: ZipFile, name: str) -> bytes:
     try:
         content = z.read(name)
         receipt = z.read(name + ".sha256").decode("ascii").strip()
-    except (KeyError, OSError, UnicodeError, RuntimeError, BadZipFile):
+    except (KeyError, OSError, UnicodeError, RuntimeError, BadZipFile, ValueError, zlib.error):
         _reject()
     if _hash(content) != _sha(receipt):
         _reject()
@@ -188,13 +189,16 @@ def _read_archive(
                     values = item.get("tickers")
                     if (
                         not isinstance(values, list) or not 1 <= len(values) <= 12
-                        or any(not isinstance(v, str) or not v or len(v) > 24 for v in values)
+                        or any(
+                            not isinstance(v, str) or not v.strip() or v != v.strip()
+                            or len(v) > 24 for v in values
+                        )
                         or len(set(values)) != len(values)
                     ):
                         _reject()
                     typed.append((aid, text, tuple(sorted(values))))
                 bundles.append((tag, tuple(sorted(typed))))
-    except (BadZipFile, EOFError, OSError, RuntimeError, OverflowError):
+    except (BadZipFile, EOFError, OSError, RuntimeError, OverflowError, ValueError, zlib.error):
         _reject()
     return _Archive(run_id, expected, created_at, asof, family, tuple(bundles))
 
