@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import lzma
 import re
 import zlib
 from dataclasses import dataclass
@@ -101,7 +102,7 @@ def _sealed_read(z: ZipFile, name: str) -> bytes:
     try:
         content = z.read(name)
         receipt = z.read(name + ".sha256").decode("ascii").strip()
-    except (KeyError, OSError, UnicodeError, RuntimeError, BadZipFile, ValueError, zlib.error):
+    except (KeyError, OSError, UnicodeError, RuntimeError, BadZipFile, ValueError, zlib.error, lzma.LZMAError):
         _reject()
     if _hash(content) != _sha(receipt):
         _reject()
@@ -216,7 +217,7 @@ def _read_archive(
                         _reject()
                     typed.append((aid, text, tuple(sorted(values))))
                 bundles.append((tag, tuple(sorted(typed))))
-    except (BadZipFile, EOFError, OSError, RuntimeError, OverflowError, ValueError, zlib.error):
+    except (BadZipFile, EOFError, OSError, RuntimeError, OverflowError, ValueError, zlib.error, lzma.LZMAError):
         _reject()
     return _Archive(run_id, expected, created_at, asof, family, tuple(bundles))
 
