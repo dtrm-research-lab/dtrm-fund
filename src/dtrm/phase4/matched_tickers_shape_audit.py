@@ -7,6 +7,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, NoReturn, cast
 
+NAMESPACE = "trumpMinMax.trumpNews"
 CENSUS_CAP = 250_000
 ELEMENT_CAP = 5_000_000
 GROUP_CAP = 128
@@ -63,6 +64,14 @@ def build_shape_pipeline() -> list[dict[str, Any]]:
     ]
 
 
+def pipeline_sha256() -> str:
+    """Bind the audit report to the fixed, aggregate-only pipeline."""
+    return hashlib.sha256(
+        json.dumps(build_shape_pipeline(), sort_keys=True, separators=(",", ":"),
+                   ensure_ascii=True).encode("ascii")
+    ).hexdigest()
+
+
 def _exact(value: object, keys: frozenset[str]) -> dict[str, object]:
     if not isinstance(value, dict) or set(value) != keys:
         _reject()
@@ -104,6 +113,8 @@ class ShapeAssessment:
             "engineering_status": "PASS_AGGREGATE_SHAPE_SCHEMA",
             "scientific_status": "BLOCKED_SOURCE_AUDIT",
             "data_scope": "aggregate_only_non_atomic_census",
+            "source_namespace": NAMESPACE,
+            "pipeline_sha256": pipeline_sha256(),
             "asset_mapping_authenticated": False,
             "vintage_authenticated": False,
             "decision_clock_authenticated": False,
@@ -174,6 +185,8 @@ def normalize_shape_counts(raw: object, *, counted_documents: int) -> ShapeAsses
     containers.sort(key=lambda x: x.kind)
     elements.sort(key=lambda x: (x.kind, x.fields or ()))
     evidence = {
+        "source_namespace": NAMESPACE,
+        "pipeline_sha256": pipeline_sha256(),
         "document_count": counted_documents,
         "element_count": element_total,
         "containers": [x.to_json() for x in containers],
