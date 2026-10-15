@@ -32,9 +32,9 @@ jobs:
       - name: Check inherited source and original contract
         run: python research/experiments/validate_phase4_source_preservation.py
       - name: Lint Phase IV
-        run: python -m ruff check --select E4,E7,E9,F,I src/dtrm/phase4 tests/test_phase4_*.py research/experiments/run_phase4_*.py research/experiments/validate_phase4_*.py
+        run: python -m ruff check --select E4,E7,E9,F,I src/dtrm/phase4 tests/test_phase4_*.py research/experiments/run_phase4_*.py research/experiments/validate_phase4_*.py research/experiments/derive_phase4_archived_time_state_inventory_v0.py
       - name: Type check Phase IV
-        run: python -m mypy --strict src/dtrm/phase4 research/experiments/run_phase4_*.py research/experiments/validate_phase4_*.py
+        run: python -m mypy --strict src/dtrm/phase4 research/experiments/run_phase4_*.py research/experiments/validate_phase4_*.py research/experiments/derive_phase4_archived_time_state_inventory_v0.py
       - name: Deterministic tests and inherited regressions
         run: python -m pytest -q
       - name: Reproduce synthetic ontology review
