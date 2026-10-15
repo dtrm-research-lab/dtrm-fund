@@ -308,3 +308,17 @@ def test_unrecognized_second_complete_evidence_root_is_rejected() -> None:
             z.writestr("unknown/" + name, value)
     with pytest.raises(ArchivedWitnessError, match="INVALID_PHASE4_ARCHIVED_WITNESS"):
         _compare(early, out.getvalue())
+
+
+def test_shadow_evidence_at_zip_top_level_is_rejected() -> None:
+    early = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    late = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with ZipFile(BytesIO(late)) as z:
+        entries = [(name, z.read(name)) for name in z.namelist()]
+    out = BytesIO()
+    with ZipFile(out, "w") as z:
+        for name, value in entries:
+            z.writestr(name, value)
+            z.writestr(name.split("/")[-1], value)
+    with pytest.raises(ArchivedWitnessError, match="INVALID_PHASE4_ARCHIVED_WITNESS"):
+        _compare(early, out.getvalue())
