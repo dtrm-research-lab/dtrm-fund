@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import json
+import runpy
 from dataclasses import FrozenInstanceError
+from pathlib import Path
 
 import pytest
 
@@ -212,8 +214,8 @@ def test_duplicate_case_tags_and_bounds_fail_closed() -> None:
 def test_closed_fictional_cli_does_not_serialize_source_or_promote(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    from research.experiments.run_phase4_temporal_proof_obligations import main
-
+    entry = Path(__file__).resolve().parents[1] / "research" / "experiments" / "run_phase4_temporal_proof_obligations.py"
+    main = runpy.run_path(str(entry), run_name="synthetic_only_test")["main"]
     assert main() == 0
     raw = capsys.readouterr().out
     result = json.loads(raw)
