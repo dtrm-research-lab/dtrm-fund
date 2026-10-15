@@ -5,9 +5,10 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import sys
 from io import BytesIO
 from pathlib import Path
-from zipfile import ZIP_DEFLATED, ZipFile
+from zipfile import ZIP_DEFLATED, ZIP_LZMA, ZipFile
 
 import pytest
 
@@ -203,3 +204,49 @@ def test_nested_shadow_evidence_rejected_even_inside_valid_root(
     row["zip_sha256"] = _sha(shadow)
     with pytest.raises(CoverageError, match=ERROR):
         read_one_archive(tmp_path, row)
+
+
+def _load_reader_without_lzma(monkeypatch: pytest.MonkeyPatch) -> object:
+    """Simulate Mac pyenv Python without optional _lzma at import boundary."""
+    source = (
+        Path(__file__).resolve().parents[1] / "src" / "dtrm" / "phase4"
+        / "archived_first_witness_coverage.py"
+    )
+    spec = importlib.util.spec_from_file_location("synthetic_reader_no_lzma", source)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    monkeypatch.setitem(sys.modules, "lzma", None)
+    monkeypatch.setitem(sys.modules, spec.name, module)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_without_optional_lzma_import_still_verifies_deflate_original(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    row = _row(tmp_path)
+    with monkeypatch.context() as m:
+        reader = _load_reader_without_lzma(m)
+        witness = reader.read_one_archive(tmp_path, row)
+        assert len(witness.positives) == 1
+        assert reader.calculate_coverage([witness])["source_completeness_authenticated"] is False
+
+
+def test_without_optional_lzma_rejects_zip_lzma_not_silently_skipped(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    pytest.importorskip("lzma")  # Builder only; not required by the reader on Mac.
+    row = _row(tmp_path)
+    raw = (tmp_path / "101.zip").read_bytes()
+    compressed = BytesIO()
+    with ZipFile(BytesIO(raw)) as source:
+        with ZipFile(compressed, "w", compression=ZIP_LZMA) as dest:
+            for entry in source.infolist():
+                dest.writestr(entry.filename, source.read(entry.filename))
+    new_raw = compressed.getvalue()
+    (tmp_path / "101.zip").write_bytes(new_raw)
+    row["zip_sha256"] = _sha(new_raw)
+    with monkeypatch.context() as m:
+        reader = _load_reader_without_lzma(m)
+        with pytest.raises(reader.CoverageError, match=reader.ERROR):
+            reader.read_one_archive(tmp_path, row)
