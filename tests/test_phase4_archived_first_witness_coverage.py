@@ -105,6 +105,11 @@ def test_reader_accepts_sha_sealed_fictional_positive_only_zip(
     assert "test.invalid" not in emitted
     assert result["historical_absence_authenticated"] is False
     assert result["model_fitting_permitted"] is False
+    assert result["2d_capped_count"] == 0
+    assert result["5d_capped_count"] == 0
+    assert result["families"][0]["captures"][0]["first_witness_within_family"] == 1
+    assert result["families"][0]["captures"][0]["cumulative_distinct_family_witnesses"] == 1
+    assert result["families"][0]["captures"][0]["elapsed_days_since_first_family_artifact"] == 0
 
 
 def test_reader_rejects_changed_original_zip_hash(tmp_path: Path) -> None:
@@ -144,6 +149,16 @@ def test_family_cutoffs_exclude_exact_clock_ties_and_never_merge_families() -> N
     assert TICKER not in json.dumps(r)
     assert r["metadata_independently_authenticated"] is False
     assert r["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+    assert r["historical_first_seen_authenticated"] is False
+    assert r["negative_history_authenticated"] is False
+    f1_cutoff = next(f for f in r["cutoffs"][1]["families"] if f["family_sha256"] == F1)
+    assert f1_cutoff["captures"][0]["first_witness_within_family"] == 1
+    assert f1_cutoff["captures"][1]["first_witness_within_family"] == 1
+    assert f1_cutoff["captures"][1]["repeat_witness_within_family"] == 1
+    assert f1_cutoff["captures"][1]["cumulative_distinct_family_witnesses"] == 2
+    assert f1_cutoff["captures"][1]["capped_2d"] is False
+    assert f1_cutoff["captures"][1]["capped_5d"] is False
+    assert f1_cutoff["captures"][1]["elapsed_days_since_first_family_artifact"] > 0
     with pytest.raises(CoverageError):
         verify_original_coverage_targets(r)
 
@@ -250,3 +265,27 @@ def test_without_optional_lzma_rejects_zip_lzma_not_silently_skipped(
         reader = _load_reader_without_lzma(m)
         with pytest.raises(reader.CoverageError, match=reader.ERROR):
             reader.read_one_archive(tmp_path, row)
+
+
+def test_capture_counts_and_elapsed_time_follow_created_utc_not_market_asof() -> None:
+    a: PrivateTriple = (ARTICLE, VINTAGE, TICKER)
+    snapshots = [
+        Snapshot(F1, "2026-09-18T18:00:00Z", "2026-09-17", 11,
+                 frozenset({a}), capped_2d=True, capped_5d=True),
+        Snapshot(F1, "2026-09-19T06:00:00Z", "2026-09-18", 12,
+                 frozenset({a}), capped_2d=False, capped_5d=True),
+    ]
+    r = calculate_coverage(snapshots)
+    cap = next(x for x in r["families"] if x["family_sha256"] == F1)["captures"]
+    assert len(cap) == 2
+    assert cap[0]["elapsed_days_since_first_family_artifact"] == 0
+    assert cap[1]["elapsed_days_since_first_family_artifact"] == 0.5
+    assert cap[0]["first_witness_within_family"] == 1
+    assert cap[1]["first_witness_within_family"] == 0
+    assert cap[1]["repeat_witness_within_family"] == 1
+    assert cap[1]["cumulative_distinct_family_witnesses"] == 1
+    assert r["2d_capped_count"] == 1
+    assert r["5d_capped_count"] == 2
+    assert r["cutoffs"][0]["admitted_snapshots"] == 1
+    assert len(r["cutoffs"][0]["families"][0]["captures"]) == 1
+    assert r["negative_history_authenticated"] is False
