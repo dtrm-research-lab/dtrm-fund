@@ -33,10 +33,10 @@ class ClockReadback:
     scientific_status: str
     canonical_manifest_git_blob_sha1: str
     provider_metadata_matches_supplied_readbacks: bool
-    metadata_independently_authenticated: bool = False
     verified_archives: int
     distinct_runs: int
     earliest_expiry_at_utc: str
+    metadata_independently_authenticated: bool = False
     historical_first_seen_authenticated: bool = False
     historical_absence_authenticated: bool = False
     source_completeness_authenticated: bool = False
