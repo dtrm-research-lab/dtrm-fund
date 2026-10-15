@@ -6,6 +6,7 @@ Writes only an aggregate, no article, ticker, URL, text, score or outcome.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -39,10 +40,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             or not args.archive_dir.is_dir()
         ):
             _reject()
-        rows = verify_canonical_manifest(args.manifest.read_bytes())
+        manifest_raw = args.manifest.read_bytes()
+        rows = verify_canonical_manifest(manifest_raw)
         snapshots = [read_one_archive(args.archive_dir, row) for row in rows]
         report = calculate_coverage(snapshots)
         verify_original_coverage_targets(report)
+        report["source_manifest_sha256"] = hashlib.sha256(manifest_raw).hexdigest()
         content = json.dumps(report, sort_keys=True, separators=(",", ":"), ensure_ascii=True) + "\n"
         # Stage, flush, fsync, then publish atomically without replacing an existing result.
         fd, staged = tempfile.mkstemp(
