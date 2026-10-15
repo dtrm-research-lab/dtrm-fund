@@ -12,8 +12,8 @@ from zipfile import ZIP_DEFLATED, ZipFile
 import pytest
 
 from dtrm.phase4.archived_first_witness_coverage import (
-    CoverageError,
     ERROR,
+    CoverageError,
     PrivateTriple,
     Snapshot,
     calculate_coverage,
