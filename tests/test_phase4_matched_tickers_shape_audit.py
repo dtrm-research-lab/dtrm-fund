@@ -10,11 +10,11 @@ import pytest
 from dtrm.phase4.matched_tickers_shape_audit import (
     CENSUS_CAP,
     NAMESPACE,
-    pipeline_sha256,
     ShapeAssessment,
     ShapeAuditError,
     build_shape_pipeline,
     normalize_shape_counts,
+    pipeline_sha256,
 )
 
 
