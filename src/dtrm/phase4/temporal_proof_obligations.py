@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Literal, Sequence
 
-UTC_RE = re.compile(r"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$")
+UTC_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 TAG_RE = re.compile(r"^case_[a-z0-9_]{1,24}$")
 FAMILY_RE = re.compile(r"^family_[a-z0-9_]{1,24}$")
 ERROR = "BLOCKED_TEMPORAL_PROOF_INPUT"
