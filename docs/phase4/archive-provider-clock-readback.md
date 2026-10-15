@@ -34,11 +34,11 @@ From this feature checkout with Python 3.11 and project `PYTHONPATH=src`:
 PYTHONPATH=src python3 -m dtrm.phase4.archive_provider_clock \
   --manifest "$MANIFEST" \
   --pages-dir "$PAGES" \
-  --inspected-at-utc "2026-10-15T09:49:00Z" \
+  --inspected-at-utc "$CHECKED_AT_UTC" \
   --output "/absolute/private/path/phase4-provider-clock-aggregate.json"
 ```
 
-Replace `--inspected-at-utc` with the **actual** readback acquisition UTC time (not a fabricated value). The option is operator-reported, not independently notarized. A pass asserts only matching supplied metadata; it explicitly leaves `metadata_independently_authenticated=false`. Failure emits only a fixed redacted error and writes no assessment.
+Set `CHECKED_AT_UTC` to the **actual** readback acquisition UTC time (not a fabricated value). The option is operator-reported, not independently notarized. A pass asserts only matching supplied metadata; it explicitly leaves `metadata_independently_authenticated=false`. Failure emits only a fixed redacted error and writes no assessment.
 
 ### 3. Preserve original ZIP bytes before provider expiry
 
