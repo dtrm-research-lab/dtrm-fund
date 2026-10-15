@@ -192,3 +192,43 @@ def test_cli_produces_only_redacted_aggregate_on_synthetic_readback(
     assert report["verified_archives"] == 21
     assert report["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
     assert "10000" not in output.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("case", ["duplicate", "deep_recursion", "fsync_error"])
+def test_cli_rejects_ambiguous_or_unwritable_attestation(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, case: str
+) -> None:
+    raw, pages = _fixture(monkeypatch)
+    src = tmp_path / "manifest.json"
+    src.write_bytes(raw)
+    folder = tmp_path / "pages"
+    folder.mkdir()
+    for run, page in pages.items():
+        (folder / f"{run}.json").write_text(json.dumps(page), encoding="utf-8")
+    if case == "duplicate":
+        original = (folder / "10000.json").read_text(encoding="utf-8")
+        altered = original.replace(
+            '"created_at": "2026-10-01T01:15:00Z"',
+            '"created_at": "2026-10-01T01:14:59Z", '
+            '"created_at": "2026-10-01T01:15:00Z"',
+        )
+        assert altered != original
+        (folder / "10000.json").write_text(altered, encoding="utf-8")
+    elif case == "deep_recursion":
+        (folder / "10000.json").write_bytes(b"[" * 12000 + b"0" + b"]" * 12000)
+    elif case == "fsync_error":
+        def refuse_fsync(_: int) -> None:
+            raise OSError("synthetic disk failure")
+        monkeypatch.setattr(clock.os, "fsync", refuse_fsync)
+    out = tmp_path / "aggregate.json"
+    result = clock.main(
+        [
+            "--manifest", str(src),
+            "--pages-dir", str(folder),
+            "--inspected-at-utc", "2026-10-22T00:00:00Z",
+            "--output", str(out),
+        ]
+    )
+    assert result == 2
+    assert not out.exists()
+    assert list(tmp_path.glob(".aggregate.json.*.tmp")) == []
