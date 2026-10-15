@@ -360,6 +360,6 @@ def test_corrupted_lzma_zip_member_with_valid_outer_digest_rejected() -> None:
     extra_size = int.from_bytes(valid_lzma[offset + 28:offset + 30], "little")
     payload_start = offset + 30 + name_size + extra_size
     damaged = bytearray(valid_lzma)
-    damaged[payload_start + 8] ^= 0xA5
+    damaged[payload_start + 12] ^= 0xFF
     with pytest.raises(ArchivedWitnessError, match="^INVALID_PHASE4_ARCHIVED_WITNESS$"):
         _compare(first, bytes(damaged))
