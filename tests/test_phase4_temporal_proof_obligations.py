@@ -219,6 +219,8 @@ def test_closed_fictional_cli_does_not_serialize_source_or_promote(
     assert main() == 0
     raw = capsys.readouterr().out
     result = json.loads(raw)
+    expected = (Path(__file__).resolve().parents[1] / "research" / "reports" / "DTRM_PHASE4_TEMPORAL_PROOF_OBLIGATIONS_SYNTHETIC_V0.json").read_text()
+    assert raw == expected
     assert result["sample_count"] == 5
     assert result["prior_archived_positive_count"] == 3
     assert result["synthetic_shape_complete_count"] == 1
