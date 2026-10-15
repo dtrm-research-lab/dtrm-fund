@@ -34,8 +34,8 @@ def _article(article_id: str, *, tickers: list[str], text: str = "original") -> 
     }
 
 
-def _zip(asof: str, articles: list[dict], *, family: str = FAMILY) -> bytes:
-    root = "ranking_news_evidence/"
+def _zip(asof: str, articles: list[dict], *, family: str = FAMILY,
+         root: str = "ranking_news_evidence/") -> bytes:
     news_sha = hashlib.sha256(asof.encode()).hexdigest()
     manifest = {
         "schemaVersion": "1.0",
@@ -238,3 +238,44 @@ def test_corrupt_member_with_matching_new_zip_digest_is_rejected() -> None:
     corrupted[payload_offset + 2] ^= 0xFF
     with pytest.raises(ArchivedWitnessError, match="^INVALID_PHASE4_ARCHIVED_WITNESS$"):
         _compare(early, bytes(corrupted))
+
+
+def test_two_pinned_real_archive_roots_are_valid_with_same_family() -> None:
+    early = _zip("2026-10-12", [_article("same", tickers=["T1", "T2"])],
+                 root="Outputs/ranking_news_evidence/")
+    late = _zip("2026-10-13", [_article("same", tickers=["T1", "T2"])])
+    result = _compare(early, late).to_json()
+    assert result["windows"][0]["stable_article_ticker_links"] == 2
+    assert result["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+
+
+def test_two_roots_in_one_archive_are_rejected() -> None:
+    early = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    late = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with ZipFile(BytesIO(late)) as z:
+        entries = [(name, z.read(name)) for name in z.namelist()]
+    out = BytesIO()
+    with ZipFile(out, "w") as z:
+        for name, value in entries:
+            z.writestr(name, value)
+        z.writestr(
+            "Outputs/ranking_news_evidence/daily_news_freeze_manifest_v1.json",
+            b"{}",
+        )
+    with pytest.raises(ArchivedWitnessError):
+        _compare(early, out.getvalue())
+
+
+def test_archive_with_mixed_roots_is_rejected() -> None:
+    early = _zip("2026-10-12", [_article("x", tickers=["T1"])])
+    late = _zip("2026-10-13", [_article("x", tickers=["T1"])])
+    with ZipFile(BytesIO(late)) as z:
+        entries = [(name, z.read(name)) for name in z.namelist()]
+    out = BytesIO()
+    with ZipFile(out, "w") as z:
+        for name, value in entries:
+            if name.endswith("daily_news_candidates_5d_v1.json.sha256"):
+                name = "Outputs/" + name
+            z.writestr(name, value)
+    with pytest.raises(ArchivedWitnessError):
+        _compare(early, out.getvalue())
