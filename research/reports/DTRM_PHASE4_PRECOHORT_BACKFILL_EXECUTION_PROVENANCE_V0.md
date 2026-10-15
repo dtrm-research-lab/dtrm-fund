@@ -57,3 +57,21 @@ The pinned collector `news_collector.py` blob `868e3f0fcb118eef18ecb110c4dbc3692
 - The PR #39 synthetic B comparator and PR #40 type-only real-read instrument are separate, not merged or run against production. Neither their CI success nor this source provenance report permits actual research model fitting, AWS activation or MM1 changes.
 
 No AWS operations, Mongo source reads, changes to Phase III files or production pipelines were performed while producing this report.
+
+## 2026-10-15 — Direct archived artifact readback (additional independent evidence)
+
+The original GitHub Actions artifact `10583402771`, file name `precohort-news-identity-backfill-applied-35439965103`, was downloaded read-only through the GitHub connector and verified as a ZIP. **This readback supersedes reliance on workflow success assertions alone**, while remaining only an aggregate script-reported account, not Mongo authoritative modified-count evidence.
+
+| Original archived bytes | SHA-256 |
+| --- | --- |
+| ZIP (1,202 bytes) | `5f30978df90c0376f63cfd734c359b8c06f74a502f695b7ab06a30ce674e57ee` |
+| `news_identity_backfill_preapply_v1.json` | `17dfdd8bc13cb94874e4d915b48411ec914bf44b643dce3fae6b0bd992b5beaf` |
+| `news_identity_backfill_applied_v1.json` | `fdd191f28fd29c30b6e409e554585e9e5224ec64f53515f3b24460768c379615` |
+
+Both JSONs: `schemaVersion=1.0`, `identityOnly=true`, target tickers `MCO,ICE,AON,FI`, intended source dates 2026-07-20 through 2026-09-18; nine chunks, `fetchedRows=6300`, `trumpRelevantRows=5413`, `targetMatchedRows=6`, `matchCounts={AON:2,MCO:4}`, `addedMatchCounts={AON:2,MCO:4}`, `wouldInsert=3`, `wouldUpdate=3`.
+
+Preapply report: `mode=dry-run`, `inserted=0`, `updated=0`, `generatedAt=2026-09-19T11:23:24.639542+00:00`.
+
+Apply report: `mode=apply`, `inserted=3`, `updated=3`, `generatedAt=2026-09-19T11:23:30.351791+00:00`. **Note:** `generatedAt` is assigned at the start of the script (before the actual update loop); never interpret it as the precise write timestamp or completion time. The workflow job successful completion is a later coarse upper boundary; individual write timestamps and Mongo acknowledgment counters were NOT persisted into these two reports.
+
+The archived files contain chunk endpoint row counts plus the sanitized aggregate fields above; they do not enumerate specific mutated document IDs or first-available version/link clocks. Actual point-in-time reconstruction still requires more than an aggregate `updated=3` report. There has been no access to live Mongo, its raw news values, actual realized returns, or MM1.
