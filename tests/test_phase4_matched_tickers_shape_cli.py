@@ -165,3 +165,47 @@ def test_real_closed_stdout_pipe_cannot_reclassify_published_report(tmp_path) ->
     assert result.returncode == 0
     assert result.stderr == b""
     assert json.loads(outfile.read_text())["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+
+
+def test_interrupt_during_staging_cleanup_after_link_is_success(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.setattr(cli, "operator_local_shape_audit", lambda _env_file: fake_report())
+    original_unlink = cli.os.unlink
+
+    def interrupt_cleanup(path, *args, **kwargs):
+        if ".phase4-shape-" in str(path):
+            raise KeyboardInterrupt
+        return original_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(cli.os, "unlink", interrupt_cleanup)
+    output = tmp_path / "published.json"
+    assert cli.main(["--output", str(output)]) == 0
+    assert json.loads(output.read_text())["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+
+
+def test_interrupt_in_status_emit_after_link_is_success(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(cli, "operator_local_shape_audit", lambda _env_file: fake_report())
+
+    def interrupt_status(_payload):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(cli, "_emit", interrupt_status)
+    output = tmp_path / "published.json"
+    assert cli.main(["--output", str(output)]) == 0
+    assert json.loads(output.read_text())["asset_mapping_authenticated"] is False
+
+
+def test_interrupt_before_link_is_failure_with_no_report(
+    tmp_path, monkeypatch, capfd
+) -> None:
+    monkeypatch.setattr(cli, "operator_local_shape_audit", lambda _env_file: fake_report())
+
+    def interrupt_link(_source, _destination):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(cli.os, "link", interrupt_link)
+    output = tmp_path / "not-published.json"
+    assert cli.main(["--output", str(output)]) == 1
+    assert not output.exists()
+    assert json.loads(capfd.readouterr().out)["error_code"] == "AUDIT_INTERRUPTED"
