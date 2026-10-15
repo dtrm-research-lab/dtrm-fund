@@ -241,12 +241,13 @@ def read_one_archive(directory: Path, row: dict[str, Any]) -> Snapshot:
             if len(possible) != 1:
                 _reject()
             root = possible[0]
+            exact_evidence_names = {root + leaf for leaf in _EVIDENCE}
+            alternate_root = next(r for r in ROOTS if r != root)
             for name in names:
-                if name.startswith(root):
-                    continue
-                if any(name == leaf or name.endswith("/" + leaf) for leaf in _EVIDENCE):
+                basename = name.rsplit("/", 1)[-1]
+                if basename in _EVIDENCE and name not in exact_evidence_names:
                     _reject()
-                if name.startswith(next(r for r in ROOTS if r != root)):
+                if name.startswith(alternate_root):
                     _reject()
             freeze, _ = _sealed(z, root, _FREEZE)
             if (
