@@ -9,6 +9,8 @@ import pytest
 
 from dtrm.phase4.matched_tickers_shape_audit import (
     CENSUS_CAP,
+    NAMESPACE,
+    pipeline_sha256,
     ShapeAssessment,
     ShapeAuditError,
     build_shape_pipeline,
@@ -133,3 +135,26 @@ def test_source_expected_object_shape_is_structural_only() -> None:
     assert structured[0]["n"] == 3
     assert "keyword" not in str(report)
     assert report["asset_mapping_authenticated"] is False
+
+
+def test_report_digest_commits_to_fixed_source_and_pipeline() -> None:
+    import hashlib
+    import json
+
+    report = normalize_shape_counts(fake_aggregate(), counted_documents=5).to_json()
+    assert report["source_namespace"] == NAMESPACE == "trumpMinMax.trumpNews"
+    assert report["pipeline_sha256"] == pipeline_sha256()
+    evidence = {
+        "source_namespace": report["source_namespace"],
+        "pipeline_sha256": report["pipeline_sha256"],
+        "document_count": report["document_count"],
+        "element_count": report["element_count"],
+        "containers": report["containers"],
+        "elements": report["elements"],
+    }
+    def digest(data):
+        return hashlib.sha256(json.dumps(data, sort_keys=True, separators=(",", ":"),
+                                        ensure_ascii=True).encode("ascii")).hexdigest()
+    assert digest(evidence) == report["sanitized_evidence_sha256"]
+    assert digest({**evidence, "source_namespace": "other.database"}) != report["sanitized_evidence_sha256"]
+    assert digest({**evidence, "pipeline_sha256": "0" * 64}) != report["sanitized_evidence_sha256"]
