@@ -10,6 +10,10 @@ Use the original 21 GitHub archive ZIP bytes that passed `PHASE4_ARCHIVE_PRESERV
 
 Its Git blob SHA must equal **`eb7c91b462ddb822835c20fc126492bfcae5eea0`**, identical to unmerged PR #41. Never upload raw ZIPs, text, headlines, provider IDs, symbols, scores or private URLs into public GitHub or chat.
 
+## Python 3.11 installations without `_lzma`
+
+Some `pyenv` Python builds on macOS lack the optional native `_lzma` extension. The v2 compatibility addendum treats that as **optional for DEFLATE ZIPs**: the module imports without it, but any archive member actually requiring LZMA still yields only `REPRODUCTION_NOT_CONFIRMED`, never partial counts. No Python reinstall and no archive redownload is required if the original ZIPs use supported compression. Refresh the existing local checkout with `git pull --ff-only` before rerunning. An import failure from an older checkout does not imply corrupted original archives.
+
 ## Local execution
 
 From a checkout of PR #44, and with Python 3.11:
