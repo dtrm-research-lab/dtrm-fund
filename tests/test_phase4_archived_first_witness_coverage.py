@@ -1,4 +1,5 @@
 """Fictional fixtures only; all real article and ticker values stay private."""
+
 from __future__ import annotations
 
 import hashlib
