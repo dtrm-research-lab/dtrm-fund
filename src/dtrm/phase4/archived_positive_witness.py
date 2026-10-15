@@ -19,7 +19,7 @@ from zipfile import BadZipFile, ZipFile
 MAX_ZIP_BYTES = 10 * 1024 * 1024
 MAX_FILE_BYTES = 8 * 1024 * 1024
 MAX_UNCOMPRESSED_BYTES = 20 * 1024 * 1024
-ROOT = "ranking_news_evidence/"
+ARCHIVE_ROOTS = ("ranking_news_evidence/", "Outputs/ranking_news_evidence/")
 HEX_SHA = re.compile(r"[a-f0-9]{64}\Z")
 DATE = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 
@@ -148,7 +148,16 @@ def _read_archive(
                 or any(f.file_size > MAX_FILE_BYTES for f in files)
             ):
                 _reject()
-            manifest = _json(_sealed_read(z, ROOT + "daily_news_freeze_manifest_v1.json"))
+            roots = [
+                root for root in ARCHIVE_ROOTS
+                if root + "daily_news_freeze_manifest_v1.json" in names
+            ]
+            if len(roots) != 1:
+                _reject()
+            root = roots[0]
+            if any(name.startswith(other) for other in ARCHIVE_ROOTS if other != root for name in names):
+                _reject()
+            manifest = _json(_sealed_read(z, root + "daily_news_freeze_manifest_v1.json"))
             asof = _date(manifest.get("asOf"))
             family = _sha(manifest.get("familyManifestSha256"))
             news = _sha(manifest.get("sourceNewsSha256"))
@@ -157,7 +166,7 @@ def _read_archive(
             bundles: list[tuple[str, tuple[tuple[str, str, tuple[str, ...]], ...]]] = []
             for days in (2, 5):
                 tag = f"{days}d"
-                filename = ROOT + f"daily_news_candidates_{tag}_v1.json"
+                filename = root + f"daily_news_candidates_{tag}_v1.json"
                 payload = _sealed_read(z, filename)
                 if _hash(payload) != _sha(manifest.get(f"candidate{tag}Sha256")):
                     _reject()
