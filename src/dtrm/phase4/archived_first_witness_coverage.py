@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import lzma
 import re
 import zlib
 from dataclasses import dataclass
@@ -16,6 +15,15 @@ from io import BytesIO
 from pathlib import Path
 from typing import Any, NoReturn, Sequence, cast
 from zipfile import BadZipFile, ZipFile
+
+try:
+    from lzma import LZMAError
+except ImportError:
+    # Some Python builds omit the optional native _lzma extension.
+    # Any ZIP member that actually requires it still fails closed.
+    class LZMAError(Exception):
+        """Unreachable placeholder to keep the failure boundary well-typed."""
+
 
 CANONICAL_MANIFEST_BLOB_SHA1 = "eb7c91b462ddb822835c20fc126492bfcae5eea0"
 ROOTS = ("ranking_news_evidence/", "Outputs/ranking_news_evidence/")
@@ -274,7 +282,7 @@ def read_one_archive(directory: Path, row: dict[str, Any]) -> Snapshot:
                     _reject()
                 full.update(positives)
     except (OSError, ValueError, KeyError, UnicodeError, RuntimeError, BadZipFile,
-            EOFError, zlib.error, lzma.LZMAError, RecursionError):
+            EOFError, zlib.error, LZMAError, ImportError, RecursionError):
         _reject()
     return Snapshot(family, dt.strftime("%Y-%m-%dT%H:%M:%SZ"), asof, aid,
                     frozenset(full))
