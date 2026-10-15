@@ -296,11 +296,17 @@ def verify_canonical_aggregate(report: dict[str, Any]) -> None:
     if any(report.get(key) != val for key, val in required.items()):
         _stop()
     family_groups = report.get("family_groups")
-    if (
-        not isinstance(family_groups, list) or len(family_groups) != 3
-        or sorted(row.get("snapshots") for row in family_groups if isinstance(row, dict))
-        != [4, 8, 9]
-    ):
+    if not isinstance(family_groups, list) or len(family_groups) != 3:
+        _stop()
+    sizes: list[int] = []
+    for group in family_groups:
+        if not isinstance(group, dict):
+            _stop()
+        size = group.get("snapshots")
+        if type(size) is not int:
+            _stop()
+        sizes.append(size)
+    if sorted(sizes) != [4, 8, 9]:
         _stop()
 
 
