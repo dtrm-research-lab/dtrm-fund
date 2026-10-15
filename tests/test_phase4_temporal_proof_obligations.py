@@ -1,6 +1,7 @@
 """Closed synthetic source-proof cases; no private article/ticker/source data."""
 from __future__ import annotations
 
+import json
 from dataclasses import FrozenInstanceError
 
 import pytest
@@ -206,3 +207,25 @@ def test_duplicate_case_tags_and_bounds_fail_closed() -> None:
         build_synthetic_report([])
     with pytest.raises(ProofObligationError, match=ERROR):
         build_synthetic_report([sample(f"case_{i}") for i in range(65)])
+
+
+def test_closed_fictional_cli_does_not_serialize_source_or_promote(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from research.experiments.run_phase4_temporal_proof_obligations import main
+
+    assert main() == 0
+    raw = capsys.readouterr().out
+    result = json.loads(raw)
+    assert result["sample_count"] == 5
+    assert result["prior_archived_positive_count"] == 3
+    assert result["synthetic_shape_complete_count"] == 1
+    assert result["future_claim_count"] == 1
+    assert result["unknown_historical_absence_count"] == 5
+    assert result["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
+    assert result["real_source_admission_permitted"] is False
+    assert result["model_fitting_permitted"] is False
+    assert result["outcomes_access_permitted"] is False
+    assert "article" not in raw.lower()
+    assert "ticker" not in raw.lower()
+    assert "url" not in raw.lower()
