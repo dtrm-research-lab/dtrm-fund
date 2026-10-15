@@ -41,7 +41,7 @@ def publish_exclusively(output: Path, data: bytes) -> None:
         if staged is not None:
             try:
                 os.unlink(staged)
-            except OSError:
+            except (OSError, KeyboardInterrupt):
                 if not published:
                     raise
 
@@ -61,6 +61,7 @@ def _emit(payload: dict[str, object]) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    publication_finished = False
     try:
         parser = RedactedParser(description=__doc__, allow_abbrev=False)
         parser.add_argument("--output", type=Path, required=True)
@@ -75,6 +76,7 @@ def main(argv: list[str] | None = None) -> int:
             assessment.to_json(), sort_keys=True, indent=2, ensure_ascii=True,
         ) + "\n").encode("ascii")
         publish_exclusively(args.output, content)
+        publication_finished = True
         _emit({
             "graph": "phase4_matched_tickers_shape_audit_v0",
             "status": "succeeded",
@@ -95,6 +97,8 @@ def main(argv: list[str] | None = None) -> int:
         }
         error = reason if reason in known else "SHAPE_AUDIT_FAILED"
     except KeyboardInterrupt:
+        if publication_finished:
+            return 0
         error = "AUDIT_INTERRUPTED"
     except Exception:
         error = "SHAPE_AUDIT_FAILED"
