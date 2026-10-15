@@ -152,3 +152,45 @@ def test_input_manifest_identity_rejected(tmp_path: Path) -> None:
     manifest["repository"] = "different/unknown"
     with pytest.raises(ArchiveCensusError):
         census_aggregate_only(manifest, tmp_path)
+
+
+def test_canonical_21_archive_manifest_has_pinned_git_object_digest() -> None:
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "research" / "evidence"
+        / "DTRM_PHASE4_21_ARCHIVED_RANKING_SOURCE_MANIFEST_V0.json"
+    )
+    raw = path.read_bytes()
+    _MODULE.verify_canonical_source_manifest(raw)
+    manifest = json.loads(raw)
+    assert len(manifest["archives"]) == 21
+
+
+def test_dropped_canonical_manifest_row_fails_before_any_archive_read() -> None:
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "research" / "evidence"
+        / "DTRM_PHASE4_21_ARCHIVED_RANKING_SOURCE_MANIFEST_V0.json"
+    )
+    data = json.loads(path.read_bytes())
+    data["archives"].pop()
+    changed = json.dumps(data, sort_keys=True).encode("utf-8")
+    with pytest.raises(ArchiveCensusError):
+        _MODULE.verify_canonical_source_manifest(changed)
+
+
+def test_synthetic_partial_aggregate_never_passes_canonical_21_gate(tmp_path: Path) -> None:
+    manifest = _setup(tmp_path)
+    report = census_aggregate_only(manifest, tmp_path)
+    with pytest.raises(ArchiveCensusError):
+        _MODULE.verify_canonical_aggregate(report)
+
+
+def test_cli_cannot_claim_success_with_two_archives(tmp_path: Path, capsys) -> None:
+    manifest = _setup(tmp_path)
+    file_path = tmp_path / "synthetic-manifest.json"
+    file_path.write_text(json.dumps(manifest), encoding="utf-8")
+    result = _MODULE.main(["--manifest", str(file_path), "--archive-dir", str(tmp_path)])
+    assert result == 1
+    output = json.loads(capsys.readouterr().out)
+    assert output == {"error_code": "REPRODUCTION_NOT_CONFIRMED", "status": "failed"}
