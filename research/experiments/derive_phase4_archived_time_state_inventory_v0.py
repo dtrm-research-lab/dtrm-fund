@@ -272,7 +272,7 @@ def verify_canonical_source_manifest(raw: bytes) -> None:
     if len(raw) > 256_000:
         _stop()
     # Git object header terminates with a NUL byte, not the characters backslash-zero.
-    header = b"blob " + str(len(raw)).encode("ascii") + b"\\x00"
+    header = b"blob " + str(len(raw)).encode("ascii") + b"\x00"
     if hashlib.sha1(header + raw).hexdigest() != CANONICAL_SOURCE_MANIFEST_GIT_BLOB_SHA1:
         _stop()
     doc = _json(raw)
