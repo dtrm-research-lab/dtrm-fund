@@ -222,7 +222,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     pass  # Cleanup cannot turn an already-published report into failure.
         try:
             print(result.status)
-        except OSError:
+        except (OSError, ValueError):
             pass  # Publication is already authoritative.
         return 0
     except (ClockAttestationError, OSError, UnicodeError, ValueError, TypeError, RecursionError):
