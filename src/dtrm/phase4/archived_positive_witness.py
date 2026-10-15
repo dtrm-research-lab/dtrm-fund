@@ -163,7 +163,7 @@ def _read_archive(
             receipt_names = evidence_names | {name + ".sha256" for name in evidence_names}
             # Evidence under ANY extra directory tree is ambiguous, not harmless metadata.
             for name in names:
-                if any(name.endswith("/" + leaf) for leaf in receipt_names):
+                if any(name == leaf or name.endswith("/" + leaf) for leaf in receipt_names):
                     if name not in {root + leaf for leaf in receipt_names}:
                         _reject()
             manifest = _json(_sealed_read(z, root + "daily_news_freeze_manifest_v1.json"))
