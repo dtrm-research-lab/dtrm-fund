@@ -174,3 +174,24 @@ def test_cli_two_zip_input_never_publishes_success(
     assert status != 0
     assert not output.exists()
     assert cov.ERROR in capsys.readouterr().err
+
+
+def test_nested_shadow_evidence_rejected_even_inside_valid_root(
+    tmp_path: Path,
+) -> None:
+    row = _row(tmp_path)
+    original = (tmp_path / "101.zip").read_bytes()
+    out = BytesIO()
+    with ZipFile(BytesIO(original)) as src:
+        with ZipFile(out, "w", compression=ZIP_DEFLATED) as dst:
+            for item in src.infolist():
+                dst.writestr(item.filename, src.read(item.filename))
+            dst.writestr(
+                "ranking_news_evidence/hidden/daily_news_candidates_2d_v1.json",
+                b"{}",
+            )
+    shadow = out.getvalue()
+    (tmp_path / "101.zip").write_bytes(shadow)
+    row["zip_sha256"] = _sha(shadow)
+    with pytest.raises(cov.CoverageError, match=cov.ERROR):
+        cov.read_one_archive(tmp_path, row)
