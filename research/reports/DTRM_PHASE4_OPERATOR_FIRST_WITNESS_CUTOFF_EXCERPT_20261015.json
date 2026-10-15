@@ -1,0 +1,126 @@
+{
+  "schema_version": "dtrm.phase4.operator_terminal_first_witness_excerpt.v1",
+  "provenance": "Transcribed from operator-provided Mac terminal output; not the raw private CLI output nor independently rerun by agent",
+  "operator_replay_head": "03a119f48f477792c2d75c76495ebe6bf2da9097",
+  "source_manifest_git_blob_sha1": "eb7c91b462ddb822835c20fc126492bfcae5eea0",
+  "reported_reproduction_status": "PASS_CANONICAL_FIRST_WITNESS_COVERAGE_REPRODUCED",
+  "globally_deduplicated_positive_representations": 36440,
+  "family_summed_distinct_positive": 38968,
+  "scientific_status": "BLOCKED_SOURCE_AUDIT",
+  "historical_first_seen_authenticated": false,
+  "negative_history_authenticated": false,
+  "source_completeness_authenticated": false,
+  "model_fitting_permitted": false,
+  "mm1_execution_permitted": false,
+  "outcomes_access_permitted": false,
+  "cutoffs": [
+    {
+      "cutoff_utc": "2026-09-19T00:00:00Z",
+      "admitted_snapshots": 3,
+      "distinct_positive_representations": 6783,
+      "captured_positive_appearances": 9877,
+      "repeat_positive_appearances": 3094,
+      "families": {
+        "bfe784a3e76f80d35350121556fd943af3914ae277c9ace0846d9096f55a99a3": {
+          "admitted_snapshots": 3,
+          "distinct_positive_representations": 6783,
+          "captured_positive_appearances": 9877,
+          "repeat_positive_appearances": 3094
+        },
+        "ee19badac6ccd5e86343f458e56275dec6e638b91d2465a9eebfc981503b1787": {
+          "admitted_snapshots": 0,
+          "distinct_positive_representations": 0,
+          "captured_positive_appearances": 0,
+          "repeat_positive_appearances": 0
+        },
+        "debddfd23c420d3a5aedd642edef90e4a5d6eb2e27e3ddb7d0e4140ac1420891": {
+          "admitted_snapshots": 0,
+          "distinct_positive_representations": 0,
+          "captured_positive_appearances": 0,
+          "repeat_positive_appearances": 0
+        }
+      }
+    },
+    {
+      "cutoff_utc": "2026-10-01T00:00:00Z",
+      "admitted_snapshots": 11,
+      "distinct_positive_representations": 21350,
+      "captured_positive_appearances": 35326,
+      "repeat_positive_appearances": 13976,
+      "families": {
+        "bfe784a3e76f80d35350121556fd943af3914ae277c9ace0846d9096f55a99a3": {
+          "admitted_snapshots": 4,
+          "distinct_positive_representations": 8248,
+          "captured_positive_appearances": 13082,
+          "repeat_positive_appearances": 4834
+        },
+        "ee19badac6ccd5e86343f458e56275dec6e638b91d2465a9eebfc981503b1787": {
+          "admitted_snapshots": 7,
+          "distinct_positive_representations": 13102,
+          "captured_positive_appearances": 22244,
+          "repeat_positive_appearances": 9142
+        },
+        "debddfd23c420d3a5aedd642edef90e4a5d6eb2e27e3ddb7d0e4140ac1420891": {
+          "admitted_snapshots": 0,
+          "distinct_positive_representations": 0,
+          "captured_positive_appearances": 0,
+          "repeat_positive_appearances": 0
+        }
+      }
+    },
+    {
+      "cutoff_utc": "2026-10-10T00:00:00Z",
+      "admitted_snapshots": 18,
+      "distinct_positive_representations": 33994,
+      "captured_positive_appearances": 56315,
+      "repeat_positive_appearances": 22321,
+      "families": {
+        "bfe784a3e76f80d35350121556fd943af3914ae277c9ace0846d9096f55a99a3": {
+          "admitted_snapshots": 4,
+          "distinct_positive_representations": 8248,
+          "captured_positive_appearances": 13082,
+          "repeat_positive_appearances": 4834
+        },
+        "ee19badac6ccd5e86343f458e56275dec6e638b91d2465a9eebfc981503b1787": {
+          "admitted_snapshots": 8,
+          "distinct_positive_representations": 14604,
+          "captured_positive_appearances": 25391,
+          "repeat_positive_appearances": 10787
+        },
+        "debddfd23c420d3a5aedd642edef90e4a5d6eb2e27e3ddb7d0e4140ac1420891": {
+          "admitted_snapshots": 6,
+          "distinct_positive_representations": 11142,
+          "captured_positive_appearances": 17842,
+          "repeat_positive_appearances": 6700
+        }
+      }
+    },
+    {
+      "cutoff_utc": "2026-10-15T00:00:00Z",
+      "admitted_snapshots": 21,
+      "distinct_positive_representations": 38968,
+      "captured_positive_appearances": 65364,
+      "repeat_positive_appearances": 26396,
+      "families": {
+        "bfe784a3e76f80d35350121556fd943af3914ae277c9ace0846d9096f55a99a3": {
+          "admitted_snapshots": 4,
+          "distinct_positive_representations": 8248,
+          "captured_positive_appearances": 13082,
+          "repeat_positive_appearances": 4834
+        },
+        "ee19badac6ccd5e86343f458e56275dec6e638b91d2465a9eebfc981503b1787": {
+          "admitted_snapshots": 8,
+          "distinct_positive_representations": 14604,
+          "captured_positive_appearances": 25391,
+          "repeat_positive_appearances": 10787
+        },
+        "debddfd23c420d3a5aedd642edef90e4a5d6eb2e27e3ddb7d0e4140ac1420891": {
+          "admitted_snapshots": 9,
+          "distinct_positive_representations": 16116,
+          "captured_positive_appearances": 26891,
+          "repeat_positive_appearances": 10775
+        }
+      }
+    }
+  ]
+}
