@@ -232,3 +232,27 @@ def test_cli_rejects_ambiguous_or_unwritable_attestation(
     assert result == 2
     assert not out.exists()
     assert list(tmp_path.glob(".aggregate.json.*.tmp")) == []
+
+
+def test_stdout_closed_after_atomic_publish_remains_success(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    raw, pages = _fixture(monkeypatch)
+    manifest = tmp_path / "manifest.json"
+    manifest.write_bytes(raw)
+    folder = tmp_path / "receipts"
+    folder.mkdir()
+    for run, page in pages.items():
+        (folder / f"{run}.json").write_text(json.dumps(page), encoding="utf-8")
+    output = tmp_path / "verified.json"
+    def closed_stdout(*args: object, **kwargs: object) -> None:
+        raise ValueError("I/O operation on closed file")
+    monkeypatch.setattr(clock, "print", closed_stdout, raising=False)
+    result = clock.main([
+        "--manifest", str(manifest),
+        "--pages-dir", str(folder),
+        "--inspected-at-utc", "2026-10-22T00:00:00Z",
+        "--output", str(output),
+    ])
+    assert result == 0
+    assert json.loads(output.read_text(encoding="utf-8"))["verified_archives"] == 21
