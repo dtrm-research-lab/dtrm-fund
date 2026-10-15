@@ -11,7 +11,16 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
 
-import dtrm.phase4.archived_first_witness_coverage as cov
+from dtrm.phase4.archived_first_witness_coverage import (
+    CoverageError,
+    ERROR,
+    PrivateTriple,
+    Snapshot,
+    calculate_coverage,
+    read_one_archive,
+    verify_canonical_manifest,
+    verify_original_coverage_targets,
+)
 
 
 F1 = hashlib.sha256(b"fictional family 1").hexdigest()
@@ -85,10 +94,10 @@ def test_reader_accepts_sha_sealed_fictional_positive_only_zip(
     tmp_path: Path,
 ) -> None:
     row = _row(tmp_path)
-    witness = cov.read_one_archive(tmp_path, row)
+    witness = read_one_archive(tmp_path, row)
     assert witness.family_sha256 == F1
     assert len(witness.positives) == 1
-    result = cov.calculate_coverage([witness])
+    result = calculate_coverage([witness])
     emitted = json.dumps(result)
     assert ARTICLE not in emitted
     assert TICKER not in emitted
@@ -99,8 +108,8 @@ def test_reader_accepts_sha_sealed_fictional_positive_only_zip(
 
 
 def test_reader_rejects_changed_original_zip_hash(tmp_path: Path) -> None:
-    with pytest.raises(cov.CoverageError, match=cov.ERROR):
-        cov.read_one_archive(tmp_path, _row(tmp_path, bad_archive_sha=True))
+    with pytest.raises(CoverageError, match=ERROR):
+        read_one_archive(tmp_path, _row(tmp_path, bad_archive_sha=True))
 
 
 def test_reader_allows_observed_legacy_root(tmp_path: Path) -> None:
@@ -109,18 +118,18 @@ def test_reader_allows_observed_legacy_root(tmp_path: Path) -> None:
     row = _row(tmp_path)
     (tmp_path / "101.zip").write_bytes(blob)
     row["zip_sha256"] = _sha(blob)
-    assert len(cov.read_one_archive(tmp_path, row).positives) == 1
+    assert len(read_one_archive(tmp_path, row).positives) == 1
 
 
 def test_family_cutoffs_exclude_exact_clock_ties_and_never_merge_families() -> None:
-    a: cov.PrivateTriple = (ARTICLE, VINTAGE, TICKER)
-    b: cov.PrivateTriple = ("second-fake-id", VINTAGE, "BETA_FAKE")
+    a: PrivateTriple = (ARTICLE, VINTAGE, TICKER)
+    b: PrivateTriple = ("second-fake-id", VINTAGE, "BETA_FAKE")
     snapshots = [
-        cov.Snapshot(F1, "2026-09-18T01:00:00Z", "2026-09-17", 1, frozenset({a})),
-        cov.Snapshot(F1, "2026-09-19T00:00:00Z", "2026-09-18", 2, frozenset({a, b})),
-        cov.Snapshot(F2, "2026-09-19T01:00:00Z", "2026-09-18", 3, frozenset({a})),
+        Snapshot(F1, "2026-09-18T01:00:00Z", "2026-09-17", 1, frozenset({a})),
+        Snapshot(F1, "2026-09-19T00:00:00Z", "2026-09-18", 2, frozenset({a, b})),
+        Snapshot(F2, "2026-09-19T01:00:00Z", "2026-09-18", 3, frozenset({a})),
     ]
-    r = cov.calculate_coverage(snapshots[::-1])
+    r = calculate_coverage(snapshots[::-1])
     assert r["globally_deduplicated_positive_representations"] == 2
     assert r["family_summed_distinct_positive"] == 3
     assert r["cutoffs"][0]["admitted_snapshots"] == 1
@@ -135,8 +144,8 @@ def test_family_cutoffs_exclude_exact_clock_ties_and_never_merge_families() -> N
     assert TICKER not in json.dumps(r)
     assert r["metadata_independently_authenticated"] is False
     assert r["scientific_status"] == "BLOCKED_SOURCE_AUDIT"
-    with pytest.raises(cov.CoverageError):
-        cov.verify_original_coverage_targets(r)
+    with pytest.raises(CoverageError):
+        verify_original_coverage_targets(r)
 
 
 def test_exact_canonical_source_metadata_copy_is_pinned() -> None:
@@ -144,11 +153,11 @@ def test_exact_canonical_source_metadata_copy_is_pinned() -> None:
         Path(__file__).resolve().parents[1] / "research" / "evidence"
         / "DTRM_PHASE4_21_ARCHIVED_RANKING_SOURCE_MANIFEST_V0.json"
     )
-    rows = cov.verify_canonical_manifest(path.read_bytes())
+    rows = verify_canonical_manifest(path.read_bytes())
     assert len(rows) == 21
     assert len({row["artifact_id"] for row in rows}) == 21
-    with pytest.raises(cov.CoverageError):
-        cov.verify_canonical_manifest(path.read_bytes() + b"\n")
+    with pytest.raises(CoverageError):
+        verify_canonical_manifest(path.read_bytes() + b"\n")
 
 
 def test_cli_two_zip_input_never_publishes_success(
@@ -173,7 +182,7 @@ def test_cli_two_zip_input_never_publishes_success(
     ])
     assert status != 0
     assert not output.exists()
-    assert cov.ERROR in capsys.readouterr().err
+    assert ERROR in capsys.readouterr().err
 
 
 def test_nested_shadow_evidence_rejected_even_inside_valid_root(
@@ -193,5 +202,5 @@ def test_nested_shadow_evidence_rejected_even_inside_valid_root(
     shadow = out.getvalue()
     (tmp_path / "101.zip").write_bytes(shadow)
     row["zip_sha256"] = _sha(shadow)
-    with pytest.raises(cov.CoverageError, match=cov.ERROR):
-        cov.read_one_archive(tmp_path, row)
+    with pytest.raises(CoverageError, match=ERROR):
+        read_one_archive(tmp_path, row)
