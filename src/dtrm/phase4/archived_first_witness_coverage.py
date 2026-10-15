@@ -124,6 +124,8 @@ class Snapshot:
     asof: str
     artifact_id: int
     positives: frozenset[PrivateTriple]
+    capped_2d: bool = False
+    capped_5d: bool = False
 
 
 def verify_canonical_manifest(raw: bytes) -> list[dict[str, Any]]:
@@ -274,6 +276,7 @@ def read_one_archive(directory: Path, row: dict[str, Any]) -> Snapshot:
             ):
                 _reject()
             full: set[PrivateTriple] = set()
+            candidate_counts: dict[int, int] = {}
             for days, leaf in zip((2, 5), _CANDIDATES):
                 body, encoded = _sealed(z, root, leaf)
                 positives = _positive_items(body)
@@ -290,28 +293,53 @@ def read_one_archive(directory: Path, row: dict[str, Any]) -> Snapshot:
                 ):
                     _reject()
                 full.update(positives)
+                candidate_counts[days] = len(count)
     except (OSError, ValueError, KeyError, UnicodeError, RuntimeError, BadZipFile,
             EOFError, zlib.error, _LZMA_EXCEPTION, ImportError, RecursionError):
         _reject()
-    return Snapshot(family, dt.strftime("%Y-%m-%dT%H:%M:%SZ"), asof, aid,
-                    frozenset(full))
+    return Snapshot(
+        family, dt.strftime("%Y-%m-%dT%H:%M:%SZ"), asof, aid,
+        frozenset(full),
+        capped_2d=candidate_counts[2] == 500,
+        capped_5d=candidate_counts[5] == 500,
+    )
 
 
-def _family_summary(snapshots: Sequence[Snapshot]) -> dict[str, int]:
+def _family_summary(snapshots: Sequence[Snapshot]) -> dict[str, Any]:
+    """Within-family cumulative witnesses, with safe per-capture counters."""
     seen: set[PrivateTriple] = set()
     appearances = 0
     repeated = 0
-    for snap in sorted(snapshots, key=lambda s: s.created_at):
-        appearances += len(snap.positives)
-        repeated += len(snap.positives & seen)
+    details: list[dict[str, Any]] = []
+    ordered = sorted(snapshots, key=lambda s: s.created_at)
+    first_at = _utc(ordered[0].created_at) if ordered else None
+    for snap in ordered:
+        if first_at is None:
+            _reject()
+        first = len(snap.positives - seen)
+        repeat = len(snap.positives & seen)
         seen.update(snap.positives)
+        appearances += len(snap.positives)
+        repeated += repeat
+        elapsed = (_utc(snap.created_at) - first_at).total_seconds() / 86400
+        details.append({
+            "asof": snap.asof,
+            "artifact_created_at_utc": snap.created_at,
+            "positive_representations_in_capture": len(snap.positives),
+            "first_witness_within_family": first,
+            "repeat_witness_within_family": repeat,
+            "cumulative_distinct_family_witnesses": len(seen),
+            "capped_2d": snap.capped_2d,
+            "capped_5d": snap.capped_5d,
+            "elapsed_days_since_first_family_artifact": round(elapsed, 6),
+        })
     return {
-        "admitted_snapshots": len(snapshots),
+        "admitted_snapshots": len(ordered),
         "distinct_positive_representations": len(seen),
         "captured_positive_appearances": appearances,
         "repeat_positive_appearances": repeated,
+        "captures": details,
     }
-
 
 def calculate_coverage(snapshots: Sequence[Snapshot]) -> dict[str, Any]:
     """Pure positive-only reducer; no cross-family source-state merging."""
@@ -358,6 +386,8 @@ def calculate_coverage(snapshots: Sequence[Snapshot]) -> dict[str, Any]:
         "scientific_status": "BLOCKED_SOURCE_AUDIT",
         "source_manifest_git_blob_sha1": CANONICAL_MANIFEST_BLOB_SHA1,
         "metadata_independently_authenticated": False,
+        "historical_first_seen_authenticated": False,
+        "negative_history_authenticated": False,
         "original_link_first_seen_authenticated": False,
         "historical_absence_authenticated": False,
         "source_completeness_authenticated": False,
@@ -367,6 +397,8 @@ def calculate_coverage(snapshots: Sequence[Snapshot]) -> dict[str, Any]:
         "mm1_execution_permitted": False,
         "scientific_counting_permitted": False,
         "source_archive_count": len(snapshots),
+        "2d_capped_count": sum(s.capped_2d for s in snapshots),
+        "5d_capped_count": sum(s.capped_5d for s in snapshots),
         "family_count": len(groups),
         "family_summed_distinct_positive": sum(
             f["distinct_positive_representations"] for f in families
@@ -381,6 +413,8 @@ def verify_original_coverage_targets(report: dict[str, Any]) -> None:
     """Reproduce old descriptive figures; never retune them after results."""
     if (
         report["source_archive_count"] != 21 or report["family_count"] != 3
+        or report["2d_capped_count"] != 13
+        or report["5d_capped_count"] != 21
         or report["family_summed_distinct_positive"] != 38968
         or report["globally_deduplicated_positive_representations"] != 36440
     ):
