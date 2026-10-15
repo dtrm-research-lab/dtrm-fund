@@ -80,7 +80,9 @@ def assess_synthetic_witness(witness: SyntheticWitness) -> ProofAssessment:
     """Separate documented archive presence from hypothetical proof completeness."""
     if (
         type(witness) is not SyntheticWitness
+        or not isinstance(witness.case_tag, str)
         or TAG_RE.fullmatch(witness.case_tag) is None
+        or not isinstance(witness.family_tag, str)
         or FAMILY_RE.fullmatch(witness.family_tag) is None
         or type(witness.claims) is not AvailabilityClaims
     ):
