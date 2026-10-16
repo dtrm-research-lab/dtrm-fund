@@ -155,3 +155,21 @@ def test_market_calendar_not_inferred_from_capture_slot() -> None:
         "session" in key or "market_day" in key or "calendar" in key
         for key in r
     )
+
+
+def test_t0_snapshot_does_not_backdate_old_news() -> None:
+    t0 = T - timedelta(hours=1)
+    # An old publication date is not part of the synthetic verified clock.
+    # The *first attested* version and link observation is T0.
+    record = sight(version_time=t0, link_time=t0)
+    at_t0 = classify([record], cutoff=t0, complete=False)
+    after_t0 = classify(
+        [record], cutoff=t0 + timedelta(seconds=1), complete=False
+    )
+    assert at_t0["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert "UNRESOLVED_CUTOFF_TIE" in at_t0["uncertainties"]
+    assert after_t0["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert after_t0["structurally_admissible_distinct_events"] == 1
+    assert "INCOMPLETE_CAPTURE_WINDOW" in after_t0["uncertainties"]
+    assert after_t0["source_authenticated"] is False
+    assert after_t0["temporal_state_training_permitted"] is False
