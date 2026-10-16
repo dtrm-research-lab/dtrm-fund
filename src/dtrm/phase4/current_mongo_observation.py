@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import re
 from collections import Counter
+from collections.abc import Mapping
 from datetime import date, datetime, timedelta, timezone
 from typing import NoReturn
 
@@ -87,7 +88,7 @@ class ObservedWindowReducer:
             shape = "empty"
         elif all(type(value) is str for value in tickers):
             shape = "string_only"
-        elif all(type(value) is dict for value in tickers):
+        elif all(isinstance(value, Mapping) for value in tickers):
             shape = "object_only"
         else:
             shape = "mixed_or_other"
