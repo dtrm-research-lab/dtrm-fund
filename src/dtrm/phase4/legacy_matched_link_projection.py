@@ -70,6 +70,7 @@ def preview_synthetic_legacy_links(
         "source_authenticated": False,
         "mapping_authenticated": False,
         "temporal_state_training_permitted": False,
+        "model_fitting_permitted": False,
         "outcome_access_permitted": False,
         "mm1_execution_permitted": False,
     }
