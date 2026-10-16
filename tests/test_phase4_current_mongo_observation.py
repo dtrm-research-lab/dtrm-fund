@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import json
 import runpy
-from types import MappingProxyType
 from datetime import datetime, timezone
 from pathlib import Path
+from types import MappingProxyType
 
 import pytest
 
