@@ -20,6 +20,7 @@ def test_two_known_string_fields_are_structural_only() -> None:
     assert r["historical_link_first_seen_authenticated"] is False
     assert r["mapping_authenticated"] is False
     assert r["temporal_state_training_permitted"] is False
+    assert r["model_fitting_permitted"] is False
     assert "SYNTHETIC_TICKER" not in repr(r)
     assert "SYNTHETIC_CLASS" not in repr(r)
 
