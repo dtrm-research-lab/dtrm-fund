@@ -226,3 +226,54 @@ def test_synthetic_flags_never_become_real_provenance() -> None:
     assert r["source_authenticated"] is False
     assert r["mapping_authenticated"] is False
     assert r["scientific_counting_permitted"] is False
+
+
+def test_invalid_sibling_suppresses_positive_event_counts_and_ages() -> None:
+    r = classify([
+        sight(version="v1"),
+        sight(version="v2", link_time=None),
+    ])
+    assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert "UNKNOWN_LINK_CLOCK" in r["uncertainties"]
+    assert "UNRESOLVED_DUPLICATE_OR_REVISION" in r["uncertainties"]
+    assert r["structurally_admissible_distinct_events"] == 0
+    assert r["known_age_min_hours"] is None
+    assert r["known_age_max_hours"] is None
+    assert all(n == 0 for n in r["structural_roles"].values())
+
+
+def test_unauthorized_sibling_suppresses_entire_logical_event() -> None:
+    r = classify([
+        sight(version="v1"),
+        sight(version="v2", mapping_ok=False),
+    ])
+    assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert r["structurally_admissible_distinct_events"] == 0
+    assert r["known_age_min_hours"] is None
+    assert "UNKNOWN_MAPPING_PROVENANCE" in r["uncertainties"]
+
+
+def test_cutoff_tied_sibling_quarantines_earlier_version() -> None:
+    r = classify([
+        sight(version="v1"),
+        sight(version="v2", link_time=T, commit_time=T),
+    ])
+    assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert r["structurally_admissible_distinct_events"] == 0
+    assert r["known_age_max_hours"] is None
+    assert "UNRESOLVED_CUTOFF_TIE" in r["uncertainties"]
+
+
+def test_demonstrably_future_sibling_does_not_backdate_or_invalidate_v1() -> None:
+    r = classify([
+        sight(version="v1"),
+        sight(
+            version="v2",
+            version_time=T + timedelta(seconds=2),
+            link_time=T + timedelta(seconds=2),
+            commit_time=T + timedelta(seconds=2),
+        ),
+    ])
+    assert r["history_category_structural_only"] == "ONE_TO_FOUR"
+    assert r["structurally_admissible_distinct_events"] == 1
+    assert r["known_age_min_hours"] == 2
