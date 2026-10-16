@@ -29,6 +29,7 @@ class SyntheticLinkSighting:
     source_role: str
     version_observed_at: datetime | None
     linked_at: datetime | None
+    ledger_committed_at: datetime | None
     source_provenance_supported: bool
     mapping_provenance_supported: bool
 
@@ -91,6 +92,7 @@ def classify_synthetic_asset_history(
             raise CoverageContractError("INVALID_SYNTHETIC_PROVENANCE_FLAG")
         observed = _utc(rec.version_observed_at)
         linked = _utc(rec.linked_at)
+        committed = _utc(rec.ledger_committed_at)
         raw_count += 1
         if not rec.source_provenance_supported:
             reasons.add("UNKNOWN_SOURCE_PROVENANCE")
@@ -100,9 +102,16 @@ def classify_synthetic_asset_history(
             reasons.add("UNKNOWN_VERSION_CLOCK")
         if linked is None:
             reasons.add("UNKNOWN_LINK_CLOCK")
-        if observed is None or linked is None:
+        if committed is None:
+            reasons.add("UNKNOWN_COMMIT_CLOCK")
+        if observed is None or linked is None or committed is None:
             continue
-        effective = max(observed, linked)
+        if committed < max(observed, linked):
+            reasons.add("UNRESOLVED_LEDGER_ORDER")
+            continue
+        if not rec.source_provenance_supported or not rec.mapping_provenance_supported:
+            continue
+        effective = max(observed, linked, committed)
         if effective == cutoff:
             reasons.add("UNRESOLVED_CUTOFF_TIE")
             continue
