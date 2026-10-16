@@ -1,0 +1,5 @@
+# Phase IV Mongo shape report — interrupt boundary addendum v6
+
+2026-10-15, registered before code changes after Codex P2 on PR #40 exact head `ed3f3446`.
+
+The report is authoritative only upon successful no-clobber `os.link(staged, output)` following temp-fsync. A `KeyboardInterrupt` occurring **after** publication (during temp cleanup or advisory status emission) must not return failure or encourage retry against already published output. Preserve success if the program has explicit in-process evidence the link was created; continue to fail closed for interruptions before publication. Avoid using `output.exists()` as a success oracle due races with other writers. Tests inject Ctrl-C in staged cleanup after link, after return in status emission, and before link, checking final bytes and return code; no live Mongo and no scientific promotion. Acknowledge the micro-race between OS link and recording success flag as an engineering limitation rather than using a post-hoc existence check.
