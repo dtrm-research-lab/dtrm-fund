@@ -20,13 +20,14 @@ def sight(
     *,
     version_time: datetime | None = T - timedelta(hours=3),
     link_time: datetime | None = T - timedelta(hours=2),
+    commit_time: datetime | None = T - timedelta(hours=2),
     source_ok: bool = True,
     mapping_ok: bool = True,
     version: str = "v1",
     role: str = "fmp_articles",
 ) -> SyntheticLinkSighting:
     return SyntheticLinkSighting(
-        name, version, role, version_time, link_time, source_ok, mapping_ok
+        name, version, role, version_time, link_time, commit_time, source_ok, mapping_ok
     )
 
 
@@ -70,12 +71,12 @@ def test_link_time_dominates_version_clock_and_age() -> None:
 
 
 def test_future_link_cannot_retroactively_admit_past_content() -> None:
-    r = classify([sight(link_time=T + timedelta(seconds=1))])
+    r = classify([sight(link_time=T + timedelta(seconds=1), commit_time=T + timedelta(seconds=2))])
     assert r["history_category_structural_only"] == "ZERO_AUTHENTICATED"
 
 
 def test_exact_cutoff_tie_is_unresolved_not_previous_information() -> None:
-    r = classify([sight(link_time=T)])
+    r = classify([sight(link_time=T, commit_time=T)])
     assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
     assert r["uncertainties"] == ["UNRESOLVED_CUTOFF_TIE"]
 
@@ -102,7 +103,7 @@ def test_unverified_mapping_or_source_is_unknown() -> None:
 def test_duplicate_or_revision_without_trusted_chain_not_double_counted() -> None:
     r = classify([
         sight(version="v1"),
-        sight(version="v2", link_time=T - timedelta(hours=1)),
+        sight(version="v2", link_time=T - timedelta(hours=1), commit_time=T - timedelta(hours=1)),
     ])
     assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
     assert r["structurally_admissible_distinct_events"] == 0
@@ -161,15 +162,67 @@ def test_t0_snapshot_does_not_backdate_old_news() -> None:
     t0 = T - timedelta(hours=1)
     # An old publication date is not part of the synthetic verified clock.
     # The *first attested* version and link observation is T0.
-    record = sight(version_time=t0, link_time=t0)
+    record = sight(version_time=t0, link_time=t0, commit_time=t0 + timedelta(minutes=3))
     at_t0 = classify([record], cutoff=t0, complete=False)
     after_t0 = classify(
-        [record], cutoff=t0 + timedelta(seconds=1), complete=False
+        [record], cutoff=t0 + timedelta(minutes=4), complete=False
     )
     assert at_t0["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
-    assert "UNRESOLVED_CUTOFF_TIE" in at_t0["uncertainties"]
+    assert at_t0["structurally_admissible_distinct_events"] == 0
     assert after_t0["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
     assert after_t0["structurally_admissible_distinct_events"] == 1
     assert "INCOMPLETE_CAPTURE_WINDOW" in after_t0["uncertainties"]
     assert after_t0["source_authenticated"] is False
     assert after_t0["temporal_state_training_permitted"] is False
+
+def test_t0_uncommitted_is_unknown_no_positive_age() -> None:
+    r = classify([sight(commit_time=None)])
+    assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert r["uncertainties"] == ["UNKNOWN_COMMIT_CLOCK"]
+    assert r["structurally_admissible_distinct_events"] == 0
+    assert r["known_age_min_hours"] is None
+
+
+def test_t0_commit_exactly_at_cutoff_is_not_admissible() -> None:
+    r = classify([sight(commit_time=T)])
+    assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert r["uncertainties"] == ["UNRESOLVED_CUTOFF_TIE"]
+    assert r["structurally_admissible_distinct_events"] == 0
+
+
+def test_t0_commit_after_cutoff_cannot_be_admitted() -> None:
+    r = classify([sight(commit_time=T + timedelta(seconds=1))])
+    assert r["history_category_structural_only"] == "ZERO_AUTHENTICATED"
+    assert r["structurally_admissible_distinct_events"] == 0
+    assert r["known_age_min_hours"] is None
+
+
+def test_bad_ledger_time_order_is_unknown_not_positive() -> None:
+    r = classify([sight(commit_time=T - timedelta(hours=4))])
+    assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert r["uncertainties"] == ["UNRESOLVED_LEDGER_ORDER"]
+    assert r["known_age_max_hours"] is None
+    assert r["structurally_admissible_distinct_events"] == 0
+
+
+def test_untrusted_provenance_never_emits_positive_age_or_role_count() -> None:
+    r = classify([sight(source_ok=False, mapping_ok=False)])
+    assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert r["structurally_admissible_distinct_events"] == 0
+    assert r["known_age_min_hours"] is None
+    assert r["known_age_max_hours"] is None
+    assert all(value == 0 for value in r["structural_roles"].values())
+
+
+def test_ledger_commit_latest_in_age_calculation() -> None:
+    r = classify([sight(commit_time=T - timedelta(minutes=30))])
+    assert r["history_category_structural_only"] == "ONE_TO_FOUR"
+    assert r["known_age_min_hours"] == 0.5
+    assert r["known_age_max_hours"] == 0.5
+
+
+def test_synthetic_flags_never_become_real_provenance() -> None:
+    r = classify([sight(source_ok=True, mapping_ok=True)])
+    assert r["source_authenticated"] is False
+    assert r["mapping_authenticated"] is False
+    assert r["scientific_counting_permitted"] is False
