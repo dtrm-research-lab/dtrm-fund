@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Literal, Sequence
+from typing import Sequence
 
 SOURCE_ROLES = frozenset(("fmp_articles", "general_latest", "stock_latest"))
 BINS = ("UNKNOWN_AVAILABILITY", "ZERO_AUTHENTICATED", "ONE_TO_FOUR",
