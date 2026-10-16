@@ -8,8 +8,8 @@ import argparse
 import importlib
 import json
 import os
+import secrets
 import stat
-import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import NoReturn
@@ -31,28 +31,41 @@ class _RedactedParser(argparse.ArgumentParser):
 
 
 def _write_exclusive(destination: Path, data: bytes) -> None:
-    parent = destination.parent
-    if destination.is_symlink() or destination.exists() or not parent.is_dir():
+    """Bind temp creation and no-clobber publish to one validated dirfd."""
+    directory_fd = -1
+    temporary = ".phase4-current-window-" + secrets.token_hex(16)
+    if destination.name in ("", ".", ".."):
         raise ObservationError("INVALID_PRIVATE_OUTPUT")
-    info = parent.stat()
-    if (not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid()
-            or info.st_mode & 0o022 or parent.is_symlink()):
-        raise ObservationError("INVALID_PRIVATE_OUTPUT")
-    descriptor, temp = tempfile.mkstemp(prefix=".phase4-current-window-", dir=parent)
-    published = False
     try:
-        with os.fdopen(descriptor, "wb") as stream:
-            stream.write(data)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.link(temp, destination)  # Never overwrite previous observations.
-        published = True
-    finally:
+        directory_fd = os.open(
+            destination.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+        )
+        info = os.fstat(directory_fd)
+        if (not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid()
+                or info.st_mode & 0o022):
+            raise ObservationError("INVALID_PRIVATE_OUTPUT")
+        file_fd = os.open(
+            temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            0o600, dir_fd=directory_fd,
+        )
         try:
-            os.unlink(temp)
-        except OSError:
-            if not published:
-                raise ObservationError("INVALID_PRIVATE_OUTPUT") from None
+            with os.fdopen(file_fd, "wb") as stream:
+                stream.write(data)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.link(
+                temporary, destination.name,
+                src_dir_fd=directory_fd, dst_dir_fd=directory_fd,
+                follow_symlinks=False,
+            )  # Linked atomically; an existing path is never replaced.
+            os.fsync(directory_fd)
+        finally:
+            os.unlink(temporary, dir_fd=directory_fd)
+    except OSError:
+        raise ObservationError("INVALID_PRIVATE_OUTPUT") from None
+    finally:
+        if directory_fd >= 0:
+            os.close(directory_fd)
 
 
 def _observe(env_file: Path | None) -> dict[str, object]:
@@ -97,7 +110,7 @@ def _observe(env_file: Path | None) -> dict[str, object]:
                         raise ObservationError("INVALID_SOURCE_DOCUMENT")
                     reducer.add(
                         oid.binary, item.get("date"), item.get("text"),
-                        item.get("matched_tickers"), item.raw,
+                        item.get("matched_tickers"), bytes(item.raw),
                     )
             finally:
                 cursor.close()
