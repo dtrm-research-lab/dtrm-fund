@@ -78,6 +78,7 @@ def classify_synthetic_asset_history(
         reasons.add("INCOMPLETE_CAPTURE_WINDOW")
 
     by_event: dict[str, list[tuple[str, str, datetime]]] = {}
+    unresolved_events: set[str] = set()
     raw_count = 0
     for rec in sightings:
         if not isinstance(rec, SyntheticLinkSighting):
@@ -105,15 +106,19 @@ def classify_synthetic_asset_history(
         if committed is None:
             reasons.add("UNKNOWN_COMMIT_CLOCK")
         if observed is None or linked is None or committed is None:
+            unresolved_events.add(rec.logical_event_id)
             continue
         if committed < max(observed, linked):
             reasons.add("UNRESOLVED_LEDGER_ORDER")
+            unresolved_events.add(rec.logical_event_id)
             continue
         if not rec.source_provenance_supported or not rec.mapping_provenance_supported:
+            unresolved_events.add(rec.logical_event_id)
             continue
         effective = max(observed, linked, committed)
         if effective == cutoff:
             reasons.add("UNRESOLVED_CUTOFF_TIE")
+            unresolved_events.add(rec.logical_event_id)
             continue
         if effective > cutoff:
             continue
@@ -125,7 +130,10 @@ def classify_synthetic_asset_history(
 
     role_counts: Counter[str] = Counter()
     known_ages_hours: list[float] = []
-    for versions in by_event.values():
+    for event_id, versions in by_event.items():
+        if event_id in unresolved_events:
+            reasons.add("UNRESOLVED_DUPLICATE_OR_REVISION")
+            continue
         # Genuine revision sequence + cross-role identity must be verified by
         # separate authenticated ledger. Never elect a favorable version here.
         if len(versions) != 1:
