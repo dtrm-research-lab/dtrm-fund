@@ -277,3 +277,53 @@ def test_demonstrably_future_sibling_does_not_backdate_or_invalidate_v1() -> Non
     assert r["history_category_structural_only"] == "ONE_TO_FOUR"
     assert r["structurally_admissible_distinct_events"] == 1
     assert r["known_age_min_hours"] == 2
+
+
+def test_future_only_source_sibling_with_missing_link_commit_is_ignored_asof() -> None:
+    r = classify([
+        sight(version="v1"),
+        sight(
+            version="v2",
+            version_time=T + timedelta(seconds=1),
+            link_time=None,
+            commit_time=None,
+        ),
+    ])
+    assert r["history_category_structural_only"] == "ONE_TO_FOUR"
+    assert r["structurally_admissible_distinct_events"] == 1
+    assert r["known_age_min_hours"] == 2
+    assert r["uncertainties"] == []
+
+
+def test_future_only_link_sibling_with_missing_version_commit_is_ignored_asof() -> None:
+    r = classify([
+        sight(version="v1"),
+        sight(
+            version="v2",
+            version_time=None,
+            link_time=T + timedelta(seconds=1),
+            commit_time=None,
+        ),
+    ])
+    assert r["history_category_structural_only"] == "ONE_TO_FOUR"
+    assert r["structurally_admissible_distinct_events"] == 1
+    assert r["known_age_min_hours"] == 2
+    assert r["uncertainties"] == []
+
+
+def test_untrusted_future_only_source_clock_does_not_resolve_sibling() -> None:
+    r = classify([
+        sight(version="v1"),
+        sight(
+            version="v2",
+            version_time=T + timedelta(seconds=1),
+            link_time=None,
+            commit_time=None,
+            source_ok=False,
+        ),
+    ])
+    assert r["history_category_structural_only"] == "UNKNOWN_AVAILABILITY"
+    assert r["structurally_admissible_distinct_events"] == 0
+    assert r["known_age_min_hours"] is None
+    assert "UNKNOWN_SOURCE_PROVENANCE" in r["uncertainties"]
+    assert "UNRESOLVED_DUPLICATE_OR_REVISION" in r["uncertainties"]
