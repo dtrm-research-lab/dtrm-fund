@@ -1,0 +1,7 @@
+# Phase IV — unresolved sibling-version quarantine v2
+
+**2026-10-16; before code; synthetic-only, no live source access.** Codex P2 on `530d8d290bcf9b9866ef894e0352d0847e8fafe0` identified a science integrity flaw: one candidate `logical_event_id` can have an admissible version and a sibling revision with UNKNOWN clock/authority; the previous preflight dropped only the sibling while emitting a positive count and age for the event.
+
+**Fail-closed invariant:** any logical event with an unresolved same-event sibling (missing observed/link/ledger clock, impossible commit order, untrusted source/mapping origin, or ambiguous cutoff tie) is quarantined across all its versions for that decision. Return explicit uncertainty; **no** positive distinct-event count, role count or event age for that event. A demonstrably future-only sibling does not retrospectively invalidate an earlier admissible version, but no posterior revision may be used in feature construction. More than one candidate admissible version without authenticated predecessor/canonical decision rule is unresolved and yields no count. Positive source/member flags remain caller-supplied synthetic mechanics and are NOT external trust roots.
+
+Add negative tests `valid(v1)+unknown(v2)`, `valid(v1)+unauthorized(v2)`, `valid(v1)+tie(v2)`, and `valid(v1)+future(v2)`, exercising role and age summaries as well as category. No G5 promotion, training, outcomes, model fitting, Schedule invocation or MM1 permission.
