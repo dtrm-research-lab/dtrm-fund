@@ -327,3 +327,33 @@ def test_untrusted_future_only_source_clock_does_not_resolve_sibling() -> None:
     assert r["known_age_min_hours"] is None
     assert "UNKNOWN_SOURCE_PROVENANCE" in r["uncertainties"]
     assert "UNRESOLVED_DUPLICATE_OR_REVISION" in r["uncertainties"]
+
+
+def test_future_version_does_not_change_earlier_asof_report() -> None:
+    earlier = classify([sight(version="v1")])
+    with_future = classify([
+        sight(version="v1"),
+        sight(
+            version="v2",
+            version_time=T + timedelta(seconds=1),
+            link_time=None,
+            commit_time=None,
+        ),
+    ])
+    assert with_future == earlier
+    assert with_future["raw_synthetic_sightings"] == 1
+
+
+def test_future_link_does_not_change_earlier_asof_report() -> None:
+    earlier = classify([sight(version="v1")])
+    with_future = classify([
+        sight(version="v1"),
+        sight(
+            version="v2",
+            version_time=None,
+            link_time=T + timedelta(seconds=1),
+            commit_time=None,
+        ),
+    ])
+    assert with_future == earlier
+    assert with_future["raw_synthetic_sightings"] == 1
