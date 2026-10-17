@@ -95,6 +95,13 @@ def classify_synthetic_asset_history(
         linked = _utc(rec.linked_at)
         committed = _utc(rec.ledger_committed_at)
         raw_count += 1
+        # A supported future-only version/link never belonged to this cutoff.
+        # Do not let its missing sibling fields contaminate earlier event history.
+        if (
+            (rec.source_provenance_supported and observed is not None and observed > cutoff)
+            or (rec.mapping_provenance_supported and linked is not None and linked > cutoff)
+        ):
+            continue
         if not rec.source_provenance_supported:
             reasons.add("UNKNOWN_SOURCE_PROVENANCE")
         if not rec.mapping_provenance_supported:
