@@ -1,0 +1,9 @@
+# Phase IV — optional LZMA decoder compatibility addendum v2
+
+**2026-10-15, contract before code.** Operator's Mac `pyenv` Python 3.11.4 lacks built-in `_lzma`, causing an import-time `ModuleNotFoundError` in PR #44's first-witness coverage implementation, **before** any original ZIP is read. The separate PR #41 canonical census already reproduced the 21 original ZIPs successfully on this same Mac; do not attribute the new import error to corrupt or unverified archives.
+
+**Permitted bounded change:** Make the exception handling for optional `lzma.LZMAError` conditional so importing the coverage module on Python builds without `_lzma` succeeds, without installing dependencies, invoking the network, bypassing ZIP/sidecar SHA checks or changing the frozen 21-source manifest, counting, cutoffs or expected results.
+
+**Fail-closed decoder requirement:** On systems where the standard-library LZMA decoder exists, corrupted ZIP_LZMA members must still result only in fixed `REPRODUCTION_NOT_CONFIRMED` with no output. On systems where it does not exist, a ZIP member requiring LZMA must fail with that same redacted fixed error; it must NEVER be silently skipped, repacked, re-decoded with weaker integrity, or counted. Valid DEFLATE ZIPs must continue to verify normally without `_lzma`. This is portability only, not source-availability authority.
+
+**Acceptance:** Synthetic fixture test simulates unavailable `lzma` without requiring a developer machine with a broken Python, proves module import and a SHA-pinned DEFLATE ZIP read, and checks deterministic fail-closed on unavailable LZMA decoder. Preserve existing synthetic/tamper/cutoff tests, Ruff, strict mypy and inherited 157-file Phase III source boundary. No real replay claimed until the user runs the corrected exact code on their 21 original ZIPs. No merge, model fitting, AWS activation, Mongo/FMP, outcome access or MM1 changes. Scientific status remains `BLOCKED_SOURCE_AUDIT`.
