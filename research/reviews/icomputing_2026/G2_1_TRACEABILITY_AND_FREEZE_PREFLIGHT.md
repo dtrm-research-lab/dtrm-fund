@@ -128,3 +128,32 @@ holdout if the editor/reviewer objection map and a
 scientifically honest analysis/limitation protocol are
 complete. It cannot freeze with unauthenticated reviewer
 requirements or unregistered new G3 analyses.
+
+## 2026-10-27 SUPERSEDING STATUS — reviewer letter received in conversation
+
+This runbook's earlier source-search FORBIDDEN/NOT FOUND
+note is an **as-of-time record**, not a current G2
+blocker. The manuscript author subsequently supplied
+the **complete** editorial decision of 2026-10-26
+including both reviewer reports in this chat.
+
+The 22-item requirements matrix now contains 7 editor
+actions, 7 internally reconstructed non-numbered
+reviewer #1 themes and all 8 numbered reviewer #2
+points. `ic_g2_freeze_preflight.py` has been
+updated to recognize the explicitly identified
+user-provided transcript without falsely claiming
+an independently authenticated provider SHA.
+It checks all 22 item IDs and their G5/G6 anchors.
+
+**Remaining blockers are now primarily preanalysis
+G3 plans and G2 manual signoff**, not source
+access. If original journal email bytes become
+available later, preserve and SHA-hash them as
+a separate higher-assurance evidence record;
+do not overwrite the current user-pasted
+source attribution. The earlier literal 'nine'
+test count is now superseded by **eleven**
+unit-test cases in `test_ic_g2_freeze_preflight.py`.
+`G2_FREEZE_GATE_BLOCKED` is still expected until
+all conditional G3 analysis specs are signed.
