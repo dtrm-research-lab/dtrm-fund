@@ -282,3 +282,21 @@ Next strictly outcome-blind G1.2f: evaluate canonicalized source
 subsequence order, aliases and original beta/embedding manifest
 structures; explicitly separate metadata-only and trusted-historical
 file inspection. Prospective scoring remains UNAPPROVED.
+
+## 2026-10-27 G1.2f next controlled local audit PREPARED (not executed)
+
+Added `ic_g1_feature_provenance.py` and `G1_2F_FEATURE_PROVENANCE.md`.
+The program requires G1.2e successful subset report, historical V4
+pre-committed V1 SHA256 anchors for features/signals/beta, and the
+new G1.2e local SHA for the original raw pairs. It checks normalized
+raw input key uniqueness/order and historical feature dimension
+390. If the V1 beta artifact has a recognized numeric/keyed schema
+it compares the source beta_pre values to the final feature column at
+historical float32 precision; otherwise it leaves a schema gate open.
+The embedding manifest is only structurally inventoried. No old or
+prospective outcome/return targets will be opened, and models are not
+loaded or executed.
+
+**No G1.2f result exists yet.** The original contract/raw file
+265145-vs-40320 cardinality discrepancy, exact raw→selected filtering,
+full embedding/text row mapping, and independent new holdout remain OPEN.
