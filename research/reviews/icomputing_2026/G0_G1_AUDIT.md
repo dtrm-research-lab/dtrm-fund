@@ -300,3 +300,45 @@ loaded or executed.
 **No G1.2f result exists yet.** The original contract/raw file
 265145-vs-40320 cardinality discrepancy, exact raw→selected filtering,
 full embedding/text row mapping, and independent new holdout remain OPEN.
+
+## 2026-10-27 G1.2f operator-run: canonical source row order and keyed beta column PASS
+
+Operator ran `ic_g1_feature_provenance.py` on SHA256-anchored
+original V1 inputs. Report:
+`G1.2f: HISTORICAL_CANONICAL_PAIR_AND_BETA_LINKAGE_PASS_FULL_PROVENANCE_OPEN`.
+
+- Raw source pairs **265,145**, selected V1 signal pairs **40,320**.
+- Normalized raw pair duplicates: **0**; full normalized signal
+  membership = **True**; all selected pair keys are an **ordered
+  subsequence** of original raw source keys after historically declared
+  `BRK.B → BRK-B` normalization.
+- Precommitted V1 feature matrix **(40,320 × 390)**.
+- Original `probabilistic_v1_holdout_beta_pre_2026-06-06.pkl`
+  SHA256 `e39896db92f1bb7c8334f61a6eee7bc71f8acbd6b6e87504c388ae0b8b1463d8`
+  verified and recognized as a 40,320×4 DataFrame with columns
+  `news_id`, `ticker`, `date_dt`, `beta_pre`.
+- Keyed by `(news_id, normalized ticker)`, **all 40,320 beta_pre
+  values match the final feature column exactly**; max absolute
+  difference **0.0**. This is keyed source correspondence, not merely
+  same-position numeric comparison.
+- Historical embedding provenance manifest exists:
+  `probabilistic_v1_embedding_manifest_2026-06-06.pkl`,
+  **5,526 × 3** DataFrame with columns
+  `date_dt`, `embedding_source`, `news_id`, local SHA256
+  `3c74994a08384ea009af36b4cf3bcef592c95a06daf2d9889b3eaef79b24e52e`.
+  Hash is a **new local commitment**, not independently preanchored.
+- No target values, realized returns, newer cohorts or model inference
+  accessed by this step.
+
+**Interpretation:** original 40,320 frozen V1 news/ticker keys are an
+ordered subset of raw candidates, and the 390th feature is verified
+against its historically preanchored original keyed beta table.
+Unverified: 384 embedding values, five frozen text features,
+original raw→selected filtering specification, historical V1 contract
+raw basename claiming 40,320 when local raw source has 265,145.
+These open issues must remain separate from completed numeric model
+reconstruction. No forward holdout authorized.
+
+Next: G1.2g outcome-blind, historical text feature recreation and
+source-cache availability check. It MUST not infer fresh returns or
+assume a particular embedding cache representation.
