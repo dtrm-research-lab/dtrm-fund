@@ -150,3 +150,22 @@ outcome blinding is not the same as a prospective forward run.
   excess-beta target metrics.
 
 **Status: G1.3_PREREG_DRAFT_UNFROZEN; NEW_INFERENCE_BLOCKED.**
+
+## 2026-10-27 update — historical sample-selection structural check
+
+G1.2m was operator-run and succeeded using the predeclared
+historical original V1 event interval 2026-05-02 to
+2026-06-06 inclusive and original BRK.B→BRK-B alias:
+**40,320 derived original pair keys, exact historical key
+set, row order and UTC event timestamps; zero extra/missing**.
+This establishes structural observational correspondence of
+the historical raw candidate universe (265,145 pairs) to V1.
+The source file's same-basename contract cardinality and
+original physical copy/generation provenance are still open.
+
+G1.3a metadata-only newer-news source discovery is now
+PREPARED but has not been run, so no specific subsequent
+cohort dates or news availability can yet be preregistered.
+Both retrospective outcome-blind and truly prospective
+modes remain UNAUTHORIZED until the signed full protocol
+and inputs/outcome access gates pass.
