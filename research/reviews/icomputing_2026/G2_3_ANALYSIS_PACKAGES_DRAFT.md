@@ -295,3 +295,22 @@ sensitivity comparisons have **NOT** been computed.
 A3 price source/event-time as-of provenance, A4
 actual portfolio economics, and A6 K analyses
 remain conditional on separately frozen rules.
+
+## G2.6 executed + G2.7 spec now committed (2026-10-27)
+
+G2.6 was operator-run and passed. G2.5 evidence
+report SHA256: `ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7`.
+Original 19,880-validation P10 source path and exact
+historical weighted q25 cutoff are now corroborated
+by G1.2 12/12 old numeric replay, 9/9 code token
+checks, and 8 old-cohort file hash refs.
+
+G2.7 `G2_7_A2_THRESHOLD_SENSITIVITY_PREREG_DRAFT.json`
+has been committed **before** running any q15/q35 or
+V2/V3/V4 exploratory comparisons. It fixes the q-grid,
+all 9 comparison cells, fixed K capacity, risk/full-K
+feasibility and cluster/bootstrap method. G2.7
+metadata-only program `ic_g2_a2_protocol_preflight.py`
+prepared but not run by operator. The whole revision
+G2 preanalysis plan still includes A3/A4/A6 feasibility,
+final signoff and G2 freeze before any G3 run.
