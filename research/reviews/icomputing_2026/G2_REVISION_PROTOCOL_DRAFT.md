@@ -233,3 +233,26 @@ committed **protocol** not an empirical result.
 Final A3/A4/A6 feasibility, source checkpoints,
 adversarial review, human G2 signoff and freeze
 SHA remain pending; G3 still BLOCKED.
+
+## G2.10 dates PASS and A3/A4/A6 plan designs (2026-10-27)
+
+G2.10 corrected operator status:
+`G2_10_A3_ORIGINAL_STOCK_PRICE_BAR_DATE_COVERAGE_PASS_PROVIDER_VINTAGE_OPEN`.
+Five static regression cases passed. All 174
+original July-5 source price frames (173 stocks
+and SPY) structurally have sufficient bar-date
+history before the original first-event dates.
+This does NOT prove any per-event or original
+validation cohort completeness nor historical
+vendor vintage/adjustment point-in-time status.
+
+Additional reviewer-linked draft source:
+`G2_11_A3_VOLATILITY_BENCHMARK_DRAFT.json`;
+economic/flat and K-grid:
+`G2_11_A4_A6_ECONOMIC_CAPACITY_DRAFT.json`.
+Current G2 freeze requires complete input/report
+SHA and row/date eligibility, deciding on A3
+source-vintage limitations, and explicit human
+scientific signoff before any G3 old-outcome
+exploratory runs. The deadline remains
+2026-11-25. G3 still BLOCKED.
