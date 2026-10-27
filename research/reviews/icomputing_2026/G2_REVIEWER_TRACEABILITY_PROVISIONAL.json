@@ -161,13 +161,14 @@
       "g2_action_id": "R1-01",
       "g3_action_class": "NOT_EXECUTABLE_NO_VERIFIED_NEW_EVENT_SOURCE",
       "g3_execution_status": "NOT_EXECUTABLE_NO_VERIFIED_NEW_EVENT_SOURCE",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Limitations: no genuinely independent, non-overlapping 60d cohort; Future Work",
       "g6_response_id": "R1-01",
       "mapped_internal_q_ids": [
         "Q-09"
       ],
       "claims_caution": "no approved new temporal test; disclose and propose future prospective, no independent claim",
-      "complete": true
+      "complete": true,
+      "editorial_risk": "CRITICAL_INDEPENDENT_HOLDOUT_UNAVAILABLE"
     },
     {
       "id": "R1-02",
@@ -181,7 +182,7 @@
       "g2_action_id": "R1-02",
       "g3_action_class": "REANALYZE_PREVIOUS_STATISTICS_OR_DESCRIBE_LIMITATIONS",
       "g3_execution_status": "REANALYZE_PREVIOUS_STATISTICS_OR_DESCRIBE_LIMITATIONS",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Results: dependence-aware inference; Discussion: overlapping horizons",
       "g6_response_id": "R1-02",
       "mapped_internal_q_ids": [
         "Q-06",
@@ -202,7 +203,7 @@
       "g2_action_id": "R1-03",
       "g3_action_class": "EXPLORATORY_POST_OUTCOME_PREANALYSIS_REQUIRED",
       "g3_execution_status": "EXPLORATORY_POST_OUTCOME_PREANALYSIS_REQUIRED",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Methods/Results: original P10 and validation veto percentile sensitivity",
       "g6_response_id": "R1-03",
       "mapped_internal_q_ids": [
         "Q-02"
@@ -222,7 +223,7 @@
       "g2_action_id": "R1-04",
       "g3_action_class": "EXPLORATORY_POST_OUTCOME_PREANALYSIS_REQUIRED",
       "g3_execution_status": "EXPLORATORY_POST_OUTCOME_PREANALYSIS_REQUIRED",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Methods/Results: point-in-time conventional risk filter comparison",
       "g6_response_id": "R1-04",
       "mapped_internal_q_ids": [
         "Q-03"
@@ -242,7 +243,7 @@
       "g2_action_id": "R1-05",
       "g3_action_class": "CONDITIONAL_ECONOMIC_SIMULATION_AND_DISCUSSION",
       "g3_execution_status": "CONDITIONAL_ECONOMIC_SIMULATION_AND_DISCUSSION",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Results/Discussion: economic metrics, flat option, costs and limitations",
       "g6_response_id": "R1-05",
       "mapped_internal_q_ids": [
         "Q-04"
@@ -262,7 +263,7 @@
       "g2_action_id": "R1-06",
       "g3_action_class": "DESCRIPTIVE_CLAIM_CORRECTION",
       "g3_execution_status": "DESCRIPTIVE_CLAIM_CORRECTION",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Introduction/Discussion: human-defined rule vs human judgment and model-agnostic claims",
       "g6_response_id": "R1-06",
       "mapped_internal_q_ids": [
         "Q-07"
@@ -282,13 +283,14 @@
       "g2_action_id": "R1-07",
       "g3_action_class": "CONDITIONAL_SECOND_RANKER_TEST_OR_LIMITATION",
       "g3_execution_status": "CONDITIONAL_SECOND_RANKER_TEST_OR_LIMITATION",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Limitations: empirical test covers one frozen ranker",
       "g6_response_id": "R1-07",
       "mapped_internal_q_ids": [
         "Q-08"
       ],
       "claims_caution": "frozen second ranker only if prior artefacts; otherwise limitation",
-      "complete": true
+      "complete": true,
+      "editorial_risk": "IMPORTANT_SINGLE_RANKER_LIMIT"
     },
     {
       "id": "R2-01",
@@ -302,7 +304,7 @@
       "g2_action_id": "R2-01",
       "g3_action_class": "DESCRIPTIVE_CLAIM_CORRECTION",
       "g3_execution_status": "DESCRIPTIVE_CLAIM_CORRECTION",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Introduction/Methodology: algorithmic guardrail vs human-authored governance distinction",
       "g6_response_id": "R2-01",
       "mapped_internal_q_ids": [
         "Q-07"
@@ -322,7 +324,7 @@
       "g2_action_id": "R2-02",
       "g3_action_class": "METHODOLOGICAL_JUSTIFICATION_AND_EXPLORATORY_SENSITIVITY",
       "g3_execution_status": "METHODOLOGICAL_JUSTIFICATION_AND_EXPLORATORY_SENSITIVITY",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Methodology: P10 predictive tail and weighted validation percentile gate",
       "g6_response_id": "R2-02",
       "mapped_internal_q_ids": [
         "Q-02"
@@ -342,14 +344,15 @@
       "g2_action_id": "R2-03",
       "g3_action_class": "DESCRIPTIVE_DEPENDENCE_CORRECTION",
       "g3_execution_status": "DESCRIPTIVE_DEPENDENCE_CORRECTION",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Methodology/Limitations: forward horizon overlap and distinct event cohorts",
       "g6_response_id": "R2-03",
       "mapped_internal_q_ids": [
         "Q-06",
         "Q-09"
       ],
       "claims_caution": "overlap study and corrected V2/V3 independence language",
-      "complete": true
+      "complete": true,
+      "editorial_risk": "CRITICAL_60_DAY_WINDOW_OVERLAP"
     },
     {
       "id": "R2-04",
@@ -363,7 +366,7 @@
       "g2_action_id": "R2-04",
       "g3_action_class": "DESCRIPTIVE_INFERENCE_LIMITATION",
       "g3_execution_status": "DESCRIPTIVE_INFERENCE_LIMITATION",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Results: ticker-cluster bootstrap CIs and evidence ceiling",
       "g6_response_id": "R2-04",
       "mapped_internal_q_ids": [
         "Q-06",
@@ -384,7 +387,7 @@
       "g2_action_id": "R2-05",
       "g3_action_class": "CONDITIONAL_FLAT_COST_ECONOMIC_ANALYSIS",
       "g3_execution_status": "CONDITIONAL_FLAT_COST_ECONOMIC_ANALYSIS",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Results/Discussion: no-action cash option and tradable-return scope",
       "g6_response_id": "R2-05",
       "mapped_internal_q_ids": [
         "Q-04",
@@ -405,7 +408,7 @@
       "g2_action_id": "R2-06",
       "g3_action_class": "CAPACITY_JUSTIFICATION_AND_CONDITIONAL_SENSITIVITY",
       "g3_execution_status": "CAPACITY_JUSTIFICATION_AND_CONDITIONAL_SENSITIVITY",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Methodology/Limitations: Top-K capacity rationale and sensitivity",
       "g6_response_id": "R2-06",
       "mapped_internal_q_ids": [
         "Q-05"
@@ -425,7 +428,7 @@
       "g2_action_id": "R2-07",
       "g3_action_class": "ORIGINAL_WEEKLY_AND_COHORT_EVIDENCE_INTERPRETATION",
       "g3_execution_status": "ORIGINAL_WEEKLY_AND_COHORT_EVIDENCE_INTERPRETATION",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Results/Discussion: smaller V4 effect and six-week heterogeneity",
       "g6_response_id": "R2-07",
       "mapped_internal_q_ids": [
         "Q-06"
@@ -445,7 +448,7 @@
       "g2_action_id": "R2-08",
       "g3_action_class": "LITERATURE_REVIEW_AND_REFERENCES",
       "g3_execution_status": "LITERATURE_REVIEW_AND_REFERENCES",
-      "g5_section": "G5 section to be assigned after analysis",
+      "g5_section": "Introduction/Related Work: verified finance AI and risk-control references",
       "g6_response_id": "R2-08",
       "mapped_internal_q_ids": [
         "Q-11"
@@ -464,7 +467,8 @@
     "Freeze threshold P15/P25/P35 as validation P10 cutoff weighted percentiles, NOT new P15/P25/P35 prediction model retraining.",
     "Specify conventional baseline, economic/flat costs, capacity K diagnostics with source/asset hashes and point-in-time leakage protections.",
     "Document no eligible independent nonoverlapping 60d cohort before deadline; present genuine limitation and future-prospective plan.",
-    "Complete G2 manual adversarial preanalysis signoff and record source/commit before authorizing any G3 computations."
+    "Complete G2 manual adversarial preanalysis signoff and record source/commit before authorizing any G3 computations.",
+    "Drafted explicit G5 manuscript destinations for all 22 tracked points; actual section numbers to be verified against manuscript after G3/G4."
   ],
   "references": [
     "G0_G1_AUDIT.md",
@@ -472,7 +476,8 @@
     "G2_REVISION_PROTOCOL_DRAFT.md",
     "G1_3B_BROAD_SOURCE_TRIAGE_STOP.md",
     "IC_G1_REVIEWER_REPRODUCIBILITY_EVIDENCE_DRAFT.md",
-    "G2_2_AUTHENTIC_REVIEWER_REQUIREMENT_MAP.md"
+    "G2_2_AUTHENTIC_REVIEWER_REQUIREMENT_MAP.md",
+    "G2_3_ANALYSIS_PACKAGES_DRAFT.md"
   ],
   "provisional_concerns": [
     {
@@ -482,7 +487,7 @@
       "authentic_reviewer_ref": null,
       "disposition": "DESCRIPTIVE_DOCUMENTATION",
       "existing_evidence": "G1.2k exact historic model/feature parity; G1.2m original declared date filter exact key/order/dates; preserve same-basename 265145/40320 caveat",
-      "g3_execution_status": "HISTORIC_REPLAY_ONLY",
+      "g3_execution_status": "REUSE_HISTORIC_REPLAY_ONLY",
       "g5_target_section_draft": "Methods: Data and audit lineage",
       "g6_rebuttal_anchor": "Supporting methods, not a direct reviewer objection",
       "caveat": "Original code/weights not byte-identical and physical file copy lineage open",
