@@ -1,0 +1,142 @@
+{
+  "schema_version": "dtrm.ic.g2.a2_threshold_sensitivity_plan.v1",
+  "status": "G2_A2_PLAN_PRECOMMITTED_DRAFT_NOT_FROZEN",
+  "manuscript": "ICOMPUTING-D-26-01069",
+  "created_date": "2026-10-27",
+  "reviewer_requirements": [
+    "R1-03",
+    "R2-02"
+  ],
+  "source_anchor": {
+    "pinned_original_commit": "c7502a690162459cdfb3413573e3133c42efb126",
+    "historical_dossier_sha256": "7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac",
+    "historical_v1_selection_sha256": "388345ba7bcca9c9a5103584d999aef4f033a3656d746b26efae337cf569b81f",
+    "g2_5_source_inventory_sha256": "ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7",
+    "g2_6_source_binding_status": "G2_6_A2_VALIDATION_P10_SOURCE_PATH_BOUND_THRESHOLDS_NOT_COMPUTED",
+    "model_type": "same_reconstructed_frozen_P10_quantile_xgb_not_P15_P25_P35_models",
+    "p10_best_iteration": 18,
+    "calibration_offset": -0.06494169682264328,
+    "original_validation_rows": 19880,
+    "q25_original_validation_cutoff": -0.16665692627429962,
+    "reference_code": [
+      "research/experiments/run_probabilistic_xgb_v0.py",
+      "src/dtrm/sample_weights.py",
+      "research/reviews/icomputing_2026/ic_g1_reconstruct.py"
+    ]
+  },
+  "hypotheses": {
+    "purpose": "Characterize how changing ONLY the validation-derived calibrated-P10 veto percentile affects pass counts, full Top-K filling and past cohort decision metrics.",
+    "inferential_status": "POST_OUTCOME_EXPLORATORY_SENSITIVITY_NOT_NEW_PROSPECTIVE_VALIDATION",
+    "original_promoted_rule": "q=0.25",
+    "alternative_rules": "q=0.15 and q=0.35; never promote or re-optimize a rule based on historic V2/V3/V4 outcomes"
+  },
+  "threshold_spec": {
+    "cutoffs_from": "Original 19880-row V0 VALID subset; same P10 predictor, original calibration and per-news weighting.",
+    "quantile_fractions": [
+      0.15,
+      0.25,
+      0.35
+    ],
+    "quantile_method": "numpy argsort ascending float values; cumulative legacy_news_weights; first cumulative >= q*sum_weights via searchsorted(side=left), using original dtype/no interpolated midpoint",
+    "validation_weights": "legacy_news_weights(news_ids_within_original_validation_subset) with each original news ID total weight 1",
+    "p10_prediction_iteration_range_exclusive_upper": 19,
+    "calibration_offset_frozen": -0.06494169682264328,
+    "selection_predicate": "calibrated_P10 >= weighted_validation_quantile_cutoff",
+    "q25_control_numeric_tolerance_absolute": 0.000001,
+    "q25_failed_to_match_behavior": "HALT_ALL_ANALYSES",
+    "no_calibration_or_cutoff_estimation_on_v2_v3_v4_targets": true,
+    "q15_q35_values_unknown_until_authorized_g3": true
+  },
+  "cohorts": [
+    {
+      "id": "V2",
+      "date_start": "2026-06-07",
+      "date_end": "2026-06-10",
+      "rows": 4449,
+      "news_ids": 575,
+      "K_at_0_10": 444,
+      "original_status": "CONSUMED"
+    },
+    {
+      "id": "V3",
+      "date_start": "2026-06-11",
+      "date_end": "2026-06-14",
+      "rows": 2827,
+      "K_at_0_10": 282,
+      "original_status": "CONSUMED"
+    },
+    {
+      "id": "V4",
+      "date_start": "2026-05-02",
+      "date_end": "2026-06-06",
+      "rows": 40320,
+      "news_ids": 5526,
+      "K_at_0_10": 4032,
+      "original_status": "CONSUMED"
+    }
+  ],
+  "selection": {
+    "baseline": "Freeze V0 ex-ante ranker predictions at original selected iteration 10; stable legacy rank tie policy. Top K highest baseline scores.",
+    "candidate": "Walk exactly the same ordered baseline list; veto rows failing threshold, retaining first K passing; no re-ranking.",
+    "K_rule": "floor(0.10*N) for each old cohort (V2=444, V3=282, V4=4032)",
+    "candidate_full_K_required": true,
+    "zero_fill_or_insufficient_count": "INFEASIBLE; no lowering cutoff, no smaller effective K, no alternate tuning",
+    "news_and_ticker_keys": "original canonicalized frozen 40320 V4, 4449 V2, 2827 V3 source row order and news_id keys"
+  },
+  "measurements_all_9_cells": [
+    "validation_cutoff_value",
+    "event_pair_admissions_count",
+    "event_pair_admission_rate",
+    "required_K",
+    "admissible_candidate_K_or_infeasible",
+    "baseline_topk_mean_excess_beta",
+    "candidate_topk_mean_excess_beta_if_full_K",
+    "candidate_minus_baseline_topk_mean_excess_beta_if_full_K",
+    "baseline_topk_hit_rate",
+    "candidate_topk_hit_rate_if_full_K",
+    "news_id_cluster_bootstrap_ci95_and_infeasible_count_if_feasible",
+    "ticker_cluster_bootstrap_ci95_and_infeasible_count_if_feasible",
+    "topk_ticker_concentration_descriptive"
+  ],
+  "uncertainty": {
+    "already_known_outcomes": true,
+    "existing_original_statistical_contract": "research/contracts/DTRM_XGB_PROBABILISTIC_PHASE2_STATS.yaml",
+    "news_bootstrap": {
+      "cluster": "news_id",
+      "replicates": 10000,
+      "seed": 20260821,
+      "confidence": 0.95,
+      "method": "percentile_linear",
+      "resample_ranking_and_veto_and_K": true
+    },
+    "ticker_bootstrap": {
+      "cluster": "ticker",
+      "replicates": 10000,
+      "seed": 20260822,
+      "confidence": 0.95,
+      "method": "percentile_linear",
+      "resample_ranking_and_veto_and_K": true
+    },
+    "on_infeasible_bootstrap": "report all failed replicates; if any infeasible for a cell, no resampled interval claim without a separately frozen valid treatment",
+    "overlapping_60day_targets_limitation": true,
+    "multiple_9_cells_exploratory_no_pooled_p_value": true
+  },
+  "stop_rules": [
+    "G2 not frozen means no G3 computations.",
+    "Any mismatch to original q25 or original q25 23,348 V4 accepted from stored original signals: stop, audit provenance.",
+    "Absence of either prior predicted P10 and baseline scores or old per-row news/ticker target alignment: stop.",
+    "Any unavailable outcome file or failed source SHA: report source feasibility and no result.",
+    "For each infeasible q/old-cohort cell, show count and INFEASIBLE; no implicit imputation.",
+    "Do not choose a best percentile as new approved policy; all old data already observed.",
+    "No new independent temporal test, no realized financial P&L, no human causal effect inference."
+  ],
+  "implementation_status": {
+    "scientific_method_chosen": true,
+    "original_source_verification_operator_g2_6_pass": true,
+    "per_source_file_sha_bound_through_g2_6": true,
+    "side_effects_in_this_plan": "NONE",
+    "all_g3_work_packages_frozen": false,
+    "g2_overall_frozen": false,
+    "g3_experiment_permitted": false
+  }
+}
