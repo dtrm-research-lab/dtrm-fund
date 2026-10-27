@@ -198,3 +198,17 @@ destinations, but exploratory G3 plans still lack
 input and source SHA anchors, checked feasibility
 and formally signed freeze. **G2 remains ACTIVE,
 UNFROZEN. G3 is blocked.**
+
+## G2.5/G2.6 prior-source readiness status (2026-10-27)
+
+G2.5 operator-run 92 original candidate files SHA-streamed,
+no historical or prospective outcomes read. The original
+pinned V0 source and G1.2 numerical replay code explicitly
+specify all ingredients to reconstruct the old validation
+calibrated P10 distribution and original weighted q25
+threshold. G2.6 source/JSON binding has been prepared
+but **not operator-run**. See
+`G2_6_VALIDATION_SOURCE_BINDING.md`.
+G2 stays UNFROZEN; no new P15/P35 percentile
+values, financial outcomes or G3 secondary analyses
+have been generated.
