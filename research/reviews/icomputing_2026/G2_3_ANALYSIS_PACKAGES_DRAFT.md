@@ -335,3 +335,36 @@ can be demonstrated, record A3 infeasible rather
 than constructing a favorable comparison ex post.
 
 **G2.8 NOT YET OPERATOR-RUN; G3 still BLOCKED.**
+
+## G2.8 operator status and G2.9 source-discovery correction (2026-10-27)
+
+G2.8 returned
+`G2_8_A3_NO_ASOF_PRICE_SERIES_IDENTIFIED_IN_G2_5_INVENTORY`
+and classified **28 SPY**, **43 target/test**
+and **21 other** old source filenames, with
+zero explicit price-stock candidate basenames.
+But G2.5's earlier regex applied solely to
+each basename and omitted generic ticker/date
+files inside `price_cache_fmp_pickle`.
+That is a **bounded inventory omission**, not
+scientific evidence that historical stock prices
+are absent. Original frozen V0 code directly
+loads original `*_2026-07-05.pkl` stock-price
+snapshots from that directory, with a prior G1.2
+historical preflight showing 174 files.
+
+A3 is **NOT** declared non-executable on the
+strength of G2.8. Created G2.9 direct
+`price_cache_fmp_pickle` filename-and-hash
+inventory, without deserializing prices; see
+`G2_9_A3_DIRECT_PRICE_CACHE_INVENTORY.md`.
+
+Even if many ticker price files exist, a sound
+conventional risk comparator still needs
+**strictly before each event close** returns,
+historically available adjustment/quote sources,
+original validation cutoff/capacity matching,
+fixed missingness rules, and post-outcome
+exploratory characterization. These are not
+proven from file paths/snapshot suffix names.
+G2 still active; G3 blocked.
