@@ -16,6 +16,7 @@ from collections import Counter
 from datetime import datetime, timezone
 import hashlib
 import json
+import numbers
 from pathlib import Path
 import pickle
 import sys
@@ -78,9 +79,9 @@ def structural_pickle(path: Path):
     return obj, structure, ids
 
 def load_index(path: Path, shape_path: Path, binary: Path):
-    with index_pickle := path.open("rb"):
+    with path.open("rb") as index_pickle:
         idx=pickle.load(index_pickle)
-    with shape_pickle := shape_path.open("rb"):
+    with shape_path.open("rb") as shape_pickle:
         shape=pickle.load(shape_pickle)
     if not isinstance(idx,dict):
         raise RuntimeError("Historical cache index is not a dictionary")
@@ -92,7 +93,7 @@ def load_index(path: Path, shape_path: Path, binary: Path):
     if binary.stat().st_size != dim[0]*384*4:
         raise RuntimeError("Historical embedding binary byte size != Nx384×float32")
     indices=list(idx.values())
-    if not all(isinstance(x,int) and 0<=x<dim[0] for x in indices):
+    if not all(isinstance(x,numbers.Integral) and 0<=x<dim[0] for x in indices):
         raise RuntimeError("Historical cache indices not zero-based integer row offsets")
     if len(set(indices))!=len(indices):
         raise RuntimeError("Historical cache index has duplicated row offsets")
