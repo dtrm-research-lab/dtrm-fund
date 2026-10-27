@@ -809,3 +809,40 @@ prospective ingestion plan. Meanwhile finish journal major
 revision on independently verified historical reproducibility,
 with original statistical limitations and transparent missing
 new-cohort evidence.
+
+## 2026-10-27 G1.3b broad local metadata scan — OPERATOR EXECUTED, NO ELIGIBLE NOVEL EVENT SOURCE
+
+The operator reran the **same metadata-only** G1.3a inventory,
+this time against broader roots:
+`~/Desktop/DTRM_Lab` and `~/Desktop/Play4Fun`.
+Tool status still `G1_3A_FILENAMES_ONLY_AVAILABLE_NEWS_NOT_YET_VERIFIED`;
+G1.3b denotes broader search *scope*, not a distinct approved test.
+
+Filename-category totals:
+- 29 original dated/consumed embeddings; 10 dated/consumed news
+  files; 11 dated/consumed pair files.
+- **49 undated candidate paths**: 3 old/undated embeddings or
+  SBERT classifier artifacts, 7 Phase IV **unit-test fixtures**,
+  and 39 **PaymentGame** pair reports/receipts/validation,
+  not HDPG event-ticker pairs.
+- **Zero** files in filename-date `AFTER_CONSUMED_HOLDOUT_FAMILY`
+  bucket. Detector handles YYYY-MM-DD and NOT compact
+  YYYYMMDD, so some newer PaymentGame receipts
+  are assigned `NO_DATE_IN_FILENAME`. Do **not**
+  claim no newer *files* exist; rather, none is demonstrated
+  to be a new HDPG **scientifically eligible event cohort**.
+- No file contents, news IDs, prices, return labels, model
+  weights, or evaluation outcomes accessed in the scan.
+
+Decision: `G1_3_LOCAL_HISTORICAL_INPUT_DISCOVERY_STOP_NO_ELIGIBLE_NEW_COHORT`.
+No original event-time news dataset with defensible point-in-time
+availability and disjointness has been located under the
+reviewed local roots. Stop additional speculative local
+scanning; examine a specified external provider only if
+a new acquisition/provenance project is separately authorized.
+
+Created `G1_3B_BROAD_SOURCE_TRIAGE_STOP.md`.
+G1.3 remains UNFROZEN and BLOCKED; prioritize scientific
+revision of ICOMPUTING-D-26-01069 without invented external
+validation results. Historical G1.2k dossier and G1.2m date-rule
+evidence SHA256 values unchanged.
