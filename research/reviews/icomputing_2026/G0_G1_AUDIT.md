@@ -767,3 +767,45 @@ provenance and cross-ticker statistical limitations.
 **G1.3a has NOT been executed by the operator.
 G1.3 preregistration remains DRAFT; new inference and
 all prospective target/return examination BLOCKED.**
+
+## 2026-10-27 G1.3a operator metadata-only input-source search — NO NEW DATED NEWS FOUND
+
+Operator executed `ic_g1_3_news_source_inventory.py` on
+two original local roots:
+`dtrm-fund/research/local_data` and
+`PCDoMoney_Backend/Notebooks/Outputs`.
+
+Status:
+`G1_3A_FILENAMES_ONLY_AVAILABLE_NEWS_NOT_YET_VERIFIED`.
+
+Filename-only categories:
+- Embedding candidate, historic/consumed: **29**.
+- Embedding candidate, undated filename: **1**,
+  `sbert_embeddings_xgb_v1.npy`, 43,664,000 bytes,
+  legacy-looking name — **not** proof of an untouched newer cohort.
+- News/event candidate, historic/consumed: **10**.
+- Pairs candidate, historic/consumed: **11**.
+- **0** candidates with filename dates after 2026-06-14 in
+  these two scanned roots.
+- No file contents, market prices, returns, news text,
+  outcome labels, model weights or inference inspected.
+- G1.2m supplemental historic UTC declared-date filter report
+  SHA256: `388345ba7bcca9c9a5103584d999aef4f033a3656d746b26efae337cf569b81f`.
+- G1.2k frozen historical reconstruction evidence dossier SHA256
+  unchanged: `7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`.
+
+**Scientific interpretation:** the two exact scanned local folders
+contain NO **filename-dated** post-consumed-period news or
+event-source candidates. The scan does not prove that new input
+data are unavailable in other original repos, connected sources,
+cloud storage, or undated filenames; nor that the undated
+legacy SBERT matrix is a valid new cohort.
+
+**Gate:** `G1_3_NEW_EVENT_INPUT_AVAILABILITY_NOT_DEMONSTRATED`;
+do not preregister a made-up cohort or open forward labels.
+Continue with only a bounded, metadata-only search in other
+explicit local research locations and/or preserve a future
+prospective ingestion plan. Meanwhile finish journal major
+revision on independently verified historical reproducibility,
+with original statistical limitations and transparent missing
+new-cohort evidence.
