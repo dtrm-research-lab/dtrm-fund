@@ -1,0 +1,75 @@
+{
+  "schema_version": "dtrm.ic.g2.a4_a6_economic_capacity_plan.v0",
+  "status": "DRAFT_NO_G3_SCORING_AUTHORIZATION",
+  "created_date": "2026-10-27",
+  "manuscript": "ICOMPUTING-D-26-01069",
+  "reviewer_items": [
+    "R1-05",
+    "R2-05",
+    "R2-06"
+  ],
+  "consumed_historical_cohorts": [
+    "V2",
+    "V3",
+    "V4"
+  ],
+  "A4_economic_interpretation": {
+    "original_primary_target": "forward_excess_beta over 60 calendar days, defined as stock_forward_return minus beta_pre * SPY_forward_return, not realized portfolio profit",
+    "original_candidate_absolute_means": "Negative in all original V2 V3 V4 reported results; a positive candidate-minus-baseline does not establish cash outperformance.",
+    "cash_flat_arm": "zero exposure and zero nominal gross return under explicit zero-interest-cash simplification; subtracting zero from an excess-beta score is invalid because estimands differ.",
+    "no_action_policy": "Flat comparison is economically meaningful only versus a separately calculated and labeled absolute gross stock-return or implementable capital-return metric.",
+    "nonfinancial_revision_action": "Explain counterfactual abstention, risk exposure, negative absolute excess-beta, costs, beta-market exposures, horizon overlap and no actual trading record.",
+    "conditional_secondary_old_data_analysis": {
+      "classification": "POST_OUTCOME_EXPLORATORY",
+      "allowed_if": "Original price, event-time alignment, corporate-action effects, overlap-aware portfolio mapping, shared capital denominators, and full source SHA/coverage gates explicitly frozen before opening financial values.",
+      "fixed_optional_metrics": [
+        "event-level historical absolute gross stock return per admitted selection",
+        "gross stock return downside q0.05 and q0.10",
+        "historical fraction of negative simple returns",
+        "mean and median hypothetical gross absolute returns",
+        "hypothetical flat gross return zero under explicitly zero-yield cash assumption"
+      ],
+      "costs": "Only fixed transparent scenario assumptions, e.g. gross and predeclared one-way roundtrip fee/slippage grid, IF source/capital execution protocol is feasible. No ex post selected cost point.",
+      "turnover": "Requires ex ante defined repeated-ticker position netting, event overlap, entry/exit, dollar weights; otherwise NOT_ESTIMABLE_AS_PORTFOLIO_TURNOVER.",
+      "signal_level_vs_portfolio": "Event-level hypothetical return rows are not a self-financing portfolio performance claim and overlapping 60-day windows forbid simply summing event profits.",
+      "hard_stop": "If unavailable execution times/price adjustments/capital accounting prevent an authentic portfolio replay, publish descriptive data with NOT_ESTIMABLE for P&L/turnover/cost savings. Do not invent trading."
+    }
+  },
+  "A6_capacity_sensitivity": {
+    "original_frozen_K_rule": "floor(N*0.10) in original V2/V3/V4, fixed same K in both arms",
+    "meaning": "A matched experimental coverage/selection budget, not empirically measured capital or liquidity capacity.",
+    "status": "POST_OUTCOME_EXPLORATORY_SECONDARY",
+    "exploratory_fraction_grid": [
+      0.05,
+      0.1,
+      0.15
+    ],
+    "cohorts": [
+      "V2",
+      "V3",
+      "V4"
+    ],
+    "estimand": "Change in candidate minus original baseline mean forward_excess_beta on same original cohort under each predeclared K; not strategy P&L.",
+    "ranking": "Original same ex-ante ranker iteration 10 and canonical ordering/ties, same P10 calibration and frozen q25 veto; no alternate calibration or ranking",
+    "K_formula": "floor(frac * original number of cohort pairs) per frac and cohort, same baseline and candidate full K, no rounding to a favorable K",
+    "candidate": "Original absolute P10 mask not substituted; original frozen relative q25 veto only.",
+    "report_all_9_cells": [
+      "K",
+      "selection coverage",
+      "eligible pass fraction",
+      "full-K candidate feasibility",
+      "baseline and veto means",
+      "difference",
+      "hit rates",
+      "news/ticker cluster bootstrap CI if predeclared feasible",
+      "infeasible bootstrap count"
+    ],
+    "infeasible": "INFEASIBLE, no partial-K synthetic fill and no favorable cell selection",
+    "bootstrap": "Original news-id and ticker 10,000 resamples, seeds 20260821 and 20260822, 95% percentile intervals with full-K capacity recomputed",
+    "overlap_and_multiplicity": "Three historic outcome-consumed cohorts; no pooled independence p-value, no optimized K selection."
+  },
+  "no_new_prospective_validation": true,
+  "original_model_threshold_retraining": false,
+  "g2_full_protocol_frozen": false,
+  "g3_authorized": false
+}
