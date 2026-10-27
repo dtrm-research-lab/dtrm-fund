@@ -67,3 +67,20 @@ or historic confidence interval replication.
 - Instructions: `G0_3_BOOTSTRAP_RUNBOOK.md`.
 - Outputs aggregate-only verification JSON plus locally retained bootstrap distributions.
 - State: NOT EXECUTED by the assistant; awaiting operator-run results.
+
+## 2026-10-27 G0.3 news-cluster bootstrap: operator-reported PASS
+
+The operator ran the pinned historical code through `ic_g0_bootstrap.py --cluster news` on their trusted local Mac using the recovered data. Complete visible terminal output establishes:
+
+| Cohort | Rows | news_id clusters | Replicates | Infeasible | Point delta mean | Point delta hit | Verification |
+|---|---:|---:|---:|---:|---:|---:|---|
+| V2 | 4,449 | 575 | 10,000 | 0 | 0.14429480582475662 | 0.5788288288288288 | PASS |
+| V3 | 2,827 | 398 | 10,000 | 0 | 0.14943748898804188 | 0.5851063829787234 | PASS |
+| V4 | 40,320 | 5,526 | 10,000 | 0 | 0.027561593800783157 | 0.10168650793650791 | PASS |
+
+The wrapper output states `G0 news: BOOTSTRAP_REPLAY_PASS`, meaning the historical 95% CI endpoints and feasibility gates matched its stored contract checks (within 1e-8); the terminal does not display each CI endpoint. Local-only aggregate paths:
+`$HOME/dtrm-ic-audit/bootstrap/IC_G0_bootstrap_news_aggregate.json`
+`$HOME/dtrm-ic-audit/bootstrap/IC_G0_bootstrap_news_verification.json`.
+JSON source not independently transferred or inspected; claim classification is **operator-reported verified local execution**, not assistant-executed reproduction.
+
+**Open gate**: ticker-cluster bootstrap G0.3 not yet executed/reported. G1 independent temporal holdout not authorized. Nothing in this replay establishes independently spaced 60-day targets or removes the V2/V4 ticker CI concern.
