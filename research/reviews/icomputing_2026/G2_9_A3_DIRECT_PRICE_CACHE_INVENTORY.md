@@ -129,3 +129,23 @@ Do not improvise a comparator on `beta_pre`,
 or rely on unproven generic price files.
 
 **G2.9 not yet operator-run. G2 not frozen; G3 blocked.**
+
+## G2.9 operator execution result — PASS (2026-10-27)
+
+The operator subsequently executed the original
+G2.9 script and obtained
+`G2_9_A3_HISTORICAL_PRICE_CACHE_SOURCE_FILENAMES_FOUND_ASOF_OPEN`.
+
+File counts: **3,649** original cache entries,
+**174** `*_2026-07-05.pkl` (173 distinct
+non-SPY symbols + SPY); another **174**
+`*_2026-08-10.pkl`. Zero hashed
+watched-file cap omissions. All file
+contents remain unopened by G2.9.
+This supersedes this runbook's original
+`G2.9 not yet operator-run` historical footer.
+
+A3 source barcode/schema/date verification
+remains open. Next G2.10 is separately gated
+`G2_10_A3_PRICE_DATE_SCHEMA_GATE.md`.
+No new investment comparison has been executed.
