@@ -84,3 +84,16 @@ The wrapper output states `G0 news: BOOTSTRAP_REPLAY_PASS`, meaning the historic
 JSON source not independently transferred or inspected; claim classification is **operator-reported verified local execution**, not assistant-executed reproduction.
 
 **Open gate**: ticker-cluster bootstrap G0.3 not yet executed/reported. G1 independent temporal holdout not authorized. Nothing in this replay establishes independently spaced 60-day targets or removes the V2/V4 ticker CI concern.
+
+## 2026-10-27 G0.3 ticker-cluster bootstrap: operator-reported PASS
+
+Operator terminal transcript shows exact frozen ticker-cluster bootstrap replay:
+- V2: 4,449 rows, 108 ticker clusters, 10,000 replicates, 0 infeasible; point delta +0.14429480582475662; PASS.
+- V3: 2,827 rows, 125 ticker clusters, 10,000 replicates, 0 infeasible; point delta +0.14943748898804188; PASS.
+- V4: 40,320 rows, 171 ticker clusters, 10,000 replicates, 0 infeasible; point delta +0.027561593800783157; PASS.
+- Terminal final: `G0 ticker: BOOTSTRAP_REPLAY_PASS`.
+- Historical CI checks in the wrapper passed; precise CI endpoints are held in local operator JSON rather than reproduced in terminal.
+
+**Checkpoint conclusion**: G0.1 file recovery PASS; G0.2 point-estimate replay PASS; G0.3 frozen news- and ticker-cluster CI bootstrap replay PASS (60,000 aggregate bootstrap draws in total). These are *operator-reported local executions*, not new out-of-sample evidence or a raw upstream-model reconstruction. Do not treat ticker-level significance or independence as established; V2/V4 95% ticker CIs include zero. The main reviewer objection remains OPEN.
+
+**Next**: G1.0 outcome-blind availability-only inventory of post-June event data, immutable ranker artifacts, and market-price snapshot *metadata*. No prospective test may read outcomes until a predeclared disjoint window is locked and feasibility documented.
