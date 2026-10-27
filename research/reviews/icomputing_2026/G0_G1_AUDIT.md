@@ -1212,3 +1212,36 @@ permission to calculate A2 old-outcome sensitivity.
 G3 remains BLOCKED while A3 volatility comparator,
 A4 economic/flat/cost claims, A6 K-grid dispositions
 and global G2 adversarial signoff remain open.
+
+## 2026-10-27 G2.8 A3 metadata-only price source triage PREPARED
+
+After G2.7 operator PASS, a new source-only A3 feasibility
+preflight was prepared for **Reviewer #1's conventional
+volatility/downside benchmark**.
+
+The source is `ic_g2_a3_price_source_triage.py` and
+the runbook is `G2_8_A3_PRICE_SOURCE_TRIAGE.md`.
+They check G2.5 inventory SHA256
+`ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7`,
+G2.6 source binding SHA256
+`1ee9a491542ff5e5849cbaa13c8d022cc84639515a32fd51b0ff2e7805e291c2`,
+and G2.7 A2 specification SHA256
+`5992890e6cecb37182f006834b509de9b1c81efaeb86d52c6ada928819e756b8`,
+plus the local G2.7 source-only PASS report.
+
+G2.8 only triages filenames from the 92 prior SHA-recorded
+historical source candidates, and reads original frozen
+`src/dtrm/price_alignment.py` and
+`src/dtrm/return_construction.py` source code.
+It **never** reads historical market price observations,
+future labels, Pickles, NPY, models or actual profits.
+Target/evaluation/forward files are excluded from
+being counted as credible pre-event-price candidates.
+
+A3 design remains merely preliminary: a strict
+event-time trailing-volatility filter, fixed cutpoint
+on original validation only, matched frozen ranking
+and full-K universe. As-of series, source adjustment,
+prices, coverage and fair comparator cutoff remain
+UNVERIFIED. The source-only G2.8 operator test has
+NOT yet been run; no G3 experiment authorized.
