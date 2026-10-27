@@ -454,3 +454,20 @@ the six-field supplement schema without printing news IDs or vector
 values. Do not infer metadata keys are the 27 missing event IDs.
 The original V1 raw-pair filename/row-count discrepancy and full
 filtering chain remain OPEN. Prospective scoring stays BLOCKED.
+
+## 2026-10-27 G1.2i operator supplement-schema probe PREPARED; not yet run
+
+Added `ic_g1_supplement_schema.py` and
+`G1_2I_SUPPLEMENT_SCHEMA.md`. Requires G1.2h audit status
+PASS and original historic manifest and supplement SHA256 anchors.
+It inspects the six *supplement metadata dictionary fields*
+only (types, array/list shape/count) and checks exact
+27-news matching only for **explicitly named** ID list
+fields. It does not read/export vector elements or invent
+the supplement mapping. If schema names are not recognized,
+result is `G1_2I_SUPPLEMENT_SCHEMA_NEEDS_EXPLICIT_MAPPING`,
+not an efficacy failure.
+
+This is not a new empirical validation; no model inference or
+financial returns/targets inspected. G1.2j numerical V1
+embedding replay and G1.3 independent temporal holdout remain OPEN.
