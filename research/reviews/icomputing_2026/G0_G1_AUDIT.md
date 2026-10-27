@@ -1449,3 +1449,60 @@ gate caveats recorded in
 **G2.10: OPERATOR RUN HALTED; RETEST PENDING.
 G2 A3 AS-OF, RISK COMPARATOR AND FULL PROTOCOL
 REMAIN UNVERIFIED. G3 STILL BLOCKED.**
+
+## 2026-10-27 G2.10 CORRECTED OPERATOR PASS: 174/174 original quote DATE coverage, vintage unverified
+
+After the metadata-report `NameError` defect was fixed
+in the research branch, the operator reran the corrected
+`ic_g2_a3_original_price_schema_dates.py` and **all five**
+`test_ic_g2_10_schema_dates_regression.py` static-only
+regression tests on Mac:
+`Ran 5 tests in 0.007s: OK`.
+
+**Exact operator CLI status:**
+`G2_10_A3_ORIGINAL_STOCK_PRICE_BAR_DATE_COVERAGE_PASS_PROVIDER_VINTAGE_OPEN`.
+
+- **174/174** original `2026-07-05` cache Pickles,
+  original reader schema `date` and `close`
+  column *names* verified; 173 non-SPY symbols + SPY.
+- Date structure `DATE_STRUCTURE_OK: 174`.
+- At fixed earliest cohort event dates
+  V4 `2026-05-02`, V2 `2026-06-07`,
+  V3 `2026-06-11`, **174/174** files
+  have calendar-date coverage for at least
+  61 strictly earlier distinct closing dates (60
+  trailing close-to-close returns), and hence at
+  least 41 prior dates (40 returns).
+- Source file metadata SHA was checked against G2.9
+  prior to trusted original-Pickle deserialization.
+  Original numerical `close` values were unpickled
+  into memory but **not accessed or computed upon**;
+  no prices, returns, risk, P&L, target outcomes,
+  models or G3 comparator evaluations were
+  examined or produced.
+- Local report: `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_10_A3_price_schema_dates.json`.
+  **Operator has not supplied SHA256 of this report**;
+  do not claim a pinned generated report digest.
+- Three shell diagnostic lines
+  `zsh: command not found: #` came from pasted
+  interactive comment lines; do not confuse these
+  harmless shell messages with the Python test
+  results or G2.10 PASS.
+
+**Scientific interpretation:** 174/174 earlier
+DATE coverage at **three earliest event dates only**.
+This is NOT complete event-by-event/news-ticker
+matching, original V0 validation-date coverage,
+verified numeric valid `close` values, historical
+point-in-time provider ingest vintage, adjusted
+price status, or absence of corporate-action
+revision. Original July-5 snapshot was saved
+after May/June signal dates and may contain
+retroactively adjusted data. A3 is source/date
+STRUCTURALLY FEASIBLE, but still unapproved
+as a true ex-ante point-in-time volatility
+comparator. Only retrospective exploratory
+reconstruction may be feasible with declared
+data-vintage limitations.
+
+**G2.10 PASS; G2 STILL UNFROZEN; G3 BLOCKED.**
