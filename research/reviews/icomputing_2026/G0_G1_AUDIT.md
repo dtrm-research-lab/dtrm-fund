@@ -497,3 +497,63 @@ absolute tolerance. Mismatch stops progress, no cache reassignment.
 A PASS, combined with G1.2f/g, would reproduce all 390
 historical input features; **it would not prove the historical
 raw→selected filtering rule or independent post-August holdout**.
+
+## 2026-10-27 G1.2j — 40,320 × 384 original embedding parity EXACT (operator-reported)
+
+The operator ran `ic_g1_embedding_parity.py` against the SHA-bound
+original V1 `probabilistic_v1_holdout_features_2026-06-06.npy`,
+original signal rows, original `embedding_source` manifest and
+exactly the two declared historical caches plus source-labeled
+supplement. Predecessor G1.2f (keyed beta), G1.2g (five original text
+columns), G1.2h (cache/schema coverage), and G1.2i (27-ID/vector
+supplement) all passed locally, as separately documented.
+
+Exact CLI status:
+`G1_2J_HISTORICAL_384_EMBEDDING_ROW_PARITY_PASS`.
+- June 6 cache: **35,358 scored ticker–news rows**, max abs difference 0.0, 0 mismatches.
+- May 23 cache: **4,753 scored rows**, max abs difference 0.0, 0 mismatches.
+- 27-news original V1 supplement: **209 scored rows**, max abs difference 0.0, 0 mismatches.
+- **TOTAL: 40,320 rows × 384 embedding dimensions = 15,482,880 coordinates**.
+  Max absolute difference **0.0**, mean difference **0.0**,
+  rows outside 1e-6 **0**, coordinates outside 1e-6 **0**,
+  exactly equal coordinates **15,482,880 / 15,482,880**.
+- Historical five original text features: 40,320 × 5, max abs
+  difference **0.0**, no mismatches (G1.2g).
+- Original keyed beta source vs feature column 390: 40,320 / 40,320
+  matches, max abs difference **0.0** (G1.2f).
+- Together these support **numerically exact reconstruction of
+  all 390 input features** on the historically consumed V1 cohort:
+  40,320 × 390 = **15,724,800** source-feature coordinates.
+- G1.2b/c previously reproduced the original 40,320 row
+  ex-ante ranker predictions exactly, raw P10 exactly,
+  calibrated P10 at max abs difference 7.450580596923828e-09,
+  and both historical V1/V4 veto masks exactly.
+- The historical model weights were *retrained from frozen
+  source/data*, not recovered as pre-existing serialized boosters.
+  The observed original numerical predictions match but do not
+  prove byte-identical original XGBoost tree weights.
+
+**Scientific interpretation: HISTORICAL NUMERIC RECONSTRUCTION PASS.**
+This is a *retrospective* historical reproducibility result, not
+new out-of-sample efficacy, precommitted new cohort evidence,
+or proof of profitability.
+
+**Still open and separately tracked**:
+1. Original 2026 V1 YAML attributes **40,320 rows** to the
+   `pairs_raw_2025-01-01_2026-06-06.pkl` filename,
+   while the local file of exactly that name has **265,145**.
+2. The original exact raw→scored V1 cohort selection/filtering
+   procedure remains uncaptured by the currently verified
+   historical source contract (despite complete normalized
+   pair membership and ordered-subsequence matches).
+3. A completely independent and temporally nonoverlapping
+   prospective 60-day test is NOT started nor authorized.
+4. Source-cache/supplement local SHA commitments are newly
+   observed during this audit, whereas the original V1
+   features/signals have earlier independent V4 hashes.
+
+Next: make a local hash-bound **evidence dossier** from the already
+produced G0–G1.2j JSON reports and reconstructed candidate boosters
+without any re-training or inspection of market outcomes.
+Continue metadata-only investigation of original raw-pair source
+provenance. No promotion to 'original saved model'.
