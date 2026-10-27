@@ -14,8 +14,8 @@ Status: **AUDIT IN PROGRESS; NO NEW RESULTS**.
 - `run_phase2_primary_bootstrap.py` expects paired signal/target pickles for V2, V3, V4.
 - Original windows: V4 2026-05-02..2026-06-06, V2 2026-06-07..2026-06-10, V3 2026-06-11..2026-06-14.
 - Outcome is a forward 60-calendar-day excess-beta target, with a documented +/- 5 day price matching tolerance; check actual price alignment and per-row realized intervals before declaring non-overlap.
-- Last historical signal date was June 14. A truly nonoverlapping later window requires new events and target start dates at least after the latest realized end from that cohort. Preliminary calendar bound is *after approximately August 13*, but not approved until dates and actual prices are audited.
-- As of October 27, nominal 60-day maturity implies cohorts must end no later than ~August 28 before accounting for price tolerance and actual vendor availability. Thus a candidate August 14–28 test window is *potential*, NOT established as unseen or complete.
+- Last historical signal date was June 14. A truly nonoverlapping later window requires new events and target start dates at least after the latest realized end from that cohort. With the documented 5-day price-alignment tolerance, a conservative calendar starting bound is *after approximately August 18*; actual realized dates must still be audited before approval.
+- As of October 27, nominal 60-day maturity implies cohorts must end no later than ~August 28 before accounting for price tolerance and actual vendor availability. As of Oct 27, a conservative maturity bound (60 days plus up to 5 days tolerance) suggests roughly August 19–23 only as a *potential* nonoverlapping, fully matured date range, not an approved or necessarily sufficiently sized holdout.
 - Ticker-cluster intervals in V2/V4 straddle zero; original results cannot establish uniform robustness.
 - Google Drive keyword checks did not locate raw cohort pickles. Absence from search is not proof of absence in local/AWS storage.
 
