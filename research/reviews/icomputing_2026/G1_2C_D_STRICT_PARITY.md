@@ -72,3 +72,15 @@ scientific row provenance merely from identical sort.
    dependence and realized portfolio costs as separate reviewer tests.
 
 Nothing in G1.2c/d is a new out-of-sample performance result.
+
+## 2026-10-27 correction — Superseded G1.2d equal-sized pair comparison
+
+Operator's G1.2c strict numeric check PASSED on baseline, raw P10,
+calibrated P10, V1 veto and V4 veto (see G0_G1_AUDIT.md).
+The G1.2d raw pair equality test should **not** be used as a provenance
+approval/rejection: it compared 265,145 local raw candidate pairs with
+40,320 selected V1 signals and has no filtering-stage awareness. The
+historical contract also lists 40,320 rows under the same raw filename,
+so the source/contract cardinality mismatch is separately unresolved.
+Use `G1_2E_SOURCE_SUBSET_RUNBOOK.md` and `ic_g1_source_subset.py`
+for a correctly bounded membership and selection-lineage audit.
