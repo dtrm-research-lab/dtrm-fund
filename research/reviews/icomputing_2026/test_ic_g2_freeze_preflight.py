@@ -31,7 +31,7 @@ class G2FreezePreflightTest(unittest.TestCase):
         self.assertNotIn("EDITORIAL_SOURCE_MODE_MISSING",reasons)
         self.assertIn("PROTOCOL_FROZEN_COMMIT_NOT_SET",reasons)
         self.assertIn("ALL_G3_ANALYSES_NOT_PREDECLARED",reasons)
-        self.assertIn("REVIEWER_MANUSCRIPT_SECTION_UNRESOLVED",reasons)
+        self.assertNotIn("REVIEWER_MANUSCRIPT_SECTION_UNRESOLVED",reasons)
 
     def test_original_relative_p10_cutoff_cannot_change(self):
         reasons=self.validate(lambda doc:doc["outcome_protection"].update({
