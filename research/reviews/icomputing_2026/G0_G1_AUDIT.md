@@ -43,3 +43,27 @@ Status: **AUDIT IN PROGRESS; NO NEW RESULTS**.
 - No mutation of old tags/contracts. No premature MM1/Phase IV/STAMP blending.
 - Research-only, least-privilege data access, no secrets or raw licensed vendor records in repository.
 - Red-team checks for leakage, horizon overlap, selective reporting, double dipping and repeated tickers.
+
+## 2026-10-27 G0.1/G0.2 operator checkpoint
+The operator reports running the local hash-only discovery:
+- required files located 10/10, no duplicate names
+- 0 historical hash discrepancies
+- status `PRESENCE_AND_ANCHOR_HASHES_OK_NOT_REPRODUCED`.
+
+The operator also reports successful trusted-local point replay using
+`ic_g0_reproduce.py`:
+- V2: rows=4449; K=444; P10 pass=2530; delta=+0.144294805825; PASS
+- V3: rows=2827; K=282; P10 pass=1634; delta=+0.149437488988; PASS
+- V4: rows=40320; K=4032; P10 pass=23348; delta=+0.027561593801; PASS
+- Status: `POINT_REPLAY_PASS_NOT_RAW_REPRODUCED`.
+
+This is **operator-supplied terminal evidence**, not independent receipt
+of the underlying JSON, and does NOT establish raw-data/model reconstruction
+or historic confidence interval replication.
+
+## G0.3 bootstrap next
+- A pinned-code bootstrap wrapper exists at `research/reviews/icomputing_2026/ic_g0_bootstrap.py`.
+- It verifies the preceding G0.2 gate, rediscovered input SHA256, and the original runner Git blob hashes.
+- Instructions: `G0_3_BOOTSTRAP_RUNBOOK.md`.
+- Outputs aggregate-only verification JSON plus locally retained bootstrap distributions.
+- State: NOT EXECUTED by the assistant; awaiting operator-run results.
