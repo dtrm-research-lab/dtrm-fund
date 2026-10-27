@@ -143,7 +143,7 @@ def main():
             rows.append({"file":filename,"status":"INVALID_MISSING_REQUIRED_COLUMNS",
                          "has_date":has_date,"has_close":has_close})
             continue
-        # Read ONLY date. Do not reference frame["close"] here or
+        # Read ONLY the date column; never access numerical close values here or
         # compute mathematical returns from any market value.
         parsed=pd.to_datetime(frame["date"],utc=True,errors="coerce")
         good=parsed.dropna()
