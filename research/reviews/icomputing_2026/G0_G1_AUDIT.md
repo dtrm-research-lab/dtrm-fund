@@ -411,3 +411,46 @@ It exposes aggregate source counts and identifier types only.
 Strict source labels must determine embedding sources before
 any numeric reconstruction. No prospective holdout, return
 labels or historic target values may be opened.
+
+## 2026-10-27 G1.2h operator outcome: historical embedding SOURCE inventory PASS
+
+The operator executed `ic_g1_embedding_inventory.py` against historical
+V1 original trusted local inputs. Terminal status:
+`G1_2H_MANIFEST_AND_CACHE_SCHEMA_PASS_EMBEDDING_VALUES_UNTESTED`.
+
+- Frozen V1 signal unique news: **5,526**; manifest rows: **5,526**.
+- Missing signal news from manifest: **0**; additional news in
+  manifest: **0**.
+- Exact historically declared embedding-source groups:
+  `2026-06-06`: **4,764**; `2026-05-23`: **735**;
+  `v1_supplement`: **27**.
+- 2026-06-06 cache shape **26,519×384**, index **26,519** unique
+  string news identifiers. All **4,764/4,764** manifest June
+  news IDs exist in this cache; **2,467** June-selected IDs
+  ALSO occur in May's cache. The manifest's June label MUST
+  remain authoritative: do not choose vector source by
+  numerical concordance.
+- 2026-05-23 cache shape **25,816×384**, index **25,816** unique
+  string identifiers. All **735/735** manifest May IDs exist
+  in the May cache; none of the May-selected IDs exists in June's
+  cache.
+- `probabilistic_v1_missing_embeddings_2026-06-06.pkl`
+  is a six-key dictionary with values of types:
+  list (1), ndarray (1), str (2), bool (1), int (1).
+  New local SHA256
+  `1697fc009800b673edda43ede18373f96916934d05cc03f50d16363b19d118d3`.
+  Neither an ID→vector mapping nor 27 supplement vector
+  records has yet been verified. The G1.2h structural
+  `supplement_structural_id_matches: 0` compares six metadata
+  field names to news IDs, and **is not evidence of absent
+  supplement news**.
+- Both cache shapes/index offsets and .dat float32 byte sizes
+  validated; no embedding numeric vectors, target outcomes, prices
+  or prospective data were inspected.
+
+**Scientific status**: historical source coverage structure PASS,
+full 384-feature vector parity not yet run. G1.2i must first inspect
+the six-field supplement schema without printing news IDs or vector
+values. Do not infer metadata keys are the 27 missing event IDs.
+The original V1 raw-pair filename/row-count discrepancy and full
+filtering chain remain OPEN. Prospective scoring stays BLOCKED.
