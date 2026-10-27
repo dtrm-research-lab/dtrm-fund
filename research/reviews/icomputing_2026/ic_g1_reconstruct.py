@@ -51,6 +51,12 @@ def preflight(root: Path, legacy_data: Path, outputs: Path) -> dict:
     code_head = frozen_head(root)
     if code_head != PIN:
         raise RuntimeError(f"Incorrect frozen source commit: {code_head} (expected {PIN})")
+    dirty = subprocess.run(
+        ["git", "-C", str(root), "status", "--porcelain", "--untracked-files=no"],
+        capture_output=True, text=True, check=True,
+    ).stdout.strip()
+    if dirty:
+        raise RuntimeError("Frozen source clone has tracked local modifications")
     code_files = {name: root / name for name in (BASE_SOURCE, QUANT_SOURCE)}
     missing_code = [name for name,p in code_files.items() if not p.is_file()]
     if missing_code:
@@ -60,8 +66,16 @@ def preflight(root: Path, legacy_data: Path, outputs: Path) -> dict:
     missing = [name for name,p in inputs.items() if not p.is_file()]
     price_cache = outputs / "price_cache_fmp_pickle"
     price_files = sorted(price_cache.glob("*_2026-07-05.pkl")) if price_cache.is_dir() else []
+    from importlib.metadata import version, PackageNotFoundError
+    environment = {}
+    for package in ("numpy", "pandas", "xgboost", "sentence-transformers"):
+        try:
+            environment[package] = version(package)
+        except PackageNotFoundError:
+            environment[package] = "NOT_INSTALLED"
     result = {
         "historical_commit_verified": True,
+        "environment_package_versions": environment,
         "source_files_sha256": {name: sha256(p) for name,p in code_files.items()},
         "training_inputs": {
             name: {"present": p.is_file(), "bytes": p.stat().st_size if p.is_file() else None}
