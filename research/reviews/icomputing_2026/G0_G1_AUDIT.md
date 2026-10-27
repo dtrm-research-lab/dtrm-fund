@@ -692,3 +692,54 @@ G1.3 prospectively scored independent 60-calendar-day
 event cohort still unregistered and BLOCKED. The
 previously sealed historical evidence dossier
 SHA256 remains `7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`.
+
+## 2026-10-27 G1.2m ORIGINAL-DECLARED DATE FILTER: OPERATOR PASS, SOURCE CODE STILL OPEN
+
+Operator executed the **precommitted, single historical-hypothesis**
+`ic_g1_declared_date_filter.py` against original V1 source
+Pickles (trusted local) and hash-verified G1.2e/G1.2g
+predecessor reports. The only inclusion hypothesis tested
+was V1's original declared event date window:
+`2026-05-02 <= UTC news.date_dt < 2026-06-07`, with
+historically recorded ticker alias `BRK.B -> BRK-B`.
+
+Exact terminal status:
+`V1_DECLARED_DATE_FILTER_EXACT_KEY_SET_AND_ORDER_PASS_SOURCE_CODE_OPEN`.
+
+- Original raw candidate pairs: **265,145** (previously verified).
+- Original full June-6 news snapshot ID joins missing: **0**.
+- Date-window selected pairs: **40,320**, exactly the **40,320**
+  precommitted original V1 signal pair observations.
+- Pairs missing in derived window: **0**.
+- Additional pair keys in derived window: **0**.
+- Canonicalized `(news_id,ticker)` pair key sets identical: **True**.
+- Raw-relative V1 row order identical: **True**.
+- Source event timestamps agree with frozen signal dates: **True**.
+- No alternative windows, target labels, forward 60-day
+  returns, prospective news, model training or inference inspected.
+
+**Disposition G1.2m: FROZEN-DATE-ONLY RAW→V1 SELECTION STRUCTURAL PARITY PASS.**
+
+This resolves the **observational selection mechanism** to the
+historically stated date restriction plus the already-frozen
+ticker alias. It also supplies a plausible explanation for
+the 265,145-vs-40,320 count difference: raw candidates across
+the broader news snapshot versus scored event-date subcohort.
+It does NOT independently authenticate the original notebook
+that generated or copied the raw file, nor resolve why the
+pinned V1 contract's `pairs_snapshot.file` with the same basename
+was annotated `rows: 40320`. The historic source-file
+filename/cardinality documentation discrepancy remains open,
+and must be disclosed if relevant to a reviewer.
+
+**Final current evidence split:**
+- G1.2k historic 390-input/model reconstruction dossier PASS,
+  SHA256 `7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`
+  **unchanged**; nine prior reports/4 rebuilt model binaries.
+- G1.2m is **supplementary source-lineage evidence** and does
+  not retroactively modify or relabel the sealed G1.2k JSON.
+- Authentic V1 original generating-code and same-basename
+  physical-file origin remains OPEN (documentary), no numerical
+  discrepancy observed.
+- G1.3 outcome-blind independent temporal validation remains
+  NOT preregistered or authorized. Do not claim a new result.
