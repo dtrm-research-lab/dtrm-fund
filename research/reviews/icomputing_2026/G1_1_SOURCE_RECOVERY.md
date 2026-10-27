@@ -119,3 +119,33 @@ names only, not actual event-date distributions.
 
 **G1.1 still OPEN** until the operator returns source metadata and genuine
 frozen XGBoost weights (or a rigorously validated reconstruction route).
+
+## 2026-10-27 operator result — legacy PCDoMoney source FOUND
+
+Exact original notebook outputs root:
+`~/Desktop/Play4Fun/PCDoMoney_Backend/Notebooks/Outputs`
+
+Operator-reported read-only source existence and sizes:
+- `news_2025-01-01_2026-05-01.pkl`: 12,973,286 bytes, present.
+- `news_emb_2025-01-01_2026-05-01.dat`: 34,352,640 bytes, present.
+- `news_emb_shape_2025-01-01_2026-05-01.pkl`: 20 bytes, present.
+- `news_emb_index_2025-01-01_2026-05-01.pkl`: 670,844 bytes, present.
+- `price_cache_fmp_pickle/`: present with 174 files ending `_2026-07-05.pkl`.
+- Initial legacy Outputs G1.0 inventory: 3,717 files visited; 3,706 classified;
+  3,649 price snapshots, 688 price filenames dated Aug or later, last date token 2026-08-15;
+  news filenames <=2026-06-06; no news filenames dated Aug+.
+- **Caveat**: `price` filename dates may reflect snapshot/export dates, not the last underlying stock trading date; the Aug 15 snapshot cannot be presumed to support target maturities through Oct 2026.
+- No prospective news or target values were read during this inventory; this is availability evidence only.
+- The first G1.0 broad catalog omitted `.dat` by extension, but direct operator check verifies the essential original embedding binary is present.
+
+### Frozen scientific issues still to resolve
+1. Identify actual fitted XGBoost point and quantile booster weights, rather than training files or model metadata.
+2. Verify historical legacy input completeness, deterministic dependencies and original selected-iteration predictions.
+3. Locate or acquire *newly sourced* post-August-18 news and post-October realized prices from authorized, versioned sources, outcome-blind before any inference.
+4. Pre-register a sufficiently powered independent cohort; separation from prior 60-day targets must be checked on real trading-price intervals, not filename snapshots.
+5. If old model weights cannot be found, reconstruct using only historical train/valid; demonstrate agreement with historic predictions before any new holdout inference.
+
+### G1.1 targeted non-content lineage probe
+Script: `ic_g1_lineage_probe.py`. Uses filenames and filesystem metadata only,
+including possible XGBoost model binary names and distribution of price cache
+filename snapshot dates. Classifications do not establish binary contents.
