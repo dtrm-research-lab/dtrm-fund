@@ -147,8 +147,8 @@ def main():
     ):
         if sha256(p)!=expected:
             raise RuntimeError("Original historical file changed: "+name)
-    if sha256(manifest_path)!=i["manifest_sha256_matches_prior"] if False else False:
-        raise RuntimeError("Unreachable defensive check")
+    if i.get("recognized_schema_only_ready") is not True:
+        raise RuntimeError("Supplement source mapping was not approved by G1.2i")
 
     sig=pd.read_pickle(signal_path)
     manifest=pd.read_pickle(manifest_path)
