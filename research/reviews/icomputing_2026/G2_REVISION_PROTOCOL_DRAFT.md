@@ -212,3 +212,24 @@ but **not operator-run**. See
 G2 stays UNFROZEN; no new P15/P35 percentile
 values, financial outcomes or G3 secondary analyses
 have been generated.
+
+## G2.6 source PASS, G2.7 A2 method draft (2026-10-27)
+
+The original 19,880-row V0 validation P10 source and
+weighted q25 = -0.16665692627429962 were successfully
+bound to original SHA lineage by the operator at G2.6.
+G2.5 source metadata report SHA256
+`ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7`
+and eight input references are retained.
+
+G2.7 now prepares the author/reviewer R1-03/R2-02
+A2 preanalysis plan in
+`G2_7_A2_THRESHOLD_SENSITIVITY_PREREG_DRAFT.json`,
+with fixed original validation distribution cutoff
+q=0.15/0.25/0.35, same original ranker/P10 and
+9 total historical V2/V3/V4 cells; correct
+POST-OUTCOME_EXPLORATORY label. This is a drafted,
+committed **protocol** not an empirical result.
+Final A3/A4/A6 feasibility, source checkpoints,
+adversarial review, human G2 signoff and freeze
+SHA remain pending; G3 still BLOCKED.
