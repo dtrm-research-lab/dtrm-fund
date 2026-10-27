@@ -123,3 +123,23 @@ NOT_EXECUTABLE**, but not by silently dropping an
 authentic reviewer objection.
 
 **Current state: G2 OPEN, G3 BLOCKED; operator G2.6 NOT RUN YET.**
+
+## Superseding operator outcome — G2.6 PASSED on 2026-10-27
+
+The source binding was **executed** after the initial
+runbook was published. Status exactly
+`G2_6_A2_VALIDATION_P10_SOURCE_PATH_BOUND_THRESHOLDS_NOT_COMPUTED`.
+All nine frozen V0 source token checks passed.
+Eight old input artifact SHA references were found.
+Original weighted-validation q25 matched
+`-0.16665692627429962`.
+G2.5 metadata audit SHA was checked as
+`ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7`.
+
+The earlier 'G2.6 NOT RUN YET' footer above is
+superseded by this executed status. No G3 financial
+reanalysis or alternative cutoff calculation occurred.
+
+**Next** `G2_7_A2_PREREG_SOURCE_PREFLIGHT.md`: formal
+documentation-only A2 grid gate. Overall G2 freeze
+and all G3 experimental scoring remain BLOCKED.
