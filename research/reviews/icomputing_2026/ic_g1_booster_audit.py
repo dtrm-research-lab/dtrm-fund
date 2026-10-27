@@ -101,7 +101,7 @@ def read_model_header(path: Path) -> dict:
         "quantile_alpha_reported": alpha,
         "could_be_390_feature_baseline": bool(is_390 and is_baseline),
         "could_be_390_feature_p10": bool(is_390 and is_p10),
-        "identity_confirmed_as_frozen_HDGP": False,
+        "identity_confirmed_as_frozen_HDPG": False,
     })
     return metadata
 
@@ -143,7 +143,7 @@ def main() -> int:
         "feature390_p10_candidates": sum(
             x.get("could_be_390_feature_p10", False) for x in results
         ),
-        "historical_hdlg_identity_verified": False,
+        "historical_HDPG_identity_verified": False,
     }
     payload = {
         "schema_version": "dtrm.ic.g1.booster_json_metadata.v1",
@@ -151,7 +151,7 @@ def main() -> int:
         "summary": summary,
         "model_json_candidates": results,
         "safety": {
-            "no_scientific_data_read": True,
+            "no_market_or_event_data_read": True,
             "no_outcome_values_read": True,
             "no_models_executed": True,
             "no_tree_weights_exported": True,
