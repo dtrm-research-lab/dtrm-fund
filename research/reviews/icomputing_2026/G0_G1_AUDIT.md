@@ -1135,3 +1135,42 @@ Additional frozen-source review:
 
 **G2.5 gate PASS metadata-only; G2 ACTIVE, NOT FROZEN;
 G3 ALL ADDITIONAL FINANCIAL REANALYSES BLOCKED.**
+
+## 2026-10-27 G2.6 operator PASS: original V0 validation-P10 source bound
+
+The operator executed `ic_g2_validation_source_binding.py`.
+Exact state:
+`G2_6_A2_VALIDATION_P10_SOURCE_PATH_BOUND_THRESHOLDS_NOT_COMPUTED`.
+
+- Frozen code commit `c7502a690162459cdfb3413573e3133c42efb126`.
+- Original q25 weighted validation threshold numerical anchor
+  **-0.16665692627429962**.
+- **9/9** source routine checks passed: original
+  weighted empirical quantile method, sorted cumulative
+  `legacy_news_weights`, left-side searchsorted,
+  valid-only P10 calibration and P10 predictions.
+- **8** old V2/V3/V4/V1 artifact SHA refs tied through
+  the original G2.5 metadata-only file inventory.
+- Operator original G2.5 report SHA256:
+  `ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7`.
+- Local G2.6 report:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_6_validation_source_binding.json`.
+  Its own report SHA256 has NOT yet been separately shared.
+- No q15/q35 values, old cohort return/target comparisons,
+  Pickle/price scientific values, new event cohorts or
+  model inferences were opened/run.
+
+**G2.6 source readiness PASS for A2. G2 remains UNFROZEN,
+G3 new analysis still BLOCKED.**
+
+G2.7 prepared as a structured source-and-method
+preanalysis *draft* (not a G3 launch):
+`G2_7_A2_THRESHOLD_SENSITIVITY_PREREG_DRAFT.json`
+and `ic_g2_a2_protocol_preflight.py`,
+`G2_7_A2_PREREG_SOURCE_PREFLIGHT.md`.
+It fixes validation-weighted P10 q=0.15/0.25/0.35,
+the same original ranker and old V2/V3/V4 cohorts,
+K values, full-K infeasibility, original news/ticker
+bootstrap seeds and disclosure of **all 9 exploratory**
+old-outcome comparison cells. Operator G2.7 is
+NOT YET RUN. It never authorizes G3 by itself.
