@@ -1000,3 +1000,73 @@ New G3 calculations **NOT YET AUTHORIZED**
 because complete source-anchored plans / hashes
 and scientific signoff are outstanding.
 Historical G1.2k/m SHA commitments unchanged.
+
+## 2026-10-27 G2.3–G2.5 analysis planning and guarded input readiness
+
+Reviewer requirement mapping now counts **22/22** numbered
+audit items, uniquely:
+- seven editor submission requirements E-01..E-07;
+- seven internal R1 themes decomposed from original
+  unnumbered reviewer #1 paragraphs;
+- eight original R2 reviewer numbered points.
+All 22 have nonempty source locators,
+faithful requirement paraphrases, G2 work IDs,
+proposed G5 manuscript destinations, G6
+response anchors; no false original provider
+MIME/hash authentication claimed. In the branch,
+`G2_REVIEWER_TRACEABILITY_PROVISIONAL.json` remains
+a documented user-pasted transcript, not original email bytes.
+
+A1..A7 + X1 deduplicated work-package design:
+`G2_3_ANALYSIS_PACKAGES_DRAFT.md`.
+The P10 P15/P25/P35 experiment refers only to
+validation-distribution *weighted cutoff percentiles*
+of the **same calibrated P10 forecaster**, not
+retraining P15/25/35 predictive quantiles.
+Old V2/V3/V4 outcomes already consumed:
+future sensitivity/volatility/K/cost reanalyses
+are inherently POST-OUTCOME exploratory,
+never new confirmatory proof. New nonoverlapping
+60-day event X1 still unexecutable under G1
+new-source availability block.
+
+Verified shortlist:
+`G2_4_VERIFIED_LITERATURE_SHORTLIST.md`
+(Gu/Kelly/Xiu 2020 finance, Rudin 2019
+interpretable high-stakes ML, Geifman/El-Yaniv
+2017 selective classification, Gonzalez et al.
+2026 human-AI complementarity framework).
+Do not claim these references were inserted into
+the revised manuscript yet.
+
+Created metadata-only/hash-only original old-input
+discovery `ic_g2_historic_analysis_inputs.py`
+with operator runbook
+`G2_5_HISTORICAL_INPUT_HASH_PREFLIGHT.md`.
+It does NOT deserialize sources or open
+financial outcomes/model data; no scientific
+G3 computations were launched. **Not yet run by
+local operator**. Requires further source as-of
+feasibility inspection and SHA-pinned full
+preanalysis protocol or nonexecutability
+decisions before G2 can freeze.
+
+Revised `ic_g2_freeze_preflight.py`
+now recognizes **explicit user-provided full
+letter transcript** as adequate for reviewer
+requirements mapping without asserting false
+provider authentication; enforces E7+R1-7+R2-8
+coverage and all historical veto/CI protections.
+`test_ic_g2_freeze_preflight.py` now has
+**11 metadata-only self-test functions**.
+Code and files were read back via connected
+GitHub; no operator/CI test run was executed.
+A `G2_FREEZE_GATE_BLOCKED` remains expected
+until full exploratory analysis source/protocol
+hashes and human scientific signoff are done.
+
+Current graph:
+`G0 CLOSED; G1 CLOSED_WITH_DOCUMENTED_LIMITATION;
+G2 ACTIVE_REVIEWER_MAPPED_NOT_FROZEN; G3 BLOCKED;
+G4–G7 PENDING`. Historical G1.2k/m evidence
+fingerprints are unchanged.
