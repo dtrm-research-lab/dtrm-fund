@@ -71,20 +71,24 @@ curl -fsSL \
 
 python3 -m py_compile "$AUDIT/ic_g2_validation_source_binding.py"
 
+curl -fsSL \
+  "https://raw.githubusercontent.com/dtrm-research-lab/dtrm-fund/research/ic-major-revision-2026/research/reviews/icomputing_2026/ic_g1_reconstruct.py" \
+  -o "$AUDIT/ic_g1_reconstruct_source_for_g2.py"
+python3 -m py_compile "$AUDIT/ic_g1_reconstruct_source_for_g2.py"
+
 python3 "$AUDIT/ic_g2_validation_source_binding.py" \
   --frozen-repo "$AUDIT/frozen_source_c7502a" \
   --g1-sealed "$AUDIT/g1-reconstruction/IC_G1_2_historical_dossier.json" \
   --g1-preflight "$AUDIT/g1-reconstruction/IC_G1_2_preflight.json" \
   --g1-rebuild "$AUDIT/g1-reconstruction/IC_G1_2_rebuild.json" \
-  --g1-reconstruction-code "$PWD/dtrm-fund/research/reviews/icomputing_2026/ic_g1_reconstruct.py" \
+  --g1-reconstruction-code "$AUDIT/ic_g1_reconstruct_source_for_g2.py" \
   --g2-inventory "$AUDIT/g1-reconstruction/IC_G2_historical_analysis_sources.json" \
   --out "$AUDIT/g1-reconstruction/IC_G2_6_validation_source_binding.json"
 ```
 
-**Note:** If the review worktree checkout is not current,
-the `--g1-reconstruction-code` path can use the
-historically downloaded `$AUDIT/ic_g1_reconstruct.py`
-when that exact script is already present on Mac.
+**Note:** The G1 reconstruction script is fetched separately
+from the review branch for read-only inspection; no original
+G1 scripts are executed or models retrained by G2.6.
 Do NOT point `--frozen-repo` at a mutable working
 branch; its HEAD must be exactly
 `c7502a690162459cdfb3413573e3133c42efb126`
