@@ -314,3 +314,24 @@ metadata-only program `ic_g2_a2_protocol_preflight.py`
 prepared but not run by operator. The whole revision
 G2 preanalysis plan still includes A3/A4/A6 feasibility,
 final signoff and G2 freeze before any G3 run.
+
+## G2.8 A3 source triage next operator gate (2026-10-27)
+
+G2.7 A2 source/method preflight **OPERATOR PASS**.
+The nine old V2/V3/V4 threshold sensitivity
+cells are predeclared but NOT yet calculated,
+and the entire G2 protocol is still UNFROZEN.
+
+For A3, created `ic_g2_a3_price_source_triage.py`
+and `G2_8_A3_PRICE_SOURCE_TRIAGE.md`: classify
+earlier G2.5 catalog filenames and read original
+pinned price-alignment `.py` code **only**.
+Price names / the original availability of
+`price_on_or_before` are not proof of complete
+point-in-time adjusted trading prices.
+If no authentic historical pre-event volatility
+series and source-verified validation cutoff
+can be demonstrated, record A3 infeasible rather
+than constructing a favorable comparison ex post.
+
+**G2.8 NOT YET OPERATOR-RUN; G3 still BLOCKED.**
