@@ -940,3 +940,63 @@ reinterpret our ten internal Q-topics as real reviewer
 requests. The original scientific model data / targets
 remain closed, the review branch remains isolated, and
 G1.2k/m evidence files/hashes remain unchanged.
+
+## 2026-10-27 G2.2: actual journal decision supplied directly by author, 22-item traceability
+
+The author pasted in-chat the complete decision
+letter dated **2026-10-26**, for
+`ICOMPUTING-D-26-01069`, major revision
+due **2026-11-25**.
+The editor requests a point-by-point reply,
+a separately highlighted revised paper, editable/high
+resolution figure files, signed all-author license
+and COI forms, image rights documentation,
+conditional authorship-change signatures, and
+resubmission by Editorial Manager.
+
+The editor and reviewers' requirements are
+captured as **22** paraphrased and locally
+traceable requirements:
+**E-01..E-07 (7)**, **R1-01..R1-07 (7)**
+(non-numbered original paragraphs deliberately
+decomposed as internal audit theme IDs),
+**R2-01..R2-08 (8)** (original numbered
+reviewer #2 comments). No private letter
+body or contact details copied into GitHub.
+Source classification: `USER_SUPPLIED_COMPLETE_EDITORIAL_EMAIL_BODY_IN_CHAT`;
+provider-origin MIME cryptographic authentication
+NOT claimed. Previous Gmail connector search
+blocked, now no longer a barrier to content mapping.
+
+Created:
+- `G2_2_AUTHENTIC_REVIEWER_REQUIREMENT_MAP.md`
+- updated `G2_REVIEWER_TRACEABILITY_PROVISIONAL.json`
+- `G2_3_ANALYSIS_PACKAGES_DRAFT.md`
+- `G2_4_VERIFIED_LITERATURE_SHORTLIST.md`
+- updated `ic_g2_freeze_preflight.py` with
+  22-ID fixed coverage (7+7+8), source provenance,
+  original scientific numerical controls and
+  mandatory G3-specification freeze gates
+- adjusted `test_ic_g2_freeze_preflight.py`
+  (11 unit-test cases, written but NOT
+  independently executed on operator Mac).
+
+Main scientific reviewer risks:
+- genuinely independent, nonoverlapping 60d
+  test not available from G1.3a/b local input scans;
+- P10 25th percentile cutoff sensitivity P15/P25/P35;
+- conventional volatility/downside comparator;
+- negative absolute excess-beta and actual trading
+  returns, flat option and costs;
+- 10% Top-K rationale, V4 attenuation/week
+  instability, ticker dependence overlapping return
+  targets, and human-specified (not human causal)
+  claim ceiling; model independence needs second ranker.
+These are explicitly combined into eight
+nonduplicating G3 analysis/limitation packages.
+
+**G2 = ACTIVE, RESEARCH DESIGN DRAFT.**
+New G3 calculations **NOT YET AUTHORIZED**
+because complete source-anchored plans / hashes
+and scientific signoff are outstanding.
+Historical G1.2k/m SHA commitments unchanged.
