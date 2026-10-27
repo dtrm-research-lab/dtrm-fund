@@ -206,3 +206,45 @@ source SHA256 anchors and rebuilt locally hashed boosters. Terminal:
 **Interpretation:** exceptionally strong frozen-model numerical
 reconstruction evidence, **not yet** provenance-certified new-inference
 approval and not a new empirical gain claim.
+
+## 2026-10-27 G1.2c strict P10 numeric parity — operator-reported PASS
+
+The operator executed `ic_g1_dual_p10_check.py` on its pre-existing G1.2b
+local JSON; it read neither new data nor Pickles:
+- `baseline_40320 PASS`; max absolute numeric difference 0.0.
+- `p10_raw_40320 PASS`; max absolute difference 0.0.
+- `p10_calibrated_40320 PASS`; max absolute difference 7.450580596923828e-09.
+- Both V1 zero-veto and V4 relative-P25-veto masks PASS.
+- Terminal: `G1.2c: DUAL_P10_NUMERIC_PARITY_PASS_PROVENANCE_OPEN`.
+
+All original historical **model numeric prediction** checks have
+now passed to 1e-6 tolerance; original underlying event-to-feature
+row mapping remains unproven.
+
+## 2026-10-27 G1.2d original pair key/order comparison — NOT A SCIENTIFIC FAIL
+
+The operator executed `ic_g1_pair_keys.py`; output:
+- `G1.2d: V1_SOURCE_PAIRS_MISMATCH_OR_UNKNOWN`.
+- `pairs_raw_2025-01-01_2026-06-06.pkl`: **265,145 rows**, columns
+  `news_id`, `ticker`, **no `date_dt`**.
+- `probabilistic_v1_holdout_signals_2026-06-06.pkl`: **40,320 rows**.
+- The script required **identical row sets and order** across those files.
+  That comparison is inappropriate if the 265,145 rows are a
+  pre-filtered raw candidate universe. It cannot distinguish input-stage
+  count from an actual lineage inconsistency. No new outcomes opened.
+- **Separate, material provenance discrepancy:** the pinned historical
+  `research/contracts/DTRM_XGB_PROBABILISTIC_V1.yaml` attributes
+  `rows: 40320` to the file *with exactly that raw basename*.
+  Local file has 265,145. This must be resolved, NOT silently rationalized
+  as filtering; it might represent an upstream snapshot or changed file.
+
+**Next diagnostic:** `ic_g1_source_subset.py` checks exact and narrowly
+predeclared BRK.B->BRK-B normalized signal pair **membership** within
+the larger raw universe, duplicate key counts, and ordered-subsequence
+only where unambiguous. It preserves the raw file's current SHA256
+as a new local anchor, clearly not an independent original commitment.
+Even a full subset match does not prove historical inclusion/exclusion
+rules or 390-feature embedding/beta row mapping.
+
+**State:** Historical numerical model recreation = PASS. Source
+provenance = OPEN. Prospective evaluation = NOT AUTHORIZED.
