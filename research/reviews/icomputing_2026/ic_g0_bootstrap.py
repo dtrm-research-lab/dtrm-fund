@@ -132,6 +132,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--search-root", required=True)
     parser.add_argument("--discovery-manifest", required=True)
+    parser.add_argument("--point-replay", required=True)
     parser.add_argument("--frozen-runner-dir", required=True)
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--cluster", choices=["news", "ticker"], required=True)
@@ -139,6 +140,12 @@ def main():
     args = parser.parse_args()
     if not args.trust_local_pickles:
         parser.error("Loading Pickle data requires explicit --trust-local-pickles")
+    point_replay = json.loads(Path(args.point_replay).expanduser().read_text(encoding="utf-8"))
+    if point_replay.get("status") != "POINT_REPLAY_PASS_NOT_RAW_REPRODUCED":
+        raise RuntimeError("G0.2 point-replay gate is not PASS")
+    if any(point_replay.get("cohorts", {}).get(cohort, {}).get("status") != "PASS"
+           for cohort in ("V2", "V3", "V4")):
+        raise RuntimeError("One or more G0.2 cohort gates are not PASS")
     root = Path(args.search_root).expanduser().resolve()
     paths = find_local(root, {name for pair in NAMES.values() for name in pair})
     verify_inputs(paths, Path(args.discovery_manifest).expanduser())
