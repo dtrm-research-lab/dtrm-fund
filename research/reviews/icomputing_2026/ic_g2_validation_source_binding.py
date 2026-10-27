@@ -149,7 +149,7 @@ def main():
       "v0_validation_quantile_routine_token_checks":text_checks,
       "g2_5_candidate_input_hash_reference_sha256":sha(reports["g2_inventory"]),
       "g2_5_historic_old_cohort_input_sha256":hashes,
-      "A2_validation_predictions_and_weights_stored_as_standalone_artifacts":False,
+      "A2_validation_predictions_and_weights_stored_as_standalone_artifacts":None,
       "A2_validation_predictions_recreatable_via_existing_original_code":ready,
       "A2_new_q15_or_q35_computed":False,
       "A3_pre_event_volatility_source_certified":False,
