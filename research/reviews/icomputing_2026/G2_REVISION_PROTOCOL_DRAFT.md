@@ -161,3 +161,40 @@ all-ticker confidence, true post-October prospective results.
       causal-human-overclaim and post-outcome tuning.
 
 **G2 remains ACTIVE_DRAFT_NOT_FROZEN; G3 computation NOT AUTHORIZED.**
+
+## 2026-10-27 G2.2/G2.3 UPDATE — real 26 October editor/reviewer text supplied
+
+**Supersedes the older 'reviewer source missing' statement in this
+draft.** The manuscript author supplied the complete 2026-10-26
+Intelligent Computing major-revision decision email in the
+conversation. The source content is available for scientific
+requirements mapping but its provider-origin MIME/SHA was not
+independently retrieved (not required to reason about the
+user-supplied contents). Avoid implying external cryptographic
+authentication.
+
+Actual audit trace now **22 mapped requirements**:
+editor 7 administrative conditions (E-01…E-07);
+reviewer #1 seven **internally decomposed, unnumbered**
+themes (R1-01…R1-07); reviewer #2 eight numbered
+comments (R2-01…R2-08).
+See `G2_REVIEWER_TRACEABILITY_PROVISIONAL.json`
+and `G2_2_AUTHENTIC_REVIEWER_REQUIREMENT_MAP.md`.
+
+Distinct G3 packages: A1 old CI/dependence interpretation;
+A2 original P10 weighted validation veto percentile
+15/25/35 sensitivity (NOT new predictive quantile models);
+A3 original-as-of-date volatility baseline; A4 financial
+returns/turnover/downside/no-action/cost validity; A5
+authentic frozen second ranker (conditional); A6 Top-K
+fixed-grid capacity sensitivity; A7 cited finance AI
+literature; X1 genuinely independent non-overlapping
+60-calendar-day test **NOT EXECUTABLE from audited inputs**.
+See `G2_3_ANALYSIS_PACKAGES_DRAFT.md` and
+`G2_4_VERIFIED_LITERATURE_SHORTLIST.md`.
+
+The 22 requirements have proposed paper/response
+destinations, but exploratory G3 plans still lack
+input and source SHA anchors, checked feasibility
+and formally signed freeze. **G2 remains ACTIVE,
+UNFROZEN. G3 is blocked.**
