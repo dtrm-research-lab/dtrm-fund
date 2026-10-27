@@ -1,0 +1,123 @@
+{
+  "schema_version": "dtrm.ic.g2.a3_conventional_risk_control_plan.v0",
+  "status": "DRAFT_POST_OUTCOME_EXPLORATORY_NO_SCORING_AUTHORIZATION",
+  "editorial_case": "ICOMPUTING-D-26-01069",
+  "reviewer_requirement": "R1-04",
+  "created_date": "2026-10-27",
+  "objective": "Compare conventional trailing stock-volatility veto versus frozen calibrated-P10 veto with identical ex-ante ranking and Top-K capacity.",
+  "inferential_status": "SECONDARY_POST_OUTCOME_EXPLORATORY; V2/V3/V4 forward outcomes already consumed; not independent new holdout.",
+  "historical_input_integrity": {
+    "original_source_commit": "c7502a690162459cdfb3413573e3133c42efb126",
+    "original_price_cache_dir": "PCDoMoney_Backend/Notebooks/Outputs/price_cache_fmp_pickle",
+    "price_snapshot_suffix": "2026-07-05",
+    "original_price_cache_files": 174,
+    "non_spy_symbols": 173,
+    "g2_9": "G2_9_A3_HISTORICAL_PRICE_CACHE_SOURCE_FILENAMES_FOUND_ASOF_OPEN",
+    "g2_10": "G2_10_A3_ORIGINAL_STOCK_PRICE_BAR_DATE_COVERAGE_PASS_PROVIDER_VINTAGE_OPEN",
+    "g2_10_report_sha256": "NOT_YET_PROVIDED_BY_OPERATOR",
+    "g2_10_static_tests": "5/5 operator-reported PASS",
+    "original_close_column_name": "close",
+    "provider_acquisition_vintage": "UNVERIFIED (July5 snapshot after May/June events)",
+    "point_in_time_corporate_action_adjustments": "UNVERIFIED",
+    "numeric_close_quality_and_all_event_date_coverage": "UNVERIFIED",
+    "file_checksums": "G2.9 original local report available; link through G2.10 report once locally SHA-sealed"
+  },
+  "original_cohorts": [
+    {
+      "id": "V2",
+      "date_start": "2026-06-07",
+      "date_end": "2026-06-10",
+      "pairs": 4449
+    },
+    {
+      "id": "V3",
+      "date_start": "2026-06-11",
+      "date_end": "2026-06-14",
+      "pairs": 2827
+    },
+    {
+      "id": "V4",
+      "date_start": "2026-05-02",
+      "date_end": "2026-06-06",
+      "pairs": 40320
+    }
+  ],
+  "volatility_formula": {
+    "bar_cut": "price_date (UTC calendar day) strictly < news event date (UTC calendar day); conservatively exclude all event-day bars.",
+    "full_lookback": "Take 61 most recent distinct historically dated closes, produce 60 daily close-to-close simple returns.",
+    "minimum_return_count": 40,
+    "fallback": "If only 41..60 eligible historical closing dates, use at least 40 returns and report N; if fewer than 41 dated closes, pair ineligible.",
+    "daily_return": "close_t / close_previous - 1; nonfinite/missing or nonpositive input forbids observation; price gap/missingness policy to be frozen before opening values.",
+    "risk_score": "sample std ddof=1 of most recent at most 60 finite daily returns; no annualization for veto threshold.",
+    "asof_limitation": "Retrospectively reconstructed dated-bar volatility, NOT verified historical provider-vintage or executable as-of signal.",
+    "no_price_at_or_after_event_day": true,
+    "no_outcome_leakage": true
+  },
+  "arms_and_comparator": {
+    "baseline": "Original frozen ex-ante XGBoost ranker, original iteration 10 and stable tie order.",
+    "original_p10_veto": "Original calibrated P10 >= -0.16665692627429962; no modification.",
+    "conventional_veto": "admit if trailing volatility <= validation-only weighted cutoff calibrated to original P10 validation acceptance fraction ON COMMON VOLATILITY-ELIGIBLE validation observations.",
+    "volatility_cutoff": "weighted empirical quantile of historical validation volatility at validation P10 admissible fraction; original validation news-id weights; ties and pass discrepancy explicitly reported.",
+    "training_outcomes_for_cutoff": "NONE",
+    "common_eligibility": "Same frozen baseline rank, same news_id/ticker pair intersection for baseline, P10, volatility arms. Disclose excluded pairs, missing prices and no redefinition of original headline sample.",
+    "K": "floor(0.10*common_eligible_cohort_pairs) for all arms; no shrinking K, no ex-post cutoff tuning.",
+    "insufficient_admissions": "INFEASIBLE cell; report pass counts and no Top-K metric if K cannot be filled.",
+    "original_q25_replication": "Reproduce original original full-cohort selection first, and separately label secondary common-sample effect.",
+    "temporal_dependence": "Overlapping 60-calendar-day forward targets; never pool V2/V3/V4 as independent tests."
+  },
+  "preregistered_report_columns": [
+    "cohort",
+    "original_N",
+    "common_eligible_N",
+    "removed_N_by_reason",
+    "distinct_tickers",
+    "validation_common_N",
+    "validation_weighted_p10_acceptance_fraction",
+    "volatility_validation_cutoff",
+    "actual_volatility_validation_accept_fraction",
+    "test_p10_pass_count",
+    "test_volatility_pass_count",
+    "required_K",
+    "fullK_baseline",
+    "fullK_p10",
+    "fullK_vol",
+    "mean_excess_beta_baseline",
+    "mean_excess_beta_p10",
+    "mean_excess_beta_volatility",
+    "delta_p10_minus_baseline",
+    "delta_volatility_minus_baseline",
+    "delta_p10_minus_volatility",
+    "TopK_hit_rates",
+    "news_id_cluster_ci95",
+    "ticker_cluster_ci95",
+    "infeasible_bootstrap_count",
+    "data_version_and_vintage_limitations"
+  ],
+  "uncertainty": {
+    "news_id_cluster": {
+      "replicates": 10000,
+      "seed": 20260821,
+      "percentile_ci": 0.95
+    },
+    "ticker_cluster": {
+      "replicates": 10000,
+      "seed": 20260822,
+      "percentile_ci": 0.95
+    },
+    "resample_fullK_and_ranking": true,
+    "any_infeasible_replicates": "Report count, WITHHOLD affected CI until valid frozen policy.",
+    "all_results_including_worse_results": true,
+    "no_pooled_significance": true
+  },
+  "hard_stops": [
+    "G2 not completely signed/frozen → no G3 financial computation.",
+    "G2.10 report SHA unbound or original G2.9 price file SHA mismatch → STOP.",
+    "Every actual original event pair and V0 validation ticker/news-date must have verified pre-event history or predeclared common-case exclusion.",
+    "Price adjustment/provider vintage unverified → cannot claim true point-in-time executable signal.",
+    "No cutoff fit, filter selection, predictor retuning or admission matching using known V2/V3/V4 target outcomes.",
+    "No claim of independently replicated superiority, tradable P&L or experimental human causal effect.",
+    "No licensed source data or confidential provider price series committed publicly."
+  ],
+  "G2_protocol_frozen": false,
+  "G3_financial_analysis_authorized": false
+}
