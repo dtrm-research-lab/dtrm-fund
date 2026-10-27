@@ -471,3 +471,29 @@ not an efficacy failure.
 This is not a new empirical validation; no model inference or
 financial returns/targets inspected. G1.2j numerical V1
 embedding replay and G1.3 independent temporal holdout remain OPEN.
+
+## 2026-10-27 G1.2i supplement-ID/vector metadata — operator PASS
+
+Operator ran `ic_g1_supplement_schema.py` on previously SHA256-hashed
+original local V1 supplement and embedding-source manifest.
+Exact status: `G1_2I_SUPPLEMENT_NAMED_SCHEMA_READY_FOR_PREDECLARED_MAPPING`.
+The original supplement is a 6-field metadata dictionary:
+- `news_ids`: list of **27 unique string news IDs**;
+  **exactly identical set** to the 27 manifest source-labeled
+  `v1_supplement` news identifiers.
+- `embeddings`: ndarray **(27,384)**, dtype **float32**.
+- `dtype`: str (length 7); `max_chars`: int;
+  `model`: str (length 16);
+  `normalize_embeddings`: bool.
+- No vector values were compared, and no individual news IDs,
+  predictions, targets, prices, or newer cohort inputs were exposed.
+
+**Next check now prepared but not yet operator-run:**
+`ic_g1_embedding_parity.py` and `G1_2J_EMBEDDING_PARITY.md`
+carry out a strictly historical fixed-source 40,320×384
+comparison using the original manifesto-specified cache or
+supplement, both earlier audit hashes, and 1e-6 fixed
+absolute tolerance. Mismatch stops progress, no cache reassignment.
+A PASS, combined with G1.2f/g, would reproduce all 390
+historical input features; **it would not prove the historical
+raw→selected filtering rule or independent post-August holdout**.
