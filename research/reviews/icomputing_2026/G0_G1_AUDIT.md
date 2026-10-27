@@ -356,3 +356,42 @@ assume a particular embedding cache representation.
 - **Not yet executed.** No newly dated events, returns or targets
   opened. Separate V1 contract/raw basename cardinality discrepancy
   and full embedding/selection provenance remain OPEN.
+
+## 2026-10-27 G1.2g operator PASS: original five-text-feature provenance
+
+Operator ran the SHA-bound `ic_g1_text_provenance.py` against
+historical V1 source and pinned original text-feature code.
+- Status: `TEXT_FEATURE_5_OF_5_ROW_PARITY_PASS_EMBEDDINGS_OPEN`.
+- Frozen V1 40,320 pairs; historical news snapshot
+  `news_2025-01-01_2026-06-06.pkl`: 43,183 rows.
+- All five historical text features in columns 385–389 (0-based
+  384:389) reproduced for **40,320 / 40,320** observations;
+  max absolute difference **0.0**; mismatches per feature:
+  `[0, 0, 0, 0, 0]`.
+- G1.2f previously verified keyed `beta_pre` against column 390,
+  max absolute difference 0.0. Therefore all **six non-embedding
+  columns** have historical source-level parity.
+- Available historical embedding cache families, each with
+  `.dat` + index/shape PKL, include `2026-06-06`
+  (40,733,184-byte `.dat`) and `2026-05-23`
+  (39,653,376-byte `.dat`).
+- `probabilistic_v1_embedding_manifest_2026-06-06.pkl` was
+  previously found: 5,526 news rows, columns
+  `news_id`, `date_dt`, `embedding_source`.
+- `probabilistic_v1_missing_embeddings_2026-06-06.pkl`
+  exists (42,446 bytes); content/schema not yet verified.
+- Original V1 contract documents three *intended* provenance
+  counts: cache_2026-06-06 = 4,764;
+  cache_2026-05-23 = 735;
+  v1_reproduced_supplement = 27. These sum to 5,526, but are
+  **not yet reconstructed or cryptographically tied** to the
+  384×40,320 embedding feature block.
+- No targets, outcomes, price series, post-June events, or fresh
+  evaluation were inspected.
+
+**Next G1.2h:** inspect, without matching vectors to targets,
+the original index/shape/supplement schemas and count the exact
+manifest-based source groups; then only if source mapping is
+unambiguous attempt strict float32 embedding row parity. Frozen
+raw filename contract cardinality still unresolved; prospective
+evaluation remains NOT AUTHORIZED.
