@@ -1,7 +1,7 @@
 # Intelligent Computing Major Revision — G0/G1 evidence audit (2026-10-27)
 
 Manuscript: ICOMPUTING-D-26-01069. Revision due: 2026-11-25.
-Status: **AUDIT IN PROGRESS; NO NEW RESULTS**.
+Stage status as of 2026-10-27: **G0 CLOSED (historic scope); G1 CLOSED WITH DOCUMENTED LIMITATION; G2 ACTIVE DRAFT/UNFROZEN; G3 NOT YET AUTHORIZED. NO NEW OUTCOME RESULTS.**
 
 ## Immutable source
 - Historical tag: `dtrm-xgb-probabilistic-phase2-stats`
@@ -846,3 +846,53 @@ G1.3 remains UNFROZEN and BLOCKED; prioritize scientific
 revision of ICOMPUTING-D-26-01069 without invented external
 validation results. Historical G1.2k dossier and G1.2m date-rule
 evidence SHA256 values unchanged.
+
+## 2026-10-27 Agentic Graph Engineering stage transition: G1 CLOSE → G2 OPEN
+
+**The originally specified G1 exit condition was disjunctive**:
+"independent holdout feasible OR limitation documented."
+We therefore formally close G1 by its **documented-limitation**
+path, not by asserting existence of a new independent holdout.
+
+Evidence:
+- G1.2k sealed exact historical 40,320×390 input/reconstructed
+  numerical predictor parity, dossier SHA256
+  `7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`.
+- G1.2m outcome-blind originally declared date-only
+  265,145→40,320 structural row-key/order/timestamp parity,
+  supplement SHA256
+  `388345ba7bcca9c9a5103584d999aef4f033a3656d746b26efae337cf569b81f`.
+- G1.3a/b local filename-only inventories: no newly
+  **verified eligible** unused later HDPG event-time
+  cohort in the audited research roots. The 49 undated
+  broad-scan paths are unrelated PaymentGame material,
+  Phase IV test fixtures or undated legacy SBERT artifacts.
+- Original same-basename raw-file/copy provenance remains
+  DOCUMENTARY_OPEN; not a numerical mismatch.
+- The 60-calendar-day new forward study could not produce
+  mature outcomes by the 2026-11-25 editorial deadline
+  from an October-27 prospective start.
+
+Transition artifact:
+`G1_TO_G2_STAGE_HANDOFF.md`.
+G2 active draft:
+`G2_REVISION_PROTOCOL_DRAFT.md`.
+
+**G2 gate is the entire revision protocol for the paper, NOT
+equivalent to G1.3 new-holdout preregistration.**
+It must cover the editor/reviewer exact objections, fixed
+metrics/comparators/filters/thresholds, dispositions for
+already-frozen versus secondary/exploratory versus
+non-executable analysis, negative results and maximum
+claim strength. Current map is preliminary, not copied
+from reviewer letters. G2 is NOT yet frozen or complete,
+so G3 new computations and all newer target/outcome
+access remain NOT AUTHORIZED.
+
+Agentic path remains:
+G0 (historic audit) → G1 (feasibility result) →
+G2 (freeze revision protocol) → G3 (execute authorized work;
+non-executable experiments explicitly recorded) →
+G4 (adversarial audit) → G5 (revise manuscript) →
+G6 (reviewer rebuttal) → G7 (resubmission pack).
+Original experiment tags/contracts remain intact.
