@@ -104,3 +104,41 @@ python3 "$AUDIT/ic_g1_declared_date_filter.py" \
 3. G1.3 new-outcome validation is **NOT frozen nor authorized**.
    A genuinely new late October 60-calendar-day prospective cohort
    cannot yield completed outcomes before Nov 25 deadline.
+
+## Operator outcome recorded 2026-10-27 — STRUCTURAL PARITY PASS
+
+The previously declared **single** historical event-date-window
+hypothesis was tested without examining price outcomes or alternative
+filters. CLI state:
+`V1_DECLARED_DATE_FILTER_EXACT_KEY_SET_AND_ORDER_PASS_SOURCE_CODE_OPEN`.
+
+Observed original June 6 news-ID coverage 100% (unmatched 0);
+date-filtered original raw candidates **40,320**, historical V1
+signal pairs **40,320**; key sets identical; row order identical;
+every signal event timestamp matches original news event timestamp.
+There are **zero** missing/extra pairs. The ticker alias is the
+previously documented BRK.B→BRK-B normalization.
+
+**Selection provenance now split into evidence grades:**
+- **Structural reconstruction PASS:** original predeclared V1
+  UTC date-only selection explains exact 265,145→40,320
+  cardinality, canonical keys, row order and event dates.
+- **Authentic original historical generator / snapshot label
+  unresolved:** pinned YAML `pairs_snapshot.file` labels
+  the same local raw filename as containing 40,320 rows.
+  We do not yet have a contemporaneous code/notebook or
+  copy manifest authenticating which physical version the
+  label referred to. Preserve old YAML verbatim.
+- **Historic numeric reproducibility PASS**: sealed separate
+  G1.2k dossier SHA256
+  `7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`;
+  do not edit the sealed output to inject this supplementary
+  G1.2m finding.
+- **New prospective evidence NOT YET RUN**: no independent
+  results may be inferred from this exact historical match.
+
+Reviewer-safe conclusion: The retained raw pair candidate
+snapshot, filtered by the originally specified cohort dates
+and ticker alias, reproduces the frozen 40,320-row V1
+`(news_id,ticker,date)` sequence exactly. We retain an
+explicit file-label/provenance caveat.
