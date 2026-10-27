@@ -1,0 +1,268 @@
+# G2.3 — Reviewer-linked G3 analysis packages, DRAFT / NO NEW INFERENCE
+
+Manuscript: `ICOMPUTING-D-26-01069`
+Date: 2026-10-27. Deadline 2026-11-25.
+Original evidence: G1.2k sealed SHA256
+`7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`;
+G1.2m original cohort derivation SHA256
+`388345ba7bcca9c9a5103584d999aef4f033a3656d746b26efae337cf569b81f`.
+No source V0–V4 contract, original tag, historic result or
+original model binary may be rewritten.
+
+## Data boundary common to A2/A3/A4/A6
+
+- **Consumed** old event cohorts: V2 (June 7–10 2026;
+  4,449 ticker/news rows, Top-K 444), V3 (June 11–14;
+  2,827 rows, K=282) and V4 (May 2–June 6;
+  40,320 rows, K=4,032). V1 original absolute P10>0
+  accepted zero rows; negative result protected.
+- Same ranker from old source commit `c7502a690162459cdfb3413573e3133c42efb126`,
+  original ranker iteration 10 and quantile P10
+  iteration 18 (indices 0:11 and 0:19), validation-only
+  calibration offset -0.06494169682264328.
+- Baseline ranks by frozen ex-ante model; original P25
+  guardrail veto `P10_calibrated >= -0.16665692627429962`;
+  fill candidate by stable baseline-order walk-down,
+  `K=floor(0.10*N)`, strictly full K or mark infeasible.
+- Same 60 calendar-day excess-beta target already known;
+  no new independent inference. All newly calculated old-
+  outcome comparisons are **post-outcome exploratory**,
+  even if their **analysis** is specified before executing it.
+- No selecting the best threshold, comparator, K grid point,
+  cost assumption or subgroup after observing results.
+- Reproducibility artifacts and original scientific inputs
+  stay local/confidential; only aggregated verifiable output
+  metrics/hash evidence may be published.
+
+## A1 — Original uncertainty, dependence, temporal heterogeneity
+
+Reviewer refs: R1-02/R1-06, R2-01/R2-03/R2-04/R2-07.
+Disposition `EXISTING_HISTORICAL_RESULT_AND_CLAIM_REWORDING`.
+No new statistical run needed merely to report:
+- V2/V3/V4 incremental excess-beta Top-K means
+  +0.1442948 / +0.1494375 / +0.0275616.
+- 95% news-event cluster bootstrap existing CIs positive
+  in all three cohorts.
+- 95% ticker-cluster existing CIs cross zero for V2
+  [-0.0062202, 0.1961534] and V4
+  [-0.0104682, 0.0718196]. V3 [0.0075385, 0.1933165]
+  excludes zero under same ticker approach.
+- V4 weekly descriptive deltas are negative in W18
+  and W19; positive W20–W23; four out of six weeks.
+- V2/V3 event windows are adjacent, their forward
+  60-day outcome calendars overlap, and V4 earlier
+  outcomes overlap portions of those calendars.
+  Events may be distinct, return observation windows
+  are not independent. Do NOT call them three fully
+  statistically independent 60d tests.
+- Underlying target remains excess-beta not traded P&L.
+- HDPG experiments evaluate machine ranking constrained
+  by a human-*specified* deterministic governance
+  policy, not randomized outcomes of human investment
+  judgments. 'Model-agnostic architecture' is a
+  design claim; one-ranker measured effects cannot
+  establish empirical model independence.
+
+A1 **ready for manuscript interpretation**, but G5
+still follows G3/G4 gate order.
+
+## A2 — Weighted calibrated-P10 validation threshold sensitivity
+
+Reviewer refs: R1-03, R2-02.
+Classification: `EXPLORATORY_POST_OUTCOME`.
+**Predictive quantile P10 remains fixed.** The
+threshold notation `P15/P25/P35` here means *weighted
+15th/25th/35th percentiles of ORIGINAL validation-only
+calibrated-P10 prediction distribution*, NOT
+three separately trained P15/P25/P35 quantile models.
+
+Intended fixed options: `q∈{0.15, 0.25, 0.35}`.
+The `q=0.25` threshold is the **original
+promoted -0.16665692627429962** anchor; software
+recomputed validation `q=0.25` must reproduce it
+to original numeric tolerance or stop. Do not use
+reproduced test outcomes to calibrate thresholds.
+
+For **each** V2, V3, V4 cohort and each `q`, report:
+- validation-only numerical threshold, historical
+  test admission count/rate;
+- Top-K fill feasibility, selected Top-K K as originally
+  defined (no downsizing/replacement);
+- delta Top-K mean old `forward_excess_beta` versus
+  same original baseline; candidate mean itself;
+- Top-K hit-rate and candidate-minus-baseline
+  hit-rate; original q=0.25 replicated row-for-row;
+- news_id- and ticker-cluster CIs (if predeclared
+  prior to any new run), all infeasible/bootstrap
+  replication counts, limitations of overlapping
+  windows and multiple exploratory comparisons.
+Do not promote q=0.15 or q=0.35 based on best gains.
+Preflight pending: verify original validation P10
+array, `legacy_news_weights` cardinality and
+weighted empirical quantile function with its
+tie/interpolation; pin input SHAs. No G3 run yet.
+
+## A3 — One conventional baseline, capacity matched
+
+Reviewer ref: R1-04.
+Classification: `EXPLORATORY_POST_OUTCOME_IF_INPUTS_VERIFIED`.
+Preferred comparator: **trailing realized volatility**
+(stock daily historical adjusted returns, at most the
+60 prior trading sessions **strictly before event
+timestamp**), no future labels. Possible minimum
+history `>=40` observations, subject to verifying
+the original returns/price snapshots and timezone
+as-of semantics. The final formula and inclusion
+must be explicitly fixed **before G3**, not guessed
+from current uninspected files.
+
+Fair-comparison protocol (conditional):
+- Keep the same original frozen baseline ranking,
+  same eligible `(news_id,ticker)` universe for all
+  arms, stable ties, same K/full-K feasibility.
+- Comparator rejects high pre-event volatility;
+  determine its veto cutoff **using only original
+  frozen training/validation samples**, preferably
+  matched to original validation P25 pass capacity.
+- Do not tune comparator threshold on V2/V3/V4
+  return labels, or force performance equivalence.
+- Missing lookback data: predeclare complete-case
+  common eligibility across arms and report lost
+  rows/coverage. This is a **secondary subset**,
+  not a new redefinition of original V2/V3/V4.
+- Report baseline, original probabilistic veto,
+  conventional comparator on identical eligible
+  rows with effect sizes, admission, fill and CIs.
+- If historical point-in-time volatility cannot
+  be reconstructed, label `NOT_EXECUTABLE`
+  with an auditable reason; do not substitute
+  `beta_pre` as a volatility measure without
+  disclosing that these are different concepts.
+
+## A4 — Economic interpretation, downside and flat/no-action
+
+Reviewer refs R1-05, R2-05.
+Classification `DESCRIPTIVE` + `EXPLORATORY_CONDITIONAL`.
+The old target is 60d **excess beta**, not
+market-tradable P&L or pure realized stock return.
+Original old **candidate absolute excess-beta
+means are still negative** even where relative
+incremental gains are positive.
+
+Minimum descriptive output requires no new outcome
+calculation: state candidate/baseline old excess-beta
+means and negative sign, and explain why
+`candidate - baseline > 0` does NOT imply
+`candidate > cash` or economic value net of fees.
+
+Optional economic old-cohort replay, before G3 freeze:
+- Define exact stock event entry/exit execution time
+  and matched adjusted/unadjusted price schema.
+- Define event-level gross stock return,
+  max loss/downside quantiles, stock/ticker exposure
+  concentration; SPY benchmark separately.
+- Define a capital-constrained repeat-trade portfolio
+  and self-financing overlap handling **before**
+  computing turnover or P&L. Repeated events for
+  the same ticker cannot be independent 'trades'.
+- Define transaction-cost grid (if included) from
+  **externally justified and fixed** fee/slippage
+  assumptions; never cherry-pick best scenario.
+- Flat arm = no risk exposure/positions; zero
+  pretax nominal gross return only under explicit
+  zero-yield cash simplification. Distinguish
+  a decision-to-abstain from simply ranking negative
+  excess-beta event means against zero.
+- If authentic fill/cost/capital data unavailable,
+  do **not** label any old excess-beta difference
+  as realized portfolio outperformance. Limit
+  discussion to illustrative assumptions.
+
+## A5 — Second ranking model (conditional)
+
+Reviewer R1-07.
+Category `NOT_EXECUTABLE_PENDING_AUTHENTIC_ALT_RANKER`.
+Need genuinely preexisting frozen ranker model checkpoint
+prior to original V2/V3 outcomes, with separately pinned
+source, model SHA, feature/ticker schema, training cutoff,
+ex-ante alignment and no post-outcome policy tuning.
+Training a new second model on consumed test outcomes to
+satisfy the reviewer would NOT support confirmatory
+model independence. If no authentic prior model,
+explain method *design portability* and present
+empirical single-ranker limitation.
+
+## A6 — Capacity K and abstention
+
+Reviewer R2-06 (plus R2-05).
+Category `DESCRIPTIVE` + `EXPLORATORY_CONDITIONAL`.
+Original K is `floor(0.10*N)`: a mechanical
+fixed-selection budget, **not** a demonstrated
+real-life capital/turnover capacity. Explain that
+the 10% choice ensures same admitted cohort size
+for a fair paired rule comparison, but is a
+research policy, not empirically optimized investment
+capacity.
+
+If executable, fixed exploratory sensitivity fractions
+`{0.05,0.10,0.15}` applied to *each* original
+cohort, recomputing K with floor and always keeping
+same K for baseline and guardrail within comparison;
+report admission and fill feasibility, all deltas,
+downside metrics and ticker clustering. No best-K
+selection. If short-cluster/wide-CI behavior
+dominates, characterize honestly.
+
+## A7 — Literature upgrade
+
+Reviewer R2-08. `DESCRIPTIVE_DOCUMENTATION`.
+Use independently verified bibliographic references
+from peer-reviewed financial machine learning,
+risk control, decision support and human-AI
+collaboration; record DOI and publication metadata,
+check actual paper context rather than citation by
+title alone. Differentiate algorithmic risk filters,
+uncertainty-sensitive selective prediction,
+AI-assisted finance and human objective design.
+No claim of experimental human-vs-AI comparison.
+
+## X1 — Truly later nonoverlapping holdout
+
+Reviewer R1-01, R2-03.
+Status `NOT_EXECUTABLE_UNDER_CURRENT_G1_INPUT_GATE`.
+G1.3a/b found no source-and-timestamp-verified,
+unused later investment-news event cohort within
+the audited local research roots. Fully prospective
+60-calendar-day forward outcomes from a new
+Oct 27 observation cannot mature by the Nov 25
+revision deadline. No original news data, new
+60d targets or post-August outcomes were opened
+during G1.3 availability scans.
+
+G2 must distinguish: `no eligible cohort found
+within searched local roots` versus `there is
+no such cohort anywhere`. Do not claim latter.
+Open independent evaluation as future work
+with signed timestamp, original-model SHA,
+outcome-blind inputs and temporal overlap embargo.
+
+## Fixed G2 scientific acceptance rules
+
+- G3 only after G2 freeze includes actual source
+  artifact SHA, validated as-of cutoff,
+  fixed candidate universe and method and ALL
+  planned outcome summaries/uncertainty estimators.
+- If feasibility FAIL, record `NOT_EXECUTABLE`
+  or `INFEASIBLE` without replacing filters,
+  selecting different K/thresholds or dropping
+  difficult rows post hoc.
+- All exploratory secondary analyses clearly
+  separated from original historically frozen
+  V2/V3/V4 comparisons. No new confirmatory
+  p-values for already-known outcome datasets.
+- Satisfying the reviewer through transparent
+  negative, infeasible or limitation findings
+  is scientifically valid; **do not claim the
+  same inferential strength as a new independent test**.
+
+**G2.3 STATUS = ANALYSIS_DESIGNS_DRAFT_NO_INPUT_HASHES_OR_G3_EXECUTION.**
