@@ -623,3 +623,34 @@ Next: G1.2l metadata-only original notebook/backend lineage
 discovery; G1.3 **draft** preregistration and feasibility audit.
 Do not authorize prospective scoring or future target inspection
 from this PASS.
+
+## 2026-10-27 G1.2l source-discovery + G1.3 outcome-blind design PREPARED, not operator-run
+
+Added:
+- `ic_g1_raw_lineage_discovery.py` and
+  `G1_2L_RAW_LINEAGE_DISCOVERY.md`: safe bounded, **source-file-only**
+  search under original PCDoMoney Backend and dtrm-fund for the
+  actual V1 265145→40320 provenance/selection pipeline.
+  Original notebook **filenames only**, not notebook contents;
+  no .pkl/.npy/memmap scientific data nor return labels read.
+  **This script has NOT been executed**. Any candidate references
+  require source chronology corroboration.
+- `G1_3_INDEPENDENT_TEMPORAL_PREREG_DRAFT.md`: UNFROZEN
+  preregistration design with fixed original relative P10
+  threshold, ex-ante ranking, 60 **calendar** day target window
+  and +5-day original future-price alignment tolerance.
+  Distinguishes genuinely future-prospective vs new retrospective
+  outcome-blind temporal holdout; the latter is not prospective.
+  No new event dates, data provider, price maturity, cohort hash,
+  preregistered cutoff or independence status has been certified.
+- Research paper ICOMPUTING-D-26-01069 deadline **2026-11-25**;
+  late October 2026 newly started 60-day genuinely prospective
+  observations cannot all mature before this deadline. A
+  retrospective new-date, genuinely outcome-uninspected check
+  may be possible IF inputs/outcome-blindness are established;
+  never mislabel it forward prospective.
+- G1.2k sealed dossier unchanged at
+  SHA256 `7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`.
+
+**Study G1.3 status: DRAFT, NOT PREREGISTERED/FROZEN;
+NEW TARGET SCORING BLOCKED.**
