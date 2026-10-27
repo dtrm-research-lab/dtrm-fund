@@ -125,3 +125,24 @@ new-efficacy evidence from G1.3. We retain G1.2k/m exact historic
 reconstruction and transparent existing V2/V3/V4 cross-ticker
 uncertainty limitations while source acquisition is independently
 assessed. Refer to `G1_3A_AVAILABILITY_DECISION.md`.
+
+## G1.3b — broader local event-source inventory, 2026-10-27
+
+Broader filenames-only discovery under known local
+investigative roots identified 49 undated candidate
+names. Path/category examination without opening
+scientific files classified these as (i) 3 historic/
+undated PCDoMoney embeddings or scoring artifacts,
+(ii) 7 Phase IV unit-test fixtures, and (iii) 39
+smartphone PaymentGame pair-audit artifacts unrelated
+to the HDPG investment event/ticker population.
+
+No **scientifically eligible newer point-in-time
+investment-news event cohort** was identified in the
+inspected roots. Newness cannot be established from
+filenames, and the detector does not recognize compact
+YYYYMMDD date tokens. No independent G1.3 study was
+pre-registered, executed, or scored. Do not report
+new prospective validation or infer absent news from
+all potential research providers. See
+`G1_3B_BROAD_SOURCE_TRIAGE_STOP.md`.
