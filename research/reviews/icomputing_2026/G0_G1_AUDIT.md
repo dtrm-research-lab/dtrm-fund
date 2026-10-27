@@ -654,3 +654,41 @@ Added:
 
 **Study G1.3 status: DRAFT, NOT PREREGISTERED/FROZEN;
 NEW TARGET SCORING BLOCKED.**
+
+## 2026-10-27 G1.2l operator source-reference inventory completed; no original generator identified
+
+The operator ran the code-source-only
+`ic_g1_raw_lineage_discovery.py` with existing local
+`dtrm-fund` and `PCDoMoney_Backend` source trees.
+- Status printed: `SOURCE_LINEAGE_REFERENCE_INVENTORY_ONLY`.
+- **301** source/documentation text files searched.
+- **5** potentially relevant files, all high-level old contracts,
+  Phase II bootstrap/evidence reports, or a Phase III document.
+  None provides an identified historically dated complete V1
+  raw→selected file generation algorithm.
+- **33** notebook *filenames* inventoried; their contents,
+  output cells and code cells were NOT inspected.
+- No Pickles, target returns, future prices, embedding matrices,
+  notebook contents, or model execution read at G1.2l.
+- Metadata-only search alone does not certify source provenance;
+  original 265,145-vs-40,320 file cardinality inconsistency is OPEN.
+
+Next G1.2m controls a single *previously declared* historical
+calendar-holdout window test, 2026-05-02 ≤ news UTC event_date
+< 2026-06-07, using source June 6 news dates and the exact
+original BRK.B→BRK-B alias. The hypothesis is independent of
+outcomes and must not be tuned to reconstruct 40,320.
+
+`ic_g1_declared_date_filter.py` and
+`G1_2M_DECLARED_DATE_FILTER.md` have been committed
+BEFORE the local operator test; **G1.2m not yet run**.
+Even an exact source/date/key/order match would remain
+structural corroboration, not authenticated original
+generation code. The 33 notebook code cells can be separately
+inspected ONLY if source provenance remains open,
+without execution or access to notebook output cells.
+
+G1.3 prospectively scored independent 60-calendar-day
+event cohort still unregistered and BLOCKED. The
+previously sealed historical evidence dossier
+SHA256 remains `7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`.
