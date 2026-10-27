@@ -123,3 +123,28 @@ is statistically confirmatory.**
    eligible event data in searched roots.
 
 **Status:** G2.7 PREPARED / OPERATOR NOT RUN.
+
+## 2026-10-27 operator G2.7 PASS: report summary
+
+The operator executed the G2.7 **metadata-only**
+A2 source/method preflight, yielding:
+`G2_7_A2_PLAN_SOURCE_AND_METHOD_METADATA_PASS_NOT_G2_FROZEN`.
+
+- 8 original historic input SHA references passed.
+- Weighted P10 validation cutoff grid fixed q15/q25/q35.
+- 3 consumed V2/V3/V4 cohorts × 3 grid positions = 9
+  **post-outcome exploratory** comparison cells.
+- G2.6 binding SHA256
+  `1ee9a491542ff5e5849cbaa13c8d022cc84639515a32fd51b0ff2e7805e291c2`.
+- Preanalysis plan local SHA256
+  `5992890e6cecb37182f006834b509de9b1c81efaeb86d52c6ada928819e756b8`.
+- Report:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_7_A2_spec_source_preflight.json`.
+  Its own SHA256 was not yet shared.
+
+This operator outcome supersedes earlier 'NOT RUN'
+text in the original runbook above. No q15/q35
+values or financial outcome comparisons calculated.
+Full G2 remains NOT FROZEN and G3 remains BLOCKED;
+next A3 source-only triage:
+`G2_8_A3_PRICE_SOURCE_TRIAGE.md`.
