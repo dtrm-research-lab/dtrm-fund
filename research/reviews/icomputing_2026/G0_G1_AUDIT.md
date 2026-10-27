@@ -154,3 +154,31 @@ Operator executed `ic_g1_reconstruct.py --mode preflight` from
 - Apparent `zsh: command not found: #` messages resulted from pasted interactive-shell comments, not the verification tool, and did not prevent preflight.
 - Python package versions are present in the locally saved preflight JSON but not in the terminal excerpt; environment-version parity has NOT yet been assessed.
 - This checkpoint confirms path/source prerequisites only. Reconstruction weights and row-wise prediction parity are still **OPEN**.
+
+## 2026-10-27 G1.2 historical reconstruction — operator-reported 12/12 aggregate PASS
+
+Operator's local versions: numpy=1.26.4; pandas=2.2.2;
+xgboost=3.0.2; sentence-transformers=2.6.1.
+After the successfully pinned-source G1.2 preflight, the operator invoked
+`ic_g1_reconstruct.py --mode rebuild --trust-historical-pickles`.
+The trainer used only historical TRAIN/VALID source inputs in
+`~/Desktop/Play4Fun/PCDoMoney_Backend/Notebooks/Outputs`
+and `dtrm-fund/research/local_data`; the original frozen commit was
+`c7502a690162459cdfb3413573e3133c42efb126`.
+
+Terminal shows `G1.2: HISTORICAL_AGGREGATE_PARITY_ONLY`;
+all twelve checks were PASS:
+390 features; original ranker best iteration/RMSE, selected Top-K
+iteration/validation mean/hit, original P10/P50/P90 best iterations,
+P10 best pinball, P10 VALID calibration offset and relative veto
+threshold. Reconstructed boosters were saved locally in
+`g1-reconstruction/reconstructed_UNAPPROVED/`, SHA references in
+`IC_G1_2_rebuild.json`.
+
+This is **NOT proof of rowwise prediction parity** or prospective
+holdout independence. The next program `ic_g1_row_parity.py`
+read-only compares historical V1/V4 40,320 rows with their independently
+anchored original feature/signals, including explicit distinction between
+the V1 absolute-zero veto and V4 relative-P25 veto. See
+`G1_2B_ROW_PARITY_RUNBOOK.md`. This checker has NOT been executed
+by operator yet. G1 remains open.
