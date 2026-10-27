@@ -186,3 +186,28 @@ Further action only metadata search in other authorized roots
 (see `G1_3A_AVAILABILITY_DECISION.md`); otherwise plan a
 separately dated genuine prospective follow-up without asserting
 November 25, 2026 mature 60-day results.
+
+## G1.3b broader local preflight and stop, 2026-10-27
+
+Second scope of the same names-only data-source inventory
+looked in `~/Desktop/DTRM_Lab` and `~/Desktop/Play4Fun`.
+49 undated apparent candidates proved, by **path/name
+classification alone**, to comprise 3 old SBERT/embedding
+artifacts, 7 Phase IV test fixtures, and 39 smartphone
+PaymentGame pair-audit files. Original dated source
+caches remained historical/consumed, and no filename
+indicated an eligible newer investment-news cohort.
+
+The inventory's ISO filename-date matching does not
+recognize compact `YYYYMMDD`, so recently dated PaymentGame
+files appear 'undated'. This does **not** mean no newly
+created files exist. It means that the inspected files
+cannot provide a source-and-as-of-time verified new HDPG
+news/ticker sample.
+
+Decision: `G1_3_LOCAL_HISTORICAL_INPUT_DISCOVERY_STOP_NO_ELIGIBLE_NEW_COHORT`.
+No G1.3 outcomes opened and no new independent validation
+conducted. This draft remains UNFROZEN and must not be
+advanced without **new provider-specific, provenance-audited
+point-in-time news acquisition or future prospective capture**.
+See `G1_3B_BROAD_SOURCE_TRIAGE_STOP.md`.
