@@ -1398,3 +1398,54 @@ cannot be certified from bars' dates alone.
 **G2.9 was OPERATOR PASS; G2.10 source check is
 PREPARED but has NOT been operator-run. G2 and
 A3 full source-as-of gate UNFROZEN; G3 BLOCKED.**
+
+## 2026-10-27 G2.10 first operator attempt — implementation NameError, no accepted scientific result
+
+The operator ran original G2.10
+`ic_g2_a3_original_price_schema_dates.py`
+against the trusted original 174 July-5 price-cache
+snapshots and metadata-only G2.5–G2.9 reports,
+with explicit opt-in to trusted original-Pickle
+loading. The CLI returned exactly:
+
+`G2.10 HALTED: NameError: name 'G2_5' is not defined`.
+
+This is a **new Python metadata-report assembly bug**
+in G2.10, not evidence of missing historical prices,
+inadequate trailing-date coverage or a changed
+scientific assumption. The original code had
+three undefined names in the final output JSON:
+`G2_5`/`G2_6`/`G2_A2` instead of the previously
+defined SHA pinned constants `G2_5_SHA`/
+`G2_6_SHA`/`G2_A2_SHA`.
+The fix replaces only those three final
+metadata dictionary references, without changing
+original source/price data or the temporal policy.
+Commit `36cac4171284b5bf3eff5281d23be65af4ff5233`.
+
+Since Python builds `result={...}` **after**
+the 174-frame loop, the first run likely loaded
+the 174 trusted original price frames (and date
+column metadata) into memory before it failed.
+It did **not** complete the report write or emit
+PASS/PARTIAL; there is no accepted G2.10 result.
+The code explicitly never reads the close series
+for financial operations and never computes market
+returns, volatility, P10 inference, portfolio P&L
+or G3 analyses. Trusted Pickle deserialization has
+intrinsic code-execution risk; no other untrusted
+Pickle sources should be introduced.
+
+Added metadata/code-only static regression
+`test_ic_g2_10_schema_dates_regression.py`
+with five assertions (syntax, output SHA symbols,
+defined globals, no close-column observations,
+trusted-Pickle and G3 safety controls). It is
+COMMITTED BUT NOT OPERATOR-EXECUTED as of this log.
+Operator correction/retry procedure and scientific
+gate caveats recorded in
+`G2_10_A3_PRICE_DATE_SCHEMA_GATE.md`.
+
+**G2.10: OPERATOR RUN HALTED; RETEST PENDING.
+G2 A3 AS-OF, RISK COMPARATOR AND FULL PROTOCOL
+REMAIN UNVERIFIED. G3 STILL BLOCKED.**
