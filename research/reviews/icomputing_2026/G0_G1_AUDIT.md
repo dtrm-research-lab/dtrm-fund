@@ -1362,3 +1362,39 @@ trading dates and adequate **strictly earlier**
 daily bar dates before V2/V3/V4 first event dates.
 Keep provider as-of lineage documentary-OPEN even
 if column/date coverage passes.
+
+## 2026-10-27 G2.10 ORIGINAL STOCK PRICE SCHEMA/DATE-ONLY CHECK PREPARED
+
+Prepared `ic_g2_a3_original_price_schema_dates.py`
+and `G2_10_A3_PRICE_DATE_SCHEMA_GATE.md`
+to follow successful G2.9. This is the first G2
+A3 source feasibility check to *explicitly* require
+trusted Pickle deserialization; unlike G2.5–G2.9
+it necessarily loads historical price frames into
+memory to inspect only `date` and column names.
+The implementation refuses to proceed unless the
+operator supplies `--trust-original-price-pickles`,
+which acknowledges Pickle's code-execution risk.
+It verifies G2.9 recorded SHA for each of 174
+original July-5 files before loading, never accesses
+the `close` values, and computes only date coverage,
+schema, uniqueness, row counts and min/max dates.
+No volatility, market return, outcome labels,
+execution-profit or ranking inference is computed.
+
+Pre-event DATE-coverage windows fixed before
+local operator run: earliest original V4 event
+`2026-05-02`, V2 event `2026-06-07`, V3
+event `2026-06-11`; 61 prior distinct trading
+closes needed for 60 daily returns and 41 for
+minimum 40. Date-only coverage is NOT full
+ticker/news-event coverage or original V0
+validation-population coverage. Snapshot named
+`2026-07-05` remains after original May/June
+decision dates; quote-vintage/acquisition and
+split/dividend adjustment point-in-time integrity
+cannot be certified from bars' dates alone.
+
+**G2.9 was OPERATOR PASS; G2.10 source check is
+PREPARED but has NOT been operator-run. G2 and
+A3 full source-as-of gate UNFROZEN; G3 BLOCKED.**
