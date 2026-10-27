@@ -1245,3 +1245,61 @@ and full-K universe. As-of series, source adjustment,
 prices, coverage and fair comparator cutoff remain
 UNVERIFIED. The source-only G2.8 operator test has
 NOT yet been run; no G3 experiment authorized.
+
+## 2026-10-27 G2.8 OPERATOR-RUN, BOUNDED NEGATIVE WITH DETECTOR OMISSION; G2.9 CORRECTIVE AUDIT PREPARED
+
+The operator executed `ic_g2_a3_price_source_triage.py`.
+Exact status:
+`G2_8_A3_NO_ASOF_PRICE_SERIES_IDENTIFIED_IN_G2_5_INVENTORY`.
+Exact G2.5-catalog filename classifications:
+- `BETA_OR_MARKET_CONTEXT_NOT_STOCK_PRICE_SOURCE`: **28**;
+- `EXCLUDED_OUTCOME_OR_TEST_ARTIFACT`: **43**;
+- `OTHER_FILE_NAME`: **21**;
+- `POSSIBLE_PRICE_SOURCE`: **0**.
+
+The 28 historical `SPY_...` files belonged to
+`Notebooks/Outputs/price_cache_fmp_pickle` and
+were hash-recorded by earlier G2.5 only because the
+**basename matched `spy`**. Inspection of G2.5's
+*source code* confirms it selected files using a
+regex on `filename`, NOT on the full relative
+path. Therefore original stock daily price-cache
+files with generic ticker/date basenames were
+excluded from the candidate inventory, even
+though the directory itself has 'price_cache'.
+This is a **candidate-discovery false-negative**,
+not demonstrated absence of original stock prices.
+
+Frozen source `research/experiments/run_exante_baseline_v0.py`
+at original code pin `c7502a` explicitly loads
+`Notebooks/Outputs/price_cache_fmp_pickle/*_2026-07-05.pkl`
+using `frame["date"]`, `frame["close"]`.
+Previous historical G1.2 preflight required and
+operator previously PASSed metadata count **174**
+files for the July-5 historic suffix. The 174 is
+historic previously recorded metadata, **not**
+a new G2.9 observation.
+
+**Original G2.8 report preserved as a correct narrow
+result about the 92 G2.5 files; must NOT be promoted to
+the global claim 'A3 cannot be built'.**
+
+Prepared a new, scope-correcting **G2.9**
+`ic_g2_a3_price_cache_directory_inventory.py`
+and `G2_9_A3_DIRECT_PRICE_CACHE_INVENTORY.md`.
+G2.9 scans one original price-cache directory directly:
+filenames/sizes and bounded streamed SHA256 of
+the July-5/August-10 suffix file groups; excludes
+scientific Pickle deserialization or any price/
+return value examination. No original frozen source
+contracts/old results are modified.
+
+Pending actual G2.9 operator result, A3 historical
+pre-event risk coverage, provider as-of timestamps,
+unadjusted/adjusted price comparability, and
+volatility comparator feasibility remain **OPEN**.
+A date appearing in a snapshot filename alone does
+NOT establish price availability before event or
+corporate-action point-in-time adjustment.
+
+**Scientific gate: G2 ACTIVE, NOT FROZEN; G3 BLOCKED.**
