@@ -266,3 +266,32 @@ outcome-blind inputs and temporal overlap embargo.
   same inferential strength as a new independent test**.
 
 **G2.3 STATUS = ANALYSIS_DESIGNS_DRAFT_NO_INPUT_HASHES_OR_G3_EXECUTION.**
+
+## G2.5/G2.6 state update (2026-10-27): distinct source path for A2
+
+G2.5 OPERATOR PASS: 92 original old-cohort candidate files
+SHA-streamed, no source values deserialized. Five
+validation-quantile filename matches include original
+V2 frozen q25 threshold PKL, but do NOT alone imply
+separate retained calibrated P10 validation predictions.
+G2.5 inventory report is locally generated; SHA has
+not yet been communicated.
+
+Independently checked pinned original code and old
+G1.2 historic 12/12 reconstruction implementation:
+the **original V0 validation 19,880 rows**, original
+P10 predictor at best iteration 18, validation news
+weights and offset -0.06494169682264328 can be
+reproduced along an already verified deterministic
+G1 train/valid/test path; original weighted-q25 cutoff
+is -0.16665692627429962. Weighted quantile uses
+sort+cumulative weights+left searchsorted.
+
+G2.6 `ic_g2_validation_source_binding.py` and
+`G2_6_VALIDATION_SOURCE_BINDING.md` prepared as
+source/JSON checks ONLY; local operator G2.6 has NOT
+run. q15/q35 values and all existing old-cohort
+sensitivity comparisons have **NOT** been computed.
+A3 price source/event-time as-of provenance, A4
+actual portfolio economics, and A6 K analyses
+remain conditional on separately frozen rules.
