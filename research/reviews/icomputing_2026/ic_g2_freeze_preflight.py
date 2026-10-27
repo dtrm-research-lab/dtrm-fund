@@ -48,7 +48,7 @@ def verify(matrix:dict,protocol:str):
     def gate(ok:bool,code:str):
         if not ok: blocks.append(code)
 
-    gate(matrix.get("schema_version")=="dtrm.ic.g2.reviewer_requirement_map.v0","SCHEMA_VERSION_UNEXPECTED")
+    gate(matrix.get("schema_version")=="dtrm.ic.g2.reviewer_requirement_map.v1","SCHEMA_VERSION_UNEXPECTED")
     gate(matrix.get("case_id")==CASE,"EDITORIAL_CASE_MISMATCH")
     gate(matrix.get("original_source_commit")==PIN,"ORIGINAL_SOURCE_COMMIT_MISMATCH")
     gate(matrix.get("g1_historical_dossier_sha256")==HIST,"G1_2K_HISTORICAL_DOSSIER_HASH_MISMATCH")
@@ -80,21 +80,51 @@ def verify(matrix:dict,protocol:str):
     for token in mandatory_protocol_tokens:
         gate(token in protocol,"PROTOCOL_MISSING_FIXED_TOKEN_"+token.replace(" ","_"))
     comments=matrix.get("actual_reviewer_comments",[])
-    gate(matrix.get("editor_decision_authenticated") is True,
-         "AUTHENTIC_EDITOR_DECISION_MISSING")
-    gate(matrix.get("reviewer_comments_authenticated") is True,
-         "AUTHENTIC_REVIEWER_COMMENTS_MISSING")
-    gate(isinstance(matrix.get("source_document_sha256"),str)
-         and bool(SHA.fullmatch(matrix.get("source_document_sha256") or "")),
-         "EDITOR_SOURCE_DIGEST_MISSING")
+    source_mode=matrix.get("source_mode")
+    # Explicit user-supplied complete editorial transcript is primary
+    # source for *content mapping*, but NOT a provider-verified MIME.
+    # Do not block G2 solely on lack of the Gmail connector or an
+    # impossible-to-claim source SHA. Hold a separate non-crypto caveat.
+    user_transcript=(source_mode=="USER_SUPPLIED_COMPLETE_EDITORIAL_EMAIL_BODY_IN_CHAT")
+    provider_verified=(matrix.get("editor_decision_authenticated") is True
+          and matrix.get("reviewer_comments_authenticated") is True
+          and bool(SHA.fullmatch(matrix.get("source_document_sha256") or "")))
+    gate(user_transcript or provider_verified,"EDITORIAL_SOURCE_MODE_MISSING")
+    if user_transcript:
+        gate(matrix.get("editorial_decision_date")=="2026-10-26",
+             "USER_TRANSCRIPT_EDITORIAL_DECISION_DATE_MISMATCH")
+        gate(matrix.get("actual_editor_letter",{}).get("decision")=="MAJOR_REVISION",
+             "USER_TRANSCRIPT_EDITORIAL_DECISION_MISSING")
+        gate(matrix.get("actual_editor_letter",{}).get("deadline")=="2026-11-25",
+             "USER_TRANSCRIPT_REVISION_DUE_DATE_MISMATCH")
+        notes.append("User-provided editorial text was checked in-chat; original provider MIME/source hash not independently authenticated.")
+    else:
+        gate(bool(SHA.fullmatch(matrix.get("source_document_sha256") or "")),
+             "EDITOR_SOURCE_DIGEST_MISSING")
     gate(isinstance(matrix.get("source_document_uri"),str)
          and bool(matrix.get("source_document_uri")),
          "EDITOR_SOURCE_REFERENCE_MISSING")
     gate(isinstance(comments,list) and bool(comments),"EDITOR_REVIEWER_ITEMS_NOT_ENUMERATED")
     if not isinstance(comments,list): comments=[]
     expected=matrix.get("actual_reviewer_comment_count")
-    gate(isinstance(expected,int) and expected>0 and len(comments)==expected,
-         "REVIEWER_COMMENT_COUNT_OR_COVERAGE_MISMATCH")
+    gate(isinstance(expected,int) and expected==22 and len(comments)==expected,
+         "EDITOR_REVIEWER_ITEM_COUNT_MISMATCH")
+    breakdown=matrix.get("requirement_count_breakdown",{})
+    gate(breakdown=={"editorial":7,"reviewer1_themes":7,
+                     "reviewer2_numbered":8,"total":22},
+         "EDITOR_REVIEWER_SOURCE_BREAKDOWN_MISMATCH")
+    counted={
+        "editorial":sum(str(z.get("id","")).startswith("E-") for z in comments if isinstance(z,dict)),
+        "reviewer1_themes":sum(str(z.get("id","")).startswith("R1-") for z in comments if isinstance(z,dict)),
+        "reviewer2_numbered":sum(str(z.get("id","")).startswith("R2-") for z in comments if isinstance(z,dict)),
+        "total":len(comments)
+    }
+    gate(counted==breakdown,"EDITOR_REVIEWER_ITEM_PREFIX_COUNTS_MISMATCH")
+    required_ids={*(f"E-{j:02}" for j in range(1,8)),
+                  *(f"R1-{j:02}" for j in range(1,8)),
+                  *(f"R2-{j:02}" for j in range(1,9))}
+    gate({str(z.get("id")) for z in comments if isinstance(z,dict)}==required_ids,
+         "ORIGINAL_REVIEWER_ITEM_COVERAGE_INCOMPLETE")
     seen=set()
     for item in comments:
         if not isinstance(item,dict):
@@ -103,8 +133,16 @@ def verify(matrix:dict,protocol:str):
         gate(isinstance(rid,str) and bool(REVIEW_ID.fullmatch(rid or "")),"REVIEWER_ID_UNATTRIBUTED")
         if rid in seen: blocks.append("DUPLICATE_REVIEWER_ID")
         seen.add(rid)
-        gate(item.get("source_document_sha256")==matrix.get("source_document_sha256"),
-             "REVIEWER_SOURCE_DIGEST_LINEAGE_MISSING")
+        if provider_verified:
+            gate(item.get("source_document_sha256")==matrix.get("source_document_sha256"),
+                 "REVIEWER_SOURCE_DIGEST_LINEAGE_MISSING")
+        else:
+            gate(item.get("source_status")=="USER_PASTED_EDITORIAL_EMAIL_BODY",
+                 "REVIEWER_USER_TRANSCRIPT_PROVENANCE_MISSING")
+            gate(item.get("source_document_sha256") is None,
+                 "UNVERIFIED_SOURCE_MUST_NOT_HAVE_ASSERTED_HASH")
+        gate(item.get("requirement_style")=="FAITHFUL_PARAPHRASE_NOT_LITERAL_QUOTE",
+             "REVIEWER_PARAPHRASE_STATUS_MISSING")
         gate(isinstance(item.get("source_locator"),str)
              and bool(item.get("source_locator")),
              "REVIEWER_SOURCE_LOCATION_MISSING")
@@ -114,7 +152,9 @@ def verify(matrix:dict,protocol:str):
         gate(item.get("verified_against_source") is True,
              "REVIEWER_ATTRIBUTION_NOT_VERIFIED")
         gate(bool(item.get("g2_action_id")),"REVIEWER_ACTION_LINK_MISSING")
-        gate(bool(item.get("g5_section")),"REVIEWER_MANUSCRIPT_SECTION_MISSING")
+        gate(bool(item.get("g5_section")) and
+             item.get("g5_section")!="G5 section to be assigned after analysis",
+             "REVIEWER_MANUSCRIPT_SECTION_UNRESOLVED")
         gate(bool(item.get("g6_response_id")),"REVIEWER_REBUTTAL_ANCHOR_MISSING")
     gate(matrix.get("reviewer_comment_coverage_verified") is True,
          "ALL_REVIEWER_COMMENTS_NOT_COVERED")
@@ -133,9 +173,14 @@ def verify(matrix:dict,protocol:str):
         gate(bool(item.get("existing_evidence")),"G2_ITEM_WITHOUT_EVIDENCE_OR_RATIONALE")
         gate(bool(item.get("g5_target_section_draft")),"G5_SECTION_UNASSIGNED")
         gate(bool(item.get("g6_rebuttal_anchor")),"G6_RESPONSE_UNASSIGNED")
-        gate(bool(item.get("authentic_reviewer_ref")),"PROVISIONAL_TOPIC_NOT_MAPPED_TO_AUTHENTIC_REVIEWER")
-        gate(item.get("complete_in_actual_reviewer_letter") is True,
-             "G2_TOPIC_AUTHENTIC_ATTRIBUTION_NOT_ESTABLISHED")
+        if item.get("source_authority")!="SUPPLEMENTARY_INTERNAL_REPRODUCIBILITY_EVIDENCE":
+            gate(bool(item.get("authentic_reviewer_ref")),
+                 "REVIEWER_TOPIC_MAPPING_MISSING")
+            gate(item.get("complete_in_actual_reviewer_letter") is True,
+                 "G2_TOPIC_REQUIREMENT_NOT_COVERED")
+        else:
+            gate(item.get("id")=="Q-01",
+                 "UNMAPPED_SUPPLEMENTARY_TOPIC_NEEDS_REVIEW")
         action=item.get("g3_execution_status","")
         gate(any(str(action).startswith(x) for x in ALLOWED_G3_PREFIXES),
              "UNKNOWN_G3_AUTHORIZATION_STATUS")
@@ -156,8 +201,8 @@ def verify(matrix:dict,protocol:str):
     gate(bool(matrix.get("revision_protocol_freeze_commit")),
          "PROTOCOL_FROZEN_COMMIT_NOT_SET")
     if not matrix.get("actual_editor_letter"):
-        notes.append("Original editor/review reports not included; do not substitute provisional Q topics")
-    notes.append("A schema-level READY is NOT a cryptographic proof the cited reviewer text is authentic.")
+        notes.append("Original editor/review reports not included; no inferred review points allowed")
+    notes.append("Source content is user-provided; if an original email file later becomes available, preserve and hash separately without overwriting the transcript source.")
     notes.append("This check cannot independently verify journal mail authenticity or scientific source access.")
     return sorted(set(blocks)),notes
 
@@ -191,7 +236,7 @@ def main():
     dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(output,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
     print("G2:",output["status"])
-    print("Authenticated reviewer items in matrix:",output["reviewer_items_listed"])
+    print("User-supplied editorial/reviewer requirements traced:",output["reviewer_items_listed"])
     print("Provisional internal topics:",output["internal_topics_listed"])
     print("Blocking gates:",len(problems))
     for b in problems:print(" BLOCK:",b)
