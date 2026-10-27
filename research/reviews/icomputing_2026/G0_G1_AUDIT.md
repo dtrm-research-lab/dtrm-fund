@@ -182,3 +182,27 @@ anchored original feature/signals, including explicit distinction between
 the V1 absolute-zero veto and V4 relative-P25 veto. See
 `G1_2B_ROW_PARITY_RUNBOOK.md`. This checker has NOT been executed
 by operator yet. G1 remains open.
+
+## 2026-10-27 G1.2b historic V1/V4 40,320-row parity — operator-reported PASS, provenance OPEN
+
+Operator ran `ic_g1_row_parity.py` with original V1 feature matrix and signals,
+source SHA256 anchors and rebuilt locally hashed boosters. Terminal:
+- `G1.2b: HISTORICAL_NUMERIC_PARITY_PASS_PROVENANCE_PENDING`.
+- Baseline ranking numeric row parity: 40,320/40,320 within 1e-6;
+  maximum absolute difference **0.0**, mean absolute difference **0.0**.
+- V4 P25 relative calibrated-P10 veto: 23,348 original and reconstructed
+  eligible; **0 disagreeing flags** in 40,320 rows.
+- V1 original strict-P10>0 veto: original 0 and reconstructed 0 eligible;
+  **0 disagreeing flags** in 40,320 rows.
+- Numeric reference columns `p10_raw` and `p10_calibrated` both exist
+  in original signal artifact; **the previous G1.2b wrapper uses
+  ANY matching numeric P10 column**, so this terminal output does not
+  independently prove both P10 numeric series were within tolerance.
+  The next check `ic_g1_dual_p10_check.py` requires both explicitly.
+- Source feature matrix lacks pair-key labels; original source raw pair
+  lineage is the next independent audit; `ic_g1_pair_keys.py`.
+- No future outcomes, prices, post-June news or new holdout inspected.
+
+**Interpretation:** exceptionally strong frozen-model numerical
+reconstruction evidence, **not yet** provenance-certified new-inference
+approval and not a new empirical gain claim.
