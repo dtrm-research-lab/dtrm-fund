@@ -557,3 +557,30 @@ produced G0–G1.2j JSON reports and reconstructed candidate boosters
 without any re-training or inspection of market outcomes.
 Continue metadata-only investigation of original raw-pair source
 provenance. No promotion to 'original saved model'.
+
+## 2026-10-27 original V1 raw-source filtering: frozen repository scope verified
+
+Inspected original pinned git tree at
+`c7502a690162459cdfb3413573e3133c42efb126`
+(105 tracked tree nodes) and its `research/experiments` scripts.
+The original pinned repository includes historical train/validation
+runners, quantile V0 and Phase II statistical reruns, but **no
+dedicated V1 raw-pair snapshot selection/generation runner** that
+materializes exactly the 40,320 selected V1 pairs from the 265,145
+local raw pair candidates. Existing
+`src/dtrm/legacy_model_rows.py` and `legacy_row_order.py`
+specify a training-era prefilter/reordering mechanism; they do not
+by themselves certify the later V1 cohort inclusion/filtering rule.
+
+Thus historical V1 event-source selection evidence must be traced to
+the old PCDoMoney notebook/backend acquisition and preprocessing
+lineage or another original retained source artifact. Do NOT
+reverse-engineer a 40,320 subset rule from signal outcomes and present
+it as a preexisting frozen algorithm. The numerical input/prediction
+reproduction is unaffected, but documentary completeness is OPEN.
+
+G1.2k `ic_g1_seal_dossier.py` and
+`G1_2K_EVIDENCE_DOSSIER.md` were created for the operator
+to checksum-seal nine prior historical JSON audits and four
+UNAPPROVED reconstructed model binaries; **not yet executed**.
+It does not read raw scientific Pickles, new samples, or outcomes.
