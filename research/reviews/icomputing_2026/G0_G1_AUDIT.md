@@ -97,3 +97,24 @@ Operator terminal transcript shows exact frozen ticker-cluster bootstrap replay:
 **Checkpoint conclusion**: G0.1 file recovery PASS; G0.2 point-estimate replay PASS; G0.3 frozen news- and ticker-cluster CI bootstrap replay PASS (60,000 aggregate bootstrap draws in total). These are *operator-reported local executions*, not new out-of-sample evidence or a raw upstream-model reconstruction. Do not treat ticker-level significance or independence as established; V2/V4 95% ticker CIs include zero. The main reviewer objection remains OPEN.
 
 **Next**: G1.0 outcome-blind availability-only inventory of post-June event data, immutable ranker artifacts, and market-price snapshot *metadata*. No prospective test may read outcomes until a predeclared disjoint window is locked and feasibility documented.
+
+## 2026-10-27 G1.0 initial metadata-only inventory: operator-reported
+
+Command scanned two local directories without reading scientific file contents:
+
+| Root alias | Files visited | Categorized | Post-July dated filenames | Last named event/newspaper date |
+|---|---:|---:|---:|---|
+| dtrm-fund | 497 | 41 | 0 | 2026-06-14 |
+| theresistance-back | 450 | 7 | 0 | none determinable in this scan |
+
+Category counts in `dtrm-fund`: event_ticker_pairs=3; features_and_embeddings=9; frozen_models_or_model_metadata=2; news_snapshots=2; other_dated_research_artifacts=6; price_snapshots=6; signals_and_predictions=6; targets_metadata_only=7. None contained post-July date tokens in their **filenames**.
+
+The `theresistance-back` root had 4 frozen_models_or_model_metadata, 2 news_snapshots and 1 price_snapshots but no date tokens in names.
+
+Terminal status: `G1: METADATA_INVENTORY_ONLY_NO_NEW_RESULTS`, no outcome values opened. **Do not interpret this as proof that every record ends in June**. File naming may omit dates, and other source locations were not scanned.
+
+### G1.1 decisions still open
+- Locate August/September news-event source and market-price snapshot metadata in other authorized local DTRM directories, with no outcome access.
+- Audit whether the historical XGBoost and quantile boosters exist as saved model files. Frozen bootstrap/selection replay uses saved predictions and is NOT evidence that frozen models can score a new cohort. Published source runners call `xgb.train`; no explicit `save_model` was found in `run_exante_baseline_v0.py` or `run_probabilistic_xgb_v0.py`.
+- If weights are absent, any reconstructive deterministic training must first recreate **historic predictions** within a frozen predeclared tolerance on existing rows, using only historical TRAIN/VALID. It cannot be called frozen-model inference until equivalence is demonstrated. No holdout access until then.
+- Prospective window remains UNSPECIFIED and UNAPPROVED; no prospective returns, alpha, filter effectiveness or feasibility outcomes examined.
