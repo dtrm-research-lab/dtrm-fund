@@ -140,3 +140,17 @@ Terminal status: `G1: METADATA_INVENTORY_ONLY_NO_NEW_RESULTS`, no outcome values
 - Operator asked to run **preflight only** before training; prior Python package
   versions and training inputs still need verification.
 - No prospective labels, August+ cohort outcomes, or thresholds have been inspected.
+
+## 2026-10-27 G1.2 pinned historical source preflight — OPERATOR PASS
+
+Operator executed `ic_g1_reconstruct.py --mode preflight` from
+`~/Desktop/DTRM_Lab`:
+- Independent clone checked out pinned commit `c7502a690162459cdfb3413573e3133c42efb126` (detached HEAD).
+- Exact CLI status: `G1.2: PRECHECK_ONLY`.
+- Exact report path: `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G1_2_preflight.json`.
+- Original training-input presence: `True`.
+- Historical `*_2026-07-05.pkl` price cache: 174 files.
+- Zero scientific Pickles opened and zero models trained by this step.
+- Apparent `zsh: command not found: #` messages resulted from pasted interactive-shell comments, not the verification tool, and did not prevent preflight.
+- Python package versions are present in the locally saved preflight JSON but not in the terminal excerpt; environment-version parity has NOT yet been assessed.
+- This checkpoint confirms path/source prerequisites only. Reconstruction weights and row-wise prediction parity are still **OPEN**.
