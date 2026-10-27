@@ -1506,3 +1506,35 @@ reconstruction may be feasible with declared
 data-vintage limitations.
 
 **G2.10 PASS; G2 STILL UNFROZEN; G3 BLOCKED.**
+
+## 2026-10-27 G2.11 A3/A4/A6 DRAFTS AND G2 FREEZE HANDOFF
+
+Following operator G2.10 corrected PASS and five
+static tests PASS, G2.11 documents the active
+revision analysis plan without launching financial
+experiments:
+- `G2_11_A3_VOLATILITY_BENCHMARK_DRAFT.json`:
+  60 trailing past-only daily simple returns,
+  minimum 40 and volatility sample std ddof=1,
+  validation-only admission-matched high-vol
+  filter, common sample/ranking/Top-K, all V2/V3/V4
+  reported, source vintage and adjustment qualifier.
+- `G2_11_A4_A6_ECONOMIC_CAPACITY_DRAFT.json`:
+  legitimate no-action comparison requires a
+  **tradable absolute gross return** definition,
+  not zero cash versus historical excess-beta.
+  Event-level historical outcomes != self-financing
+  repeated-ticker/overlapping event portfolio P&L.
+  K sensitivity predeclared at 5/10/15% and
+  remains post-outcome exploratory.
+- `G2_11_A3_A4_A6_CONTROLLED_HANDOFF.md`:
+  source proof gate, A1–A7/X1 dispositions,
+  minimal operator SHA request for the original
+  G2.9/G2.10 reports; no repeat source scans.
+
+The G2.10 generated report's SHA256 is not
+yet provided; source vendor as-of acquisition
+and corporate-action vintage are unverified;
+original V0 validation and all event/ticker
+pre-event close quality coverage is not yet audited.
+**G2 remains ACTIVE/NOT FROZEN; G3 still BLOCKED.**
