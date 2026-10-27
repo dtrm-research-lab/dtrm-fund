@@ -390,3 +390,27 @@ necessary but insufficient for source-vintage
 availability; original original July-5 price
 snapshot is later than May/June news.
 G2.10 NOT YET OPERATOR-RUN.
+
+## G2.10 operator PASS, G2.11 analysis designs (2026-10-27)
+
+The corrected original 174-file snapshot schema/date-only
+audit completed: five static tests PASS, every
+file has `DATE_STRUCTURE_OK`, and every
+file has >=61 historical close dates before
+the earliest event dates for V4, V2 and V3.
+**No market close values or outcomes were evaluated.**
+Point-in-time acquisition and adjustments cannot
+be established merely from a July 5 snapshot saved
+after the May/June signal dates; all-row/event
+coverage and original validation mapping unverified.
+
+Prepared A3 volatility source/analysis design in
+`G2_11_A3_VOLATILITY_BENCHMARK_DRAFT.json`
+and separate A4 economic/flat and A6 top-K drafts
+in `G2_11_A4_A6_ECONOMIC_CAPACITY_DRAFT.json`.
+See `G2_11_A3_A4_A6_CONTROLLED_HANDOFF.md`.
+These specify source and validity conditions
+but are **DRAFT**, not experimental work,
+and must not be interpreted as having performed
+a risk benchmark or found trade profitability.
+G2 still active, G3 locked.
