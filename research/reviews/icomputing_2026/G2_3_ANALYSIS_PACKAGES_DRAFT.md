@@ -368,3 +368,25 @@ fixed missingness rules, and post-outcome
 exploratory characterization. These are not
 proven from file paths/snapshot suffix names.
 G2 still active; G3 blocked.
+
+## G2.10 date-only price coverage gate prepared (2026-10-27)
+
+G2.9 operator PASS recovered **3,649** original
+FMP price cache files, including **174** original
+`2026-07-05` snapshots (**173 equities+SPY**)
+and another 174 `2026-08-10` files, with zero
+watched group files skipped from SHA inventory.
+A3 original-source availability therefore no
+longer has the G2.8 basename-only false-negative.
+
+Next `G2_10_A3_PRICE_DATE_SCHEMA_GATE.md` and
+`ic_g2_a3_original_price_schema_dates.py`
+stage a trusted-original-Pickle, operator opt-in
+check of **column-name schema and calendar
+date coverage only**. No stock close values
+are evaluated; all old performance comparisons
+remain G3-blocked. Bar DATE < event DATE is
+necessary but insufficient for source-vintage
+availability; original original July-5 price
+snapshot is later than May/June news.
+G2.10 NOT YET OPERATOR-RUN.
