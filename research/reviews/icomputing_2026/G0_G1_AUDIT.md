@@ -118,3 +118,25 @@ Terminal status: `G1: METADATA_INVENTORY_ONLY_NO_NEW_RESULTS`, no outcome values
 - Audit whether the historical XGBoost and quantile boosters exist as saved model files. Frozen bootstrap/selection replay uses saved predictions and is NOT evidence that frozen models can score a new cohort. Published source runners call `xgb.train`; no explicit `save_model` was found in `run_exante_baseline_v0.py` or `run_probabilistic_xgb_v0.py`.
 - If weights are absent, any reconstructive deterministic training must first recreate **historic predictions** within a frozen predeclared tolerance on existing rows, using only historical TRAIN/VALID. It cannot be called frozen-model inference until equivalence is demonstrated. No holdout access until then.
 - Prospective window remains UNSPECIFIED and UNAPPROVED; no prospective returns, alpha, filter effectiveness or feasibility outcomes examined.
+
+## 2026-10-27 G1.1 booster JSON structural audit: operator PASS for detection, **HDPG weights NOT FOUND**
+
+- The operator executed `ic_g1_booster_audit.py` on the recovered original
+  PCDoMoney/Outputs files.
+- All seven candidate JSONs were structurally valid XGBoost models, but none
+  is 390-feature point ranker or 390-feature quantile P10:
+  389 binary classification; 391 reg:squarederror (two variants);
+  384 binary classification (two variants); 414 binary classification (two variants).
+- Outcome-blind finding: **do not reuse** these models as HDPG.
+- Frozen source comparison establishes HDPG expected architecture: 390 features,
+  `reg:squarederror` ranker iteration 10 and `reg:quantileerror` P10
+  best iteration 18, fitted using 2025-01-01..2026-05-01 historical inputs.
+
+### G1.2 new stage prepared; NO reconstruction yet
+- Script `ic_g1_reconstruct.py`: pinned commit and pristine-tree input preflight;
+  reconstruction mode for original historical training data; aggregate metric checks;
+  outputs labeled `reconstructed_UNAPPROVED`, never promoted on aggregate agreement alone.
+- Guide `G1_2_RECONSTRUCTION.md`.
+- Operator asked to run **preflight only** before training; prior Python package
+  versions and training inputs still need verification.
+- No prospective labels, August+ cohort outcomes, or thresholds have been inspected.
