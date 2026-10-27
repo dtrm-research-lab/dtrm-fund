@@ -584,3 +584,42 @@ G1.2k `ic_g1_seal_dossier.py` and
 to checksum-seal nine prior historical JSON audits and four
 UNAPPROVED reconstructed model binaries; **not yet executed**.
 It does not read raw scientific Pickles, new samples, or outcomes.
+
+## 2026-10-27 G1.2k OPERATOR PASS — cryptographically sealed historical numeric dossier
+
+The operator executed `ic_g1_seal_dossier.py` on nine previously
+produced local G1.2 historical audit JSON reports and four
+locally reconstructed, **UNAPPROVED** original-XGBoost candidates.
+No scientific raw files, historical/future target outcomes, or
+unseen news/price data were opened.
+
+Exact terminal status:
+`G1.2k: HISTORICAL_RECONSTRUCTION_390_FEATURES_AND_SIGNALS_PASS_PROVENANCE_OPEN`.
+
+- Complete V1 original historical source input coordinates validated:
+  **15,724,800 = 40,320 × 390**.
+- Audit reports **9**; reconstructed candidate models **4**;
+  verified their source histories and model SHA commitments
+  against earlier local audit reports.
+- Original source commit:
+  `c7502a690162459cdfb3413573e3133c42efb126`.
+- Local path (operator-only):
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G1_2_historical_dossier.json`.
+- **Final dossier SHA256**:
+  `7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac`.
+
+**Scientific disposition:** historical numerical reproducibility
+fully **PASS** to original defined tolerances. Not original binary
+model identity; not new-interval performance; no unconditional
+ticker-cluster significance/realized trading profitability claim.
+
+**Remaining blockers:** (A) original V1 raw-pair source file
+265,145 rows versus 40,320 stated in pinned V1 contract,
+and exact original raw→40,320 filtering/copy lineage; (B) new
+non-overlapping time-window cohort, frozen pre-outcome registered
+protocol and data/forward 60-calendar-day maturity.
+
+Next: G1.2l metadata-only original notebook/backend lineage
+discovery; G1.3 **draft** preregistration and feasibility audit.
+Do not authorize prospective scoring or future target inspection
+from this PASS.
