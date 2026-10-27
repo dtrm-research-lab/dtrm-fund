@@ -1174,3 +1174,41 @@ K values, full-K infeasibility, original news/ticker
 bootstrap seeds and disclosure of **all 9 exploratory**
 old-outcome comparison cells. Operator G2.7 is
 NOT YET RUN. It never authorizes G3 by itself.
+
+## 2026-10-27 G2.7 A2 preanalysis metadata gate: OPERATOR PASS, NO G3 WORK
+
+Operator executed `ic_g2_a2_protocol_preflight.py` with
+previously committed `G2_7_A2_THRESHOLD_SENSITIVITY_PREREG_DRAFT.json`,
+local G2.5 SHA source inventory and G2.6 historical V0
+validation-P10 source binding.
+
+Exact CLI status:
+`G2_7_A2_PLAN_SOURCE_AND_METHOD_METADATA_PASS_NOT_G2_FROZEN`.
+
+- 8 earlier historical V1/V2/V3/V4 input SHA references checked.
+- q-grid **[0.15, 0.25, 0.35]** fixed using original
+  19,880-row validation calibrated **P10** scores, not
+  alternate predictive quantile models.
+- Original q25 **-0.16665692627429962** retained.
+- **3 historical consumed cohorts × 3 cutoffs = 9
+  explicitly exploratory cells**; old full-K requirements,
+  source/cluster/ticker stop conditions and seeds fixed.
+- Original G2.5 metadata report SHA256:
+  `ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7`.
+- G2.6 operator source-binding report SHA256:
+  `1ee9a491542ff5e5849cbaa13c8d022cc84639515a32fd51b0ff2e7805e291c2`.
+- A2 preanalysis plan (local retrieved file) SHA256:
+  `5992890e6cecb37182f006834b509de9b1c81efaeb86d52c6ada928819e756b8`.
+- G2.7 local report file:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_7_A2_spec_source_preflight.json`
+  (its own SHA256 **not yet reported** by operator).
+- No alternative q15/q35 cutoff values calculated, no
+  scientific Pickles/labels/prices opened, no old-cohort
+  inference, no results, no new event cohort.
+
+**G2.7 scope source and plan metadata PASS**.
+This is neither a signed frozen full-G2 protocol nor
+permission to calculate A2 old-outcome sensitivity.
+G3 remains BLOCKED while A3 volatility comparator,
+A4 economic/flat/cost claims, A6 K-grid dispositions
+and global G2 adversarial signoff remain open.
