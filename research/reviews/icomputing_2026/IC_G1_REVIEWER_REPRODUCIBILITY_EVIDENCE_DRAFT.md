@@ -108,3 +108,20 @@ outcome-blind evaluation from true prospective tests.
 **Review status:** HISTORICAL_NUMERIC_REPRODUCIBILITY_PASS;
 ORIGINAL_FILE_COPY_PROVENANCE_DOCUMENTARY_OPEN;
 NEW_INDEPENDENT_EFFICACY_NOT_YET_TESTED.
+
+## New evidence availability as of 2026-10-27 (G1.3a)
+
+In a filenames-only search of the two currently identified
+original research data directories, **no source file with a
+post-2026-06-14 filename date** was found for new event-time
+news, candidate event pairs or embeddings. One undated legacy-named
+SBERT file was found, but its content, date and news-ID coverage
+were deliberately not opened or inferred. This narrowly scoped
+finding is **not proof of general news data nonavailability**.
+
+Accordingly, no new prospective or previously unused outcome-blind
+temporal cohort has been run, and the manuscript should not claim
+new-efficacy evidence from G1.3. We retain G1.2k/m exact historic
+reconstruction and transparent existing V2/V3/V4 cross-ticker
+uncertainty limitations while source acquisition is independently
+assessed. Refer to `G1_3A_AVAILABILITY_DECISION.md`.
