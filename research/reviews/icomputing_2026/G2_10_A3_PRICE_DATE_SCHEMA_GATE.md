@@ -210,3 +210,30 @@ artifacts without deleting them.
 
 **G2.10 scientific status remains NOT EVALUATED pending
 fresh user execution of the corrected script. G3 BLOCKED.**
+
+## 2026-10-27 G2.10 corrected operator retest — PASS
+
+The operator subsequently executed the corrected source
+after the 3-undefined-SHA-symbol bug and ran the five
+static regression tests: **5/5 PASS**.
+
+Actual G2.10 local terminal:
+`G2_10_A3_ORIGINAL_STOCK_PRICE_BAR_DATE_COVERAGE_PASS_PROVIDER_VINTAGE_OPEN`
+with `DATE_STRUCTURE_OK: 174`, `173` equity
+symbols and `1` SPY file. All 174 original
+price frames have at least 61 distinct dated
+closes strictly before each of the three
+original V4/V2/V3 first-event dates, sufficient
+dates for 60 close-to-close returns.
+Local report at
+`~/dtrm-ic-audit/g1-reconstruction/IC_G2_10_A3_price_schema_dates.json`.
+Its SHA256 is not yet in the GitHub audit.
+
+**Supersedes the earlier 'HALTED/RETEST PENDING' label
+above.** No financial close series values were used
+in computations, no target or P&L outcomes opened,
+and G3 was NOT authorized. Trusted original Pickles
+were unpickled in memory with operator opt-in.
+Source vintage, adjustments and all event-pair
+coverage remain open. Next
+`G2_11_A3_A4_A6_CONTROLLED_HANDOFF.md`.
