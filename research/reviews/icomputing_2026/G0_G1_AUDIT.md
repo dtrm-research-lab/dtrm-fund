@@ -248,3 +248,37 @@ rules or 390-feature embedding/beta row mapping.
 
 **State:** Historical numerical model recreation = PASS. Source
 provenance = OPEN. Prospective evaluation = NOT AUTHORIZED.
+
+## 2026-10-27 G1.2e original raw→selected key membership: operator-reported canonicalized PASS; full provenance OPEN
+
+The operator ran `ic_g1_source_subset.py` on trusted 2026 original local
+raw-candidate pairs and the cryptographically anchored V1 40,320-row
+signal cohort. No target outcomes, prospective news/prices, or model
+inference were inspected. Terminal output:
+- Status: `CANONICALIZED_SOURCE_SUBSET_MEMBERSHIP_ONLY_DERIVATION_PENDING`.
+- Original raw candidate rows: **265,145**; V1 selected signal rows: **40,320**.
+- Exact-key membership: **40,287/40,320**, **33 missing**.
+- After the *pre-existing, historically documented* normalization
+  `BRK.B → BRK-B`: **40,320/40,320**, **0 missing**.
+- Raw pair duplicates: 0; V1 signal pair duplicates: 0.
+- Raw subsequence ordering: **not tested** in this run (the exact-key
+  test had missing keys); DO NOT report as an order match.
+- V1 event dates: 2026-05-02T03:06:00Z through
+  2026-06-06T22:22:29Z; both inside the historically declared V1 window.
+- **Open contract discrepancy:** the frozen V1 YAML labels
+  `pairs_raw_2025-01-01_2026-06-06.pkl` as containing 40,320 rows,
+  but the found local file with that basename contains 265,145.
+  Provenance/filtering/copy identity still unresolved. No historic
+  anchor hash for raw pairs claimed.
+
+Interpretation: all scored signal keys occur in the historical raw
+candidate universe under the **declared** BRK.B alias; no novel key
+transformation introduced. This is strong historical *membership*
+corroboration; it does **not** independently recover the filtering
+algorithm, event-to-embedding/5-text/beta feature row alignment, or
+verify a new temporally independent test.
+
+Next strictly outcome-blind G1.2f: evaluate canonicalized source
+subsequence order, aliases and original beta/embedding manifest
+structures; explicitly separate metadata-only and trusted-historical
+file inspection. Prospective scoring remains UNAPPROVED.
