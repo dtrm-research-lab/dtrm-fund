@@ -169,3 +169,20 @@ cohort dates or news availability can yet be preregistered.
 Both retrospective outcome-blind and truly prospective
 modes remain UNAUTHORIZED until the signed full protocol
 and inputs/outcome access gates pass.
+
+## Data availability checkpoint — 2026-10-27 G1.3a (not frozen)
+
+Operator's metadata-only file scan in historical
+`dtrm-fund/research/local_data` and old PCDoMoney Outputs found
+**zero filename-dated new event/news or embedding candidates**
+from after 2026-06-14, and one undated, legacy-named
+`sbert_embeddings_xgb_v1.npy` (43,664,000 bytes).
+No contents or outcomes were accessed. This is NOT proof that
+fresh news data do not exist elsewhere; source availability,
+point-in-time data and future price maturity remain **UNVERIFIED**.
+Thus the draft cannot yet nominate a defensible new cohort:
+`G1_3_NEW_EVENT_INPUT_AVAILABILITY_NOT_DEMONSTRATED`.
+Further action only metadata search in other authorized roots
+(see `G1_3A_AVAILABILITY_DECISION.md`); otherwise plan a
+separately dated genuine prospective follow-up without asserting
+November 25, 2026 mature 60-day results.
