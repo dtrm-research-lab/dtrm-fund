@@ -1303,3 +1303,62 @@ NOT establish price availability before event or
 corporate-action point-in-time adjustment.
 
 **Scientific gate: G2 ACTIVE, NOT FROZEN; G3 BLOCKED.**
+
+## 2026-10-27 G2.9 ORIGINAL FMP STOCK PRICE-CACHE DIRECTORY — OPERATOR PASS, HISTORICAL AS-OF STILL OPEN
+
+The operator executed `ic_g2_a3_price_cache_directory_inventory.py`
+on the original fixed folder
+`PCDoMoney_Backend/Notebooks/Outputs/price_cache_fmp_pickle`.
+Exact state:
+`G2_9_A3_HISTORICAL_PRICE_CACHE_SOURCE_FILENAMES_FOUND_ASOF_OPEN`.
+
+- **3,649** distinct named original price-cache PKL files inventoried
+  (filename/size and bounded streamed SHA256 only).
+- Exactly **174** files with the original
+  `*_2026-07-05.pkl` suffix, representing **173
+  distinct non-SPY tickers + SPY** (metadata only).
+- Another **174** files with suffix `2026-08-10`;
+  many other suffix/date groups, all retained in the
+  operator report.
+- **Zero** files skipped by 25-MiB hash cap among
+  the watched original July-5/August-10 groups.
+- Original historic pinned price-reader source
+  at `c7502a690162459cdfb3413573e3133c42efb126`
+  verified. Original V0 code expects `date` and
+  `close` in historical price frames.
+- Report path:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_9_A3_original_price_cache_inventory.json`;
+  its own SHA256 **not yet provided** by operator.
+- No Pickles deserialized, financial prices/targets,
+  returns, outcome data, or model predictions opened.
+  **No A3 experiment executed.**
+
+**Interpretation:** G2.8's zero-price result was a
+bounded file-discovery false negative caused by G2.5's
+basename keyword filter (stock ticker/date names
+omitted). This corrected scan identifies original
+multiticker daily price-cache **candidate files**.
+It does NOT prove dates/columns within each
+dataframe, risk observation coverage, provider
+historical as-of/acquisition timestamps, point-in-time
+adjustment/corporate actions, or adequacy for a
+fair volatility comparator. Snapshot suffix `2026-07-05`
+is later than the May/June HDPG event decisions:
+bar DATE < event date is necessary for no forward
+market quotes, but insufficient to prove original
+point-in-time availability of the version/adjustments.
+
+**Gate G2.9 = METADATA_SOURCE_DISCOVERY_PASS; A3
+HISTORICAL PRE-EVENT PRICE COVERAGE UNVERIFIED.
+G2 ACTIVE/UNFROZEN; G3 BLOCKED.**
+
+Next G2.10: separately authorized and operator-opt-in
+trusted-original-pickle **SCHEMA AND DATE-ONLY**
+inspection of original July-5 price frames. Do not
+compute volatility or read/print any price values,
+outcome labels, forward target or returns. Demand
+frame `date`/`close` column names, unique
+trading dates and adequate **strictly earlier**
+daily bar dates before V2/V3/V4 first event dates.
+Keep provider as-of lineage documentary-OPEN even
+if column/date coverage passes.
