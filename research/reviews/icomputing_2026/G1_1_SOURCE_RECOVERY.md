@@ -149,3 +149,23 @@ Operator-reported read-only source existence and sizes:
 Script: `ic_g1_lineage_probe.py`. Uses filenames and filesystem metadata only,
 including possible XGBoost model binary names and distribution of price cache
 filename snapshot dates. Classifications do not establish binary contents.
+
+## 2026-10-27 G1.1 targeted model-candidate probe: operator-reported
+
+Metadata-only terminal results:
+- `Outputs`: 3,717 files visited; 0 likely serialized XGBoost `.ubj/.model/.bst/.joblib/.xgb` binaries, 14 filename-based possible JSON/pickle model candidates. Sample: `trump_score_xgb_excess_beta.json`, `trump_score_xgb_reg_excess_beta.json`, `trump_score_xgb_v1.json`. No prospective news filenames dated August+.
+- `PCDoMoney_Backend`: 3,792 files visited; 0 known binary candidates, 15 unverified serialization candidates (overlap with Outputs).
+- `dtrm-fund/research/local_data`: 51 files visited; no model candidates.
+- Price cache has 3,649 historical files. Largest named snapshot date 2026-08-15, with 344 file names on that date. This is NOT evidence of underlying October 2026 price coverage.
+- **No candidate has been inspected for actual booster structure or identity.** The filenames mostly indicate earlier Trump scoring models and may be incompatible with the 390-feature ex-ante ranker and quantile P10.
+- **Frozen training source audit:** `run_exante_baseline_v0.py` trains an XGBoost point model with `reg:squarederror` and 390 features, selected ranking iteration 10. `run_probabilistic_xgb_v0.py` trains a separate `reg:quantileerror` P10 model (alpha 0.10, best iteration 18); no `save_model` instructions observed in either script.
+
+### Next model identification gate
+`research/reviews/icomputing_2026/ic_g1_booster_audit.py` may read ONLY JSON model candidate structures and report:
+objective, feature count, tree count, version and SHA256.
+It never runs model inference, inspects holdout targets or exports tree weights.
+Any matching XGBoost schema is **a candidate, not proof** of model lineage.
+If no exact weights exist, deterministic reconstruction must pass historical
+validation and frozen predictions parity before independent replay.
+
+Temporal holdout: **NOT AUTHORIZED**. G1.1 remains open.
