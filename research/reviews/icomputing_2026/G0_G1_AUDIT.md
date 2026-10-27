@@ -896,3 +896,47 @@ non-executable experiments explicitly recorded) →
 G4 (adversarial audit) → G5 (revise manuscript) →
 G6 (reviewer rebuttal) → G7 (resubmission pack).
 Original experiment tags/contracts remain intact.
+
+## 2026-10-27 G2.1 executed document/control design; G2 reviewer source blocked
+
+Under the existing G0→G7 Agentic Graph Engineering graph,
+G2 **ACTIVE, NOT FROZEN**; G3 remains blocked.
+
+G2 artifacts now created:
+- `G2_REVIEWER_TRACEABILITY_PROVISIONAL.json` (10 internal
+  Q-01..Q-10 technical areas; **explicitly NOT original or
+  attributed peer-review quotations**). Every Q-topic
+  records the existing audit basis, potential G3 disposition,
+  proposed G5 manuscript section and claim limitation.
+- `ic_g2_freeze_preflight.py` validates prior G1.2k/m
+  SHA256 fingerprints, frozen V1 negative feasibility,
+  V2/V3/V4 target/CI caveats, original P10 threshold
+  and calibration constant, **verified full editorial
+  review-letter coverage**, actual reviewer item mappings,
+  and pinned permissible G3 specs. Returns
+  `G2_FREEZE_GATE_BLOCKED` with nonzero exit unless all
+  editor/reviewer inputs and risk controls exist.
+  It does not itself authorize G3.
+- `test_ic_g2_freeze_preflight.py` (nine metadata-only
+  fail-closed test cases; committed, **not reported as
+  operator-executed yet**).
+- `G2_1_TRACEABILITY_AND_FREEZE_PREFLIGHT.md`
+  documents reviewer source discovery and local preflight.
+
+Editorial source discovery performed through available
+connectors and project-file search:
+- Gmail connector lookup failed `FORBIDDEN`; messages NOT read.
+- Drive searched for case ID / Intelligent Computing /
+  reviewer / major revision; no authenticated editorial
+  review letter found in search results. Older unrelated
+  work drafts do not establish reviewer objections.
+- Project file search yielded no matching source document.
+- No exact original reviewer comment count/content is
+  independently available in current task.
+
+**G2 blocker:** `G2_REQUIRED_AUTHENTIC_REVIEWER_SOURCE_UNAVAILABLE`.
+We will not fabricate reviewer remarks or silently
+reinterpret our ten internal Q-topics as real reviewer
+requests. The original scientific model data / targets
+remain closed, the review branch remains isolated, and
+G1.2k/m evidence files/hashes remain unchanged.
