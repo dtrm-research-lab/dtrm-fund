@@ -1,0 +1,200 @@
+{
+  "schema_version": "dtrm.ic.g2.reviewer_requirement_map.v0",
+  "status": "PROVISIONAL_REVIEWER_SOURCE_MISSING_G2_NOT_FROZEN",
+  "case_id": "ICOMPUTING-D-26-01069",
+  "branch": "research/ic-major-revision-2026",
+  "created_utc_date": "2026-10-27",
+  "accountable_workflow": "Agentic Graph Engineering G0→G7",
+  "original_source_commit": "c7502a690162459cdfb3413573e3133c42efb126",
+  "g1_historical_dossier_sha256": "7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac",
+  "g1_historical_date_filter_sha256": "388345ba7bcca9c9a5103584d999aef4f033a3656d746b26efae337cf569b81f",
+  "actual_editor_letter": null,
+  "actual_reviewer_comments": [],
+  "actual_reviewer_comment_count": null,
+  "reviewer_comment_coverage_verified": false,
+  "all_g3_analyses_specified": false,
+  "revision_protocol_freeze_commit": null,
+  "target_g2_next_steps": [
+    "Secure actual editor letter & original reviewer comments with source digest; do not invent statements",
+    "Create stable E-xx/Rn-xx IDs and map each to provisional Q-xx concern or additional item",
+    "For every allowed new G3 analysis freeze data source/sha, primary measure, eligibility, fixed hyperparameters, comparator, sample, uncertainty, seed, multiple-testing framing and stop policy",
+    "Review fatal preanalysis leakage risks and preserve original negative evidence",
+    "Verify G2 gate script has refused incomplete matrix; only when all checks PASS create freeze commit"
+  ],
+  "references": [
+    "G0_G1_AUDIT.md",
+    "G1_TO_G2_STAGE_HANDOFF.md",
+    "G2_REVISION_PROTOCOL_DRAFT.md",
+    "G1_3B_BROAD_SOURCE_TRIAGE_STOP.md",
+    "IC_G1_REVIEWER_REPRODUCIBILITY_EVIDENCE_DRAFT.md"
+  ],
+  "provisional_concerns": [
+    {
+      "id": "Q-01",
+      "topic": "Historical reproducibility and V1 raw source/selection provenance",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "DESCRIPTIVE_DOCUMENTATION",
+      "existing_evidence": "G1.2k exact historic model/feature parity; G1.2m original declared date filter exact key/order/dates; preserve same-basename 265145/40320 caveat",
+      "g3_execution_status": "HISTORIC_REPLAY_ONLY",
+      "g5_target_section_draft": "Methods: Data and audit lineage",
+      "g6_rebuttal_anchor": null,
+      "caveat": "Original code/weights not byte-identical and physical file copy lineage open",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-02",
+      "topic": "P10 lower-tail calibration and quantile sensitivity",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "EXPLORATORY_POST_OUTCOME_CONDITIONAL",
+      "existing_evidence": "Any P15/P25/P35 and validation-only lower-tail sensitivity requires full preregistered fixed specifications, no outcome-based threshold choice",
+      "g3_execution_status": "NOT_AUTHORIZED_PENDING_FROZEN_SPEC",
+      "g5_target_section_draft": "Additional analyses: tail calibration",
+      "g6_rebuttal_anchor": null,
+      "caveat": "Report all planned quantiles, failures, diagnostic uncertainty",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-03",
+      "topic": "Matched conventional volatility/downside risk veto control",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "EXPLORATORY_POST_OUTCOME_CONDITIONAL",
+      "existing_evidence": "Requires original contemporaneous volatility/risk proxies, exact benchmark formula, matched K capacity, frozen missing-data exclusion",
+      "g3_execution_status": "NOT_AUTHORIZED_PENDING_FROZEN_SPEC",
+      "g5_target_section_draft": "Ablations/alternative filters",
+      "g6_rebuttal_anchor": null,
+      "caveat": "No comparison claim without matched feasibility and original data provenance",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-04",
+      "topic": "Practical transaction costs, trading P&L and abstention",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "DESCRIPTIVE_PLUS_CONDITIONAL",
+      "existing_evidence": "Separate statistical excess-beta outcome from realized tradable return; executable cost simulation only with frozen portfolio mapping",
+      "g3_execution_status": "NOT_AUTHORIZED_FOR_REALIZED_PNL",
+      "g5_target_section_draft": "Discussion: economic interpretation",
+      "g6_rebuttal_anchor": null,
+      "caveat": "No actual trading profitability claim",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-05",
+      "topic": "Top-K selection capacity, K sensitivity and risk-veto abstention",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "EXPLORATORY_POST_OUTCOME_CONDITIONAL",
+      "existing_evidence": "Freeze K grid and handling of infeasible fills before computed post-outcome comparisons",
+      "g3_execution_status": "NOT_AUTHORIZED_PENDING_FROZEN_SPEC",
+      "g5_target_section_draft": "Methods/robustness: capacity",
+      "g6_rebuttal_anchor": null,
+      "caveat": "No best K selected from historical test outcomes",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-06",
+      "topic": "Dependence from shared events/tickers and six-week V4 regime variation",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "ALREADY_FROZEN_HISTORICAL_STATISTICS",
+      "existing_evidence": "Original 10000 bootstrap news-id and ticker clustered CIs; V2/V4 ticker CIs include zero; 4/6 V4 weeks positive",
+      "g3_execution_status": "REUSE_ORIGINAL_EVIDENCE",
+      "g5_target_section_draft": "Results: uncertainty and regimes",
+      "g6_rebuttal_anchor": null,
+      "caveat": "Within-ticker robustness cannot be called uniformly positive",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-07",
+      "topic": "Human Clause human-defined decision rules versus causal HITL human-judgment effect",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "DESCRIPTIVE_DOCUMENTATION",
+      "existing_evidence": "Differentiate designer decision-rule architecture from causal treatment effect of human intervention",
+      "g3_execution_status": "NO_NEW_CAUSAL_EXPERIMENT",
+      "g5_target_section_draft": "Introduction/discussion: claim boundaries",
+      "g6_rebuttal_anchor": null,
+      "caveat": "Do not claim measured human superiority",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-08",
+      "topic": "Ranker invariance and independent frozen alternative baseline",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "EXPLORATORY_IF_AUTHENTIC_BASELINE_EXISTS",
+      "existing_evidence": "Require second ranker's original pre-outcome commit, controls, validated accuracy and complete dataset compatibility",
+      "g3_execution_status": "NOT_AUTHORIZED_NO_2ND_BASELINE",
+      "g5_target_section_draft": "Methods/limitations: ranker dependence",
+      "g6_rebuttal_anchor": null,
+      "caveat": "Absent authentic frozen baseline, acknowledge infeasible",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-09",
+      "topic": "New temporally independent 60-calendar-day event holdout",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "NOT_EXECUTABLE_VERIFIED_SOURCE_UNAVAILABLE",
+      "existing_evidence": "G1.3a/b metadata-only inventories found zero eligible verified new event-time news sources; future acquisition/prospective 60d capture separate study",
+      "g3_execution_status": "BLOCKED_NO_EVENT_INPUTS",
+      "g5_target_section_draft": "Limitations and future work",
+      "g6_rebuttal_anchor": null,
+      "caveat": "Do not imply prospective evaluation was performed",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    },
+    {
+      "id": "Q-10",
+      "topic": "Multiplicity, robustness and uncertainty interpretation",
+      "source_authority": "INTERNAL_AUDIT_ONLY",
+      "authentic_reviewer_ref": null,
+      "disposition": "DESCRIPTIVE_AND_CONDITIONAL",
+      "existing_evidence": "Distinguish original preregistered outcomes from retrospective exploration and dependent overlapping forward windows; no pooled independence p-value",
+      "g3_execution_status": "ORIGINAL_CI_REUSE_ONLY",
+      "g5_target_section_draft": "Results/limitations: inference",
+      "g6_rebuttal_anchor": null,
+      "caveat": "No universal ticker- or time-regime superiority claim",
+      "complete_in_actual_reviewer_letter": false,
+      "frozen_g3_experiment_spec_sha256": null
+    }
+  ],
+  "outcome_protection": {
+    "original_v1_absolute_guardrail_feasibility": "FAILED_ZERO_PASS_PROTECTED",
+    "original_v2_v3_v4_topk_deltas": [
+      0.14429480582475662,
+      0.14943748898804188,
+      0.027561593800783157
+    ],
+    "original_relative_p10_threshold": -0.16665692627429962,
+    "original_calibration_offset": -0.06494169682264328,
+    "original_ticker_cluster_ci95": {
+      "V2": [
+        -0.006220224499702454,
+        0.19615343257319176
+      ],
+      "V3": [
+        0.007538507026038135,
+        0.193316538631916
+      ],
+      "V4": [
+        -0.010468163806945084,
+        0.07181955866981293
+      ]
+    },
+    "frozen_topk_fraction": 0.1,
+    "target": "forward_excess_beta_60_calendar_day_NOT_REALIZED_TRADING_PNL",
+    "new_independent_holdout_permitted": false
+  }
+}
