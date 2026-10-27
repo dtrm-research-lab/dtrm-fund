@@ -100,7 +100,7 @@ def stats(actual, expected, tolerance):
         "within_tolerance": bool(mask.all()),
     }
 
-def run(root, report_json, model_folder):
+def run(root, report_json, model_folder, discovery_manifest):
     import numpy as np
     import pandas as pd
     import xgboost as xgb
@@ -139,6 +139,11 @@ def run(root, report_json, model_folder):
     # V1 used a zero P10 veto, unlike the 2026 V4 reuse which kept
     # the negative relative P25 threshold. Do not conflate the two.
     v4_file = locate_unanchored(root, V4_SIGNALS_NAME)
+    discovery = json.loads(discovery_manifest.read_text(encoding="utf-8"))
+    old = discovery.get("artifacts",{}).get(V4_SIGNALS_NAME,{})
+    variants = old.get("variants",[])
+    if old.get("copies")!=1 or len(variants)!=1 or digest(v4_file)!=variants[0].get("sha256"):
+        raise RuntimeError("V4 original signal SHA256 does not match discovery manifest")
     v4 = pd.read_pickle(v4_file)
     if not isinstance(v4,pd.DataFrame):
         raise RuntimeError("Frozen V4 signals are not a DataFrame")
@@ -253,6 +258,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--search-root", required=True)
     p.add_argument("--rebuild-report", required=True)
+    p.add_argument("--discovery-manifest", required=True)
     p.add_argument("--models-dir", required=True)
     p.add_argument("--out", required=True)
     p.add_argument("--trust-original-pickles",action="store_true")
@@ -266,6 +272,7 @@ def main():
         Path(args.search_root).expanduser(),
         Path(args.rebuild_report).expanduser(),
         Path(args.models_dir).expanduser(),
+        Path(args.discovery_manifest).expanduser(),
     )
     outfile.parent.mkdir(parents=True,exist_ok=True)
     outfile.write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\n",
