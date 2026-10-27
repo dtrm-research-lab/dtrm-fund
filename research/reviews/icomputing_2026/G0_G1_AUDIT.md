@@ -743,3 +743,27 @@ and must be disclosed if relevant to a reviewer.
   discrepancy observed.
 - G1.3 outcome-blind independent temporal validation remains
   NOT preregistered or authorized. Do not claim a new result.
+
+## 2026-10-27 G1.3a feasibility discovery PREPARED; no new dataset opened
+
+Created `ic_g1_3_news_source_inventory.py` and
+`G1_3A_NEW_EVENT_INPUTS_INVENTORY.md`. They authorize a
+strictly filenames-and-file-sizes-only scan of original
+local research input roots for possible newer news/event
+and embedding-cache artifacts. File contents (including
+news, model weights, prices and returns) are not read,
+and names containing price/target/outcome/return terms
+are omitted from positive candidates. Any apparent
+post-2026-06-14 filename date has NO demonstrated
+event-date or acquisition-time validity.
+
+Created `IC_G1_REVIEWER_REPRODUCIBILITY_EVIDENCE_DRAFT.md`
+with a reviewer-safe summary of the now proven G1.2k
+historical 390-feature/model numerical repeatability
+and G1.2m exact declared UTC cohort-date filtering,
+preserving unresolved physical original file source/copy
+provenance and cross-ticker statistical limitations.
+
+**G1.3a has NOT been executed by the operator.
+G1.3 preregistration remains DRAFT; new inference and
+all prospective target/return examination BLOCKED.**
