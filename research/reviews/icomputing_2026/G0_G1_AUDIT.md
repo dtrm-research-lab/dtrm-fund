@@ -342,3 +342,17 @@ reconstruction. No forward holdout authorized.
 Next: G1.2g outcome-blind, historical text feature recreation and
 source-cache availability check. It MUST not infer fresh returns or
 assume a particular embedding cache representation.
+
+## 2026-10-27 G1.2g new gated historical text provenance checker PREPARED
+
+- `ic_g1_text_provenance.py`: SHA-bound old V1 feature matrix/signals
+  and trusted V1 2026-06-06 news snapshot only; direct import
+  from pinned `c7502a6` original five-text-feature source;
+  row-wise compare feature columns 385–389 at tolerance 1e-6.
+- Metadata-only listing of original embedding-cache file basenames and
+  sizes to inform next 384-dim source verification; it does not read
+  embedding cache bytes or execute any model.
+- `G1_2G_TEXT_PROVENANCE.md` runbook for operator.
+- **Not yet executed.** No newly dated events, returns or targets
+  opened. Separate V1 contract/raw basename cardinality discrepancy
+  and full embedding/selection provenance remain OPEN.
