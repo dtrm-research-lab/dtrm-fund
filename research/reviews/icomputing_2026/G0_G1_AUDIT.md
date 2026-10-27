@@ -395,3 +395,19 @@ manifest-based source groups; then only if source mapping is
 unambiguous attempt strict float32 embedding row parity. Frozen
 raw filename contract cardinality still unresolved; prospective
 evaluation remains NOT AUTHORIZED.
+
+## 2026-10-27 G1.2h embedding-source inventory PREPARED; operator run outstanding
+
+Created `ic_g1_embedding_inventory.py` and
+`G1_2H_EMBEDDING_SOURCE_INVENTORY.md`. The program reads only
+explicitly trusted historical manifest/cache shape-index/supplement
+structures, compares news-ID coverage with preanchored V1
+40,320-row signals, checks original documented 4,764+735+27
+source counts and validates Nx384 float32 .dat file sizing;
+cache files are SHA-hashed but vector values are not evaluated.
+It exposes aggregate source counts and identifier types only.
+**It has NOT been executed by the operator yet.**
+
+Strict source labels must determine embedding sources before
+any numeric reconstruction. No prospective holdout, return
+labels or historic target values may be opened.
