@@ -21,6 +21,7 @@ import sys
 
 FEATURE_NAME = "probabilistic_v1_holdout_features_2026-06-06.npy"
 SIGNALS_NAME = "probabilistic_v1_holdout_signals_2026-06-06.pkl"
+V4_SIGNALS_NAME = "probabilistic_v4_holdout_signals_2026-06-06.pkl"
 EXPECTED_HASHES = {
     FEATURE_NAME: "a75af139bab4768740eb2e96c8656e51910ce0eb240babd357c7e96150b9d750",
     SIGNALS_NAME: "dc6f2c7ce6e794c271864526c94e9709c2837129b4776f298a9487641a8ea76b",
@@ -68,6 +69,19 @@ def locate(root, names):
             raise RuntimeError("Historical original SHA256 mismatch: "+name)
     return result
 
+def locate_unanchored(root: Path, name: str):
+    found = []
+    for parent, dirs, files in os.walk(root, followlinks=False):
+        dirs[:] = [x for x in dirs if x not in PRUNE
+                   and not (Path(parent) / x).is_symlink()]
+        if name in files:
+            path = Path(parent)/name
+            if path.is_file() and not path.is_symlink():
+                found.append(path)
+    if len(found)!=1:
+        raise RuntimeError(f"V4 historic signal file absent or ambiguous: {name}")
+    return found[0]
+
 def stats(actual, expected, tolerance):
     import numpy as np
     arr = np.asarray(actual, dtype=np.float64)
@@ -114,13 +128,39 @@ def run(root, report_json, model_folder):
         raise RuntimeError("Historical features missing or nonfinite")
     signals = pd.read_pickle(files[SIGNALS_NAME])
     if not isinstance(signals, pd.DataFrame) or len(signals) != len(X):
-        raise RuntimeError("Original frozen signals not 1:1 with feature matrix")
+        raise RuntimeError("Original frozen V1 signals not 1:1 with feature matrix")
     if not {"news_id","ticker","date_dt","baseline_prediction","p10_pass"}.issubset(signals.columns):
-        raise RuntimeError("Frozen original signals missing required columns")
+        raise RuntimeError("Frozen V1 signals missing required columns")
     if signals.duplicated(["news_id","ticker"]).any():
-        raise RuntimeError("Original signal pair identifiers are duplicated")
+        raise RuntimeError("Original V1 signal pair identifiers are duplicated")
     if signals["p10_pass"].isna().any() or not signals["p10_pass"].isin([True,False]).all():
-        raise RuntimeError("Original p10_pass is not a valid Boolean field")
+        raise RuntimeError("Original V1 p10_pass is not a valid Boolean field")
+
+    # V1 used a zero P10 veto, unlike the 2026 V4 reuse which kept
+    # the negative relative P25 threshold. Do not conflate the two.
+    v4_file = locate_unanchored(root, V4_SIGNALS_NAME)
+    v4 = pd.read_pickle(v4_file)
+    if not isinstance(v4,pd.DataFrame):
+        raise RuntimeError("Frozen V4 signals are not a DataFrame")
+    fields = {"news_id","ticker","date_dt","p10_pass","baseline_prediction"}
+    if not fields.issubset(v4.columns):
+        raise RuntimeError("Frozen V4 signals missing required columns")
+    if v4.duplicated(["news_id","ticker"]).any():
+        raise RuntimeError("Duplicate V4 pair IDs")
+    if len(v4) != len(signals):
+        raise RuntimeError("Original V1/V4 signal pair cardinalities differ")
+    linkage = signals[["news_id","ticker","date_dt"]].merge(
+        v4[["news_id","ticker","date_dt","p10_pass","baseline_prediction"]],
+        on=["news_id","ticker"],how="inner",validate="one_to_one",
+        suffixes=("_v1","_v4"),sort=False,
+    )
+    if len(linkage) != len(signals):
+        raise RuntimeError("V1-to-V4 key linkage incomplete")
+    if not pd.to_datetime(linkage["date_dt_v1"],utc=True).equals(
+           pd.to_datetime(linkage["date_dt_v4"],utc=True)):
+        raise RuntimeError("V1/V4 dated key mismatch")
+    if linkage["p10_pass"].isna().any() or not linkage["p10_pass"].isin([True,False]).all():
+        raise RuntimeError("Invalid V4 relative p10_pass")
 
     matrix = xgb.DMatrix(X)
     base = xgb.Booster()
@@ -133,14 +173,26 @@ def run(root, report_json, model_folder):
 
     p10_raw = p10.predict(matrix, iteration_range=(0,19))
     p10_calibrated = p10_raw + OFFSET
-    admitted = p10_calibrated >= THRESHOLD
-    expected_admitted = signals["p10_pass"].to_numpy(dtype=bool)
+    v1_admitted = p10_calibrated > 0.0
+    v1_expected = signals["p10_pass"].to_numpy(dtype=bool)
+    v4_admitted = p10_calibrated >= THRESHOLD
+    v4_expected = linkage["p10_pass"].to_numpy(dtype=bool)
+    v1_masks = {
+        "threshold": 0.0, "rule": "strict P10 > 0",
+        "reconstructed_pass": int(v1_admitted.sum()),
+        "original_pass": int(v1_expected.sum()),
+        "disagreements": int((v1_admitted!=v1_expected).sum()),
+        "exact_pass_match": bool(np.array_equal(v1_admitted,v1_expected)),
+    }
     decisions = {
-        "rows": len(admitted),
-        "reconstructed_pass": int(admitted.sum()),
-        "original_pass": int(expected_admitted.sum()),
-        "disagreements": int((admitted != expected_admitted).sum()),
-        "exact_pass_match": bool(np.array_equal(admitted, expected_admitted)),
+        "rows": len(v4_admitted),
+        "threshold": THRESHOLD,
+        "rule": "V4 relative calibrated P10 >= frozen P25",
+        "reconstructed_pass": int(v4_admitted.sum()),
+        "original_pass": int(v4_expected.sum()),
+        "disagreements": int((v4_admitted != v4_expected).sum()),
+        "exact_pass_match": bool(np.array_equal(v4_admitted, v4_expected)),
+        "v1_absolute_p10_veto": v1_masks,
     }
     p10_matches = {}
     for column, convention in P10_NUMERIC_MAP.items():
@@ -164,7 +216,7 @@ def run(root, report_json, model_folder):
     ]
     numeric_pass = any(v["within_tolerance"] for v in recognized)
     base_pass = baseline["within_tolerance"]
-    decisions_pass = decisions["exact_pass_match"]
+    decisions_pass = decisions["exact_pass_match"] and v1_masks["exact_pass_match"]
     if not base_pass or not decisions_pass:
         status = "HISTORICAL_ROW_PARITY_FAIL"
     elif numeric_pass:
@@ -180,9 +232,11 @@ def run(root, report_json, model_folder):
         "frozen_features":X.shape[1],
         "original_signal_columns": sorted(str(x) for x in signals.columns),
         "original_artifacts_sha256_verified":True,
+        "v4_original_signal_sha256_same_as_discovery_only":digest(v4_file),
         "reconstructed_model_sha256_verified":True,
         "baseline_numeric_parity":baseline,
         "p10_veto_parity":decisions,
+        "v4_signals_unauthenticated_by_historical_hash":True,
         "p10_numeric_parity_candidates":p10_matches,
         "p10_numeric_full_parity_verified": numeric_pass,
         "row_keys_identified": True,
