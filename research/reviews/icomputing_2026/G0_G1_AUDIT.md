@@ -1070,3 +1070,68 @@ Current graph:
 G2 ACTIVE_REVIEWER_MAPPED_NOT_FROZEN; G3 BLOCKED;
 G4–G7 PENDING`. Historical G1.2k/m evidence
 fingerprints are unchanged.
+
+## 2026-10-27 G2.5 operator-run historical source SHA inventory PASS (metadata only)
+
+Local operator ran `ic_g2_historic_analysis_inputs.py` on:
+1. `dtrm-fund/research/local_data`;
+2. `PCDoMoney_Backend/Notebooks/Outputs`;
+3. `PCDoMoney_Backend/Outputs`.
+
+Exact terminal status:
+`G2_HISTORICAL_ANALYSIS_INPUTS_METADATA_ONLY_NOT_AUTHORIZED_FOR_G3`.
+- **92** candidate existing original old-research files registered,
+  **92**/92 file SHA256 streamed without deserialization,
+  **0** skipped files larger than the 200 MiB hash limit.
+- Filename search category matches: features **10**,
+  historical cohorts **44**, price/beta history **50**,
+  validation/quantile **5**. **Categories overlap**;
+  these are not separate file counts.
+- Visible historically named V2/V3/V4 tiny evaluation PKLs,
+  V2 frozen P10 veto threshold `probabilistic_v2_frozen_p10_threshold.pkl`
+  (248 bytes), V2/V3 holdout features/signals/targets,
+  V1 features/source material and V4 signals.
+  All are **already consumed**, not new event cohorts.
+- The five validation/quantile filename matches DO NOT
+  establish that the **19,880 individual historic validation
+  calibrated-P10 predictions and legacy news weights** have
+  been separately retained or independently precommitted.
+- The 'price_beta_history' count is a filename-classification
+  output, **NOT** proof of point-in-time daily stock prices
+  for a volatility-based benchmark or realizable turnover/P&L.
+- No original numerical values, returns, forward labels,
+  trusted Pickles, model boosters or new cohorts were opened
+  or inferred by this G2.5 script.
+- The G2.5 operator report path is local only:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_historical_analysis_sources.json`.
+  Report SHA256 has **not** been supplied by operator;
+  do not claim an anchored report digest.
+
+Additional frozen-source review:
+- `research/contracts/DTRM_XGB_PROBABILISTIC_V2.yaml`
+  at pin `c7502a` records original validation
+  **19,880 rows** and weighted empirical q=0.25 cutoff
+  `-0.16665692627429962` from calibrated P10.
+- Original pinned `run_probabilistic_xgb_v0.py`
+  has `weighted_quantile` implemented as
+  `np.argsort(values)` + `np.cumsum(weights)` +
+  `np.searchsorted(cumulative, q*total, side='left')`.
+- The earlier G1 `ic_g1_reconstruct.py` recreates
+  frozen train/valid/test rows, P10 valid scores
+  at best_iteration **18**, calibration offset
+  `-0.06494169682264328`, weights from
+  `legacy_news_weights`, and checks q=0.25 against
+  the **historical frozen threshold**.
+  That previously reported 12/12 numerical historical
+  reconstruction PASS; **alternate q=0.15/0.35
+  sensitivities have NOT been calculated**.
+- Therefore A2 validation threshold replication has
+  an identified deterministic original source route,
+  but G3 secondary cohort comparison and G2
+  source-hash/implementation freeze remain open.
+- A3 as-of price/volatility comparison; A4 tradable
+  P&L/cost/flat, A6 Top-K sensitivity remain
+  conditional on separate fixed, auditable protocols.
+
+**G2.5 gate PASS metadata-only; G2 ACTIVE, NOT FROZEN;
+G3 ALL ADDITIONAL FINANCIAL REANALYSES BLOCKED.**
