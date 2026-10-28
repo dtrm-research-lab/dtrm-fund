@@ -1,0 +1,124 @@
+{
+  "schema_version": "dtrm.ic.g2.final_analysis_scope_candidate.v1",
+  "status": "G2_16_EXECUTION_SPEC_COMPLETE_TESTS_AND_OPERATOR_SIGNOFF_PENDING",
+  "manuscript": "ICOMPUTING-D-26-01069",
+  "date": "2026-10-28",
+  "deadline": "2026-11-25",
+  "original_code_commit": "c7502a690162459cdfb3413573e3133c42efb126",
+  "original_evidence": {
+    "g2_5_inventory_sha256": "ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7",
+    "g2_6_original_p10_binding_sha256": "1ee9a491542ff5e5849cbaa13c8d022cc84639515a32fd51b0ff2e7805e291c2",
+    "a2_original_prereg_draft_sha256": "5992890e6cecb37182f006834b509de9b1c81efaeb86d52c6ada928819e756b8",
+    "g2_9_price_manifest_sha256": "65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb",
+    "g2_10_price_dates_sha256": "f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3",
+    "g2_12_holdout_pair_dates_sha256": "e67cf796975c60fdc674f15d985ce755ca1b862779253f4ef7f82a56d326785f",
+    "g2_13_validation_pair_dates_sha256": "e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7",
+    "original_validation_model_rows_local_sha256": "3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724",
+    "original_g1_historical_numerical_replay_sha256": "7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac"
+  },
+  "executions": {
+    "G3_0": {
+      "classification": "SOURCE_AND_MODEL_LINEAGE_PARITY_ONLY",
+      "input": "Trusted original V0 historical VALID features and original rebuilt ex-ante ranker/P10 boosters, frozen 40k/4k source signal masks (and V2/V3 signal masks for later).",
+      "expectation": "Original 390 feature dimensions, P10 best iteration 18, raw-to-calibrated offset -0.06494169682264328; weighted q25 -0.16665692627429962 on exactly 19880 validation observations; original V2/V3/V4 P10 pass masks plus ranking per original 47,596 old signal pairs.",
+      "no_forward_targets_or_comparative_outcomes_accessed": true,
+      "hard_stop": "If row-by-row numerical original P10 and ranker prediction lineage remains UNAPPROVED, do not authorize G3.1. Do NOT infer from 12/12 aggregate model reproduction alone."
+    },
+    "G3_1_A2": {
+      "classification": "POST_OUTCOME_EXPLORATORY",
+      "allowed_after": "G3_0 PASS and signed G2 protocol",
+      "model": "Original P10 predictive quantile fixed; NO P15/25/35 models or retraining",
+      "cutoff_method": "Original weighted empirical quantile of 19880 calibrated validation P10 scores, with per-news weights; original np.argsort, np.cumsum, np.searchsorted side left; q15 q25 q35.",
+      "validation_thresholds": [
+        0.15,
+        0.25,
+        0.35
+      ],
+      "frozen_original_q25": -0.16665692627429962,
+      "cohort_order": [
+        "V2",
+        "V3",
+        "V4"
+      ],
+      "original_rows": [
+        4449,
+        2827,
+        40320
+      ],
+      "baseline": "Original np.argsort(-baseline_prediction) and first floor(.1*N)",
+      "candidate": "Original same rank order and P10 >= cutoff veto; fill full K or INFEASIBLE",
+      "outputs": "All 9 validation-percentile × historical cohort cells, admission count and rate, K feasibility, old mean excess-beta target and hit rate, baseline and selected difference, uncertainty and ticker concentration.",
+      "no_promotion": "No post-hoc choice of optimal quantile, no independent temporal inference."
+    },
+    "G3_1_A6": {
+      "classification": "POST_OUTCOME_EXPLORATORY",
+      "allowed_after": "G3_0 PASS and signed G2 protocol",
+      "fractions": [
+        0.05,
+        0.1,
+        0.15
+      ],
+      "cutoff": "Original same frozen q25 -0.16665692627429962",
+      "original_ranker": "Same original ranking and ties; K=floor(frac * N) for each original V2,V3,V4 cohort",
+      "outputs": "All 9 fraction × cohort cells, identical full-K requirement and cluster uncertainty",
+      "no_promotion": "No new optimal K selection or original-fund capital capacity claim."
+    },
+    "G3_1_A3": {
+      "classification": "RETROSPECTIVE_POST_OUTCOME_EXPLORATORY",
+      "allowed_after": "G3_0 PASS and signed G2 protocol; A3 complete-case numeric source eligibility frozen",
+      "historical_price_input": "173 original stock and 1 SPY 2026-07-05 FMP archived Pickles with original file SHAs",
+      "primary_window": "Exactly 61 latest unique source-bar dates < event UTC calendar date and exactly 60 valid simple close-to-close daily returns.",
+      "minimum_returns": 60,
+      "optional_40_return_fallback": false,
+      "numeric_close_eligibility": "Every one of selected 61 close values strictly positive and finite, no duplicates, no interpolation, forward fill, replacement, backfilling, winsorisation or contemporaneous event-day close.",
+      "risk_score": "std daily 60 returns ddof=1; no annualization for cutoff",
+      "missingness": "If any invalid selected input, exclude pair from identical 3 arms and report original N, common N and reason. Do NOT suppress bad results or change primary.",
+      "admissions": "P10 original validation pass fraction on common-eligible V0 sample with recomputed legacy per-news weights. Risk threshold = original weighted empirical quantile of validation-only trailing volatility at that pass fraction. Record tie admission discrepancy.",
+      "same_full_K": "In each common old cohort, baseline, P10, volatility arms use identical original rank, subset and floor(.1*common_N); no partial fill.",
+      "point_in_time_disclosure": "The original July-5 cache postdates Dec/Jan VALID and May/Jun V2/V3/V4. Historical vendor acquisition timestamp, adjusted-price vintage, corporate action and survivorship cannot be certified; never claim ex-ante deployable benchmark.",
+      "failure": "If numeric eligibility destroys common sample or validation cutoff impossible, report A3 INFEASIBLE; do not retrofit volatility signal or source.",
+      "outputs": "Per original cohort validation cutoff/coverage, common pair count, all 3 arm means, hit rates, pairwise deltas and same-cluster bootstrap uncertainty."
+    }
+  },
+  "uncertainty_policy": {
+    "known_old_outcomes": true,
+    "target": "forward_excess_beta = stock_forward_return - beta_pre*SPY_forward_return, NOT realized investable P&L",
+    "bootstrap_news": {
+      "cluster": "news_id",
+      "seed": 20260821,
+      "replicates": 10000,
+      "CI_95_percentile_linear": true
+    },
+    "bootstrap_ticker": {
+      "cluster": "ticker",
+      "seed": 20260822,
+      "replicates": 10000,
+      "CI_95_percentile_linear": true
+    },
+    "mechanics": "Each cluster draw duplicates all rows of original cluster, recompute N,K, original rank, accepted masks, TopK. New sensitivity seeds restart for each cell; do not claim identity to original Phase2 across-cohort continuous RNG stream.",
+    "infeasible_resamples": "Count ALL infeasible; if any, withhold affected bootstrap 95% CI. No imputation or selective discarding.",
+    "multiple_cells_no_best_selection": true,
+    "no_independent_pooled_pvalue": true,
+    "cross_cohort_60_day_forward_overlap": true,
+    "old_V2_and_V4_ticker_CIs_include_zero": true
+  },
+  "not_executed": {
+    "A4": "Measured financial strategy P&L, turnover, costs, gross return versus cash is NOT ESTIMABLE as a self-financing account without verified trade-ledger/entry-exit and point-in-time price-source assumptions; descriptive only.",
+    "A5": "No second independent preoutcome original ranker proven; architecture portability only, no cross-model empirical claim.",
+    "X1": "No independent matured non-overlapping 60d event/target source in audited roots by revision deadline; no fabricated independent test.",
+    "A1": "Reuse original V2/V3/V4 point estimates, news/ticker cluster CIs, V4 4/6 weeks; original negative absolute excess-beta and original V1 zero-pass.",
+    "A7": "Original source-checked literature shortlist; bibliography source verification/G5 integration pending."
+  },
+  "protections": {
+    "code_under_review": "research/reviews/icomputing_2026/ic_g2_g3_exploratory_core.py",
+    "synthetic_tests": "research/reviews/icomputing_2026/test_ic_g2_g3_exploratory_core.py",
+    "source_reader_entrypoint": "NOT IMPLEMENTED OR VERIFIED, NO G3 SCIENTIFIC DATA LOADING AUTHORIZED",
+    "G3_0_model_lineage": "NOT YET OPERATOR VERIFIED",
+    "synthetic_test_execution": "NOT YET OPERATOR VERIFIED",
+    "source_data_never_committed_publicly": true,
+    "conditional_g3_experiments_authorized": false,
+    "complete_g2_protocol_frozen": false,
+    "reviewer_22_item_freeze_pass": false,
+    "human_scientific_signoff": false
+  }
+}
