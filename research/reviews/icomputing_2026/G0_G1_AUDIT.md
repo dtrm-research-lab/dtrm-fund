@@ -3157,3 +3157,79 @@ scoped consent**.
 G3.1 closed exploratory. G3.2 A3 source
 numeric gate PREPARED; financial outcomes
 still BLOCKED.**
+
+## 2026-10-28 G3.2 A3 ORIGINAL NUMERIC SOURCE QUALITY 34/34 OPERATOR PASS — 66476/66476
+
+Original locally attested G3.2 A3 price numeric
+source-quality gate executed under exact
+SHA-bound code and separately scoped explicit
+consent to loading original locally audited
+trusted Pickles, **without V2/V3/V4 outcome
+labels or any scoring comparisons**.
+
+**Operator terminal result**:
+`Ran 34 tests in 0.047s — OK`;
+all **22** original frozen pure-core tests
+and all **12** new G3.2 A3 numeric source
+quality tests PASS.
+
+**Original-source status:**
+`G3_2_A3_NUMERIC_CLOSE_SOURCE_QUALITY_ALL_ELIGIBLE_VINTAGE_UNVERIFIED`.
+
+- Original 2026-07-05 locally archived FMP source
+  price files rehashed against prior G2.9
+  source inventory: **174/174 PASS**.
+- Original V0 VALID source: **19,880/19,880**
+  records with exact 61 strictly prior
+  finite/positive dated closes, generating
+  full 60 simple close-to-close returns
+  and sample standard deviation ddof=1.
+- Original old V2: **4,449/4,449** eligible.
+- Original old V3: **2,827/2,827** eligible.
+- Original old V4: **40,320/40,320** eligible.
+- Original historical total: **47,596/47,596** eligible.
+- Original validation+old event total:
+  **66,476/66,476** numerically eligible
+  under the fixed original dated source policy.
+- Reported missing/invalid close and
+  short-window source exclusions: **zero**.
+
+**Exact operator-computed local report SHA256**:
+`91979425af5b3785c15fd7a74e821429f094b23c5ea1ede0c8b89efb457ee83a`.
+Local path:
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_2_A3_NUMERIC_SOURCE_QUALITY_ONLY.json`.
+
+This proves original archived price-close
+NUMERIC ELIGIBILITY for the full restricted
+source-date scope, not the authenticity of
+provider acquisition-time vintage or
+pre-event split/dividend adjustment history.
+This status uses retrospectively archived
+`2026-07-05` stock close files,
+which postdate all original V0, V2,
+V3 and V4 decisions. No certified
+point-in-time ex-ante price-risk signal.
+
+Operator output explicitly states:
+`No risk threshold, no P10 scores, no old
+target/labels, no new comparisons`.
+Thus **G3.2 A3 conventional risk cutoff not
+yet calculated** and A3 effect comparison
+with original P10/veto is still unauthorized.
+The next operation must be **validation-
+only**, with original 19,880 V0 VALID
+pairs, frozen calibrated P10 q25
+`-0.16665692627429962`, original
+source per-news weights and equal
+weighted admission on the original
+full common-eligible sample. Only
+after separate code/source review
+may old V2/V3/V4 target effects be
+scoped and explicitly approved.
+
+**G3.1 A2/A6 remains closed PASS,
+18/18 historical point and 36/36
+cluster interval-report QA; no change
+to science. A3 numerical source-only
+gate CLOSED PASS. Vintage unresolved,
+G3.2 A3 benchmark/results BLOCKED.**
