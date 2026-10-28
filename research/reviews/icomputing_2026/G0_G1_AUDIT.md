@@ -1574,3 +1574,45 @@ date availability, actual close-value quality,
 historical provider acquisition time or
 corporate-action price adjustment vintage.
 A3 volatility benchmark and G3 remain BLOCKED.
+
+## 2026-10-28 G2.12 individual-event price-date source coverage PREPARED
+
+User supplied SHA256 of two saved local original
+price-source audit results and they were recorded
+in the G2.11 SHA section above:
+
+- `IC_G2_9_A3_original_price_cache_inventory.json`:
+  `65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb`.
+- `IC_G2_10_A3_price_schema_dates.json`:
+  `f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3`.
+
+Prepared original-source G2.12
+`ic_g2_a3_per_event_bar_date_coverage.py`
+with code-only regression
+`test_ic_g2_12_per_event_date_regression.py`,
+and operator guide
+`G2_12_A3_PER_EVENT_DATE_COVERAGE.md`.
+
+G2.12 SHA-checks original archived V1/V2/V3/V4
+signal files and 174 original July-5 price
+frames against prior G2.6/G2.9/G2.10 reports,
+then inspects **only** old source `news_id`,
+`ticker`, `date_dt` and price-bar `date`.
+It verifies per-pair strictly earlier
+historical bar-date counts for each cohort,
+V1/V4 key/date set agreement, and
+missing ticker/market-reference coverage.
+User must authorize trusted original local
+Pandas Pickle loading (the entire underlying
+frame enters memory). Source is previous
+holdout-consumed historical evidence.
+Price numeric close values, returns, model
+predictions, forward labels, targets, actual
+risk/transaction costs or portfolio results
+are NOT calculated in this G2 preflight.
+
+**G2.12 NOT YET OPERATOR EXECUTED**; original
+V0 validation cohort date/source coverage,
+price adjustments/provider acquisition-time
+and A3 comparator feasibility remain OPEN.
+G2 NOT FROZEN, G3 BLOCKED.
