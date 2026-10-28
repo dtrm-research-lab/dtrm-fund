@@ -20,46 +20,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install project dependencies (numpy)
+      - name: Install project dependencies
         run: |
           set -euo pipefail
           python -m pip install -e .
-      - name: Test G4.9c no-leakage learned policy benchmark
+      - name: Run all synthetic agent and mocked participant integration tests
         run: |
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_ic_g49c_*.py' -v
-      - name: Execute all holdout tasks; retain aggregate only
+      - name: Evaluate complete 60-case heldout set without human participants
         run: |
           set -euo pipefail
           mkdir -p out
-          python research/reviews/icomputing_2026/g49c/g49c_run.py \
-            --out out/G49C_SYNTHETIC_LEARNED_POLICY_AGGREGATE.json \
-            | tee out/G49C_SYNTHETIC_READOUT.txt
-          grep -q '^G49C_LEARNED_POLICY_SYNTHETIC_HOLDOUT_TECHNICAL_PASS$' out/G49C_SYNTHETIC_READOUT.txt
-          grep -q '^HUMAN_N=0 NONINFERIORITY=NOT_TESTED
-          sha256sum \
-            research/reviews/icomputing_2026/g49c/G49C_0_PREEXECUTION_PROTOCOL.md \
-            research/reviews/icomputing_2026/g49c/g49c_agent.py \
-            research/reviews/icomputing_2026/g49c/g49c_world.py \
-            research/reviews/icomputing_2026/g49c/g49c_run.py \
-            research/reviews/icomputing_2026/g49c/g49c_participant.py \
-            research/reviews/icomputing_2026/g49c/g49c_readback.py \
-            out/G49C_SYNTHETIC_LEARNED_POLICY_AGGREGATE.json > out/SOURCE_REPORT_HASHES.txt
-      - name: Upload only synthetic aggregate
-        uses: actions/upload-artifact@v4
-        with:
-          name: G49C-SYNTHETIC-LEARNED-UTILITY-NOT-HUMAN-EVIDENCE
-          path: out/
-          retention-days: 30
- out/G49C_SYNTHETIC_READOUT.txt
+          python research/reviews/icomputing_2026/g49c/g49c_run.py --out out/G49C_SYNTHETIC_LEARNED_POLICY_AGGREGATE.json | tee out/G49C_SYNTHETIC_READOUT.txt
+          grep -qx 'G49C_LEARNED_POLICY_SYNTHETIC_HOLDOUT_TECHNICAL_PASS' out/G49C_SYNTHETIC_READOUT.txt
+          grep -qx 'HUMAN_N=0 NONINFERIORITY=NOT_TESTED' out/G49C_SYNTHETIC_READOUT.txt
           test ! -d research/local_data/g49c_participants
-          sha256sum \
-            research/reviews/icomputing_2026/g49c/G49C_0_PREEXECUTION_PROTOCOL.md \
-            research/reviews/icomputing_2026/g49c/g49c_agent.py \
-            research/reviews/icomputing_2026/g49c/g49c_world.py \
-            research/reviews/icomputing_2026/g49c/g49c_run.py \
-            out/G49C_SYNTHETIC_LEARNED_POLICY_AGGREGATE.json > out/SOURCE_REPORT_HASHES.txt
-      - name: Upload only synthetic aggregate
+          sha256sum research/reviews/icomputing_2026/g49c/G49C_0_PREEXECUTION_PROTOCOL.md research/reviews/icomputing_2026/g49c/g49c_agent.py research/reviews/icomputing_2026/g49c/g49c_world.py research/reviews/icomputing_2026/g49c/g49c_run.py research/reviews/icomputing_2026/g49c/g49c_participant.py research/reviews/icomputing_2026/g49c/g49c_readback.py out/G49C_SYNTHETIC_LEARNED_POLICY_AGGREGATE.json > out/SOURCE_REPORT_HASHES.txt
+      - name: Upload only synthetic aggregate evidence
         uses: actions/upload-artifact@v4
         with:
           name: G49C-SYNTHETIC-LEARNED-UTILITY-NOT-HUMAN-EVIDENCE
