@@ -2412,3 +2412,38 @@ G3.1 owner authorization must bind exactly
 tested code and source-gate report SHA before
 any old original target deserialization.
 G3.1 A3 remains separately restricted.
+
+## 2026-10-28 G3.1 A2/A6 synthetic source tests: 27 PASS, 1 test-harness ERROR — FIX COMMITTED, retest pending
+
+Operator ran the 28 prepared protected source/synthetic tests on
+the Mac. The run ended `FAILED (errors=1)`:
+`test_wrong_cohort_refused` incorrectly called
+`unittest.TestCase.assertRaisesRegex(OriginalJoinError)`
+without the required second `expected_regex` argument.
+This exception occurred inside the **test assertion setup**,
+before the scientific `source_exact_join` function could
+be evaluated for the unknown V1 cohort. It is NOT evidence
+of a failed numeric model or source-result pair/date join.
+
+The other **27/28** tests returned `ok`, including original
+strict join/date/P10 guards, the 18-cell pure synthetic
+sensitivity grid and protected V0 validation-only source
+code. A pandas date-inference UserWarning appeared in
+the deliberately invalid-date synthetic test but did
+not fail any test.
+
+Minimal correction committed to
+`test_ic_g3_1_a2_a6_join_contract.py`:
+`with self.assertRaises(OriginalJoinError):`
+instead of incorrectly arity-constrained
+`assertRaisesRegex`. **Correction commit:
+`ac49f1b66a08cc51f5c164defe797bc9bd852e5b`.**
+No G3.1 scientific join/grid/validation engine,
+historical frozen model code, original source Pickles
+or existing financial outcomes were changed.
+
+**A clean operator rerun of all 28 source/synthetic
+tests is PENDING. Do not report 28/28 PASS yet.**
+Original G3.1 six-file source SHA gate remains PASS.
+Original target values are still closed, and
+G3.1 outcome analysis remains **NOT AUTHORIZED**.
