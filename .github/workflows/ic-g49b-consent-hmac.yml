@@ -1,0 +1,37 @@
+name: IC G4.9b Consent HMAC (no participant enrollment)
+
+on:
+  push:
+    branches:
+      - research/ic-g4-9b-human-consent-pilot-20261028
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  g49b-no-person-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run mock-only authority security and consent tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_ic_g49b_*.py' -v
+      - name: Verify source is not in participant-data collection mode in CI
+        run: |
+          set -euo pipefail
+          python research/reviews/icomputing_2026/g49b/g49b_pilot.py --help
+          python research/reviews/icomputing_2026/g49b/g49b_pilot.py enroll --help
+          test ! -e research/local_data/g49b_participant_sessions
+          sha256sum research/reviews/icomputing_2026/g49b/G49B_0_HUMAN_PILOT_PROTOCOL_PREEXECUTION.md \
+            research/reviews/icomputing_2026/g49b/g49b_core.py \
+            research/reviews/icomputing_2026/g49b/g49b_pilot.py \
+            research/reviews/icomputing_2026/g49b/g49b_audit.py
+          echo "G49B_MOCK_CI_ONLY_NO_REAL_PARTICIPANTS"
