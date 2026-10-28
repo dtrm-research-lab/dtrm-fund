@@ -1805,3 +1805,47 @@ G2.13's local SHA confirms an exact report version but
 does not certify provider price vintage or its
 corporate-action adjustment availability as of
 the old event dates. G3 remains blocked.
+
+## 2026-10-28 G2.15 single freeze-decision register
+
+Operator's new G2.13 original local report SHA256 is now
+`e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7`
+and is propagated to the G2.14 machine-readable
+adversarial packet and conditional G2.11 A3 plan.
+
+Created `G2_15_FREEZE_DECISION_REGISTER.md`
+to consolidate reviewer-relevant conditions for
+the final scientific G2 freeze **without
+another data-source inventory**:
+- A2 q15/q25/q35 and A6 K=5/10/15%
+  are POST_OUTCOME_EXPLORATORY only, with 9
+  old cohort cells apiece; original promoted
+  q25/K10 policy remains untouched.
+- A3 source **BAR-DATE** coverage is full
+  for 19,880 original validation and
+  47,596 original V2/V3/V4 test pairs;
+  price numeric quality, original vendor
+  vintage and corporate-action adjustment
+  pre-event authenticity remain unverified.
+- The older A3 JSON draft permitted >=40
+  past daily returns, while a full-window
+  primary risk benchmark demands 60; this
+  must be settled and made internally
+  consistent **before any quote-value or
+  financial scoring analysis**.
+- A4 actual capital turnover/cost/portfolio
+  profit is NOT ESTIMABLE absent a
+  self-financing dated transaction ledger.
+- A5 independent second historic model and
+  X1 new non-overlapping 60-day holdout
+  are not verified from audited sources.
+- Full G2 reviewer matrix currently has
+  `all_g3_analyses_specified=false`,
+  `revision_protocol_freeze_commit=null`.
+  Its fail-closed preflight correctly
+  remains blocking. A new real frozen code
+  and signed scientific protocol is needed,
+  not synthetic signoff.
+
+**G2 SOURCE REPORT EVIDENCE SEALED AS USER-COMPUTED
+HASHES; G2 OVERALL NOT FROZEN, G3 NOT AUTHORIZED.**
