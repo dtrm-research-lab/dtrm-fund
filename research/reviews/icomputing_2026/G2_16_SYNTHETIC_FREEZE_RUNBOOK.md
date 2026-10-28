@@ -139,13 +139,17 @@ curl -fsSL "$BASE/G2_REVIEWER_TRACEABILITY_PROVISIONAL.json" -o "$AUDIT/G2_REVIE
 curl -fsSL "$BASE/ic_g2_g3_exploratory_core.py" -o "$AUDIT/ic_g2_g3_exploratory_core.py"
 curl -fsSL "$BASE/test_ic_g2_g3_exploratory_core.py" -o "$AUDIT/test_ic_g2_g3_exploratory_core.py"
 curl -fsSL "$BASE/ic_g2_16_scientific_freeze_preflight.py" -o "$AUDIT/ic_g2_16_scientific_freeze_preflight.py"
+curl -fsSL "$BASE/ic_g3_0_original_model_row_parity.py" -o "$AUDIT/ic_g3_0_original_model_row_parity.py"
+curl -fsSL "$BASE/test_ic_g3_0_protection.py" -o "$AUDIT/test_ic_g3_0_protection.py"
 
-python3 -m py_compile "$AUDIT/ic_g2_g3_exploratory_core.py" "$AUDIT/test_ic_g2_g3_exploratory_core.py" "$AUDIT/ic_g2_16_scientific_freeze_preflight.py"
+python3 -m py_compile "$AUDIT/ic_g2_g3_exploratory_core.py" "$AUDIT/test_ic_g2_g3_exploratory_core.py" "$AUDIT/ic_g2_16_scientific_freeze_preflight.py" "$AUDIT/ic_g3_0_original_model_row_parity.py" "$AUDIT/test_ic_g3_0_protection.py"
 
 python3 "$AUDIT/ic_g2_16_scientific_freeze_preflight.py" \
   --spec "$AUDIT/G2_16_EXPLORATORY_SCOPE_CANDIDATE.json" \
   --engine "$AUDIT/ic_g2_g3_exploratory_core.py" \
   --tests "$AUDIT/test_ic_g2_g3_exploratory_core.py" \
+  --g3-0-source "$AUDIT/ic_g3_0_original_model_row_parity.py" \
+  --g3-0-tests "$AUDIT/test_ic_g3_0_protection.py" \
   --reviewer-matrix "$AUDIT/G2_REVIEWER_TRACEABILITY_PROVISIONAL.json" \
   --g2-9 "$AUDIT/g1-reconstruction/IC_G2_9_A3_original_price_cache_inventory.json" \
   --g2-10 "$AUDIT/g1-reconstruction/IC_G2_10_A3_price_schema_dates.json" \
@@ -183,3 +187,26 @@ G2 full scientific signoff requires:
    may authorize specific G3 analyses.
 
 **Until this is true, G3_1 is BLOCKED.**
+
+
+## 2026-10-28 hardened G3.0 parity preparation
+
+G3.0 original V2/V3 row-parity diagnostic has been prepared
+at `ic_g3_0_original_model_row_parity.py` with seven additional
+static protections in `test_ic_g3_0_protection.py`.
+The G2.16 gate now runs **22 synthetic source-method tests + 7
+G3.0 protected-entrypoint static tests = 29 tests**.
+
+The G3.0 runner is **NOT authorized or executed** as part of
+this G2.16 check. It requires an independently produced
+**human-signed immutable G2 freeze manifest** with an exact
+G2.16 operator gate report SHA, an actual freeze commit, and
+G3.1 old-target access explicitly false. No such manifest
+is claimed to exist yet. G3.0 uses SHA-bound original V2/V3
+features, signals and previously reconstructed original booster
+candidates to check baseline rowwise numeric prediction and
+P10 veto masks without loading target, price, cash-flow or
+market return artifacts. It is a source/model parity diagnostic,
+not an independent new outcome cohort.
+
+**Do not run G3.0 without the signed freeze manifest.**
