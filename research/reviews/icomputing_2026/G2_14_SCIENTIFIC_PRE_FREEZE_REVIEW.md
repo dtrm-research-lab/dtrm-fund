@@ -192,3 +192,24 @@ that the experiment has been executed.
 
 **G2 CURRENT STATUS: ACTIVE, NOT FROZEN.
 G3 EXPERIMENTS: NOT AUTHORIZED.**
+
+## 2026-10-28 G2.15 digest and veto-blocker addendum
+
+G2.13 local operator SHA now available:
+`e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7`.
+See `G2_15_FREEZE_DECISION_REGISTER.md` for
+a single bounded go/no-go decision and six
+explicit remaining control classes. **No new G3 results.**
+
+Adversarial consistency problem: earlier G2.11 A3
+risk formula allowed a minimum **40** trailing
+close-to-close returns, potentially comparing
+differently estimated volatilities, whereas
+the proposed primary matched risk baseline
+uses a fixed **60** daily-return window.
+This conflict is recognized and MUST be settled
+before final preanalysis freeze; neither window
+choice can be tuned using V2/V3/V4 outcomes.
+The original date-coverage audits do not
+solve numeric-close validity or acquisition
+vintage. Therefore **G2 NO-GO to G3**.
