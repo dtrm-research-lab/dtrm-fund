@@ -129,3 +129,40 @@ volatile-price comparator.
 
 **Stage: G2 ACTIVE; G3 BLOCKED; A3 source/date
 STRUCTURAL PASS, as-of/adjustment/provenance OPEN.**
+
+## 2026-10-28 Superseding operator fingerprints and next G2.12
+
+The operator supplied the two requested original
+local report SHA256 values:
+
+- G2.9: `65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb`
+- G2.10: `f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3`.
+
+Therefore the earlier note in this runbook that
+the SHA values were unknown is superseded.
+These are operator-computed, not independent
+GitHub downloads of original private reports.
+
+Created G2.12:
+`ic_g2_a3_per_event_bar_date_coverage.py`,
+`test_ic_g2_12_per_event_date_regression.py`,
+and `G2_12_A3_PER_EVENT_DATE_COVERAGE.md`.
+Its purpose is to check **individual original
+(news_id,ticker,date_dt)** source keys from
+already consumed V1/V2/V3/V4 signal files
+against 60 strictly earlier stock/SPY bar
+dates, counting missing tickers/insufficient
+dates, with all original SHA references.
+
+G2.12 requires an explicit opt-in to read
+**trusted local Pickles**; their numerical
+values are materialized by deserialization
+but not accessed for financial computations.
+No performance/return/volatility or model
+data will be calculated, and provider vintage
+and adjustments remain uncertified even if all
+pair dates pass. The original V0 validation
+sample remains a *separate* unresolved input
+for A3 validation-only risk calibration.
+G2.12 is prepared, NOT yet operator-run.
+G2 remains UNFROZEN; G3 BLOCKED.
