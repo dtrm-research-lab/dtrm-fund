@@ -42,6 +42,20 @@
 - Vaccaro, Almaatouq & Malone. When combinations of humans and AI are useful: A systematic review and meta-analysis, Nature Human Behaviour 2024: https://doi.org/10.1038/s41562-024-02024-1 (106 experiments, 370 effects; pooled human+AI lower than best standalone component; not direct evidence for governance).
 - Rudin. Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead, Nature Machine Intelligence 2019: https://doi.org/10.1038/s42256-019-0048-x
 
+## Critical additional prior art discovered 2026-10-28
+
+**Kou G et al., "Human–AI hybrid finance: from AI tools to decision systems," Financial Innovation (2026), DOI: 10.1186/s40854-026-00941-w; published 2026-05-31.** This is a *particularly close conceptual antecedent*, not mere background. It explicitly reframes AI in finance from model prediction/performance to decision-system architecture, the allocation of authority, oversight, accountability, and contestability, and describes delegation frontiers, meaningful oversight and workflow auditability.
+
+Source: https://link.springer.com/article/10.1186/s40854-026-00941-w
+
+**Consequences:**
+- Do **NOT** claim that Human Clause/our revised article is first to separate model performance from human authority, define meaningful oversight, or recognize an AI-assisted financial workflow as a sociotechnical decision system. Those general propositions are prominently present in a May-2026 peer-reviewed publication.
+- Contrast the proposed **operational artifact and experiment** against this source: fixed risk/selection contract, validation-only cutoffs, exact source SHA boundary, point-parity preservation and policy comparison under matched Top-K, with documented negative findings. These may be valuable reproducibility properties; their novelty and generalizability still require honest, element-by-element comparison.
+- Add this antecedent to G5 related work and G6 novelty argument with an accurate attribution. A stronger manifesto-like introductory claim without a new algorithm or evaluated governance-control outcome risks being insufficient for Intelligent Computing's 'major advance' criterion.
+- Independently verify precise bibliography and overlap with the submitted manuscript before final citations.
+
+This discovery *increases novelty risk* and strengthens the case for a narrower empirical/methodological contribution rather than broad priority claims.
+
 ## Exit test for G4.3
 
 Before G4 PASS, audit actual submitted abstract/title/introduction/contribution list; compare to these baselines at claim level, explicitly mark any claim requiring experiments which the submission does not contain, and agree a narrower novelty statement. A philosophical mission is not a substitute for a tested methodological advance.
