@@ -1616,3 +1616,60 @@ V0 validation cohort date/source coverage,
 price adjustments/provider acquisition-time
 and A3 comparator feasibility remain OPEN.
 G2 NOT FROZEN, G3 BLOCKED.
+
+## G2.12 OPERATOR PASS and G2.13 V0 VALID coverage prepared (2026-10-28)
+
+Operator ran all seven local source-regression tests:
+`Ran 7 tests in 0.005s: OK`, and original-source
+`ic_g2_a3_per_event_bar_date_coverage.py`.
+Exact source-only status:
+`G2_12_A3_ALL_ORIGINAL_EVENT_PAIR_BAR_DATES_COVERED_VINTAGE_OPEN`.
+
+Per original cohort pair DATE coverage with 61 strictly prior dated closes:
+- V4 original V1 signals **40,320 / 40,320**, ticker miss **0**.
+- V2 signals **4,449 / 4,449**, ticker miss **0**.
+- V3 signals **2,827 / 2,827**, ticker miss **0**.
+- V4 original signals **40,320 / 40,320** supplementary
+  same cohort, not extra unique events.
+- Distinct three-cohort original observations **47,596 / 47,596**.
+- V1/V4 event ID/ticker/date key-set agreement **True**,
+  and original source row order agreement **True**.
+- Original file price cache **174** stock+SPY files.
+- Provider ingestion vintage **False/unverified**.
+- No numerical market close values, actual 60-day
+  returns, volatility, historical target outcomes,
+  predictive model inference or portfolio P&L calculated.
+- Local report:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_12_A3_per_event_date_coverage.json`
+  (SHA256 not yet received, next source preflight will
+  hash and include it).
+
+Original previously recorded G2.9/G2.10 local report hashes
+remain `65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb`
+and `f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3`
+respectively.
+
+**Scientific next missing input:** V0 original
+`split="valid"` had 19,880 pairs, with a
+frozen, weighted validation-only P10 veto. A
+fair conventional volatility cutoff must use
+that validation fold and strictly prior
+daily closes, not historical V2/V3/V4 target
+outcomes. G2.12 did NOT audit V0 valid dates.
+
+G2.13 `ic_g2_a3_original_validation_date_coverage.py`,
+`test_ic_g2_13_validation_dates_regression.py`,
+and `G2_13_A3_ORIGINAL_V0_VALID_DATE_GATE.md`
+have been committed. They check historical
+original `legacy_model_rows_2026-05-01.pkl`
+V0 valid 19,880 event/ticker/dates against
+the SHA-bound original July-5 price-cache
+dates, no numeric prices, volatility, target
+values or rankings. Original local Pickles
+must be trusted explicitly. **NOT YET OPERATOR-RUN**.
+
+July-5 saved price vintage postdates
+May/June decisions; historical provider
+adjustments, numeric validity and price
+acquisition timestamps remain **UNVERIFIED**.
+G2 is ACTIVE and UNFROZEN; G3 BLOCKED.
