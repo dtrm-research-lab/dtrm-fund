@@ -256,3 +256,35 @@ source-vintage limitations, and explicit human
 scientific signoff before any G3 old-outcome
 exploratory runs. The deadline remains
 2026-11-25. G3 still BLOCKED.
+
+## 2026-10-28 G2.13 data feasibility PASS / G2.14 pre-freeze
+
+G2.13 operator `G2_13_A3_V0_VALID_19880_PAIR_BAR_DATES_FULL_COVERAGE_VINTAGE_OPEN`
+PASSED 7/7 static regression tests, and
+all original 19,880 V0 `valid` pairs
+(167 tickers) have 60 prior bar DATE
+coverage from original 2026-07-05 source.
+Prior G2.12 confirmed all 47,596 original
+V2/V3/V4 historical pair dates also pass.
+
+Source pins: G2.12 report SHA
+`e67cf796975c60fdc674f15d985ce755ca1b862779253f4ef7f82a56d326785f`;
+original V0 model rows retrospective SHA
+`3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724`.
+G2.13 local report SHA not yet separately provided.
+
+For reviewer requested A3 conventional risk
+comparison, date-source availability is now
+structurally established; **historical provider
+quote-vintage acquisition and corporate-action
+adjustments are not**, because the original
+July-5 snapshot postdates old decision dates.
+See `G2_14_SCIENTIFIC_PRE_FREEZE_REVIEW.md`
+and `G2_14_PRE_FREEZE_ADVERSARIAL_DISPOSITIONS.json`
+for explicit go/no-go status.
+
+A point-by-point English preview response is
+now in `G6_REVIEWER_RESPONSE_WORKING_PREVIEW.md`;
+it is a **DRAFT**, not a completed G6,
+and describes no unexecuted analysis as done.
+G2 still UNFROZEN; G3 BLOCKED.
