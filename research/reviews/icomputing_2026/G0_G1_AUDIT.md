@@ -2231,3 +2231,22 @@ ROW PARITY PASS. G3.1 still BLOCKED until
 a separately reviewed and approved source
 reader, outcome-safety gate, and G3.0 report
 SHA, with exploratory-only inferential scope.**
+
+## 2026-10-28 G3.0 original P10 numerical reference rows + report SHA operator verified
+
+Operator computed original local report SHA256:
+`a5bb3f6a3a4e2862a9898eea812a87a01b4b6e12191f4ffad9c03c50af61684a`
+for `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_0_original_v2_v3_model_row_parity.json`.
+
+Printed report summary:
+- `G3_0_V2_V3_ORIGINAL_ROW_PARITY_PASS_G3_1_STILL_BLOCKED`
+- V2 **4,449** rows: **0** numerical baseline-ranker mismatches, **0** Boolean original P10 veto disagreements.
+- V3 **2,827** rows: **0** numerical baseline-ranker mismatches, **0** Boolean original P10 veto disagreements.
+- Both explicitly named **numerical source reference fields** were present in both cohorts:
+  `p10_raw` and `p10_calibrated`.
+- Since original immutable G3.0 runner produces `ROW_PARITY_PASS` only if each available numerical P10 reference also has **0 row mismatches at tolerance 1e-6**, this terminal status establishes those comparisons passed; their per-column maximum absolute discrepancies were not printed, so **do not invent them**.
+- Operator printed `G3.1 autorizado: False`, independently consistent with original G3.0 SHA-pinned report.
+
+This evidence is an **operator-computed SHA256 of locally saved JSON**, not remote GitHub authentication of local source bytes. It establishes numeric equality against saved references, not a contemporaneous original preevent serialized booster, vendor price vintage, prospective validation or human-versus-AI causal identification.
+
+**G3.0 SOURCE/MODEL PARITY CLOSED PASS. G3.1 A2/A6/A3 STILL NOT AUTHORIZED.**
