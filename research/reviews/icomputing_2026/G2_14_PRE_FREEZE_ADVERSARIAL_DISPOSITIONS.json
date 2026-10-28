@@ -1,0 +1,126 @@
+{
+  "schema_version": "dtrm.ic.g2.pre_freeze_adversarial_disposition.v1",
+  "current_status": "G2_14_PRE_FREEZE_REVIEW_DRAFT_G3_BLOCKED",
+  "created_date": "2026-10-28",
+  "editorial_case": "ICOMPUTING-D-26-01069",
+  "decision_deadline": "2026-11-25",
+  "reviewer_mapping": "G2_REVIEWER_TRACEABILITY_PROVISIONAL.json: 7 editor + 7 internal R1 + 8 original numbered R2 = 22",
+  "evidence": {
+    "historical_commit": "c7502a690162459cdfb3413573e3133c42efb126",
+    "g1_historical_dossier_sha256": "7d91095d42edf044d7f5030e23519291c156d95f4eddc766048b493744ae52ac",
+    "g2_5_sha256": "ccf5ef4b7b9a63e6aada4cddb401fc7adb7d1ef7d564e4ea998718834ce2bec7",
+    "g2_6_sha256": "1ee9a491542ff5e5849cbaa13c8d022cc84639515a32fd51b0ff2e7805e291c2",
+    "g2_7_a2_protocol_sha256": "5992890e6cecb37182f006834b509de9b1c81efaeb86d52c6ada928819e756b8",
+    "g2_9_sha256": "65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb",
+    "g2_10_sha256": "f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3",
+    "g2_12_sha256": "e67cf796975c60fdc674f15d985ce755ca1b862779253f4ef7f82a56d326785f",
+    "g2_13_source_model_rows_sha256": "3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724",
+    "g2_13_report_sha256": "NOT_YET_BOUND",
+    "operator_test_results": "G2.13 source regression tests 7/7 PASS, V0 validation 19880/19880 covered; V2 4449/4449, V3 2827/2827, V4 40320/40320."
+  },
+  "scientific_decisions": {
+    "A1": {
+      "status": "DESCRIPTIVE_HISTORICAL_FIXED",
+      "allow_g3": false,
+      "requirements": [
+        "R1-02",
+        "R1-06",
+        "R2-01",
+        "R2-03",
+        "R2-04",
+        "R2-07"
+      ],
+      "rule": "Original CIs, dependence, negative V4 weeks and noncausal human-specified rule framing; no new confirmatory 60d claim."
+    },
+    "A2": {
+      "status": "EXPLORATORY_POST_OUTCOME_SPEC_READY_PENDING_FINAL_FREEZE",
+      "allow_g3": false,
+      "requirements": [
+        "R1-03",
+        "R2-02"
+      ],
+      "rule": "Weighted q=0.15/0.25/0.35 of original calibrated P10 validation distribution, same ranker, 9 V2/V3/V4 cells, all adverse/infeasible effects disclosed."
+    },
+    "A3": {
+      "status": "RETROSPECTIVE_EXPLORATORY_POTENTIALLY_FEASIBLE_BUT_VINTAGE_UNVERIFIED",
+      "allow_g3": false,
+      "requirements": [
+        "R1-04"
+      ],
+      "rule": "Original V0 validation 19880/19880 and old 47596/47596 test pairs have bar-date coverage, but July-5 snapshots postdate dates of decisions; cannot claim true as-of vendor quote or corporate-action adjustment data. Numeric close quality, missingness and common-case eligibility still must be declared/frozen before outcome use.",
+      "identification_risk": "Very high if presentation implies contemporaneous original quote vintage or vendor timestamp verification."
+    },
+    "A4": {
+      "status": "DESCRIPTIVE_GUARANTEED_EMPIRICAL_REPLAY_NOT_YET_ESTIMABLE",
+      "allow_g3": false,
+      "requirements": [
+        "R1-05",
+        "R2-05"
+      ],
+      "rule": "Original 60d excess-beta target is not tradable P&L; flat/cash requires comparably defined absolute gross/net return. No demonstrated self-financing capital, overlap/netting, spread/slippage or entry/exit execution. Provide limitations; exploratory absolute-return simulation only if data/accounting protocol pre-frozen."
+    },
+    "A5": {
+      "status": "NOT_EXECUTABLE_NO_AUTHENTIC_ALTERNATE_PREOUTCOME_RANKER",
+      "allow_g3": false,
+      "requirements": [
+        "R1-07"
+      ],
+      "rule": "Second independently frozen pre-V2/V3/V4 model and compatible features not verified; don't train new model ex post and claim original model independence."
+    },
+    "A6": {
+      "status": "EXPLORATORY_POST_OUTCOME_SPEC_DRAFT_NOT_FROZEN",
+      "allow_g3": false,
+      "requirements": [
+        "R2-06"
+      ],
+      "rule": "Explain original K=floor(0.1N) as paired comparison selection budget, not capital capacity. qK=0.05/0.1/0.15 sensitivity all old V2/V3/V4 cohorts, original frozen P10 cutoff; no best-performing K promotion."
+    },
+    "A7": {
+      "status": "LITERATURE_DRAFT_VERIFIED_NOT_YET_IN_MANUSCRIPT",
+      "allow_g3": false,
+      "requirements": [
+        "R2-08"
+      ],
+      "rule": "Four source-checked references in G2.4; review context, add to manuscript with precise noncausal comparison claims."
+    },
+    "X1": {
+      "status": "NOT_EXECUTABLE_NO_INDEPENDENT_60D_NONOVERLAPPING_COHORT",
+      "allow_g3": false,
+      "requirements": [
+        "R1-01",
+        "R2-03"
+      ],
+      "rule": "G1.3 local audited sources did not identify unused eligible event inputs with matured distinct 60-day outcomes by Nov25; do not claim global nonexistence; transparent future prospective plan."
+    }
+  },
+  "preserved_negative_evidence": {
+    "V1_absolute_P10_zero_pass": true,
+    "original_target": "60-calendar-day forward_excess_beta, not realized tradable portfolio profit",
+    "V2_delta": 0.14429480582475662,
+    "V3_delta": 0.14943748898804188,
+    "V4_delta": 0.027561593800783157,
+    "V2_ticker_ci_crosses_zero": true,
+    "V4_ticker_ci_crosses_zero": true,
+    "V4_weeks_positive": 4,
+    "V4_weeks_total": 6,
+    "V2_V3_forward_targets_overlap": true,
+    "original_candidate_absolute_mean_negative_in_all_reported_successful_cohorts": true
+  },
+  "nonnegotiable_before_g2_freeze": [
+    "Bind local G2.13 result JSON SHA256 and code/version to original G2.12 SHA; archive internally.",
+    "Resolve the exact statistical interpretation of A3 retrospective-vintage risk and corporate-action/missing closes before any G3 price-value access.",
+    "Fix numerical price quality and finite daily return/missingness policy for validation and test without choosing exclusions on V2/V3/V4 outcomes.",
+    "Validate/declare A4 economic executable account accounting or explicitly NOT_ESTIMABLE; don't blur event-level gross returns and tradable portfolio P&L.",
+    "Finalize A6 formulas/capacity and infeasibility/bootstrap treatment for all 9 cells.",
+    "Verify A2 primary q25 reproduction remains exactly original and source hash/algorithm version is sealed.",
+    "Map each of 22 actual editor/reviewer points to G5/G6 with exact evidence or limitation; keep user-supplied source authenticity limitations.",
+    "Run fail-closed final G2 protocol checker; fix any failures honestly, human/adversarial scientific signoff and single frozen commit before any G3 financial analysis."
+  ],
+  "g2_full_protocol_frozen": false,
+  "g3_experiment_authorized": false,
+  "notes": [
+    "This is a policy/evidence assessment; no market, target, model, or new outcome values were read by this GitHub plan.",
+    "G2.13 report SHA is missing and will not be fabricated.",
+    "New supplemental A2/A3/A6 comparisons are retrospective sensitivity analyses on outcome-consumed old cohorts."
+  ]
+}
