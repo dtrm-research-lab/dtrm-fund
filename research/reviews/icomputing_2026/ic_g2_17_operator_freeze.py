@@ -112,8 +112,9 @@ def main():
         # earlier provisional version that happens to have 22 IDs.
         fail(digest(contents[key])==result.get(resultkey),
              "Latest G2.16 PASS not bound to this exact "+key)
-    fail(digest(contents["freezer"])==sha(Path(__file__).resolve()),
-         "Executing G2 freeze builder is not the exact immutable Git-committed source")
+    fail(digest(contents["freezer"])==sha(Path(__file__).resolve())
+         and result.get("operator_freeze_builder_sha256")==digest(contents["freezer"]),
+         "Executing G2 freeze builder does not match exact G2.16 tested and immutable Git-committed source")
     # The canonical final protocol is separately immutable in commit.
     matrix=json.loads(contents["matrix"])
     protocol=contents["protocol"].decode("utf-8")
