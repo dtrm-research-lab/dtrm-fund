@@ -2299,3 +2299,50 @@ NOT extend to old forward targets.
 
 **G2 FROZEN; G3.0 PASS;
 G3.1 A2/A6/A3 OUTCOME ACCESS BLOCKED.**
+
+## 2026-10-28 G3.1 A2/A6 six original source files operator PASS
+
+The local Mac operator ran all **seven** static protections
+for the new G3.1 A2/A6 SHA-bound, source-only gate:
+`Ran 7 tests in 0.003s — OK`.
+
+Exact operator-reported source-only result:
+`G3_1_A2_A6_ORIGINAL_SOURCE_HASHES_READY_OUTCOMES_STILL_BLOCKED`.
+
+Original G2.5 inventory size and original SHA256
+match on **six out of six** original Phase II
+signal/target source files:
+- V2 original signals/targets **4,449** rows,
+  both `ORIGINAL_G2_5_MANIFEST_SHA_PASS`.
+- V3 original signals/targets **2,827** rows,
+  both `ORIGINAL_G2_5_MANIFEST_SHA_PASS`.
+- V4 original signals **40,320** rows and
+  its **original V1 model targets** file,
+  both `ORIGINAL_G2_5_MANIFEST_SHA_PASS`.
+
+Local operator output:
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_1_A2_A6_original_source_only_gate.json`.
+Its SHA256 is **not yet separately user-supplied**;
+no hash was fabricated.
+
+The source checker cross-bound historical G2.5,
+G2.6, operator-approved G2.16/G2.17, and original
+G3.0 report SHA
+`a5bb3f6a3a4e2862a9898eea812a87a01b4b6e12191f4ffad9c03c50af61684a`.
+The Phase II original V4 model-target file is
+`probabilistic_v1_holdout_model_targets_2026-06-06.pkl`;
+never invent a V4 targets filename.
+
+**No original target Pickles deserialized,
+no price returns read, no historical
+A2/A6/A3 sensitivity calculated and no
+G3.1 outcome access authorized.**
+The Phase II code original exact one-to-one
+news_id/ticker and date_dt target-to-signal join
+remains a mandatory next-stage test, not
+something established by file SHA alone.
+
+G2 FROZEN; G3.0 numeric parity PASS;
+G3.1 six-file SOURCE PASS; G3.1 outcome
+and any financial comparisons BLOCKED pending
+separate implementation tests and explicit approval.
