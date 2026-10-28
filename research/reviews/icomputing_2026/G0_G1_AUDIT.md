@@ -2718,3 +2718,96 @@ sensitivities/cluster bootstrap are yet
 scientifically executable; G3.1 remains
 BLOCKED pending a read-only revised
 original q25/K10 exact-match diagnostic.
+
+## 2026-10-28 G3.1 ORIGINAL q25/K10 ALL-COHORT PARITY EXACT PASS — 71 tests
+
+Original source-reconciliation failure from previous
+G3.1 point run has now been diagnosed **and fixed** in
+revised code commit
+`0c5e433f10ce742bc129b666dfc4551f4b2fd21b`.
+
+**Operator terminal evidence**: `Ran 71 tests in 0.212s — OK`.
+Test scope: 22 original pure core math methods; 16 original
+signal-target protected keyed joins; 9 original 18-cell
+pure-grid synthetic tests; 5 original V0 VALID feature
+source protection tests; 10 SHA/code/consent protected
+runner tests; 9 revised original point reconciliation
+diagnostic tests. All PASS against precise revised commit.
+
+**Original frozen Phase II q25/K10 vs SHA-bound protected
+original q25/K10 diagnostic**:
+
+`G3_1_ORIGINAL_Q25_K10_ALL_3_PARITY_PASS_INVESTIGATE_PRIOR_FAILURE`
+
+- **V2**: N=4,449; K=444; actual native target dtype
+  `float32`, protected native target dtype `float32`;
+  published = original = protected delta mean
+  `0.14429480582475662`, delta hit
+  `0.5788288288288288`.
+  Classification:
+  `ORIGINAL_AND_PROTECTED_Q25_K10_PARITY_PASS`.
+- **V3**: N=2,827; K=282; native old/protected
+  target dtype `float32`;
+  published = original = protected delta mean
+  `0.14943748898804188`, delta hit
+  `0.58510638297872342`.
+  Same exact PASS.
+- **V4**: N=40,320; K=4,032; native old/protected
+  target dtype `float32`;
+  published = original = protected delta mean
+  `0.027561593800783157`, delta hit
+  `0.10168650793650791`.
+  Same exact PASS.
+
+Source precision root cause **EMPIRICALLY CONFIRMED**:
+Old Phase II preserved original `target_model`
+`float32` and averaged in that dtype; the
+previous G3.1 runner silently promoted the
+target to `float64`, producing small
+1e-8 order differences. Repaired protected
+`select_topk`, `cluster_bootstrap`,
+`extract_source_arrays` now preserve
+source floating dtype.
+Original published targets, source Pickles,
+saved models, q25 threshold, Top-K semantics,
+1e-12 old parity tolerance, inference seeds
+and scientific frozen experiment policy
+remain UNCHANGED.
+
+**SHA-256 of SHA-pinned operator local empirical
+diagnostic report**:
+`218d6064ea6824c3fa78d46d29e5b68d90de64aa16e10dea5707d0086e7a0df5`.
+Local location:
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_1_original_q25_K10_precision_reconciliation.json`.
+The same operator summary explicitly printed
+`NO A2/A6 18-cells, NO new q/K, NO bootstrap, NO A3,
+NO portfolio P&L`, exit code **0**.
+
+**Interpretation:**
+G3.1 original policy historical q25/K10 row outcome
+reproducibility is now CLOSED PASS after fixing
+a documented new engine precision defect.
+The failed old implementation and subsequent
+correction remain traceable and must both be
+reported accurately. This correction is
+retrospective technical repair, not new
+prospective confirmation.
+
+**Release state:**
+Revised exact tested G3.1 point-only protected
+runner may now be **separately, explicitly
+human-authorized** on commit
+`0c5e433f10ce742bc129b666dfc4551f4b2fd21b`.
+The next original 18 sensitivity cells have
+**NOT YET BEEN EXECUTED**.
+The `--mode full` 10,000 clustered uncertainty,
+A3 retrospective price-volatility reader, any
+realized P&L, new independent 60d holdout,
+or more comparisons are NOT implied by
+this old original-only diagnostic PASS.
+
+**Audit sources:** user-supplied 109-line terminal
+transcript, not an uploaded live
+original model/target dataset. Human/operator
+attested local JSON hash, no independent
+server-side verification of its bytes.
