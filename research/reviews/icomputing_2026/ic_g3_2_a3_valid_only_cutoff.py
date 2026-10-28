@@ -39,6 +39,7 @@ PINNED_FILES=(
     "ic_g3_2_a3_numeric_source_quality_gate.py",
     "test_ic_g3_2_a3_numeric_source_quality_gate.py",
     "ic_g3_1_a2_validation_only_source.py",
+    "test_ic_g3_1_a2_validation_only_source.py",
     "ic_g2_g3_exploratory_core.py",
     "test_ic_g2_g3_exploratory_core.py",
 )
