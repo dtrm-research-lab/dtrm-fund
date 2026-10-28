@@ -108,6 +108,30 @@ No independent matured new
 holdout or realized investment
 P&L has been established.
 
+## 2026-10-28: failed static assertion in first 138-test dry run; TEST-ONLY fix
+
+The operator fetched the previously pinned `814d2d6e37317cfa17aa9450d8ebf1c32bcd3fad` version and executed all
+138 tests. **137 passed; 1 failed**:
+`test_prior_original_sha_and_all_scientific_source_gates`.
+The test incorrectly expected the literal original A3 source-preflight SHA
+`9c03f925be0429b9b70407018d59f1df801682a9e7a821a6bb9c6d3ef80fe317`
+to appear verbatim inside the new paired runner, although that runner deliberately
+imports `SOURCE_PREFLIGHT_SHA` and `VALID_CUTOFF_SHA` from the
+earlier SHA-protected A3 point runner. Its actual runtime call
+`evidence(a.g3_2_three_arm_source_preflight_report,SOURCE_PREFLIGHT_SHA)`
+**does** verify the exact digest. No original old targets were opened.
+
+The sole change in `2e4cce43f59d23ea5758bc7581cf7f42969cec9e` is a
+**test-only change**: verify the exact resolved imported SHA values
+and the actual `evidence()` calls for the preflight,
+V0 cutoff and previously completed A3 point result. It does **not**
+change the A3 bootstrap algorithm, original cohort source files,
+original 60d model target, cutoff, cluster seed, 10k repetitions,
+or any experimental protocol.
+
+**New 138/138 outcome is pending local operator execution.**
+Do not authorize the real 60k bootstrap if any test fails.
+
 ## Operator step 1: 138 source/synthetic tests — no original user files
 
 Covers the already locally operator-validated
@@ -122,7 +146,7 @@ set -euo pipefail
 
 AUDIT="$HOME/dtrm-ic-audit"
 REPO="$HOME/Desktop/DTRM_Lab/dtrm-fund"
-COMMIT="814d2d6e37317cfa17aa9450d8ebf1c32bcd3fad"
+COMMIT="2e4cce43f59d23ea5758bc7581cf7f42969cec9e"
 BASE="research/reviews/icomputing_2026"
 
 git -C "$REPO" fetch origin research/ic-major-revision-2026
@@ -187,7 +211,7 @@ set -euo pipefail
 
 AUDIT="$HOME/dtrm-ic-audit"
 REPO="$HOME/Desktop/DTRM_Lab/dtrm-fund"
-COMMIT="814d2d6e37317cfa17aa9450d8ebf1c32bcd3fad"
+COMMIT="2e4cce43f59d23ea5758bc7581cf7f42969cec9e"
 REPORT="$AUDIT/g1-reconstruction/IC_G3_2_A3_ORIGINAL_PAIRED_10K_NEWS_TICKER.json"
 
 test ! -e "$REPORT"
