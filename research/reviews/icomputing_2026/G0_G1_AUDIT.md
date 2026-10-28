@@ -1953,3 +1953,47 @@ so no final technical PASS, final freeze
 commit or G3 target-result access is
 claimed. Exact methods and source hashes
 will be bound only after local test PASS.
+
+## 2026-10-28 G2.16 protected G3.0 parity runner added, 29 code-only tests staged
+
+New `ic_g3_0_original_model_row_parity.py`
+was prepared as **source-and-model only** diagnostic:
+original V2 and V3 SHA-bound `*_holdout_features_*`
+and `*_holdout_signals_*`, with original
+G1.2K SHA-bound retrospectively reconstructed
+`exante_ranker.ubj` and `p10.ubj`.
+The experiment checks **per-row original ranker
+numerical equality to `baseline_prediction`**
+and agreement of the original `p10_pass`
+masks from P10 iteration 18 and original
+q25 cutoff. No original target/financial
+return/price files are opened.
+
+The G3.0 runner MUST NOT execute until an
+actual human-approved frozen-G2 manifest
+exists, with exact operator G2.16 source
+gate SHA, actual immutable commit, and
+G3.1 old-outcome access set to false.
+Seven source-only protection tests were
+committed in `test_ic_g3_0_protection.py`.
+A one-shot G2.16 local preflight now actually
+runs **22 synthetic-method tests + 7
+G3.0 source-protection tests = 29 cases**.
+The G2.16 runbook was updated with both
+new files and arguments; previous command
+snippets WITHOUT those additional arguments
+are superseded.
+
+The original G1.2K reconstruction already
+contained 40,320 V1/V4 source-row numeric
+parity with source-copy provenance open;
+G3.0 extends original prediction/mask
+parity to V2 and V3 as a conditional,
+scientifically bounded source diagnostic.
+No new comparison results, original
+P10 model retuning, or independent
+prospective cohort inference are asserted.
+
+**G2.16 operator tests NOT YET EXECUTED.
+G2 NOT FULLY FROZEN. G3.0 not authorized
+until freeze, G3.1 still BLOCKED.**
