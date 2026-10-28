@@ -1,6 +1,6 @@
 {
   "schema_version": "dtrm.ic.g2.a3_conventional_risk_control_plan.v0",
-  "status": "DRAFT_POST_OUTCOME_EXPLORATORY_NO_SCORING_AUTHORIZATION",
+  "status": "DRAFT_SOURCE_DATE_FEASIBLE_NUMERIC_VINTAGE_RISK_AND_FULL_G2_FREEZE_OPEN",
   "editorial_case": "ICOMPUTING-D-26-01069",
   "reviewer_requirement": "R1-04",
   "created_date": "2026-10-27",
@@ -17,10 +17,28 @@
     "g2_10_report_sha256": "NOT_YET_PROVIDED_BY_OPERATOR",
     "g2_10_static_tests": "5/5 operator-reported PASS",
     "original_close_column_name": "close",
-    "provider_acquisition_vintage": "UNVERIFIED (July5 snapshot after May/June events)",
+    "provider_acquisition_vintage": "UNVERIFIED (July 5 saved snapshot postdates validation/test decisions); do not certify prospective as-of risk signal",
     "point_in_time_corporate_action_adjustments": "UNVERIFIED",
-    "numeric_close_quality_and_all_event_date_coverage": "UNVERIFIED",
-    "file_checksums": "G2.9 original local report available; link through G2.10 report once locally SHA-sealed"
+    "numeric_close_quality_and_all_event_date_coverage": "ALL event DATE coverage PASS; numeric close quality, adjustment source vintage, actual return validity NOT YET AUDITED",
+    "file_checksums": "G2.9 original local report available; link through G2.10 report once locally SHA-sealed",
+    "g2_13": "G2_13_A3_V0_VALID_19880_PAIR_BAR_DATES_FULL_COVERAGE_VINTAGE_OPEN",
+    "g2_12_original_per_event_coverage": {
+      "old_total_unique_pairs": 47596,
+      "fully_prior_date_eligible": 47596,
+      "source_report_sha256": "e67cf796975c60fdc674f15d985ce755ca1b862779253f4ef7f82a56d326785f"
+    },
+    "g2_13_original_validation_coverage": {
+      "original_valid_pairs": 19880,
+      "bar_date_eligible": 19880,
+      "distinct_tickers": 167,
+      "event_start": "2025-12-24",
+      "event_end": "2026-01-21",
+      "original_model_row_file_sha256": "3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724",
+      "g2_13_report_sha256": "NOT_YET_BOUND"
+    },
+    "g2_9_source_report_sha256": "65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb",
+    "g2_10_source_report_sha256": "f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3",
+    "price_validation_and_test_prior_bar_date_coverage": "FULL_SOURCE_DATED_BARS_19880_VALID_AND_47596_TEST_PAIRS"
   },
   "original_cohorts": [
     {
@@ -116,7 +134,8 @@
     "Price adjustment/provider vintage unverified → cannot claim true point-in-time executable signal.",
     "No cutoff fit, filter selection, predictor retuning or admission matching using known V2/V3/V4 target outcomes.",
     "No claim of independently replicated superiority, tradable P&L or experimental human causal effect.",
-    "No licensed source data or confidential provider price series committed publicly."
+    "No licensed source data or confidential provider price series committed publicly.",
+    "G2.13 19880/19880 source date coverage is necessary but not proof of historical provider value availability; preserve vintage caveat."
   ],
   "G2_protocol_frozen": false,
   "G3_financial_analysis_authorized": false
