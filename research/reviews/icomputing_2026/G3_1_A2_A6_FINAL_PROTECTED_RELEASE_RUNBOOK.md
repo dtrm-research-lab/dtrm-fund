@@ -74,6 +74,7 @@ python3 -m unittest \
   test_ic_g3_1_a2_a6_pure_grid.py \
   test_ic_g3_1_a2_validation_only_source.py \
   test_ic_g3_1_a2_a6_protected_runner.py -v
+printf '%s\n' "$G31_CANDIDATE" > "$AUDIT/g1-reconstruction/IC_G3_1_A2_A6_CODE_COMMIT.txt"
 printf 'RELEASE_CANDIDATE_SHA=%s\n' "$G31_CANDIDATE"
 BASH
 ```
@@ -97,6 +98,7 @@ Git commit. The operator must supply that exact
 ```bash
 AUDIT="$HOME/dtrm-ic-audit"
 REPO="$HOME/Desktop/DTRM_Lab/dtrm-fund"
+G31_CANDIDATE="$(cat "$AUDIT/g1-reconstruction/IC_G3_1_A2_A6_CODE_COMMIT.txt")"
 
 python3 "$AUDIT/ic_g3_1_a2_a6_protected_runner.py" \
   --review-repo "$REPO" \
