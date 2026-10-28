@@ -190,3 +190,22 @@ assurance limitation remains open; no
 ex-ante live feasibility inferred from a
 retrospectively saved July-5 cache.
 G3 remains BLOCKED.
+
+## G2.15 source SHA and pre-freeze handoff status (2026-10-28)
+
+The operator SHA for the executed G2.13 report was
+`e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7`.
+It is recorded and linked in the current A3 draft.
+
+The single successor decision packet
+`G2_15_FREEZE_DECISION_REGISTER.md` replaces
+further general inventories. The principal
+outstanding issue is not missing dated bars,
+but **source-vintage validity and a fixed
+numeric-close/missingness rule** for A3, plus
+actual executable G3 script version/SHA,
+bootstrap infeasibility semantics and final
+human methodological review. Existing G2.11
+minimum 40-return fallback is NOT an approved
+primary policy until resolved before target
+access. No permission to execute G3 yet.
