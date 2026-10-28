@@ -435,3 +435,29 @@ silently dropping rows. V0 validation-time
 universe, quote vendor/vintage, adjustments,
 numeric price quality and G2 full study
 freeze remain OPEN. **G2.12 not yet run.**
+
+## G2.12 paired date-coverage PASS and original V0 VALID missing gate (2026-10-28)
+
+Original frozen V1/V2/V3/V4 signal pair-date
+check PASSED on Mac (seven static regression
+tests PASS), all **47,596** distinct original
+news/ticker pairs covered by >=61 strictly prior
+bar dates, with no missing ticker and original
+V1/V4 key/order agreement. This is a
+**structural date-only** PASS, not an as-of
+provider/adjusted quote feasibility or price
+return risk outcome.
+
+Prepared G2.13 for original V0 validation
+`legacy_model_rows_2026-05-01.pkl` fold
+`split="valid"` **19,880** rows. It tests
+the same historical 174 SHA-recorded price
+files using dates only; results may be
+FULL or PARTIAL, without silently dropping
+uncovered rows. The JSON source is a
+**new retrospective local SHA commitment**,
+not authenticated pre-outcome proof.
+No numeric close values or target labels
+may enter comparisons until G2 freeze.
+See `G2_13_A3_ORIGINAL_V0_VALID_DATE_GATE.md`.
+G2 remains UNFROZEN; G3 BLOCKED.
