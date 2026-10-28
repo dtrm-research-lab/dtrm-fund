@@ -95,7 +95,7 @@ def main():
     result=read_json(report_path)
     fail(result.get("status")==G2_GATE and
          result.get("tests_successful") is True and
-         result.get("tests_run",0)>=31 and
+         result.get("tests_run",0)>=36 and
          result.get("reviewer_editor_requirements_traced")==22,
          "Latest G2.16 31-test source/reviewer PASS not proven")
     fail(result.get("original_code_commit")==ORIG and
