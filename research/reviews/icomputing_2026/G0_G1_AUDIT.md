@@ -2811,3 +2811,90 @@ transcript, not an uploaded live
 original model/target dataset. Human/operator
 attested local JSON hash, no independent
 server-side verification of its bytes.
+
+## 2026-10-28 G3.1 ORIGINAL A2/A6 18/18 EMPIRICAL POINT ESTIMATES — operator PASS
+
+Operator ran *actual* authenticated original historical
+`ic_g3_1_a2_a6_protected_runner.py --mode point`
+from the independently tested precision-preserving
+immutable code commit
+`0c5e433f10ce742bc129b666dfc4551f4b2fd21b`.
+Previously the G3.1 original source six-file SHA gate,
+G3.0 V2/V3 original model numeric parity, original
+Phase II q25/K10 3-cohort point parity, and 71/71
+synthetic/static protection tests all passed.
+
+**Actual observed status**:
+`G3_1_A2_A6_POINT_ESTIMATES_ONLY_BOOTSTRAP_NOT_YET_RUN`.
+Original V2,V3,V4 q25/K10 parity PASS.
+Original validation-only calibrated P10 thresholds:
+- q15 `-0.17323055863380432`
+- q25 `-0.16665692627429962` (original frozen)
+- q35 `-0.16293590515851974`.
+
+**Original historical A2 P10 threshold sensitivity, fixed K10.
+Values are incremental delta of original 60-day
+forward_excess_beta and incremental hit fraction; they
+are NOT realized portfolio trading returns.**
+
+| Arm | Cohort | q | Δmean | Δhit | Feasible |
+| --- | --- | ---: | ---: | ---: | --- |
+| A2 | V2 | .15 | .07075341045856476 | .2747747747747748 | yes |
+| A2 | V2 | .25 | .14429480582475662 | .5788288288288288 | yes |
+| A2 | V2 | .35 | .1535678431391716 | .6193693693693694 | yes |
+| A2 | V3 | .15 | .0932159572839737 | .3191489361702128 | yes |
+| A2 | V3 | .25 | .14943748898804188 | .5851063829787234 | yes |
+| A2 | V3 | .35 | .1537280809134245 | .5957446808510638 | yes |
+| A2 | V4 | .15 | .011859182268381119 | .04042658730158727 | yes |
+| A2 | V4 | .25 | .027561593800783157 | .10168650793650791 | yes |
+| A2 | V4 | .35 | .03298984095454216 | .11681547619047622 | yes |
+
+**Original historical A6 Top-K sensitivity, fixed original
+q25 veto cutoff.**
+
+| Arm | Cohort | K fraction | Δmean | Δhit | Feasible |
+| --- | --- | ---: | ---: | ---: | --- |
+| A6 | V2 | .05 | .06548978388309479 | .3063063063063063 | yes |
+| A6 | V2 | .10 | .14429480582475662 | .5788288288288288 | yes |
+| A6 | V2 | .15 | .059699688106775284 | .23238380809595205 | yes |
+| A6 | V3 | .05 | .09225000441074371 | .36879432624113473 | yes |
+| A6 | V3 | .10 | .14943748898804188 | .5851063829787234 | yes |
+| A6 | V3 | .15 | .07907292246818542 | .3349056603773585 | yes |
+| A6 | V4 | .05 | .061654385179281235 | .23511904761904762 | yes |
+| A6 | V4 | .10 | .027561593800783157 | .10168650793650791 | yes |
+| A6 | V4 | .15 | .01643478497862816 | .09490740740740738 | yes |
+
+**All eighteen original observed sample cells were feasible,
+with positive descriptive delta means and delta hits.**
+This is NOT proof of significance or independent
+prospective robustness. q35 is descriptively larger than
+q25 for all three cohorts, but selecting q35 based
+on these outcomes would constitute retrospective
+optimization. K10 gives the largest observed
+improvement within V2 and V3; V4 favors K5.
+Do NOT pool dependent cohort comparisons or
+convert beta-excess return to actual portfolio P&L.
+
+**Operator SHA256 of original local point report:**
+`8493355a8711512e0182067ad5b10e652528acd348cbde21bd1291f56ca214bb`.
+Local:
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_1_A2_A6_FLOAT32_POINT_ONLY.json`.
+
+**Inferences still BLOCKED:**
+- zero bootstrap replicates performed at this stage;
+- no cluster uncertainty confidence intervals yet,
+  so no new significance, reliability or
+  superiority claim.
+- Original source independent new 60d holdout absent.
+- A3 retrospective price/volatility, A4 cash portfolio
+  costs and P&L, A5 second original model,
+  or prospective X1 remain separate and blocked.
+- Future `--mode full` *does not turn these
+  retrospectively known outcomes into
+  independent confirmation*. It must record
+  cluster infeasibility and suppress unsupported
+  CIs if any replicate cannot fill Top-K.
+
+Evidence derives from the operator-provided local
+terminal output, not server-side access to private
+original point report or target Pickles.
