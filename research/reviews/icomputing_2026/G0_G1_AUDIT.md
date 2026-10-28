@@ -3307,3 +3307,102 @@ outcome comparison.** Original
 A2/A6 results remain unchanged;
 G3.2 A3 outcome comparison still
 UNAUTHORIZED.
+
+## 2026-10-28 G3.2 A3 V0 VALID-ONLY 51/51 TEST PASS BUT ORIGINAL ROW-ORDER GATE HALT
+
+Original operator 51/51 source-only/synthetic
+unittests PASS (`Ran 51 tests in 0.050s — OK`)
+at exact A3 VALID-only code
+`ec8fd7558e8c4e5de0ac9fa7fbc1f7e3adad18a6`,
+then the authorized original V0 VALID-only
+volatility cutoff calculation **HALTED**:
+
+`G3.2 A3 VALID-ONLY HALTED: RuntimeError Original P10 VALID rows do not match model-row order; no silent join`
+
+The terminal includes NO new A3 daily volatility
+cutoff, NO post-outcome comparison and NO
+accepted original V0 A3 cutoff report SHA.
+The original 19,880/19,880 V0 VALID and
+47,596/47,596 V2/V3/V4 archived numerical
+price quality source PASS (34/34 tests,
+SHA `91979425af5b3785c15fd7a74e821429f094b23c5ea1ede0c8b89efb457ee83a`)
+is NOT invalidated.
+
+**Cause identified by reviewing immutable
+original original-legacy XGBoost code at
+`c7502a690162459cdfb3413573e3133c42efb126`:**
+
+- `research/experiments/run_probabilistic_xgb_v0.py`,
+  `load_ordered_model_rows` uses
+  `order_selected_legacy_rows(full_rows[\"ticker\"],
+  full_rows[\"date_dt\"], full_keys,
+  selected_keys)` and then
+  `model_rows.iloc[order]`, NOT the
+  saved model-row physical file order.
+- `src/dtrm/legacy_model_rows.py`
+  applies original full dataset historical
+  ranking and selection, and
+  `src/dtrm/legacy_row_order.py` includes
+  original ticker/date group ordering.
+- Original P10 validation reconstructed
+  scores are therefore in the historical
+  **model order**, while new original
+  price cutoff code loaded the saved
+  model rows in **archive order** and
+  wrongly insisted on identical positional
+  `news_id` vectors. This is a
+  newly introduced adapter row-order error,
+  not a reason to relax scientific
+  identity preservation.
+
+**New minimal fix prepared, NOT YET EMPIRICALLY
+VERIFIED:**
+`ic_g3_2_a3_valid_only_cutoff.py`
+now reruns the exact frozen original legacy
+row-order reconstruction on original
+full and model-row inputs, requires an exact
+19,880 unique `(news_id,ticker)` pair-key
+bijection with full UTC `date_dt` equality,
+and reassigns model predictions to the
+native archive key order solely by
+the verified bijective key mapping.
+Original q25, raw P10 thresholds,
+validation source rows, predictions,
+and 174 historical original stock
+source Pickles remain unchanged.
+**Never** align by potentially nonunique
+news ID alone or choose a subset by
+historic observed target results.
+
+New regression cases cover original
+row permutation, a repeated news ID
+with different tickers, unexpected and
+duplicate source pair keys, date mismatch
+and model score/news order drift.
+Current planned full operator gate
+**56 tests** = 22 core, 12 G3.2 price
+numeric source, 5 original V0 P10 source,
+and 17 revised A3 V0 key identity tests.
+These 56 tests and live V0 original
+read-only cutoff replay have **NOT
+YET EXECUTED**, so do NOT claim new
+pair-set equality, threshold PASS or
+A3 conventional control advantage.
+
+Full detailed negative evidence / root-cause:
+`G3_2_A3_V0_LEGACY_ORDER_PARITY_REPAIR.md`.
+Exact operator command:
+`G3_2_A3_V0_LEGACY_ORDER_CORRECTED_OPERATOR_RUNBOOK.md`.
+
+**Scientific status:** G3.1 A2/A6
+exploratory 18-cell/36-block QA
+CLOSED PASS. G3.2 A3 numeric source
+quality CLOSED PASS. Validation
+weighted conventional volatility
+threshold still BLOCKED until
+corrected V0 identity gate
+executes and passes. Historical
+source-price vendor acquisition
+vintage remains UNVERIFIED.
+No original V2/V3/V4 target
+comparison authorized.
