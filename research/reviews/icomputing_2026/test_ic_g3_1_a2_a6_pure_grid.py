@@ -85,6 +85,35 @@ class PureGridTests(unittest.TestCase):
         self.assertEqual(len(a6),3)
         self.assertTrue(all(not x["full_k_feasible"] for x in a6))
         self.assertTrue(all(x["delta_mean_forward_excess_beta"] is None for x in a6))
+    def test_original_phaseii_float32_mean_exact_semantics(self):
+        from ic_g2_g3_exploratory_core import select_topk,cluster_bootstrap
+        n=4449
+        k=int(n*.10)
+        pred=np.arange(n,0,-1,dtype=np.float32)
+        target=np.random.default_rng(20261028).normal(
+            .12,.6,size=n).astype(np.float32)
+        mask=np.zeros(n,dtype=bool)
+        mask[k:k+k]=True
+        old_baseline=float(target[:k].mean())
+        old_candidate=float(target[k:2*k].mean())
+        original_delta=old_candidate-old_baseline
+        upcast_delta=(float(target[k:2*k].astype(np.float64).mean())-
+                      float(target[:k].astype(np.float64).mean()))
+        self.assertGreater(abs(original_delta-upcast_delta),1e-12)
+        observed=select_topk(pred,target,mask,.10)
+        self.assertEqual(observed.delta_mean,original_delta)
+        self.assertEqual(observed.baseline_mean,old_baseline)
+        self.assertEqual(observed.candidate_mean,old_candidate)
+        # All historical uncertainty paths must keep source precision.
+        # No 10k bootstrap here; fixed deterministic tiny synthetic check.
+        from unittest.mock import patch
+        with patch("ic_g2_g3_exploratory_core.select_topk",
+                   wraps=select_topk) as observed_selector:
+            cluster_bootstrap(pred,target,mask,np.arange(n)%100,.10,
+                              seed=20260821,replicates=2)
+        self.assertTrue(observed_selector.called)
+        self.assertEqual(observed_selector.call_args[0][1].dtype,
+                         np.dtype("float32"))
     def test_pure_module_has_no_file_io_or_implicit_authorization(self):
         code=Path(__file__).with_name("ic_g3_1_a2_a6_pure_grid.py").read_text()
         for forbidden in ("pd.read_pickle","pickle.load","read_csv(","np.load(",
