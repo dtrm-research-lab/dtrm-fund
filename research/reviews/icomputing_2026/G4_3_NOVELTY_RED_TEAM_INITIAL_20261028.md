@@ -56,6 +56,8 @@ Source: https://link.springer.com/article/10.1186/s40854-026-00941-w
 
 This discovery *increases novelty risk* and strengthens the case for a narrower empirical/methodological contribution rather than broad priority claims.
 
+**Source-specific correction (G4.4):** The candidate original August-2026 submitted manuscript **already cites Kou et al. 2026 as its reference [4] and discusses the human/AI decision-authority distinction in Introduction paragraph 10.** The earlier 'add this antecedent to G5 related work' is to be read as **strengthen the direct differentiation and avoid overclaiming novelty**, not as a newly discovered missing bibliography entry. See G4_4_ORIGINAL_MANUSCRIPT_TARGETED_READ_20261028.md. Candidate attachment SHA256 811c571ba30fc175878be5fe70fd7bcc55e551a9773d19401ce561da892b1085; Editorial Manager exact submission match remains unverified.
+
 ## Exit test for G4.3
 
 Before G4 PASS, audit actual submitted abstract/title/introduction/contribution list; compare to these baselines at claim level, explicitly mark any claim requiring experiments which the submission does not contain, and agree a narrower novelty statement. A philosophical mission is not a substitute for a tested methodological advance.
