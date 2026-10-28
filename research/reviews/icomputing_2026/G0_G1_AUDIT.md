@@ -2486,3 +2486,58 @@ to open historical outcome-consumed targets.
 **G2 FROZEN; G3.0 7,276-row original P10/ranker PASS;
 G3.1 source-only 6/6 PASS; G3.1 28/28 synthetic PASS;
 G3.1 old financial outcome access still NOT AUTHORIZED.**
+
+## 2026-10-28 G3.1 A2/A6 protected old-outcome runner PREPARED, consent required
+
+Operator's original SHA-only readiness and pure tests:
+- Original old cohort V2/V3/V4 SHA-bound six source
+  files **PASS**, with source gate local report SHA256
+  `3130207406a81417c79f4ae69a0d02c1d0933044381280ec9dd9b99862a4e5a8`.
+- 28/28 original-scoped synthetic join, 18-cell pure
+  math and validation-only V0 source checks **PASS**,
+  after correcting a test-only unittest assertion.
+- G2 operator-approved immutability commit remains
+  `3d53d2d5c7a4e3345b238b2b045fbd47f6e40de0`.
+- G3.0 source numeric P10/ranker 7,276-row parity report
+  SHA `a5bb3f6a3a4e2862a9898eea812a87a01b4b6e12191f4ffad9c03c50af61684a`.
+
+**New G3.1 bounded runner code**:
+`ic_g3_1_a2_a6_protected_runner.py` now exists,
+with **10 additional STATIC protection tests**
+in `test_ic_g3_1_a2_a6_protected_runner.py`.
+The next Mac source-only gate must PASS **38/38**
+before any operator can give explicit permission.
+
+A full source audit/operation procedure is:
+`G3_1_A2_A6_FINAL_PROTECTED_RELEASE_RUNBOOK.md`.
+The runner, its pure calculation and join modules,
+its original V0 validation-only P10 features/quantile
+source, and all test modules must match the exact
+unchanged SHA of a Git commit fetched and tested
+at the operator's Mac. A separate CLI action with
+four explicit acknowledgements is required to
+access only SHA-anchored, original, *already outcome-
+consumed* V2/V3/V4 model-target Pickles:
+(a) permission limited to A2/A6 secondary
+sensitivity; (b) no untouched independent
+60-day holdout; (c) source beta-excess target
+is NOT tradable portfolio P&L; (d) operator
+consent to open only verified original Pickles.
+
+After all these checks, the approved point-only
+mode verifies original G2 P10 q25 validation
+threshold, original q25/K10 3-cohort exact
+published point effects, and records all 18
+predeclared A2/A6 **point estimates only**.
+Separate `full` mode calculates original
+fixed 10k news/ticker cluster bootstraps for
+all feasible cells. No return/source values
+are printed beyond aggregate research
+outputs or saved to GitHub.
+
+**The new runner and 10 new source protection tests
+are NOT YET operator-run; no new G3.1 financial
+result calculation or human G3.1 authorization
+has yet occurred. A3 price source/volatility,
+A4 portfolio P&L, A5 second model and X1
+new holdout remain OUT OF SCOPE.**
