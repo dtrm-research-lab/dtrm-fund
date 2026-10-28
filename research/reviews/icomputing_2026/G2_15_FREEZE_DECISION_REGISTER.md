@@ -150,3 +150,41 @@ none of those drafts counts as completed
 G3, G4 or final editorial submission.
 
 **Current decision: NO-GO TO G3. G2 NOT FROZEN.**
+
+## 2026-10-28 G2.16 superseding 40/60 decision and pure-code gate
+
+The prior B-02 open 40-vs-60-return convention
+has now been **decided at protocol level**:
+A3 PRIMARY uses exactly 60 valid close-to-close
+daily returns from the 61 most recent saved
+bar dates strictly before event date, no
+40-return fallback, no filling, winsorization
+or post-event price input. A3 common-sample
+complete-case effect is **secondary** and
+not the original full-cohort result.
+Provider price-source vintage and corporate
+action adjustments remain unverified.
+
+Created `ic_g2_g3_exploratory_core.py`
+and 21 synthetic tests, plus
+`G2_16_EXPLORATORY_SCOPE_CANDIDATE.json`,
+`ic_g2_16_scientific_freeze_preflight.py`,
+and `G2_16_SYNTHETIC_FREEZE_RUNBOOK.md`.
+The status of these executable synthetic
+tests is **NOT YET OPERATOR EXECUTED**;
+GitHub source static review alone is
+not a PASS.
+
+Original G1.2 reconstructed booster object
+identity remains UNAPPROVED until per-row
+source/model parity. The conditional first
+G3 stage is `G3.0` model/signal parity
+**without forward targets**. Only after
+actual G2 full freeze and successful
+G3.0 can G3.1 A2/A3/A6 explore original
+outcome-consumed cohorts.
+
+No original G2 V2/V3/V4 result, original
+model/threshold nor negative bootstrap
+evidence was altered. G3 financial
+scoring remains BLOCKED.
