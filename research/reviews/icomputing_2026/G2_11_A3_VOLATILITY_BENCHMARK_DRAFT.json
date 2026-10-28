@@ -34,11 +34,13 @@
       "event_start": "2025-12-24",
       "event_end": "2026-01-21",
       "original_model_row_file_sha256": "3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724",
-      "g2_13_report_sha256": "NOT_YET_BOUND"
+      "g2_13_report_sha256": "e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7"
     },
     "g2_9_source_report_sha256": "65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb",
     "g2_10_source_report_sha256": "f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3",
-    "price_validation_and_test_prior_bar_date_coverage": "FULL_SOURCE_DATED_BARS_19880_VALID_AND_47596_TEST_PAIRS"
+    "price_validation_and_test_prior_bar_date_coverage": "FULL_SOURCE_DATED_BARS_19880_VALID_AND_47596_TEST_PAIRS",
+    "g2_13_report_sha256": "e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7",
+    "g2_13_report_digest_source": "operator shasum of original locally saved JSON; raw report not independently fetched"
   },
   "original_cohorts": [
     {
