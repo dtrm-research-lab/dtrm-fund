@@ -3537,3 +3537,86 @@ G3.1 A2/A6 exploratory review evidence
 remains frozen; G3.2 A3 original V0
 calibration COMPLETE; A3 original
 performance comparison still BLOCKED.
+
+## 2026-10-28 G3.2 A3 ORIGINAL THREE-ARM SOURCE PREFLIGHT 63/63 PASS — ALL 3 COHORTS FILL K10
+
+Operator independently ran the code and
+63 local source-only/synthetic safety tests
+from exact immutable source-preflight
+commit `30c470fa45268614dc26c869c93ec160d5323185`.
+`Ran 63 tests in 0.368s — OK`
+(Pandas FutureWarning from a synthetic
+invalid-Boolean flag test only; it did
+not fail and does not concern original
+source P10 data.)
+
+Real original source-only outcome:
+`G3_2_A3_3_ARM_ORIGINAL_SOURCE_ONLY_K10_FEASIBILITY_PASS_OUTCOMES_BLOCKED`.
+
+All original old V2/V3/V4 cohorts were processed
+after original local saved-price source
+SHA audit. Original q25 P10
+`-0.16665692627429962` and V0-only
+daily std 60-return risk cutoff
+`0.020823002555902668` unchanged.
+All three original Baseline, original P10,
+and conventional volatility arms can
+fill **exactly K=floor(0.10*N)**, same
+original baseline ranking and 47,596
+matched pairs; no sample exclusions.
+
+**Observed original source-only per-cohort data:**
+
+| Cohort | N | K | P10 admitted | Volatility admitted | Both admitted | All arms feasible | P10/Risk selected overlap |
+|---|---:|---:|---:|---:|---:|---|---:|
+| V2 | 4,449 | 444 | 2,530 | 1,870 | 1,572 | True | 301 |
+| V3 | 2,827 | 282 | 1,634 | 1,376 | 1,120 | True | 212 |
+| V4 | 40,320 | 4,032 | 23,348 | 16,217 | 13,936 | True | 2,946 |
+
+Top-K P10 vs volatility overlap:
+301/444 ~67.8%; 212/282 ~75.2%;
+2,946/4,032 ~73.1%. Historical
+risk veto admits fewer pair observations
+than P10 in EACH old cohort, despite
+closely matched news-ID weighted
+admission rates in original V0
+validation. No post-hoc retuning
+permitted to equalize old cohort
+fractions: that would destroy
+honest out-of-validation comparison.
+
+**Original operator-local source-only
+report SHA256:**
+`9c03f925be0429b9b70407018d59f1df801682a9e7a821a6bb9c6d3ef80fe317`
+Original local report:
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_2_A3_ORIGINAL_3ARM_SOURCE_ONLY_PREFLIGHT.json`.
+
+Report explicitly attested:
+`No original financial outcomes/targets/labels
+accessed. No risk-policy effects or bootstrap.`
+Original quote acquisition vintage and
+historical adjustments remain UNVERIFIED;
+thus later original A3 outcomes if
+computed are necessarily
+`DATE_RESTRICTED_POST_OUTCOME_EXPLORATORY`,
+not prospective independent validation
+or investable account P&L.
+
+**Scientific gates closed:** G3.2 A3
+source-date coverage, numerical
+close eligibility, original V0-only
+calibrated weighted risk cutoff,
+and three-arm original-source-only
+K10 full feasibility across V2/V3/V4.
+
+**Still prohibited:** old financial
+target deserialization, any A3
+three-arm retrospective target
+estimate, paired P10-minus-volatility
+cluster CI, multiple-testing
+significance claims, source-vintage
+point-in-time claims, new
+independent 60-day holdout,
+or tradable account P&L, without
+new source review and explicit
+separate operator consent.
