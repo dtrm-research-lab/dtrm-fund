@@ -1,0 +1,65 @@
+name: IC G3.2 A3 - 138 source and synthetic gates
+
+on:
+  push:
+    branches:
+      - audit/ic-g3-2-a3-138-source-ci-20261028
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  immutable-source-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout exact test-only scientific source commit
+        uses: actions/checkout@v4
+        with:
+          ref: 2e4cce43f59d23ea5758bc7581cf7f42969cec9e
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install source/synthetic test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e . pandas
+      - name: Run exact 138 IC G3.2 A3 tests without original outcome data
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMMIT="2e4cce43f59d23ea5758bc7581cf7f42969cec9e"
+          BASE="research/reviews/icomputing_2026"
+          TMP_AUDIT="$(mktemp -d)"
+          PARTS=(
+            g2_g3_exploratory_core
+            g3_1_a2_a6_join_contract
+            g3_1_a2_a6_pure_grid
+            g3_1_a2_validation_only_source
+            g3_1_a2_a6_protected_runner
+            g3_2_a3_numeric_source_quality_gate
+            g3_2_a3_valid_only_cutoff
+            g3_2_a3_original_3arm_source_preflight
+            g3_2_a3_three_arm_pure_points
+            g3_2_a3_three_arm_point_runner
+            g3_2_a3_paired_cluster_bootstrap
+            g3_2_a3_paired_bootstrap_runner
+          )
+          TESTS=()
+          for part in "${PARTS[@]}"; do
+            for prefix in ic_ test_ic_; do
+              file="${prefix}${part}.py"
+              git show "${COMMIT}:${BASE}/${file}" > "${TMP_AUDIT}/${file}"
+            done
+            TESTS+=("test_ic_${part}.py")
+          done
+          cd "$TMP_AUDIT"
+          python -m unittest "${TESTS[@]}" -v 2>&1 | tee "$RUNNER_TEMP/ic-g3-2-a3-138-tests.log"
+          grep -E '^Ran 138 tests in ' "$RUNNER_TEMP/ic-g3-2-a3-138-tests.log"
+          grep -x 'OK' "$RUNNER_TEMP/ic-g3-2-a3-138-tests.log"
+          echo "A3_SOURCE_ONLY_TESTS=138/138_PASS"
+          echo "PINNED_SCIENCE_CODE_COMMIT=$COMMIT"
+          echo "ORIGINAL_FORWARD_TARGET_PICKLES_OPENED=NO"
