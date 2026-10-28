@@ -2346,3 +2346,69 @@ G2 FROZEN; G3.0 numeric parity PASS;
 G3.1 six-file SOURCE PASS; G3.1 outcome
 and any financial comparisons BLOCKED pending
 separate implementation tests and explicit approval.
+
+## 2026-10-28 G3.1 A2/A6 18-cell pure method and V0 validation-only source PREPARED
+
+After operator PASS on **7/7** original six-file
+source-only SHA checks (no target Pickles opened),
+prepared and committed three separate
+**UNEXECUTED** source modules and **28**
+unrun synthetic/static tests:
+
+1. `ic_g3_1_a2_a6_join_contract.py`
+   — original strict unique (news_id,ticker)
+   one-to-one PhaseII signal-target join, UTC
+   date equality, exact source order,
+   finite numeric target/baseline, strict
+   P10 q25 Boolean mask and calibration
+   offset; no partial join.
+   `test_ic_g3_1_a2_a6_join_contract.py`:
+   **15** synthetic tests.
+2. `ic_g3_1_a2_a6_pure_grid.py`
+   — exactly nine q15/25/35 P10 validation
+   cutoff × V2/V3/V4 cells (A2) plus nine
+   5/10/15% Top-K × V2/V3/V4 cells
+   (A6). BEFORE alternatives, reproduce
+   all three original q25/K10 cohort
+   delta mean and hit-rate effects exactly
+   or fail closed. Two 10,000-replicate
+   cluster bootstraps when actually
+   authorized, never promote better q/K
+   from known old outcomes; no file I/O.
+   `test_ic_g3_1_a2_a6_pure_grid.py`:
+   **8** synthetic tests, historical published
+   aggregates reproduced by artificial
+   private-free tensors only.
+3. `ic_g3_1_a2_validation_only_source.py`
+   — source-only V0 validation feature
+   replay (exact **19,880** historical VALID
+   rows and **390** features) from frozen
+   original SHA/commit and reconstructed
+   candidate P10 booster, iteration [0,19).
+   Uses NO original forward-return raw targets,
+   price cache, or V2–V4 outcome labels;
+   derives weighted q15/q25/q35 from
+   validation only; original q25 must
+   exactly match frozen -0.16665692627429962.
+   Trusted original Pickles are not read
+   until separately approved actual runner.
+   `test_ic_g3_1_a2_validation_only_source.py`:
+   **5** static protected source tests.
+
+Single Mac operator synthetic/test/hash command
+provided in
+`G3_1_A2_A6_18_CELL_PREAUTH_IMPLEMENTATION.md`.
+GitHub sources were verified present by read-back,
+but **28 new tests have not yet been run locally**.
+The original G3.1 source-only JSON SHA256 also
+has not yet been supplied by user.
+
+**Scientific hard stop:** these modules carry
+NO standalone old-outcome reader or authenticated
+G3.1 A2/A6 release. No forward-target
+model results, new financial returns or
+P&L have been computed. The separate
+G3.1 owner authorization must bind exactly
+tested code and source-gate report SHA before
+any old original target deserialization.
+G3.1 A3 remains separately restricted.
