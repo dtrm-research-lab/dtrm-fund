@@ -1925,3 +1925,31 @@ remain **UNVERIFIED** until operator output.
 No new financial outcomes, models or
 market values were accessed in these
 G2 artifacts. **G2 not frozen, G3.1 blocked.**
+
+## G2.16 source correction: final synthetic fixture count 22, UTC normalization
+
+The G2.16 pure-method core and synthetic
+test suite were extended after the initial
+artifact register:
+- A3 calendar-day cutoff now normalizes
+  timezone-aware datetime values to UTC
+  before comparison. Original stored source
+  dates still retain their own unresolved
+  provider-vintage qualification.
+- A new timezone-boundary synthetic
+  anti-leakage regression case was added.
+- The committed synthetic suite now
+  has **22** test cases rather than the 21
+  cases stated in the original preceding
+  creation entry (which was true when written).
+- The `ic_g2_16_scientific_freeze_preflight.py`
+  program requires >=19 cases and must
+  actually execute the full 22 current
+  cases; a claimed PASS from simple GitHub
+  read-back is not sufficient.
+
+**G2.16 tests are NOT YET OPERATOR-RUN**,
+so no final technical PASS, final freeze
+commit or G3 target-result access is
+claimed. Exact methods and source hashes
+will be bound only after local test PASS.
