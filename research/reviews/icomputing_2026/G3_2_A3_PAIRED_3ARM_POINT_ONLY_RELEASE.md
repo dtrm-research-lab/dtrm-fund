@@ -1,7 +1,7 @@
 # ICOMPUTING-D-26-01069: G3.2 A3 paired 3-arm point-only release
 
 **Date:** 2026-10-28.  
-**Status:** Source-only original A3 3-arm feasibility PASS. **NEW point-only A3 code prepared; 122 tests and real target outcome run NOT yet executed**.
+**Status:** Source-only original A3 3-arm feasibility PASS. **122/122 new point-only candidate source/synthetic tests operator PASS on 2026-10-28; actual original target outcome run NOT yet executed and separately consented.**
 
 ## Original operator-attested evidence sealed
 
@@ -136,9 +136,9 @@ echo "A3_POINT_CANDIDATE_COMMIT=$COMMIT"
 BASH
 ```
 
-**Expected if tests actually pass:** `Ran 122 tests — OK`.
-This is a new candidate under test. No claims
-of execution or test PASS beforehand.
+**Observed operator outcome on 2026-10-28:** `Ran 122 tests in 0.492s — OK`.
+This confirms source/synthetic unit tests only. Original A3 historical
+forward-target point results have **not** been executed or observed.
 
 ## Step 2 — new separate owner-authorized old-outcome POINT ONLY
 
