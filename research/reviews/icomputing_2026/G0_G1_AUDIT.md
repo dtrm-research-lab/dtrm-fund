@@ -2541,3 +2541,52 @@ result calculation or human G3.1 authorization
 has yet occurred. A3 price source/volatility,
 A4 portfolio P&L, A5 second model and X1
 new holdout remain OUT OF SCOPE.**
+
+## 2026-10-28 G3.1 A2/A6 PROTECTED RUNNER 38/38 SOURCE-ONLY OPERATOR PASS
+
+User executed the exact nine-file
+G3.1 A2/A6 source-only test suite on the Mac,
+after fetching the immutable Git commit:
+
+`5cf62c854643576ee6059ac44f55a805b8ff3137`
+
+**Operator terminal output:** `Ran 38 tests in 0.124s\nOK`.
+All 38 independent synthetic/static checks succeeded:
+- 15 original unique `(news_id,ticker)` / exact
+  `date_dt` original row-join and finite/Boolean
+  P10 source tests.
+- 8 original-sized synthetic cohort 18-cell
+  sensitivity, exact original q25/K10
+  statistics and invalid-K safeguards.
+- 5 V0 validation-only 19,880 original
+  390-feature source static no-target tests.
+- 10 G3.1 protected A2/A6 runner code-SHA,
+  original six-file source-hash,
+  G2.17/G3.0 source ancestry and
+  explicit human authorization controls.
+
+The user wrote the immutable tested SHA to
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_1_A2_A6_CODE_COMMIT.txt`.
+Original six source file operator report SHA:
+`3130207406a81417c79f4ae69a0d02c1d0933044381280ec9dd9b99862a4e5a8`.
+Original G3.0 P10/ranker numeric model
+parity report SHA:
+`a5bb3f6a3a4e2862a9898eea812a87a01b4b6e12191f4ffad9c03c50af61684a`.
+Frozen G2 owner-approved protocol commit:
+`3d53d2d5c7a4e3345b238b2b045fbd47f6e40de0`.
+
+**Interpretation:** This is a real 38/38
+test PASS for the exact Git source version;
+it is NOT a historical old-outcome data
+experiment, empirical q15/q35 cutoff
+reconstruction, or a completed uncertainty
+analysis. No original A2/A6 targets
+were opened during the tests.
+A standalone, separate and explicit
+human authorization in a new CLI
+invocation is STILL REQUIRED before
+the 18-cell `point` mode may open
+trusted old original outcome Pickles.
+A3 financial price/volatility remains
+outside this scope. Do not claim any
+prospective holdout or realized P&L.
