@@ -414,3 +414,24 @@ but are **DRAFT**, not experimental work,
 and must not be interpreted as having performed
 a risk benchmark or found trade profitability.
 G2 still active, G3 locked.
+
+## G2.12 next source-control scope, hashes supplied (2026-10-28)
+
+G2.9/G2.10 original output report SHA256s now
+supplied by operator (G2.9 `65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb`;
+G2.10 `f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3`).
+
+G2.12 `ic_g2_a3_per_event_bar_date_coverage.py`
+checks all 47,596 original historical
+V4/V2/V3 pair dates (using V1 as a
+V4 source duplicate and V4 signal for
+event/ticker/date set corroboration), strictly
+before-event price-bar **date counts only**,
+without opening forward labels, financial
+price close values for computation, predictor
+inference or actual volatility. It reports
+source schema/price ticker gaps rather than
+silently dropping rows. V0 validation-time
+universe, quote vendor/vintage, adjustments,
+numeric price quality and G2 full study
+freeze remain OPEN. **G2.12 not yet run.**
