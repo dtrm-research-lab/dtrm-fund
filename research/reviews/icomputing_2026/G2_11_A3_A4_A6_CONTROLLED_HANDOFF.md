@@ -166,3 +166,27 @@ sample remains a *separate* unresolved input
 for A3 validation-only risk calibration.
 G2.12 is prepared, NOT yet operator-run.
 G2 remains UNFROZEN; G3 BLOCKED.
+
+## G2.12 source-date coverage operator PASS / G2.13 queued (2026-10-28)
+
+G2.12 local operator state:
+`G2_12_A3_ALL_ORIGINAL_EVENT_PAIR_BAR_DATES_COVERED_VINTAGE_OPEN`
+with **7/7** source-only regression tests PASS.
+Every original date/ticker pair in V4 40,320,
+V2 4,449 and V3 2,827 has at least 61
+pre-event dated closes from the original
+July-5 FMP archive. V1/V4 old source key-set
+and row order both agree. No predictions,
+quote values or returns were examined.
+
+New G2.13 tests original `split="valid"`
+model rows (19,880) against the exact original
+SHA-checked stock/SPY historical bar dates,
+as the final **date-availability** prerequisite
+for fair validation-only conventional filter
+calibration. G2.13 is PREPARED, NOT RUN.
+The vendor-vintage and actual adjusted-close
+assurance limitation remains open; no
+ex-ante live feasibility inferred from a
+retrospectively saved July-5 cache.
+G3 remains BLOCKED.
