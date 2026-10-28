@@ -2638,3 +2638,83 @@ diagnostic that opens original trusted target Pickles.
 **G3.1 A2/A6 18-cell RESULTS BLOCKED, original protocol
 not modified, A3 and any further outcome experiments
 not authorized.**
+
+## 2026-10-28 G3.1 q25/K10 empirical triage: original PhaseII PASS, protected float32 rounding defect candidate
+
+Operator ran the original frozen Phase II q25/K10
+differential diagnostic after a protected G3.1
+A2/A6 `--mode point` stop.
+
+**Original diagnostic static/synthetic tests:
+8/8 PASS** (operator terminal).
+Real-data diagnostic status:
+`G3_1_ORIGINAL_Q25_K10_PARITY_DISCREPANCY_LOCALIZED_G3_1_RESULTS_BLOCKED`.
+
+Exactly copied operator terminal data:
+- **V2**: N=4449 K=444, original & precommitted
+  mean **0.14429480582475662**;
+  protected **0.14429479716387619**;
+  all delta_hit **0.5788288288288288**.
+- **V3**: N=2827 K=282, original & precommitted
+  mean **0.14943748898804188**;
+  protected **0.14943749220804015**;
+  all delta_hit **0.58510638297872342**.
+- **V4**: N=40320 K=4032, original & precommitted
+  mean **0.027561593800783157**;
+  protected **0.027561596978355536**;
+  all delta_hit **0.10168650793650791**.
+- All classified
+  `NEW_JOIN_OR_SELECTION_REGRESSION_ORIGINAL_IS_PASS`.
+  Thus original frozen Phase II implementation
+  reproduces EXACT precommitted old reference
+  values on SHA-verified old source archives.
+  Only the protected new program diverges in
+  mean arithmetic at approximately 1e-8.
+
+**Most plausible technical cause:** original
+`Series.to_numpy()` kept target native saved
+float32 type and original mean was computed
+in float32; protected code converted first to
+float64 in `extract_source_arrays` and
+`select_topk`. Its new mean differs at
+roughly the observed magnitude. Original
+target model array dtype has NOT YET been
+printed by the user; cannot assert that as a
+proven original vintage fact until next
+diagnostic.
+
+Prepared source-only minimal correction:
+`ic_g3_1_a2_a6_join_contract.py` target source
+array now keeps floating original dtype;
+`ic_g2_g3_exploratory_core.py` selection
+and bootstrap preserve original floating
+target dtype; no change to original
+P10 cutoff, feature, original scores,
+TopK selection/ordering, 1e-12 parity
+tolerance or known historic results.
+Added **2 float32 targeted synthetic
+regressions**, one in source join and one in
+original-mean/candidate bootstrap.
+Updated original-only diagnostic to
+independently SHA-pin a future tested
+revision and print target dtypes.
+Added one new synthetic diagnostic test.
+
+**Current candidate:** 40 protected
+source/synthetic tests (previous 38 + 2)
+and 9 diagnostic tests (previous 8 + 1)
+remain **UNEXECUTED by the operator**;
+the correction is not yet established
+on private original data. Existing prior
+`--mode point` historical failure
+remains an audit record. Original
+source diagnostic JSON digest has NOT
+been provided yet; do not infer it.
+See `G3_1_Q25_K10_FLOAT32_PRECISION_REMEDIATION.md`.
+
+No original file or frozen scientific
+commit was rewritten. NO 18 new
+sensitivities/cluster bootstrap are yet
+scientifically executable; G3.1 remains
+BLOCKED pending a read-only revised
+original q25/K10 exact-match diagnostic.
