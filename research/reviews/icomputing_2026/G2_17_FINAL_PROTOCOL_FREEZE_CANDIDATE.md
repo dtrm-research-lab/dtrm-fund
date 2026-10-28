@@ -56,7 +56,7 @@ immutable frozen protocol commit.**
   with explicit trusted-original-Pickle consent;
   never share private original FMP price
   or news/embedding data in GitHub.
-- On original V2/V3 saved feature and
+- On original V2/V3 saved **390-feature** model matrices and
   signal pair orders, verify baseline predictions
   and calibrated-P10 veto masks using SHA-pinned
   retrospectively reconstructed booster weights.
