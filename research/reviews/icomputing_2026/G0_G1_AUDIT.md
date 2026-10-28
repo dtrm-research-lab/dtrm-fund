@@ -2961,3 +2961,111 @@ not ex-ante verified trading returns.
 Recorded as operator-attested local execution,
 not independent remote verification of original
 user files or live experiment execution.
+
+## 2026-10-28 G3.1 A2/A6 FULL REPORT QA — 36/36 VALID, 0 WITHHELD, ONLY 2 DISTINCT V3 POLICIES DUAL-POSITIVE
+
+Operator fetched independent read-only G3.1
+full postrun report QA source from
+`c4bee96b71764fb4bcd76eb20f09177bcf61ce06`.
+**All 11 independent read-only synthetic
+QA checks PASS** (`Ran 11 tests in 0.006s — OK`).
+QA then read two operator-local aggregate
+G3.1 report JSON files, verified exact
+precommitted SHA256 hashes, original full
+and point cell identity, source, protocol
+and code lineage, fixed seeds and
+infeasibility policy.
+
+**Actual observed acceptance status:**
+`G3_1_A2_A6_FULL_36_CLUSTER_BLOCKS_REPORT_QA_PASS`.
+
+Exact verified-by-operator local report hashes:
+- Original point G3.1 A2/A6 report SHA256:
+  `8493355a8711512e0182067ad5b10e652528acd348cbde21bd1291f56ca214bb`.
+- Original full 18-cell 10k news/ticker
+  bootstrap report SHA256:
+  `53c4618f86f46a80a5a783c3449a8d120379f26c8d459c8e740dd4fb63697968`.
+
+QA totals:
+- 18/18 original point estimate cells
+  remain unchanged;
+- all **36/36** news/ticker CI blocks
+  structurally VALID, **0 withheld**;
+- **0** bootstrap infeasible top-K
+  draws across all 36 blocks;
+- all 18 cells have valid CI for
+  both original news and ticker clusters;
+- **18/18** original news-id
+  mean-effect CIs exclude zero
+  on the positive side;
+- only **3/18** policy-grid appearances
+  have both news AND ticker mean
+  CIs excluding zero. Those are
+  V3 q25/K10, V3 q35/K10,
+  V3 K10 under A6.
+- Original q25/K10 appears in A2
+  and A6; thus the three
+  appearances reduce to **2
+  distinct policy settings** in V3.
+  The full grid contains **15
+  unique policy-cohort settings**
+  after the 3 duplicated original
+  q25/K10 positions.
+
+Precise nominal 95% ticker-cluster
+mean-delta intervals for the
+**frozen original q25/K10 policy**:
+- V2 `[-0.006220224499702454, 0.19615343257319176]`:
+  includes zero;
+- V3 `[0.007927639596164226, 0.1916025425540283]`:
+  excludes zero on positive side;
+- V4 `[-0.008943087141960857, 0.07024142728187144]`:
+  includes zero.
+
+For V3 exploratory q35/K10 the
+ticker mean 95% interval is
+`[0.01122855367138982, 0.19373853954020887]`
+(positive unadjusted), but the
+**paired q35−q25 contrast was NOT computed**:
+this is NOT evidence that q35
+outperforms q25 statistically.
+V3 K15 ticker mean interval
+`[-0.0005356903886422511, 0.1620561682851985]`
+includes zero although its
+ticker hit-rate interval is positive
+`[0.01120704194610901, 0.6715217391304344]`.
+Keep the two outcomes separate.
+
+**Qualifying scientific interpretation:**
+All 18 observed mean effects are
+positive and all 18 news-cluster
+nominal intervals exclude zero,
+yet ticker clustering retains
+nominal positive support only
+in V3 for two *distinct*
+settings. This heterogeneity
+is a result, not a reason to
+cherry-pick q35/K10 or V3.
+All intervals are NON-familywise-adjusted
+and POST_OUTCOME_EXPLORATORY
+on previously viewed labels.
+Neither a new independent matured
+nonoverlapping 60d holdout,
+calendar/time-block CI, contemporaneous
+vendor price vintage or investable
+account P&L has been established.
+
+**Conclusion:** G3.1 A2/A6 fixed
+18-cell historical sensitivity and
+independent 36-block JSON QA
+**EMPIRICALLY CLOSED PASS for
+exploratory reviewer evidence**.
+This does not close the full paper
+review nor authorize A3/A4/A5/X1.
+See `G3_1_A2_A6_36_CI_AUDITED_INTERPRETATION.md`
+for all 18 ticker and news CI pairs
+and manuscript-safe English text.
+
+Evidence is operator-posted console
+and SHA digests; actual original user
+JSON files remain on local Mac.
