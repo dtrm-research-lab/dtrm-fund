@@ -132,8 +132,17 @@ def main():
         raw=loaded["p10.ubj"].predict(dm,iteration_range=(0,19))
         calibrated=raw+OFFSET
         origpred=signals["baseline_prediction"].to_numpy(dtype=float)
+        # Reject nulls or string truthiness masquerading as original
+        # historical Boolean decisions, before any dtype=bool cast.
+        wrong_orig_veto=int(signals["p10_pass"].isna().sum())
+        original_mask_type_valid=bool(
+            signals["p10_pass"].isin([True,False]).all()
+            and all(isinstance(v,(bool,np.bool_))
+                    for v in signals["p10_pass"].tolist())
+        )
+        must(original_mask_type_valid,
+             cohort+" original P10 mask is not strictly Boolean")
         origveto=signals["p10_pass"].to_numpy(dtype=bool)
-        wrong_orig_veto=signals["p10_pass"].isna().sum()
         numeric_drift=np.abs(predicted-origpred)
         rank_bad=int(np.sum(~np.isfinite(numeric_drift)|(numeric_drift>1e-6)))
         veto_bad=int(np.sum((calibrated>=THRESH)!=origveto))
@@ -148,11 +157,21 @@ def main():
                     "nonfinite_or_mismatched_rows":int(np.sum(~np.isfinite(delta)|(delta>1e-6))),
                     "max_absolute_difference":float(np.max(delta)) if np.isfinite(delta).all() else None
                 }
-        status=("ROW_PARITY_PASS" if not rank_bad and not veto_bad and
-                wrong_orig_veto==0 and
-                all(v["nonfinite_or_mismatched_rows"]==0
-                    for v in p10_numeric_reference.values()) else
-                "ORIGINAL_SIGNAL_ROW_NUMERIC_PARITY_FAILED")
+        # No numerical P10 source column means original P10 mask parity
+        # is established but P10 prediction numeric parity against a
+        # stored row-wise original reference is NOT. Never promote
+        # absent evidence into an unqualified numeric PASS.
+        parity_ok=(not rank_bad and not veto_bad and wrong_orig_veto==0 and
+                   all(v["nonfinite_or_mismatched_rows"]==0
+                       for v in p10_numeric_reference.values()))
+        if not parity_ok:
+            status="ORIGINAL_SIGNAL_ROW_NUMERIC_PARITY_FAILED"
+        elif not p10_numeric_reference:
+            status="BASELINE_NUMERIC_AND_P10_MASK_PARITY_PASS_P10_NUMERIC_REFERENCE_ABSENT"
+        else:
+            status="ROW_PARITY_PASS"
+        # The strict scientific parity outcome requires a reference
+        # numerical P10 series in these original signals, not only veto.
         if status!="ROW_PARITY_PASS":all_ok=False
         out["cohorts"][cohort]={
             "rows":n,"frozen_score_columns_checked":["baseline_prediction","p10_pass"],
@@ -161,6 +180,8 @@ def main():
             "original_p10_veto_mask_disagreements":veto_bad,
             "original_p10_veto_missing_values":int(wrong_orig_veto),
             "original_p10_numeric_reference":p10_numeric_reference,
+            "original_p10_numeric_reference_available":bool(p10_numeric_reference),
+            "p10_numeric_parity_independent_of_boolean_veto":bool(p10_numeric_reference) and parity_ok,
             "source_rows_and_feature_alignment_assumption":"Persisted feature and signal index order; not an independent source-copy timestamp proof",
             "status":status
         }
