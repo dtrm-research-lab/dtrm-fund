@@ -73,7 +73,9 @@ class OriginalOnlyDiagnosticSyntheticTests(unittest.TestCase):
         self.assertIn('original.load_cohort(files[(cohort,"signals")],files[(cohort,"targets")])',s)
         self.assertIn('original.evaluate_selection(',s)
         self.assertIn('c7502a690162459cdfb3413573e3133c42efb126',s)
-        self.assertIn('APPROVED_G31="5cf62c854643576ee6059ac44f55a805b8ff3137"',s)
+        self.assertIn('PRIOR_APPROVED_G31="5cf62c854643576ee6059ac44f55a805b8ff3137"',s)
+        self.assertIn('--candidate-source-commit',s)
+        self.assertIn('a.approved_commit=a.candidate_source_commit.lower()',s)
     def test_rehashes_sources_and_frozen_code_before_deserialize(self):
         s=SRC.read_text()
         self.assertIn("frozen_source(Path(__file__).resolve(),REL,review,diagnostic_commit)",s)
@@ -125,6 +127,17 @@ class OriginalOnlyDiagnosticSyntheticTests(unittest.TestCase):
         self.assertEqual(r["classification"],"NEW_JOIN_OR_SELECTION_REGRESSION_ORIGINAL_IS_PASS")
         self.assertTrue(r["original_point_parity_pass"])
         self.assertFalse(r["two_implementations_agree"])
+    def test_original_and_protected_target_dtype_exposed_aggregates_only(self):
+        sig,tar=synthetic_inputs()
+        tar["target_model"]=tar["target_model"].astype(np.float32)
+        stub=original_stub(sig,tar)
+        with patch("pandas.read_pickle",side_effect=[sig,tar]):
+            r=one_diagnostic(stub,"V2",
+                {("V2","signals"):Path("s.pkl"),("V2","targets"):Path("t.pkl")},
+                source_exact_join,extract_source_arrays,select_topk)
+        self.assertEqual(r["original_target_dtype"],"float32")
+        self.assertEqual(r["protected_target_dtype"],"float32")
+        self.assertEqual(r["classification"],"ORIGINAL_AND_PROTECTED_Q25_K10_PARITY_PASS")
     def test_no_nonlegacy_experiments_or_raw_result_files(self):
         s=SRC.read_text()
         for token in ("cluster_bootstrap(","analyze_18_cells(",
