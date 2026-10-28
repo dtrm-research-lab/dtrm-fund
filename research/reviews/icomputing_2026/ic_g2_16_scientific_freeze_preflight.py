@@ -42,6 +42,8 @@ def main():
     p.add_argument("--tests",required=True)
     p.add_argument("--g3-0-source",required=True)
     p.add_argument("--g3-0-tests",required=True)
+    p.add_argument("--freeze-builder",required=True)
+    p.add_argument("--freeze-builder-tests",required=True)
     p.add_argument("--reviewer-matrix",required=True)
     p.add_argument("--g2-9",required=True)
     p.add_argument("--g2-10",required=True)
@@ -57,9 +59,11 @@ def main():
     tests=Path(a.tests).expanduser()
     stage0=Path(a.g3_0_source).expanduser()
     stage0_tests=Path(a.g3_0_tests).expanduser()
+    freezer=Path(a.freeze_builder).expanduser()
+    freezer_tests=Path(a.freeze_builder_tests).expanduser()
     mat=Path(a.reviewer_matrix).expanduser()
     fail(all(x.is_file() and not x.is_symlink()
-             for x in (eng,tests,stage0,stage0_tests)),
+             for x in (eng,tests,stage0,stage0_tests,freezer,freezer_tests)),
          "Missing/symlinked pure Python modules")
     spec=obj(sp);review=obj(mat)
     original={}
@@ -142,15 +146,16 @@ def main():
          "Reviewer trace/action/response anchor incomplete")
 
     # A parser test alone is not sufficient; execute ALL synthetic tests.
-    for script in (eng,tests,stage0,stage0_tests):
+    for script in (eng,tests,stage0,stage0_tests,freezer,freezer_tests):
         compile(script.read_text(encoding="utf-8"),str(script),"exec")
     sys.path.insert(0,str(eng.parent))
     test_suite=unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromName(tests.stem),
-        unittest.defaultTestLoader.loadTestsFromName(stage0_tests.stem)
+        unittest.defaultTestLoader.loadTestsFromName(stage0_tests.stem),
+        unittest.defaultTestLoader.loadTestsFromName(freezer_tests.stem)
     ))
-    fail(test_suite.countTestCases()>=31,
-         "Expected at least 22 synthetic core and nine hardened G3.0 protection tests")
+    fail(test_suite.countTestCases()>=36,
+         "Expected 22 synthetic core, nine protected G3.0, and five freeze-builder tests")
     sink=io.StringIO()
     result=unittest.TextTestRunner(stream=sink,verbosity=1).run(test_suite)
     fail(result.wasSuccessful(),
@@ -164,6 +169,8 @@ def main():
        "synthetic_test_module_sha256":sha(tests),
        "protected_g3_0_source_sha256":sha(stage0),
        "protected_g3_0_test_sha256":sha(stage0_tests),
+       "operator_freeze_builder_sha256":sha(freezer),
+       "operator_freeze_builder_test_sha256":sha(freezer_tests),
        "reviewer_traceability_sha256":sha(mat),
        "tests_run":result.testsRun,
        "tests_successful":True,
