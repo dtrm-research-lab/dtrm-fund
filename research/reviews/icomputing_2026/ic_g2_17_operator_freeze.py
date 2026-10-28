@@ -31,7 +31,8 @@ FILES={
  "stage0":"ic_g3_0_original_model_row_parity.py",
  "matrix":"G2_17_REVIEWER_TRACEABILITY_FREEZE_CANDIDATE.json",
  "protocol":"G2_17_FINAL_PROTOCOL_FREEZE_CANDIDATE.md",
- "legacy":"ic_g2_freeze_preflight.py"
+ "legacy":"ic_g2_freeze_preflight.py",
+ "freezer":"ic_g2_17_operator_freeze.py"
 }
 
 def fail(condition,message):
@@ -111,6 +112,8 @@ def main():
         # earlier provisional version that happens to have 22 IDs.
         fail(digest(contents[key])==result.get(resultkey),
              "Latest G2.16 PASS not bound to this exact "+key)
+    fail(digest(contents["freezer"])==sha(Path(__file__).resolve()),
+         "Executing G2 freeze builder is not the exact immutable Git-committed source")
     # The canonical final protocol is separately immutable in commit.
     matrix=json.loads(contents["matrix"])
     protocol=contents["protocol"].decode("utf-8")
