@@ -15,8 +15,9 @@
     "g2_10_sha256": "f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3",
     "g2_12_sha256": "e67cf796975c60fdc674f15d985ce755ca1b862779253f4ef7f82a56d326785f",
     "g2_13_source_model_rows_sha256": "3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724",
-    "g2_13_report_sha256": "NOT_YET_BOUND",
-    "operator_test_results": "G2.13 source regression tests 7/7 PASS, V0 validation 19880/19880 covered; V2 4449/4449, V3 2827/2827, V4 40320/40320."
+    "g2_13_report_sha256": "e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7",
+    "operator_test_results": "G2.13 source regression tests 7/7 PASS, V0 validation 19880/19880 covered; V2 4449/4449, V3 2827/2827, V4 40320/40320.",
+    "g2_13_operator_report_hash_source": "USER_RUN_SHA256_ON_LOCAL_JSON_NOT_INDEPENDENTLY_FETCHED"
   },
   "scientific_decisions": {
     "A1": {
@@ -107,7 +108,7 @@
     "original_candidate_absolute_mean_negative_in_all_reported_successful_cohorts": true
   },
   "nonnegotiable_before_g2_freeze": [
-    "Bind local G2.13 result JSON SHA256 and code/version to original G2.12 SHA; archive internally.",
+    "G2.13 local output SHA operator commitment RECORDED; final reviewer protocol must carry this SHA and confirm original report status and inputs, not recompute later.",
     "Resolve the exact statistical interpretation of A3 retrospective-vintage risk and corporate-action/missing closes before any G3 price-value access.",
     "Fix numerical price quality and finite daily return/missingness policy for validation and test without choosing exclusions on V2/V3/V4 outcomes.",
     "Validate/declare A4 economic executable account accounting or explicitly NOT_ESTIMABLE; don't blur event-level gross returns and tradable portfolio P&L.",
