@@ -42,8 +42,8 @@ K=floor(0.10N). No source alteration.
 A2 weighted q15/25/35, A3 exactly 60
 past-only 60 daily returns and matched
 common-case comparison, A6 5/10/15% K
-are secondary retrospective prospective? **NO**:
-they are explicitly POST_OUTCOME_EXPLORATORY.
+are secondary retrospective analyses and are explicitly
+**POST_OUTCOME_EXPLORATORY**, never prospective validation.
 
 The retrospective July-5 FMP snapshot is
 NOT point-in-time acquisition/adjustment
