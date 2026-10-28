@@ -2898,3 +2898,66 @@ Local:
 Evidence derives from the operator-provided local
 terminal output, not server-side access to private
 original point report or target Pickles.
+
+## 2026-10-28 G3.1 ORIGINAL A2/A6 18-CELL FULL CLUSTER BOOTSTRAP OPERATOR COMPLETION
+
+The Mac operator executed the previously approved
+`ic_g3_1_a2_a6_protected_runner.py --mode full`
+against previously SHA-verified original
+V2/V3/V4 signal/target original data at unchanged
+precision-repaired, **71/71 synthetic/static tests PASS**
+scientific code commit:
+`0c5e433f10ce742bc129b666dfc4551f4b2fd21b`.
+
+**Actual operator console output:**
+`G3.1: G3_1_A2_A6_FULL_18_CELL_POST_OUTCOME_EXPLORATORY`.
+Original frozen q25/K10 V2, V3, V4 point parity PASS,
+same calibration-only V0 q15/q25/q35:
+`-0.17323055863380432`,
+`-0.16665692627429962`,
+`-0.16293590515851974`.
+`Old-cohort exploratory cells: 18`.
+`News and ticker clustered uncertainty completed
+with fixed 10k resamples per feasible cell.`
+Runner explicitly printed:
+`NO independent new temporal cohort, NO tradable
+account P&L, NO A3 price comparison.`
+
+**Exact operator-computed SHA256 of local full JSON:**
+`53c4618f86f46a80a5a783c3449a8d120379f26c8d459c8e740dd4fb63697968`.
+Local path:
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_1_A2_A6_FLOAT32_FULL_10K_CLUSTERS.json`.
+
+**IMPORTANT EVIDENCE LIMITATION:**
+The full JSON per-cell statistics, bootstrap
+`infeasible_replicates` and resulting intervals
+were **NOT printed** in the operator's log.
+We therefore can attest only to the runner's
+reported 18-cell full-mode execution and
+operator-produced digest, **NOT** to validity
+of all 36 news/ticker bootstrap intervals,
+zero exclusions, a CI excluding zero,
+multiple-testing adjusted inference or
+statistically significant policy superiority.
+
+The earlier original 18/18-point JSON report
+`8493355a8711512e0182067ad5b10e652528acd348cbde21bd1291f56ca214bb`
+remains the fixed point-estimate source.
+The separate non-mutating next step is
+a source-only QA comparison of the exact
+two report SHA hashes, all 18 point cells,
+all 36 bootstrap blocks, 10,000 draws
+per block, valid CI format and suppression
+when any bootstrap draw cannot fill Top-K.
+A3 historical price analysis, prospective
+holdout, realized cash P&L and a formal
+familywise significance claim remain BLOCKED.
+
+Scientific interpretation stays explicitly
+`POST_OUTCOME_EXPLORATORY_NOT_INDEPENDENT_CONFIRMATION`;
+these old 60d forward-excess-beta outcomes are
+not ex-ante verified trading returns.
+
+Recorded as operator-attested local execution,
+not independent remote verification of original
+user files or live experiment execution.
