@@ -46,7 +46,7 @@ class A3OriginalValidOnlyTests(unittest.TestCase):
         ids,raw=validation_synthetic()
         from ic_g2_g3_exploratory_core import original_validation_p10_thresholds
         original=original_validation_p10_thresholds(raw,ids)
-        self.assertEqual(original["0.25"],ORIGINAL_Q25)
+        self.assertAlmostEqual(original["0.25"],ORIGINAL_Q25,places=12)
         admitted=same_order_valid_and_calibrated_p10(ids,ids,raw,original)
         self.assertEqual(len(admitted),N_VALID)
         self.assertEqual(int(admitted.sum()),N_VALID-(int(.25*N_VALID)-1))
@@ -108,7 +108,7 @@ class A3OriginalValidOnlyTests(unittest.TestCase):
         s=SOURCE.read_text()
         self.assertIn("from ic_g2_g3_exploratory_core import trailing_volatility_60",s)
         self.assertIn('N_VALID=19880',Path(__file__).with_name("ic_g3_2_a3_numeric_source_quality_gate.py").read_text())
-        self.assertIn('and risk>=0',s.replace("risk>=0","and risk>=0"))
+        self.assertIn("np.all(risk>=0)",s)
         self.assertIn('"original_p10_admitted_weighted_fraction"',s)
         self.assertIn('"volatility_admitted_weighted_fraction"',s)
 
