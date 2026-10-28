@@ -41,6 +41,7 @@ def must(x,s):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--g2-16-synthetic-gate",required=True)
+    p.add_argument("--g2-freeze-approval",required=True,help="Human-signed and SHA-bound immutable G2 freeze manifest authorizing G3.0 ONLY")
     p.add_argument("--g1-sealed-dossier",required=True)
     p.add_argument("--g2-6-binding",required=True)
     p.add_argument("--models-dir",required=True)
@@ -52,11 +53,20 @@ def main():
         p.error("Requires explicit trusted LOCAL source Pickle opt-in")
     target=Path(a.out).expanduser()
     if target.exists():p.error("Refuse overwrite of original G3.0 parity evidence")
-    gate=obj(Path(a.g2_16_synthetic_gate).expanduser())
+    gate_path=Path(a.g2_16_synthetic_gate).expanduser()
+    gate=obj(gate_path)
     must(gate.get("status")=="G2_16_SYNTHETIC_AND_SOURCE_GATE_PASS_G3_0_PARITY_AND_MANUAL_FREEZE_PENDING" and
          gate.get("tests_successful") is True and gate.get("tests_run",0)>=19 and
          gate.get("g3_1_financial_comparison_authorized") is False,
          "Protected synthetic source methodology preflight not PASS")
+    freeze=obj(Path(a.g2_freeze_approval).expanduser())
+    must(freeze.get("status")=="G2_FULL_PROTOCOL_FROZEN_AUTHORIZE_G3_0_SOURCE_PARITY_ONLY" and
+         freeze.get("source_gate_report_sha256")==sha(gate_path) and
+         freeze.get("human_scientific_signoff") is True and
+         freeze.get("g3_1_old_outcome_access_authorized") is False and
+         isinstance(freeze.get("immutable_freeze_commit"),str) and
+         len(freeze["immutable_freeze_commit"])==40,
+         "No real operator-hash and human-approved G2 freeze for G3.0; HALT")
     dossierpath=Path(a.g1_sealed_dossier).expanduser()
     bindpath=Path(a.g2_6_binding).expanduser()
     must(sha(dossierpath)==G1_SHA and sha(bindpath)==G26_SHA,
@@ -91,7 +101,8 @@ def main():
         "status":"G3_0_PENDING",
         "source_g1_sealed_sha256":G1_SHA,
         "source_g2_6_binding_sha256":G26_SHA,
-        "g2_16_source_gate_sha256":sha(Path(a.g2_16_synthetic_gate).expanduser()),
+        "g2_16_source_gate_sha256":sha(gate_path),
+        "g2_freeze_approval_sha256":sha(Path(a.g2_freeze_approval).expanduser()),
         "reconstructed_original_weights_not_preexisting":True,
         "original_source_provenance_open":True,
         "comparative_old_targets_opened":False,
