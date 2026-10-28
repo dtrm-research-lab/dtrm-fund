@@ -112,13 +112,17 @@
   "protections": {
     "code_under_review": "research/reviews/icomputing_2026/ic_g2_g3_exploratory_core.py",
     "synthetic_tests": "research/reviews/icomputing_2026/test_ic_g2_g3_exploratory_core.py",
-    "source_reader_entrypoint": "NOT IMPLEMENTED OR VERIFIED, NO G3 SCIENTIFIC DATA LOADING AUTHORIZED",
+    "source_reader_entrypoint": "NOT IMPLEMENTED OR VERIFIED, NO G3.1 FINANCIAL DATA LOADING AUTHORIZED",
     "G3_0_model_lineage": "NOT YET OPERATOR VERIFIED",
     "synthetic_test_execution": "NOT YET OPERATOR VERIFIED",
     "source_data_never_committed_publicly": true,
     "conditional_g3_experiments_authorized": false,
     "complete_g2_protocol_frozen": false,
     "reviewer_22_item_freeze_pass": false,
-    "human_scientific_signoff": false
+    "human_scientific_signoff": false,
+    "protected_g3_0_original_model_parity_source": "research/reviews/icomputing_2026/ic_g3_0_original_model_row_parity.py",
+    "protected_g3_0_source_static_tests": "research/reviews/icomputing_2026/test_ic_g3_0_protection.py",
+    "original_model_g3_0_exec_requires_human_signed_freeze_and_source_report_sha": true,
+    "syn_core_22_tests_and_g3_0_protection_7_tests_required": 29
   }
 }
