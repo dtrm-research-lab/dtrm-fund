@@ -3620,3 +3620,100 @@ independent 60-day holdout,
 or tradable account P&L, without
 new source review and explicit
 separate operator consent.
+
+## 2026-10-28 G3.2 A3 THREE-ARM PAIRED POINT SCIENCE PREPARED; 122 TESTS/OUTCOME ACCESS UNEXECUTED
+
+After the user/owner executed the SHA-pinned
+original G3.2 A3 3-arm **source-only**
+preflight with `63/63 PASS`
+and all V2/V3/V4 old source same-N/K
+feasibility established (source
+report SHA256
+`9c03f925be0429b9b70407018d59f1df801682a9e7a821a6bb9c6d3ef80fe317`),
+we have **prepared** but **NOT RUN**
+a new bounded original data A3
+three-arm POINT-ONLY evaluator.
+
+Prepared original scientific modules:
+`ic_g3_2_a3_three_arm_pure_points.py`;
+`ic_g3_2_a3_three_arm_point_runner.py`,
+plus **9+10=19 new synthetic guards**.
+Candidate immutable code SHA:
+`f093543d809742ebcdc8e70ea0218686a4b99a6f`.
+Old original G3.1 q25/K10
+source and source-preserving
+float32 method are untouched.
+
+Bounded new A3 point runner MUST:
+- receive fresh explicit
+  `--authorize-a3-retrospective-old-outcome-point-only`
+  plus separate old-holdout, source price-vintage,
+  no-realized-PnL and trusted Pickle acknowledgements;
+- SHA lock its own 4 files,
+  G3.1 original protected source
+  nine-file dependency/test gate,
+  G3.2 original three-arm preflight
+  eight-file dependency/test gate,
+  G2 original frozen source and
+  six old signal/target file SHAs,
+  all 174 original July-5 price files
+  and exact original aggregate
+  reports including frozen
+  V0-only volatility cutoff;
+- BEFORE any new result, recompute
+  and compare all 3 source-only
+  q25/risk admissions, original
+  K and fixed Top-K overlap to
+  the already-consumed preflight;
+- require exact 1e-12 original
+  q25/K10 Phase II effect
+  parity in each original cohort
+  and consistency to the original
+  G3.1 point report SHA
+  `8493355a8711512e0182067ad5b10e652528acd348cbde21bd1291f56ca214bb`;
+- keep baseline, q25 P10
+  veto and V0-calibrated risk
+  on identical original rows/ranking
+  and K, preserving original
+  target float32 mean semantics;
+- report original mean target,
+  original hit rates and paired
+  P10−baseline, risk−baseline,
+  **P10−risk** mean/hit
+  differences separately
+  for V2/V3/V4;
+- NEVER fit a model, retune q25
+  or risk, publish original
+  target vectors/IDs, run
+  bootstrap in point-only
+  mode or treat beta-adjusted
+  target as actual P&L.
+
+**Testing state:** total
+**122 distinct source/synthetic tests
+prepared**, including 19 new
+A3 point tests, but no 122/122
+PASS or actual historical
+A3 target point results yet.
+See `G3_2_A3_PAIRED_3ARM_POINT_ONLY_RELEASE.md`
+for exact owner commands.
+The new A3 point stage requires
+**new separate actual execution
+approval** after the 122
+local tests. G3.1 A2/A6
+and V0 risk calibration
+stay scientifically frozen.
+
+Original provider acquisition
+vintage/adjustments and a new
+independent 60d holdout
+remain unverified. Original
+old targets are already
+outcome-consumed in G3.1:
+any later A3 point differences
+are POST_OUTCOME_EXPLORATORY,
+not prospective, unadjusted
+and not statistically
+significant without
+separate paired news/ticker
+cluster uncertainty analysis.
