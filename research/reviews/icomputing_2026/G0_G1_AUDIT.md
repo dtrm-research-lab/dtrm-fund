@@ -2053,3 +2053,74 @@ newly changed code.
 **Current: G2.16 original operator 29/29 PASS;
 subsequent source amendment pending re-test.
 G2 OVERALL UNFROZEN, G3.0 AND G3.1 BLOCKED.**
+
+## 2026-10-28 G2.17 science freeze CANDIDATE and operator signoff runbook PREPARED
+
+The prior G2.16 operator source-only result was:
+`G2_16_SYNTHETIC_AND_SOURCE_GATE_PASS_G3_0_PARITY_AND_MANUAL_FREEZE_PENDING`;
+**29/29 PASS**, **22/22 reviewer/editor requirements traced**.
+This result belongs to the earlier tested code.
+Afterwards, G3.0 was made stricter:
+- Strict historical P10 Boolean masks.
+- No false numeric P10 model-score parity where
+  V2/V3 original numeric score references are absent.
+- Exact SHA-256 match of approved protected
+  G3.0 script to the operator-attested frozen
+  source manifest; acknowledgement of
+  retroactively dated quote-vintage limits,
+  V2/V4 ticker-cluster uncertainty and
+  absence of a new 60-day holdout.
+- No G3.1 outcome/target/P&L read authorized.
+
+A formal complete 22-item candidate crosswalk was created:
+`G2_17_REVIEWER_TRACEABILITY_FREEZE_CANDIDATE.json`,
+with `all_g3_analyses_specified=true` *as design
+disposition*, explicit NOT_EXECUTABLE justifications
+for A4 economic ledger, A5 independent second
+ranker, X1 new independent 60-day holdout, and
+G3.1 A2/A3/A6 outcome use still NOT_AUTHORIZED.
+Critically `revision_protocol_freeze_commit=null`,
+`human_scientific_signoff=false`,
+`g3_0_parity_authorized=false` are honest
+until the actual operator explicitly approves.
+
+Canonical reviewer-linked source:
+`G2_17_FINAL_PROTOCOL_FREEZE_CANDIDATE.md`,
+with original 390-feature V2/V3 model
+parity and pure A2/A3/A6 post-outcome
+exploratory design. P10 original q25,
+strict A3 60 prior returns, original K and
+both 10k clustered resamples remain
+unchanged and scientifically bounded.
+
+Created SHA-bound, fail-closed freeze
+program `ic_g2_17_operator_freeze.py`:
+it requires the operator to explicitly
+acknowledge retrospective price-vintage
+and no-new-independent-60d limitations
+and to approve **G3.0 SOURCE-PARITY ONLY**,
+checks that the actual immutable Git
+commit contains exactly the scripts,
+model checker, reviewer matrix and source
+specification whose SHA was recorded by
+the latest local G2.16 PASS, including
+the approval program itself; then runs
+original 22-item `ic_g2_freeze_preflight.verify`
+on locally finalized linked matrix and
+writes a path-redacted local operator
+attestation with immutable code SHA.
+This is **operator CLI attestation**, not
+a cryptographically signed research record.
+
+Added five standalone static safeguards for
+freeze builder. Final required G2.16 suite:
+**22 synthetic math + 9 protected G3.0 source +
+5 freeze-builder tests = 36**.
+Original saved G2.9/10/12/13 report hashes
+unchanged. See operator instructions:
+`G2_17_FREEZE_G3_0_OPERATOR_RUNBOOK.md`.
+
+**NO OPERATOR G2.17 ACTION HAS OCCURRED YET,
+NO 36-TEST PASS EXISTS YET. G2 overall remains
+UNFROZEN; G3.0 not authorized yet, G3.1
+FINANCIAL RESULT ACCESS remains BLOCKED.**
