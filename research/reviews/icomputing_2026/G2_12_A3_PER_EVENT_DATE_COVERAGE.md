@@ -59,9 +59,10 @@ Inputs, read-only:
   Counts >=61 dated closes imply 60 *potential*
   trailing close-to-close returns; >=41 imply
   minimum 40. Price quality is not certified.
-- V1 vs V4 keys/order/dates must agree
-  exactly (this is an internal source lineage
-  check, NOT another independent temporal cohort).
+- V1 vs V4 event/ticker/date **key sets** must agree;
+  original source row order is recorded separately
+  and does not change price-date feasibility.
+  This is NOT a new independent temporal cohort.
 - Report **aggregate pair counts per cohort only**:
   full 60-date coverage, 40-date coverage, missing
   cache ticker, SPY deficit, dates outside historic
@@ -118,7 +119,8 @@ those fields are *not accessed* by this procedure.
 - `G2_12_A3_ALL_ORIGINAL_EVENT_PAIR_BAR_DATES_COVERED_VINTAGE_OPEN`:
   all original historical event/ticker pairs have
   61 strictly prior dated close bars; original
-  V1/V4 key/order/date match remains exact.
+  V1/V4 event/ticker/date **key sets** match.
+  Their row-order agreement is separately reported.
   Provider vintage and price adjustments remain
   **UNVERIFIED**, so no causal independent A3
   result and no G3 authorization.
