@@ -36,6 +36,15 @@ class G30SourceProtection(unittest.TestCase):
         self.assertIn('iteration_range=(0,11)',s)
         self.assertIn('iteration_range=(0,19)',s)
         self.assertIn("veto_bad=int(np.sum",s)
+    def test_no_false_numeric_p10_parity_without_source_reference(self):
+        s=read()
+        self.assertIn("original_p10_numeric_reference_available",s)
+        self.assertIn("BASELINE_NUMERIC_AND_P10_MASK_PARITY_PASS_P10_NUMERIC_REFERENCE_ABSENT",s)
+        self.assertIn('status!="ROW_PARITY_PASS"',s)
+    def test_original_boolean_mask_cannot_be_cast_from_string(self):
+        s=read()
+        self.assertIn('signals["p10_pass"].isin([True,False])',s)
+        self.assertIn("original_mask_type_valid",s)
     def test_never_approves_g3_1(self):
         s=read()
         self.assertIn('"g3_1_financial_comparison_authorized":False',s)
