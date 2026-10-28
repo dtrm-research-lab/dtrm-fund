@@ -1673,3 +1673,62 @@ May/June decisions; historical provider
 adjustments, numeric validity and price
 acquisition timestamps remain **UNVERIFIED**.
 G2 is ACTIVE and UNFROZEN; G3 BLOCKED.
+
+## 2026-10-28 G2.13 — V0 validation 19,880/19,880 DATE source PASS
+
+The original local operator ran seven
+`test_ic_g2_13_validation_dates_regression.py`
+static source tests, with **7/7 PASS**, and
+`ic_g2_a3_original_validation_date_coverage.py`
+against SHA-recorded trusted original historical
+stock/SPY price caches and original
+`legacy_model_rows_2026-05-01.pkl`.
+
+Exact result:
+`G2_13_A3_V0_VALID_19880_PAIR_BAR_DATES_FULL_COVERAGE_VINTAGE_OPEN`.
+
+- Original frozen V0 `split="valid"`: **19,880/19,880**
+  pairs have >=61 strictly earlier original
+  daily bar DATES, sufficient *in principle*
+  for up to 60 trailing close-to-close returns.
+- **167** distinct validation tickers.
+- Validation event dates **2025-12-24** to
+  **2026-01-21**.
+- Missing stock price symbol pairs: **0**.
+- Original training-row file, new retrospective local
+  SHA256 `3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724`.
+  This is NOT an original historical/outcome-blind
+  cryptographic commit.
+- G2.12 operator report SHA256 independently
+  supplied by G2.13 source-binding computation:
+  `e67cf796975c60fdc674f15d985ce755ca1b862779253f4ef7f82a56d326785f`.
+- G2.13 output:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_13_A3_V0_validation_bar_dates.json`;
+  its own SHA256 **not yet supplied or sealed**.
+- No numeric close values, actual stock returns,
+  financial outcomes, volatility, model scores,
+  target labels, transaction costs or
+  comparative performance were computed.
+
+**Interpretation:** G2.12 test pairs (47,596/47,596)
+and G2.13 original V0 validation pairs
+(19,880/19,880) all have 60 pre-event
+historical bar DATES (subject to the original
+July-5 snapshot). This makes a *retrospective
+date-restricted* conventional volatility
+comparator structurally feasible.
+
+**Scientific limits remain open:** original
+2026-07-05 saved price-cache vintage postdates
+both V0 validation and original V2/V3/V4
+decision dates; original provider collection
+timestamps, corporate-action revisions,
+numerical `close` validity, real per-event
+quote availability and actual tradable
+portfolio returns were NOT authenticated
+by G2.13. This must be described honestly
+in any subsequent A3 secondary analysis
+and response to Reviewer #1.
+
+**G2.13 = SOURCE-DATE VALIDATION PASS.
+G2 overall still UNFROZEN; G3 BLOCKED.**
