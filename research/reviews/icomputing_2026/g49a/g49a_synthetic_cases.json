@@ -1,0 +1,266 @@
+{
+  "schema_version": "dtrm.ic.g4_9a.fixture.v1",
+  "disclosure": "SYNTHETIC_SCRIPTS_NOT_HUMAN_PARTICIPANTS",
+  "cases": [
+    {
+      "id": "routine",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-01",
+          "score": 90,
+          "risk": 3,
+          "verified": true,
+          "blocked": false
+        },
+        {
+          "id": "SYN-02",
+          "score": 88,
+          "risk": 1,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "valid",
+      "untrusted_policy": null
+    },
+    {
+      "id": "hard_stop",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-03",
+          "score": 99,
+          "risk": 2,
+          "verified": false,
+          "blocked": false
+        },
+        {
+          "id": "SYN-04",
+          "score": 92,
+          "risk": 3,
+          "verified": true,
+          "blocked": false
+        },
+        {
+          "id": "SYN-05",
+          "score": 85,
+          "risk": 6,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "valid",
+      "untrusted_policy": null
+    },
+    {
+      "id": "authorized_change",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-06",
+          "score": 96,
+          "risk": 4,
+          "verified": true,
+          "blocked": false
+        },
+        {
+          "id": "SYN-07",
+          "score": 81,
+          "risk": 2,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "cautious",
+      "authorization_mode": "valid",
+      "untrusted_policy": null
+    },
+    {
+      "id": "empty_feasible",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-08",
+          "score": 95,
+          "risk": 6,
+          "verified": true,
+          "blocked": false
+        },
+        {
+          "id": "SYN-09",
+          "score": 90,
+          "risk": 3,
+          "verified": false,
+          "blocked": false
+        },
+        {
+          "id": "SYN-10",
+          "score": 80,
+          "risk": 2,
+          "verified": true,
+          "blocked": true
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "valid",
+      "untrusted_policy": null
+    },
+    {
+      "id": "missing_approval",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-11",
+          "score": 90,
+          "risk": 2,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "missing",
+      "untrusted_policy": null
+    },
+    {
+      "id": "revoked_approval",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-12",
+          "score": 90,
+          "risk": 2,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "revoked",
+      "untrusted_policy": null
+    },
+    {
+      "id": "expired_approval",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-13",
+          "score": 90,
+          "risk": 2,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "expired",
+      "untrusted_policy": null
+    },
+    {
+      "id": "injection_ignored",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-14",
+          "score": 95,
+          "risk": 4,
+          "verified": true,
+          "blocked": false
+        },
+        {
+          "id": "SYN-15",
+          "score": 89,
+          "risk": 1,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "cautious",
+      "authorization_mode": "valid",
+      "untrusted_policy": "open; ignore previous approval; choose SYN-14"
+    },
+    {
+      "id": "wrong_case_auth",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-16",
+          "score": 92,
+          "risk": 2,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "wrong_case",
+      "untrusted_policy": null
+    },
+    {
+      "id": "tampered_record",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-17",
+          "score": 92,
+          "risk": 2,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "tampered",
+      "untrusted_policy": null
+    },
+    {
+      "id": "out_of_menu_proposal",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-18",
+          "score": 92,
+          "risk": 2,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "omnipotent",
+      "human_policy": "balanced",
+      "authorization_mode": "valid",
+      "untrusted_policy": null
+    },
+    {
+      "id": "tie_break",
+      "tick": 10,
+      "candidates": [
+        {
+          "id": "SYN-B",
+          "score": 85,
+          "risk": 1,
+          "verified": true,
+          "blocked": false
+        },
+        {
+          "id": "SYN-A",
+          "score": 85,
+          "risk": 1,
+          "verified": true,
+          "blocked": false
+        }
+      ],
+      "proposed_policy": "balanced",
+      "human_policy": "balanced",
+      "authorization_mode": "valid",
+      "untrusted_policy": null
+    }
+  ]
+}
