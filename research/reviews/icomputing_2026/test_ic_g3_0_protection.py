@@ -15,6 +15,9 @@ class G30SourceProtection(unittest.TestCase):
         self.assertIn('freeze.get("human_scientific_signoff") is True',s)
         self.assertIn('freeze.get("source_gate_report_sha256")==sha(gate_path)',s)
         self.assertIn('freeze.get("g3_1_old_outcome_access_authorized") is False',s)
+        self.assertIn('freeze.get("protected_g3_0_source_sha256")==sha(Path(__file__).resolve())',s)
+        self.assertIn('freeze.get("reviewed_retrospective_price_vendor_vintage_limitations") is True',s)
+        self.assertIn('freeze.get("reviewer_editor_items")==22',s)
     def test_does_not_reference_old_target_artifact_filenames(self):
         s=read()
         self.assertNotIn("_model_targets_",s)
