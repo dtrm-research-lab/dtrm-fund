@@ -2590,3 +2590,51 @@ trusted old original outcome Pickles.
 A3 financial price/volatility remains
 outside this scope. Do not claim any
 prospective holdout or realized P&L.
+
+## 2026-10-28 G3.1 operator POINT RUN HALTED — original q25/K10 mean/hit parity
+
+Operator invoked the separately consented, protected
+`ic_g3_1_a2_a6_protected_runner.py` in `--mode point`
+with SHA-pinned candidate code
+`5cf62c854643576ee6059ac44f55a805b8ff3137`,
+previous original G2.17 owner approval and original
+six-file G3.1 source-only PASS. The program stopped:
+
+`G3.1 HALTED: ScientificGateError Old historical q25/K10 effect failed 1e-12 parity`.
+
+**Consequence:** The historic original baseline/P10 delta
+mean or hit-rate could not be shown to reproduce by the
+new program. The exception string does NOT identify which
+original cohort, metric or numeric difference. Do NOT
+assume it is rounding, imputable source discrepancy,
+original Phase II error or a specific cohort.
+
+The gate `analyze_18_cells` performs ALL three original
+q25/K10 reproduction checks before making the fixed
+18 alternative analysis cells; therefore **zero approved
+18-cell results, zero bootstrap results**, and no completed
+new sensitivity claims. In contrast to the earlier 38
+synthetic-only tests, this was an attempted empirical
+execution and should remain a recorded reproducibility
+blocker. Original source archives and frozen thresholds
+must not be changed to force a PASS.
+
+**Required next experiment:** Narrow, read-only
+original q25/K10 parity diagnostic using the
+frozen original Phase II `load_cohort` and
+`evaluate_selection` code from
+`c7502a690162459cdfb3413573e3133c42efb126`.
+Compare its original published expected
+(mean, hit) against both original implementation and
+our protected in-memory join calculation per cohort.
+Use only SHA-verified original six source files;
+report aggregate 3-cohort deltas, K, pass counts,
+discrepancy metric and origin, with no raw original
+row-level identities/financial targets. No change
+to q25, score, K, selected targets or fixed inferential
+policy. Human consent must remain explicit for a
+diagnostic that opens original trusted target Pickles.
+
+**G3.1 A2/A6 18-cell RESULTS BLOCKED, original protocol
+not modified, A3 and any further outcome experiments
+not authorized.**
