@@ -121,3 +121,15 @@ No raw confidential market dataset, model credentials, human respondent
 logs or secret HMAC key are committed.
 
 **G4.9c engineering smoke PASS. G4 Novelty Gate OPEN.**
+
+## Adversarial G4.9c2 follow-up: additional comparator (2026-10-28)
+
+**This was devised AFTER observing the original 60-case G4.9c result and is EXPLORATORY, not part of its pre-execution protocol.** A transparent, non-trained policy chooser maximizes the *public* score minus the visible synthetic user risk penalty over the same three selectable policies. No heldout synthetic realized labels are used when choosing.
+
+- Exact original heldout: transparent **83.28853647** vs learned **83.45532793** vs fixed balanced **80.81257747**. Transparent and learned differ in 2/60 policy decisions. Learned leads transparent by just **0.16679147** utility points in this one synthetic seed.
+- Additional 32 separate synthetic generator seeds 20261030..20261061, each fresh 300 training/60 heldout: transparent-minus-learned mean across seeds **+0.05694396**, with transparent leading in 9 seeds, learned in 6, and 17 equal. Mean different policies **0.8125/60** per seed. This is synthetic exploratory sensitivity, **not** a confidence interval about the real world.
+- The utility generator is *score + independent mean-zero noise - visible risk penalty*. Consequently a transparent score-minus-risk decision rule is almost optimal for the simulator by construction. The result does not establish intrinsic value of machine learning, human autonomy or policy authorization. **The paper novelty gate is NOT satisfied by this benchmark.**
+- Original GitHub-source rerun, numeric references and the 32-seed experiment: GitHub Actions **40772876816**, 23 tests PASS; `g49c_transparent_challenge.py`; detailed artifact `G49C_2_TRANSPARENT_BASELINE_ADVERSARIAL_READOUT_20261028.md`.
+
+**Editorial decision:** retain as reproducibility/technical appendix or separate research engineering record only; do not present synthetic policy-comparator superiority as a central new scientific result for the *Intelligent Computing* major revision. Genuine human-authority evidence remains absent (N=0), as does an LLM baseline and a justified noninferiority margin.
+
