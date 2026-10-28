@@ -3233,3 +3233,77 @@ cluster interval-report QA; no change
 to science. A3 numerical source-only
 gate CLOSED PASS. Vintage unresolved,
 G3.2 A3 benchmark/results BLOCKED.**
+
+## 2026-10-28 G3.2 A3 V0 VALIDATION-ONLY WEIGHTED VOLATILITY CUTOFF PREPARED — 51 TESTS NOT RUN
+
+Following the original operator-confirmed
+G3.2 A3 numeric source quality **34/34 PASS**
+and complete **19,880/19,880 V0 VALID +
+47,596/47,596 original historical**
+quality eligibility (174/174 original
+saved July-5 price file SHA checks,
+local report SHA `91979425af5b3785c15fd7a74e821429f094b23c5ea1ede0c8b89efb457ee83a`),
+a new **validation-only**, no old
+outcome/target cutoff construction
+code is prepared:
+
+`ic_g3_2_a3_valid_only_cutoff.py`,
+with **12 new** synthetic/static tests
+`test_ic_g3_2_a3_valid_only_cutoff.py`
+and runbook
+`G3_2_A3_V0_VALIDATION_ONLY_RISK_CUTOFF_RUNBOOK.md`.
+
+Only original 19,880-row V0 VALID
+`news_id,ticker,date_dt` paired with
+retrospectively reconstructed original
+390-feature P10 prediction values
+may be used; the original rows must
+be **same order and exact news ID
+vector** (no silent row join).
+The calibrated original P10 q25
+`-0.16665692627429962` is
+re-reproduced and fail-closed at 1e-12.
+
+Conventional trailing 60-return
+sample standard deviation ddof=1
+is computed only from last 61
+strictly pre-event UTC-date saved
+`2026-07-05` stock closes. The
+risk cut is the original weighted
+quantile of V0 VALID risk at the
+original **inverse-news-id weighted
+P10 q25 admission fraction**.
+Results record weighted/unweighted
+admission rates and exact tie
+discrepancy; this cannot be tuned
+using observed V2/V3/V4 results.
+
+The original 174 price hashes
+and all five G2 source evidence
+report hashes are rechecked before
+trusted local Pickles are opened.
+Old V2/V3/V4 signals, targets,
+model outcomes and A3 economic
+effect comparisons remain BLOCKED;
+no 10k bootstrap permitted in this
+step. New authorization flags
+are required for validation-only
+P10/price source replay. Historic
+acquisition-date adjusted quote
+vintage remains UNVERIFIED.
+
+**Required local gate** = 22 original
+core + 12 G3.2 numeric source +
+5 original V0 P10 source +
+12 new V0 cutoff regression
+= **51 static/synthetic tests**, all
+pending operator execution.
+
+**No code-only source preparation
+constitutes a real 51/51 PASS,
+original volatility percentile
+measurement or A3 old financial
+outcome comparison.** Original
+A2/A6 results remain unchanged;
+G3.2 A3 outcome comparison still
+UNAUTHORIZED.
