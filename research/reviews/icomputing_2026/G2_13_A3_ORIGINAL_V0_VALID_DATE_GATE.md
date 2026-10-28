@@ -157,3 +157,28 @@ Avoid additional low-value inventory steps.
 The A3 baseline comparison, if authorized, will
 remain explicitly **POST_OUTCOME_EXPLORATORY**,
 not an independent prospective 60-day test.
+
+## Superseding G2.13 local operator outcome and immutable report digest (2026-10-28)
+
+The operator subsequently ran **7/7 static regression tests PASS**
+and the full source-only date gate. Exact result:
+`G2_13_A3_V0_VALID_19880_PAIR_BAR_DATES_FULL_COVERAGE_VINTAGE_OPEN`.
+Original `valid` fold **19,880/19,880** event/ticker pairs,
+**167** symbols, oldest original validation event date
+`2025-12-24`, newest `2026-01-21`;
+zero original price-cache ticker gaps.
+Original `legacy_model_rows_2026-05-01.pkl`
+retrospective local SHA:
+`3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724`.
+G2.12 source report SHA:
+`e67cf796975c60fdc674f15d985ce755ca1b862779253f4ef7f82a56d326785f`.
+
+The operator also SHA256-checked the newly generated
+G2.13 report with exact digest:
+`e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7`.
+
+This supersedes the earlier 'G2.13 not yet run' / missing
+digest text above. No volatility, actual return outcomes,
+predictor fitting, or G3 comparison was executed. Source
+vintage, numeric closing prices and adjustment regime
+remain unverified. **G2 unfrozen; G3 blocked.**
