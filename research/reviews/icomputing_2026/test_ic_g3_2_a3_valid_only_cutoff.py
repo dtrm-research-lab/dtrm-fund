@@ -165,10 +165,22 @@ class A3OriginalValidOnlyTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,"completeness drift"):
             matched_threshold(vol,ids,np.ones(N_VALID,dtype=bool))
     def test_price_root_is_sha_verified_before_pandas_pickle(self):
+        # Security property is *execution order of deserialization*, NOT
+        # import order: a helper defined above main legitimately imports
+        # Pandas, but that helper is only INVOKED after all price hashes.
+        import ast
         s=SOURCE.read_text()
-        self.assertIn("recheck_all_historical_price_hashes(",s)
-        self.assertLess(s.index("prices=recheck_all_historical_price_hashes("),
-                        s.index("import pandas as pd"))
+        tree=ast.parse(s)
+        main=next(n for n in tree.body
+                  if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))
+                  and n.name=="main")
+        body=ast.get_source_segment(s,main)
+        verify=body.index("prices=recheck_all_historical_price_hashes(")
+        # Ensure the same call that checks all 174 price hashes occurs
+        # before *every* original Pickle read on the main execution path.
+        self.assertLess(verify,body.index("import pandas as pd"))
+        self.assertLess(verify,body.index("pd.read_pickle("))
+        self.assertLess(verify,body.index("original_frozen_model_ordered_valid_rows("))
         self.assertIn('sha(file)==item.get("sha256_new_local_commitment")',s)
         self.assertIn('and "/" not in filename and "\\\\" not in filename',s)
     def test_synthetic_source_report_and_price_vintage_binding(self):
