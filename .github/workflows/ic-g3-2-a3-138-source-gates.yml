@@ -26,7 +26,7 @@ jobs:
       - name: Install source/synthetic test dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e . pandas
+          python -m pip install -e . 'pandas==2.2.3'
       - name: Run exact 138 IC G3.2 A3 tests without original outcome data
         shell: bash
         run: |
