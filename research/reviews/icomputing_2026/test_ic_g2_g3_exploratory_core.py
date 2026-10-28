@@ -90,6 +90,19 @@ class FrozenExploratoryCoreTests(unittest.TestCase):
         value,status=trailing_volatility_60(days,price,date(2025,4,1))
         self.assertIsNone(value)
         self.assertEqual(status,"INVALID_SELECTED_HISTORIC_CLOSE")
+    def test_invalid_selected_close_string_is_excluded_not_crash(self):
+        days=[date.fromordinal(date(2025,1,1).toordinal()+i) for i in range(61)]
+        prices=[100+i for i in range(61)]
+        prices[-1]="not a close"
+        result,reason=trailing_volatility_60(days,prices,date(2025,4,1))
+        self.assertIsNone(result)
+        self.assertEqual(reason,"INVALID_SELECTED_HISTORIC_CLOSE")
+    def test_post_event_close_is_not_converted_or_used(self):
+        days=[date.fromordinal(date(2025,1,1).toordinal()+i) for i in range(62)]
+        prices=[100+i for i in range(61)]+["not a historical close"]
+        result,reason=trailing_volatility_60(days,prices,days[-1])
+        self.assertIsNotNone(result)
+        self.assertEqual(reason,"OK_RETROSPECTIVE_DATE_ONLY_VINTAGE_UNVERIFIED")
     def test_duplicate_dates_fail_closed(self):
         with self.assertRaises(ScientificGateError):
             trailing_volatility_60([date(2025,1,1)]*61,[100]*61,date(2025,4,1))
