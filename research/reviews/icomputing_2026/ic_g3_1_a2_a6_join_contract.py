@@ -97,7 +97,9 @@ def extract_source_arrays(joined:pd.DataFrame):
       "prediction":joined["baseline_prediction"].to_numpy(dtype=float),
       "p10_calibrated":joined["p10_calibrated"].to_numpy(dtype=float),
       "original_q25_pass":joined["p10_pass"].to_numpy(dtype=bool),
-      "target":joined["target_model"].to_numpy(dtype=float),
+      # Do NOT silently promote original historical float32 targets:
+      # the unchanged Phase II evaluator averages in source dtype.
+      "target":joined["target_model"].to_numpy(),
       "news_id":joined["news_id"].to_numpy(dtype=object),
       "ticker":joined["ticker"].to_numpy(dtype=object)
     }
