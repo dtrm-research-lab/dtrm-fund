@@ -3450,3 +3450,90 @@ and no old V2/V3/V4 outcome input accessed.
 Await operator 56-test retry and only then
 separate explicit V0-only replay, with
 retrospective quote vintage still unverified.
+
+## 2026-10-28 G3.2 A3 V0 ORIGINAL VALIDATION CALIBRATION 56/56 PASS, WEIGHTED RISK CUTOFF SEALED
+
+Original Mac operator first ran **56/56** current
+source-only/synthetic protection tests PASS
+(`Ran 56 tests in 0.331s — OK`) from
+pinned exact candidate
+`5309886f3eb3caf2e2c05ebbb6aa3a01730e444b`.
+The revised original V0 source-order fix
+successfully recovered original P10 VALID
+prediction association without mismatching
+native `(news_id,ticker)` pairs or UTC timestamps.
+
+**Actual V0 VALID-only execution:** status
+`G3_2_A3_V0_VALIDATION_ONLY_WEIGHTED_VOLATILITY_CUTOFF_PASS_OUTCOMES_BLOCKED`.
+Actual original VALID N=19,880; reproduced
+unchanged original q25 P10 threshold
+`-0.16665692627429962`.
+
+Unmodified original source P10 q25 weighted
+admission fraction:
+`0.7503000595309957`;
+unweighted pair admission: **12,804**.
+
+Conventional 60 prior close-to-close return
+sample std, ddof=1, matched validation-only
+weighted-admission cutoff:
+`0.020823002555902668` (daily, not annualized).
+Risk `<=` cutoff weighted admission fraction:
+`0.7514905485009868`; unweighted pair
+admission: **13,611**.
+
+Weighted admission discrepancy
+(risk minus P10) due to cutoff ties:
+`0.001190488969991188`, i.e.,
+**+0.1190488969991188 percentage points**.
+The original source's weighted quantile,
+`risk<=threshold` tie policy and original
+P10 q25, order and source data were
+**NOT RETUNED** to force exact
+unweighted or weighted equality.
+Weights inverse per original VALID
+news ID mean raw pair counts
+need not equal weighted percentages.
+
+**Operator-local report SHA256:**
+`f27ffa219efc763f3db170bfaa45ca45148dd64a3fab82b6a55e6dfc73b50b21`.
+Path:
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_2_A3_V0_VALID_ONLY_LEGACY_ORDER_REPAIRED.json`.
+
+The operator terminal explicitly states
+`Original historical outcomes not accessed;
+no bootstrap`, with vendor price
+acquisition vintage and historical
+corporate-action adjustments still
+**UNVERIFIED**.
+
+**Scientific interpretation:**
+V0-only source and cutoff calibration
+is now COMPLETE and SHA-attested,
+under the original frozen G2 protocol
+but still a **DATE-RESTRICTED RETROSPECTIVE
+risk-control construction** from a
+July-5 stock price archive acquired after
+the old VALID and old cohort event times.
+It does not establish real-time
+point-in-time fidelity. No V2/V3/V4
+financial target file was opened.
+No old-risk-vs-P10 mean effect or
+ticker/news bootstrap calculated.
+
+**Next gate:** bounded SHA-verified A3
+V2/V3/V4 old signal + price
+`(news_id,ticker,date)` source
+join/admission/fixed-K feasibility
+preflight **WITHOUT old target labels**.
+Only after original preflight PASS,
+independent source/test code review,
+and fresh explicit operator approval
+may the already-consumed original
+V2/V3/V4 target labels be accessed
+for the 3-arm common-sample comparison.
+
+G3.1 A2/A6 exploratory review evidence
+remains frozen; G3.2 A3 original V0
+calibration COMPLETE; A3 original
+performance comparison still BLOCKED.
