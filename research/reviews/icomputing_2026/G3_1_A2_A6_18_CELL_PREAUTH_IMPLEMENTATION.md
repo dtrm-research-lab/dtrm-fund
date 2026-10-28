@@ -24,7 +24,7 @@ Original SHA-bound, size-checked G2.5 manifest source files:
 
 Three modular source components:
 
-### 1. Original 18,880? No: 19,880 VALID rows (A2)
+### 1. Original 19,880 VALID rows (A2)
 
 `ic_g3_1_a2_validation_only_source.py`
 
