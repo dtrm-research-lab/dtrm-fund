@@ -47,9 +47,29 @@ class A3PairedRunnerSourceGuards(unittest.TestCase):
     def test_prior_original_sha_and_all_scientific_source_gates(self):
         s=SRC.read_text()
         self.assertEqual(len(CODE_FILES),4)
-        for constant in (A3_PRIOR_POINT_SHA,SOURCE_PREFLIGHT_SHA,
-                         VALID_CUTOFF_SHA):
-            self.assertIn(constant,s)
+        # The prior A3 POINT digest is defined locally, while both
+        # the source-only preflight and V0 calibration digests are
+        # deliberately imported from the earlier SHA-bound A3 runner.
+        # Test the resolved values AND their actual evidence() binding,
+        # not the incidental presence of duplicate digest literals.
+        self.assertEqual(
+            A3_PRIOR_POINT_SHA,
+            "b5b94f09d57d8bb3336ea01eb469f5ef703743a1217422be7e0f4b98484b4087")
+        self.assertEqual(
+            SOURCE_PREFLIGHT_SHA,
+            "9c03f925be0429b9b70407018d59f1df801682a9e7a821a6bb9c6d3ef80fe317")
+        self.assertEqual(
+            VALID_CUTOFF_SHA,
+            "f27ffa219efc763f3db170bfaa45ca45148dd64a3fab82b6a55e6dfc73b50b21")
+        self.assertIn("SOURCE_PREFLIGHT_SHA,G31_ORIGINAL_POINT_SHA,ORIGINAL_P10",s)
+        self.assertIn(
+            "original_a3=evidence(a.g3_2_original_3arm_point_report,A3_PRIOR_POINT_SHA)",s)
+        self.assertIn(
+            "calibration=evidence(a.g3_2_valid_cutoff_report,VALID_CUTOFF_SHA)",s)
+        self.assertIn(
+            "preflight=evidence(a.g3_2_three_arm_source_preflight_report,",s)
+        self.assertIn(
+            "                       SOURCE_PREFLIGHT_SHA)",s)
         for text in ("verify_new_source(a.review_repo,commit)",
                      "verify_local_runner_code(a.review_repo,commit)",
                      "check_code(a.review_repo,commit)",
