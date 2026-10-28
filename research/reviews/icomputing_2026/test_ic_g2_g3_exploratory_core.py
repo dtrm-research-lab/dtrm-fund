@@ -63,7 +63,7 @@ class FrozenExploratoryCoreTests(unittest.TestCase):
         p=[10,9,8,7,6,5,4,3,2,1]
         y=list(range(10))
         c=list("abcdefghij")
-        mask=[True]+[False]*9
+        mask=[False]*10
         r=cluster_bootstrap(p,y,mask,c,.5,seed=6,replicates=50)
         self.assertEqual(r["infeasible_replicates"],50)
         self.assertIsNone(r["ci95_delta_topk_mean"])
