@@ -206,12 +206,12 @@ def trailing_volatility_60(bar_dates:Sequence,close:Sequence,event_date):
     authenticated historic exchange calendar/provider vintage.
     """
     ds=list(bar_dates)
-    prices=np.asarray(close,dtype=np.float64)
-    if len(ds)!=len(prices):raise ScientificGateError("Bar dates/close length mismatch")
+    saved_close=list(close)
+    if len(ds)!=len(saved_close):raise ScientificGateError("Bar dates/close length mismatch")
     event=_calendar_date(event_date)
     prior=[]
     seen=set()
-    for d,value in zip(ds,prices):
+    for d,value in zip(ds,saved_close):
         td=_calendar_date(d)
         if td in seen:raise ScientificGateError("Duplicate daily stock bar date")
         seen.add(td)
@@ -220,7 +220,13 @@ def trailing_volatility_60(bar_dates:Sequence,close:Sequence,event_date):
     prior.sort(key=lambda x:x[0])
     if len(prior)<61:
         return None,"INSUFFICIENT_61_PRIOR_BARS"
-    window=np.asarray([v for _,v in prior[-61:]],dtype=np.float64)
+    # Convert ONLY the selected pre-event 61 closes, not any future
+    # rows. A nonnumeric, null or infinite selected bar makes the pair
+    # ineligible for ALL A3 arms. No imputation or alternate history.
+    try:
+        window=np.asarray([v for _,v in prior[-61:]],dtype=np.float64)
+    except (TypeError,ValueError,OverflowError):
+        return None,"INVALID_SELECTED_HISTORIC_CLOSE"
     if not np.isfinite(window).all() or np.any(window<=0):
         return None,"INVALID_SELECTED_HISTORIC_CLOSE"
     ret=window[1:]/window[:-1]-1.
