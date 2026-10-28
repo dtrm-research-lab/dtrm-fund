@@ -156,7 +156,7 @@ class G49aMechanismTests(unittest.TestCase):
     def test_logical_checks_only_not_real_latency(self):
         r=m.run_suite(load_cases())
         self.assertEqual(r["total_logical_checks"]["A_DELEGATED"],12)
-        self.assertEqual(r["total_logical_checks"]["B_APPROVAL"],24)
+        self.assertEqual(r["total_logical_checks"]["B_APPROVAL"],23)  # bad agent policy denies before auth check
         self.assertEqual(r["total_logical_checks"]["C_DIRECT"],24)
 
     def test_report_rejects_output_mutation(self):
