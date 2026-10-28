@@ -2250,3 +2250,52 @@ Printed report summary:
 This evidence is an **operator-computed SHA256 of locally saved JSON**, not remote GitHub authentication of local source bytes. It establishes numeric equality against saved references, not a contemporaneous original preevent serialized booster, vendor price vintage, prospective validation or human-versus-AI causal identification.
 
 **G3.0 SOURCE/MODEL PARITY CLOSED PASS. G3.1 A2/A6/A3 STILL NOT AUTHORIZED.**
+
+## 2026-10-28 G3.0 report SHA SEALED, G3.1 A2/A6 source-only gate PREPARED
+
+Operator supplied original G3.0 local JSON output SHA256
+`a5bb3f6a3a4e2862a9898eea812a87a01b4b6e12191f4ffad9c03c50af61684a`.
+The exact operator result remained
+`G3_0_V2_V3_ORIGINAL_ROW_PARITY_PASS_G3_1_STILL_BLOCKED`.
+Original V2 **4,449** and V3 **2,827** frozen
+signal row predictions each had zero ranker
+numeric and P10 Boolean veto mismatches.
+Both source numerical P10 columns actually
+exist in V2 and V3: `p10_raw` and
+`p10_calibrated`. The frozen G3.0
+source only emits ROW_PARITY_PASS when
+available original numerical P10
+references pass at 1e-6; their max
+absolute differences were not
+included in the console summary.
+
+Created a **new G3.1 A2/A6 PRE-AUTHORIZATION
+SOURCE-ONLY** readiness gate:
+`ic_g3_1_a2_a6_source_gate.py`, seven
+static-only regression tests
+`test_ic_g3_1_a2_a6_source_gate.py`, and
+`G3_1_A2_A6_SOURCE_ONLY_GATE_RUNBOOK.md`.
+These check G3.0 report SHA, frozen G2.17
+owner approval, G2.5/G2.6 original
+source digests and original PhaseII
+cohort input size/SHA references
+for V2/V3/V4, with **NO Pickle deserialization**,
+no model inference, no market/target
+numeric reading or comparison.
+Frozen original `run_phase2_primary_bootstrap.py`
+uses V2 signals + V2 model targets,
+V3 signals + V3 model targets,
+**V4 signals + original V1 model targets**;
+the last linkage MUST remain intact.
+
+New code is GitHub-prepared, **not
+yet operator-run or science-signed**.
+G3.1 requires its own source reader
+implementation, 18-cell A2/A6 method
+reproduction, tested results
+safety gate and separate owner approval.
+The G2/G3.0 authorized scope does
+NOT extend to old forward targets.
+
+**G2 FROZEN; G3.0 PASS;
+G3.1 A2/A6/A3 OUTCOME ACCESS BLOCKED.**
