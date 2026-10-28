@@ -1997,3 +1997,59 @@ prospective cohort inference are asserted.
 **G2.16 operator tests NOT YET EXECUTED.
 G2 NOT FULLY FROZEN. G3.0 not authorized
 until freeze, G3.1 still BLOCKED.**
+
+## 2026-10-28 G2.16 OPERATOR PASS — 29 tests, 22 reviewer anchors, PRE-FREEZE ONLY
+
+Operator subsequently ran full G2.16 on the local
+original `$HOME/dtrm-ic-audit` workspace, including
+all original SHA-bound G2.9/G2.10/G2.12/G2.13
+report inputs, reviewer/editor traceability
+and frozen original git source. Actual status:
+
+`G2_16_SYNTHETIC_AND_SOURCE_GATE_PASS_G3_0_PARITY_AND_MANUAL_FREEZE_PENDING`.
+
+- **29 / 29 synthetic-method and G3.0 protection tests PASS**.
+- **22 / 22 original editor/reviewer anchors traced**.
+- User's locally computed and printed SHA256 of
+  `ic_g2_g3_exploratory_core.py` at this run:
+  `b5dd4de494942b617354ab448c90ec6f9ff32c9ae1861308a4f9bd50a2023090`.
+- User's locally computed and printed SHA256 of
+  `G2_16_EXPLORATORY_SCOPE_CANDIDATE.json`:
+  `f2d2c11fe41a27d08600d9a71fad29e25a57e8dd9413ec814d5a34775da52ddb`.
+- Local generated operator gate report:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_16_synthetic_science_gate.json`.
+  Its own digest **has not yet been supplied**.
+- G2.16 explicitly reports **no original
+  price, model, prediction or target
+  financial inference** as part of this step.
+
+Scientific interpretation: this is an authentic
+**operator-reported synthetic + documented input
+PASS**, not automatically the overall frozen G2
+protocol. Current original matrix still has
+`all_g3_analyses_specified=false` and
+`revision_protocol_freeze_commit=null`.
+Formal approval and immutable source commit
+remain separate. G3.0 may only run after
+real G2 signed scientific freeze; G3.1
+old-outcome analysis remains FORBIDDEN.
+
+The source G3.0 protected parity implementation
+was subsequently hardened to distinguish:
+(i) ranker numerical equality,
+(ii) strict stored Boolean P10 mask equality,
+(iii) original row-level numeric P10
+prediction reference *availability*.
+A missing original numeric P10 reference must
+be labeled MISSING, not falsely counted as
+'full P10 numeric parity'. This means the
+later G3.0 source hash is DIFFERENT from the
+operator's original G2.16 preflight, and
+**G2.16 must be rerun after the hardened code
+is included in a final freeze commit**.
+Do not reuse a previous test PASS to certify
+newly changed code.
+
+**Current: G2.16 original operator 29/29 PASS;
+subsequent source amendment pending re-test.
+G2 OVERALL UNFROZEN, G3.0 AND G3.1 BLOCKED.**
