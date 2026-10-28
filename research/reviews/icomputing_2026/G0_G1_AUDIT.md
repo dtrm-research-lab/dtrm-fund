@@ -3717,3 +3717,85 @@ and not statistically
 significant without
 separate paired news/ticker
 cluster uncertainty analysis.
+
+## 2026-10-28 G3.2 A3 ORIGINAL THREE-ARM POINT-ONLY CODE: 122/122 OPERATOR TEST PASS; HISTORICAL A3 TARGET RUN STILL BLOCKED
+
+The Mac operator fetched the exact committed
+G3.2 A3 paired 3-arm point-only candidate
+`f093543d809742ebcdc8e70ea0218686a4b99a6f`
+and ran all **122/122 synthetic and
+source-guard tests PASS**:
+`Ran 122 tests in 0.492s — OK`.
+This includes all previous original G3.1
+source/numerical control tests and
+19 new A3 original 3-arm paired points/
+consent runner tests.
+
+The initial runtime warning about date
+parsing and Pandas dtype incompatibility
+was triggered in deliberately invalid
+synthetic negative tests; the overall
+test run completed successfully.
+
+**No original A3 historical 60-day
+financial target analysis was executed**
+in this operator output. This is
+**NOT** a three-arm point estimate PASS,
+nor evidence P10 outperformed conventional
+trailing volatility in V2/V3/V4.
+
+Original source-only three-arm
+K10 feasibility was already
+operator attested as PASS
+with source report SHA256
+`9c03f925be0429b9b70407018d59f1df801682a9e7a821a6bb9c6d3ef80fe317`.
+Original V0 weighted-risk cutoff report
+SHA256 remains
+`f27ffa219efc763f3db170bfaa45ca45148dd64a3fab82b6a55e6dfc73b50b21`.
+Original G3.1 q25/K10 18-cell
+point report SHA256 remains
+`8493355a8711512e0182067ad5b10e652528acd348cbde21bd1291f56ca214bb`.
+
+**Next separately consented step:**
+`ic_g3_2_a3_three_arm_point_runner.py`
+under code commit
+`f093543d809742ebcdc8e70ea0218686a4b99a6f`,
+`--authorize-a3-retrospective-old-outcome-point-only`
+plus explicit holdout, source price
+vendor vintage, trusted original
+Pickles and no-realized-PnL
+acknowledgments. This DOES
+open original already-consumed
+V2/V3/V4 forward-target Pickles
+for paired no-veto vs frozen q25 P10
+vs frozen V0 calibrated risk effects.
+The code MUST verify original
+G3.1 Phase II q25/K10 mean+hit
+parity (1e-12), all original
+source SHA reports, old six
+signal/target byte SHA,
+174 archived price cache file SHAs,
+old 3-arm source-only K feasibility
+and original candidate comparison
+counts BEFORE emitting aggregate
+A3 target results. Original
+float32 target semantics unchanged.
+No bootstrap in POINT mode.
+
+Original later 2026-07-05
+price vendor acquisition/revision
+vintage and corporate-action
+adjustments still UNVERIFIED;
+this is DATE-RESTRICTED
+POST_OUTCOME EXPLORATORY
+and target is 60d forward-excess-beta,
+NOT investable account P&L.
+
+**A3 scientific status:** quality,
+V0 calibration, 63/63 source preflight
+and new 122/122 protected-point
+SYNTHETIC tests PASS.
+Original A3 3-arm target
+**NOT YET RUN**; any actual
+A3 policy value/significance
+claims still BLOCKED.
