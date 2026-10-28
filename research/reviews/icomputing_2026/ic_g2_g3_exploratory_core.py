@@ -13,7 +13,7 @@ side='left', bootstrap cluster duplicated all rows with replacement.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from math import isfinite
 from typing import Sequence
 import numpy as np
@@ -188,7 +188,10 @@ def cluster_bootstrap(prediction:Sequence,target:Sequence,admitted:Sequence,
     }
 
 def _calendar_date(x):
-    if isinstance(x,date):return x.date() if isinstance(x,datetime) else x
+    if isinstance(x,datetime):
+        return (x.astimezone(timezone.utc).date()
+                if x.tzinfo is not None else x.date())
+    if isinstance(x,date):return x
     if isinstance(x,np.datetime64):
         return date.fromisoformat(str(x.astype("datetime64[D]")))
     if isinstance(x,str):
