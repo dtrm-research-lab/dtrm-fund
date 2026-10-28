@@ -68,7 +68,7 @@ class FrozenExploratoryCoreTests(unittest.TestCase):
         self.assertEqual(r["infeasible_replicates"],50)
         self.assertIsNone(r["ci95_delta_topk_mean"])
     def test_event_day_bar_not_usable(self):
-        days=[date(2025,1,1+i) for i in range(61)]
+        days=[date.fromordinal(date(2025,1,1).toordinal()+i) for i in range(61)]
         closes=[100+i for i in range(61)]
         v,status=trailing_volatility_60(days,closes,date(2025,3,2))
         # 2025-03-02 is 60 days after Jan 1. Last dated bar (Mar 2)
@@ -76,7 +76,7 @@ class FrozenExploratoryCoreTests(unittest.TestCase):
         self.assertIsNone(v)
         self.assertEqual(status,"INSUFFICIENT_61_PRIOR_BARS")
     def test_volatility_requires_full_60_returns(self):
-        days=[date(2025,1,1).fromordinal(date(2025,1,1).toordinal()+i) for i in range(70)]
+        days=[date.fromordinal(date(2025,1,1).toordinal()+i) for i in range(70)]
         values=[100+i for i in range(70)]
         v,status=trailing_volatility_60(days,values,date(2025,3,30))
         self.assertIsNotNone(v)
