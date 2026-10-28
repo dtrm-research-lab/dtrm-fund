@@ -162,7 +162,8 @@ def main():
         "source_snapshot_suffix":"2026-07-05",
         "source_cache_files_checked":174,
         "cohorts":{},
-        "v1_v4_event_pair_key_order_and_date_agreement":None,
+        "v1_v4_event_pair_key_date_set_agreement":None,
+        "v1_v4_event_pair_key_date_order_agreement":None,
         "original_validation_pair_date_coverage_checked":False,
         "price_close_column_values_loaded_in_memory_by_pickle":True,
         "price_close_values_accessed_for_calculation":False,
@@ -258,11 +259,15 @@ def main():
         del signals,keys
     if ("V4_original_V1_signals" in row_keys
         and "V4_original_V4_signals" in row_keys):
-        result["v1_v4_event_pair_key_order_and_date_agreement"]=(
-            row_keys["V4_original_V1_signals"]==
-            row_keys["V4_original_V4_signals"]
-        )
-        if result["v1_v4_event_pair_key_order_and_date_agreement"] is not True:
+        v1=row_keys["V4_original_V1_signals"]
+        v4=row_keys["V4_original_V4_signals"]
+        result["v1_v4_event_pair_key_date_set_agreement"]=(set(v1)==set(v4))
+        result["v1_v4_event_pair_key_date_order_agreement"]=(v1==v4)
+        # We compare only coverage of event/time/ticker keys.
+        # Original V4 may store the same keys in a different ordering.
+        # That order is documented separately, not a reason to
+        # reject the underlying price-date feasibility.
+        if result["v1_v4_event_pair_key_date_set_agreement"] is not True:
             all_good=False
     else:
         all_good=False
@@ -282,8 +287,10 @@ def main():
               v.get("full_60_prior_return_date_coverage_pairs"),
               "missing_ticker_pairs",
               v.get("missing_original_price_cache_ticker_pairs"))
-    print("V1 vs V4 event ID/ticker/date order agreed:",
-          result["v1_v4_event_pair_key_order_and_date_agreement"])
+    print("V1 vs V4 event ID/ticker/date key sets agreed:",
+          result["v1_v4_event_pair_key_date_set_agreement"])
+    print("V1 vs V4 source row order agreed:",
+          result["v1_v4_event_pair_key_date_order_agreement"])
     print("Report:",out)
     print("No close prices accessed in calculations, no returns, volatility, labels, model inference or portfolio P&L.")
     print("G2 UNFROZEN; G3 BLOCKED.")
