@@ -1,6 +1,6 @@
 {
   "schema_version": "dtrm.ic.g2.a3_conventional_risk_control_plan.v0",
-  "status": "DRAFT_SOURCE_DATE_FEASIBLE_NUMERIC_VINTAGE_RISK_AND_FULL_G2_FREEZE_OPEN",
+  "status": "G2_A3_PRIMARY_60_RETURN_NUMERIC_POLICY_PREDECLARED_NOT_FROZEN_G3_BLOCKED",
   "editorial_case": "ICOMPUTING-D-26-01069",
   "reviewer_requirement": "R1-04",
   "created_date": "2026-10-27",
@@ -64,14 +64,21 @@
   ],
   "volatility_formula": {
     "bar_cut": "price_date (UTC calendar day) strictly < news event date (UTC calendar day); conservatively exclude all event-day bars.",
-    "full_lookback": "Take 61 most recent distinct historically dated closes, produce 60 daily close-to-close simple returns.",
-    "minimum_return_count": 40,
-    "fallback": "If only 41..60 eligible historical closing dates, use at least 40 returns and report N; if fewer than 41 dated closes, pair ineligible.",
+    "full_lookback": "Exactly 61 most recent unique dated bars with bar calendar date < UTC event calendar date; no event-day close and no post-event bar. Compute exactly 60 consecutive-observed-bar simple returns.",
+    "minimum_return_count": 60,
+    "fallback": "NO_FALLBACK. Exactly 61 strictly earlier distinct available trading close bars yielding 60 valid daily simple returns. If any of the selected close values are nonfinite, zero or negative, exclude the pair from ALL arms and count exclusion. Never use 40 bars or backfill from other snapshots.",
     "daily_return": "close_t / close_previous - 1; nonfinite/missing or nonpositive input forbids observation; price gap/missingness policy to be frozen before opening values.",
     "risk_score": "sample std ddof=1 of most recent at most 60 finite daily returns; no annualization for veto threshold.",
     "asof_limitation": "Retrospectively reconstructed dated-bar volatility, NOT verified historical provider-vintage or executable as-of signal.",
     "no_price_at_or_after_event_day": true,
-    "no_outcome_leakage": true
+    "no_outcome_leakage": true,
+    "missing_close_policy": "No interpolation, substitution, forward-fill, winsorization, change of lookback or fallback. If any of selected 61 closes is not finite and strictly > 0, mark pair NUMERIC_CLOSE_INVALID; exclude it from all 3 arms for A3 common-sample effect only. Emit all exclusions. Leave historical original A2 and A6 full-cohort estimands unchanged.",
+    "duplicated_dates": "FAIL CLOSED for price source ticker, never average/select date duplicates based on outcome. G2.10 showed no duplicates in existing source.",
+    "calendar_gap_handling": "Use last 61 chronologically distinct vendor-provided daily dated bars, not a separately authenticated exchange-session calendar; missing session rows are not imputable or certified absent by G2.10.",
+    "annualization": "None for cutoff; if shown, only descriptive multiply by sqrt(252).",
+    "split_dividend_adjustment_policy": "Do not repair jumps or infer adjustments after seeing outcomes. Use the original saved close values with explicit retrospective-vintage caveat; no point-in-time adjustment authenticity claim.",
+    "close_date_equal_event_day_is_eligible": false,
+    "reject_original_40_return_fallback": true
   },
   "arms_and_comparator": {
     "baseline": "Original frozen ex-ante XGBoost ranker, original iteration 10 and stable tie order.",
@@ -79,7 +86,7 @@
     "conventional_veto": "admit if trailing volatility <= validation-only weighted cutoff calibrated to original P10 validation acceptance fraction ON COMMON VOLATILITY-ELIGIBLE validation observations.",
     "volatility_cutoff": "weighted empirical quantile of historical validation volatility at validation P10 admissible fraction; original validation news-id weights; ties and pass discrepancy explicitly reported.",
     "training_outcomes_for_cutoff": "NONE",
-    "common_eligibility": "Same frozen baseline rank, same news_id/ticker pair intersection for baseline, P10, volatility arms. Disclose excluded pairs, missing prices and no redefinition of original headline sample.",
+    "common_eligibility": "For A3 ONLY, define one validation original V0 and one per-test original cohort complete-case population from source-valid 61 historical closes. Drop invalid pairs from baseline, P10 and volatility arms identically; count reasons and never merge this new secondary estimand with original full-cohort headline. K=floor(0.1*common_N). If common_N/K too small, INFEASIBLE.",
     "K": "floor(0.10*common_eligible_cohort_pairs) for all arms; no shrinking K, no ex-post cutoff tuning.",
     "insufficient_admissions": "INFEASIBLE cell; report pass counts and no Top-K metric if K cannot be filled.",
     "original_q25_replication": "Reproduce original original full-cohort selection first, and separately label secondary common-sample effect.",
@@ -131,7 +138,7 @@
   },
   "hard_stops": [
     "G2 not completely signed/frozen → no G3 financial computation.",
-    "G2.10 report SHA unbound or original G2.9 price file SHA mismatch → STOP.",
+    "G2.9/G2.10/G2.12/G2.13 original SHA binding MUST match original locally sealed reports before ANY numeric price access; else STOP.",
     "Every actual original event pair and V0 validation ticker/news-date must have verified pre-event history or predeclared common-case exclusion.",
     "Price adjustment/provider vintage unverified → cannot claim true point-in-time executable signal.",
     "No cutoff fit, filter selection, predictor retuning or admission matching using known V2/V3/V4 target outcomes.",
