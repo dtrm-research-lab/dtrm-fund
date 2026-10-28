@@ -24,7 +24,9 @@ import subprocess
 import sys
 
 FROZEN_ORIGINAL="c7502a690162459cdfb3413573e3133c42efb126"
-APPROVED_G31="5cf62c854643576ee6059ac44f55a805b8ff3137"
+PRIOR_APPROVED_G31="5cf62c854643576ee6059ac44f55a805b8ff3137"
+# A revised precision-preserving candidate must be explicitly pinned by
+# the operator; the prior 38-test commit is kept as immutable evidence.
 REL="research/reviews/icomputing_2026/ic_g3_1_original_q25_parity_diagnostic.py"
 OLD="research/experiments/run_phase2_primary_bootstrap.py"
 TOL=1e-12
@@ -126,6 +128,8 @@ def one_diagnostic(original,cohort,files,join_fn,arrays_fn,protected_fn):
     return {
         "cohort":cohort,"rows":int(len(old_frame)),
         "old_join_rows":int(len(old_frame)),"new_join_rows":int(len(guarded)),
+        "original_target_dtype":str(old_frame["target_model"].dtype),
+        "protected_target_dtype":str(data["target"].dtype),
         "original_p10_pass_count":int(old_frame["p10_pass"].sum()),
         "protected_p10_pass_count":int(np.sum(data["original_q25_pass"])),
         "old_phase2_expected":expected,
@@ -142,6 +146,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--review-repo",required=True)
     p.add_argument("--diagnostic-code-commit",required=True)
+    p.add_argument("--candidate-source-commit",required=True,help="Exact tested 40-digit Git SHA of precision-preserving G3.1 core, join, runner, and tests")
     p.add_argument("--original-frozen-repo",required=True)
     p.add_argument("--source-only-report",required=True)
     p.add_argument("--g3-0-report",required=True)
@@ -176,7 +181,9 @@ def main():
     from ic_g3_1_a2_a6_protected_runner import make_release_checks
     from ic_g3_1_a2_a6_join_contract import source_exact_join,extract_source_arrays
     from ic_g2_g3_exploratory_core import select_topk
-    a.approved_commit=APPROVED_G31
+    a.approved_commit=a.candidate_source_commit.lower()
+    must(len(a.approved_commit)==40 and all(c in "0123456789abcdef" for c in a.approved_commit),
+         "New G3.1 source commit must be a full Git SHA")
     exact,bound=make_release_checks(a)
     must(len(bound)==6,"Expected exactly six original source input files")
     original=original_module(original_path)
@@ -192,7 +199,8 @@ def main():
         "schema_version":"dtrm.ic.g3.1.original_q25_only_failure_triage.v1",
         "generated_at_utc":datetime.now(timezone.utc).isoformat(),
         "status":overall,"original_scientific_commit":FROZEN_ORIGINAL,
-        "prior_approved_g31_code_commit":APPROVED_G31,
+        "prior_approved_g31_code_commit":PRIOR_APPROVED_G31,
+        "candidate_retested_g31_code_commit":a.approved_commit,
         "new_diagnostic_code_commit":diagnostic_commit,
         "source_only_report_sha256":sha(a.source_only_report),
         "g3_0_report_sha256":sha(a.g3_0_report),
@@ -214,6 +222,8 @@ def main():
     print("G3.1 ORIGINAL PARITY DIAGNOSTIC:",overall)
     for key,d in details.items():
         print(key,"N",d["rows"],"K",d["original_exact_phase2_method"]["topk_rows"],
+              "original_target_dtype",d["original_target_dtype"],
+              "protected_target_dtype",d["protected_target_dtype"],
               "original_mean",format(d["original_exact_phase2_method"]["delta_mean"],".17g"),
               "expected_mean",format(d["old_phase2_expected"]["delta_mean"],".17g"),
               "protected_mean",format(d["new_protected_original_only_method"]["delta_mean"],".17g"),
