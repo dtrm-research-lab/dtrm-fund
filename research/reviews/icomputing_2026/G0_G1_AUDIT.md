@@ -3069,3 +3069,91 @@ and manuscript-safe English text.
 Evidence is operator-posted console
 and SHA digests; actual original user
 JSON files remain on local Mac.
+
+## 2026-10-28 G3.2 A3 original price-source NUMERIC QUALITY GATE PREPARED — NO OUTCOMES
+
+After the independently audited G3.1 A2/A6
+18/18 historical sensitivity cells and
+36/36 news/ticker CI-block report PASS,
+the operator confirmed the decision to
+advance to A3 (conventional trailing
+volatility comparator, reviewer R1-04).
+The new stage is strictly SOURCE NUMERIC
+QUALITY FIRST, not A3 risk-vs-P10
+financial outcome comparison.
+
+Old G2.9/G2.10/G2.12/G2.13 reports already
+source-SHA seal 174 July-5 2026 price
+snapshots and full **61 pre-event dated
+bar coverage** of **19,880/19,880**
+original V0 validation observations
+and **47,596/47,596** original old
+V2/V3/V4 test observations.
+**These are DATE coverage, NOT numeric
+close quality or original provider as-of
+revision-vintage proof.**
+
+Created new bounded source
+`ic_g3_2_a3_numeric_source_quality_gate.py`
+and 12 synthetic/static protection cases in
+`test_ic_g3_2_a3_numeric_source_quality_gate.py`.
+The gate binds an immutable Git source/test/
+frozen-core SHA and exact original local
+G2.6, G2.9, G2.10, G2.12, G2.13 operator
+SHA reports, old V0 model rows, all three
+old model signal SHA files, plus all 174
+July-5 2026 original cache-price file
+sizes and hashes **before any trusted local
+Pickle deserialization**. Explicit
+operator consent to price numeric reading
+and vendor-vintage caveat is mandatory.
+
+Pure frozen source function
+`trailing_volatility_60` measures
+exactly the last 61 *dated closes before*
+event's UTC calendar day, yielding 60
+consecutive source-bar simple returns and
+sample volatility std(ddof=1); missing or
+nonfinite/negative/zero selected prices
+exclude the pair with original reason.
+No 40-return fallback, no event-day
+bar, no imputation, price adjustment,
+source-dependent tuning or ticker
+exclusion by outcome.
+
+The gate reports only aggregate V0 VALID,
+V2/V3/V4 pair quality/count/reason
+data. It never serializes numeric CLOSE,
+per-pair risk values, original source
+news/ticker identifiers or 60-day labels,
+never reconstructs frozen P10 admission
+cutoff, never reads V2/V3/V4 old targets
+or compares ranker/veto outcomes.
+A3 outcome model experiments remain
+NOT AUTHORIZED; source vintage and
+corporate action adjustment availability
+at original event dates UNVERIFIED.
+
+**This exact code has been prepared in
+GitHub but the 22 existing core and 12
+new G3.2 A3 source test cases have NOT
+YET BEEN EXECUTED by the operator.**
+The gated source numerical report also
+has NOT YET BEEN EXECUTED on original
+user price caches. No eligibility PASS
+or claim that 66,476 historical pairs
+contain valid numerics is made.
+
+See `G3_2_A3_SOURCE_NUMERIC_QUALITY_RUNBOOK.md`.
+When 34/34 tests pass and the
+operator separately opts into price
+numeric source-only access, continue
+to calibration-only V0 common-sample
+volatility-cutoff audit; A3 old target
+comparison requires a **new separate
+scoped consent**.
+
+**G2 frozen original methodology unchanged.
+G3.1 closed exploratory. G3.2 A3 source
+numeric gate PREPARED; financial outcomes
+still BLOCKED.**
