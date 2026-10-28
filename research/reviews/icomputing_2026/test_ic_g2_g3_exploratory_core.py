@@ -100,6 +100,19 @@ class FrozenExploratoryCoreTests(unittest.TestCase):
         self.assertEqual(r["cutoff"],.20)
         self.assertEqual(r["original_p10_weighted_admission"],.5)
         self.assertFalse("target" in r)
+    def test_common_validation_news_weights_recomputed_after_exclusion(self):
+        result=validation_only_volatility_cutoff(
+            [.10,float("nan"),.20,.30],
+            [True,False,False,True],
+            ["same_news","same_news","other_news","third_news"])
+        self.assertEqual(result["common_validation_pairs"],3)
+        self.assertAlmostEqual(result["original_p10_weighted_admission"],2/3)
+        self.assertEqual(result["cutoff"],.20)
+    def test_40_return_fallback_is_not_allowed(self):
+        days=[date.fromordinal(date(2025,1,1).toordinal()+i) for i in range(51)]
+        v,reason=trailing_volatility_60(days,[100+i for i in range(51)],date(2025,4,1))
+        self.assertIsNone(v)
+        self.assertEqual(reason,"INSUFFICIENT_61_PRIOR_BARS")
     def test_validation_pred_requires_original_19880(self):
         with self.assertRaises(ScientificGateError):
             original_validation_p10_thresholds([0,1],["a","b"])
