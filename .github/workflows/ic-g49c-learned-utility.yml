@@ -37,6 +37,13 @@ jobs:
           grep -qx 'HUMAN_N=0 NONINFERIORITY=NOT_TESTED' out/G49C_SYNTHETIC_READOUT.txt
           test ! -d research/local_data/g49c_participants
           sha256sum research/reviews/icomputing_2026/g49c/G49C_0_PREEXECUTION_PROTOCOL.md research/reviews/icomputing_2026/g49c/g49c_agent.py research/reviews/icomputing_2026/g49c/g49c_world.py research/reviews/icomputing_2026/g49c/g49c_run.py research/reviews/icomputing_2026/g49c/g49c_participant.py research/reviews/icomputing_2026/g49c/g49c_readback.py out/G49C_SYNTHETIC_LEARNED_POLICY_AGGREGATE.json > out/SOURCE_REPORT_HASHES.txt
+      - name: Run retrospective transparent policy challenger and 32-seed exploratory replay
+        run: |
+          set -euo pipefail
+          python research/reviews/icomputing_2026/g49c/g49c_transparent_challenge.py --out out/G49C2_TRANSPARENT_CHALLENGE_EXPLORATORY.json | tee out/G49C2_TRANSPARENT_READOUT.txt
+          grep -qx 'G49C2_EXPLORATORY_TRANSPARENT_CHALLENGER_REPLAY_PASS' out/G49C2_TRANSPARENT_READOUT.txt
+          grep -qx 'HUMAN_N=0 NONINFERIORITY=NOT_TESTED' out/G49C2_TRANSPARENT_READOUT.txt
+          sha256sum research/reviews/icomputing_2026/g49c/g49c_transparent_challenge.py out/G49C2_TRANSPARENT_CHALLENGE_EXPLORATORY.json >> out/SOURCE_REPORT_HASHES.txt
       - name: Upload only synthetic aggregate evidence
         uses: actions/upload-artifact@v4
         with:
