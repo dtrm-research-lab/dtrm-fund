@@ -234,14 +234,18 @@ def trailing_volatility_60(bar_dates:Sequence,close:Sequence,event_date):
 def validation_only_volatility_cutoff(valid_vol,valid_original_p10_admit,news_ids):
     risk=np.asarray(valid_vol,dtype=np.float64)
     accept=np.asarray(valid_original_p10_admit,dtype=bool)
-    weights=legacy_news_weights(news_ids)
-    _align(risk,accept,weights)
+    ids=_vec(news_ids,dtype=object)
+    _align(risk,accept,ids)
     valid=np.isfinite(risk)&(risk>=0)
     if not valid.any():raise ScientificGateError("No original validation common eligible pairs")
-    frac=float(np.average(accept[valid],weights=weights[valid]))
-    q=original_weighted_quantile(risk[valid],weights[valid],frac)
+    # Legacy weighting is recomputed inside the exact common-eligible
+    # validation split. A dropped ticker changes multiplicity for its
+    # news_id; never silently retain full-split weights on a subset.
+    weights=legacy_news_weights(ids[valid])
+    frac=float(np.average(accept[valid],weights=weights))
+    q=original_weighted_quantile(risk[valid],weights,frac)
     return {"cutoff":q,"original_p10_weighted_admission":frac,
             "volatility_weighted_admission":float(
-                np.average(risk[valid]<=q,weights=weights[valid])),
+                np.average(risk[valid]<=q,weights=weights)),
             "common_validation_pairs":int(valid.sum()),
             "vintage_status":"UNVERIFIED_LATER_SNAPSHOT"}
