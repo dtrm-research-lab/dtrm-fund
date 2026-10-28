@@ -136,6 +136,8 @@ class G49bPilotTests(unittest.TestCase):
     def test_no_consent_records_nothing(self):
         class TTY:
             def isatty(self):return True
+            def write(self,s):return len(s)
+            def flush(self):pass
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(cli.sys,"stdin",TTY()), mock.patch.object(cli.sys,"stdout",TTY()):
                 with mock.patch.object(cli,"_ask",return_value="NO"):
