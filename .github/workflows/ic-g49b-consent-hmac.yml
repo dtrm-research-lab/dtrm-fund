@@ -23,7 +23,7 @@ jobs:
       - name: Run mock-only authority security and consent tests
         run: |
           set -euo pipefail
-          python -m unittest discover -s tests -p 'test_ic_g49b_human_pilot.py' -v
+          python -m unittest discover -s tests -p 'test_ic_g49b_*.py' -v
       - name: Verify source is not in participant-data collection mode in CI
         run: |
           set -euo pipefail
@@ -32,5 +32,6 @@ jobs:
           test ! -e research/local_data/g49b_participant_sessions
           sha256sum research/reviews/icomputing_2026/g49b/G49B_0_HUMAN_PILOT_PROTOCOL_PREEXECUTION.md \
             research/reviews/icomputing_2026/g49b/g49b_core.py \
-            research/reviews/icomputing_2026/g49b/g49b_pilot.py
+            research/reviews/icomputing_2026/g49b/g49b_pilot.py \
+            research/reviews/icomputing_2026/g49b/g49b_audit.py
           echo "G49B_MOCK_CI_ONLY_NO_REAL_PARTICIPANTS"
