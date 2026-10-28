@@ -3897,3 +3897,112 @@ future holdout, price-vintage
 provenance or familywise
 significance obtained from
 additional resampling.
+
+## 2026-10-28 G3.2 A3 NEGATIVE POINT FROZEN; PAIRED NEWS/TICKER BOOTSTRAP CANDIDATE PREPARED NOT EXECUTED
+
+Original empirical three-arm A3 point
+already executed by operator
+(`G3_2_A3_ORIGINAL_3_ARM_PAIRED_POINT_ONLY_POST_OUTCOME_EXPLORATORY`),
+SHA256
+`b5b94f09d57d8bb3336ea01eb469f5ef703743a1217422be7e0f4b98484b4087`,
+demonstrating a **negative P10−risk
+paired mean and hit-rate difference
+in all V2/V3/V4 cohorts**, while
+both P10 and the conventional
+stock volatility filter show
+positive original retrospective
+point effects over baseline.
+
+This is adverse scientific
+evidence for any claim of
+P10's advantage over traditional
+risk controls; it MUST be
+explicitly published, not
+silently omitted or threshold-tuned.
+
+**Next-stage code prepared, NOT
+operator executed:**
+
+- Pure no-source A3 paired bootstrap
+  `ic_g3_2_a3_paired_cluster_bootstrap.py`
+  with 8 new synthetic checks.
+- Separately consented protected
+  original target bootstrap runner
+  `ic_g3_2_a3_paired_bootstrap_runner.py`
+  with 8 new synthetic checks.
+- Exact candidate Git source/test
+  code commit
+  `814d2d6e37317cfa17aa9450d8ebf1c32bcd3fad`.
+- Runbook
+  `G3_2_A3_PAIRED_10K_CLUSTER_BOOTSTRAP_RUNBOOK.md`.
+
+Proposed next local gate:
+**138 total synthetic and static
+tests** = the previously
+operator-verified 122 plus 16
+new A3 paired bootstrap tests.
+**NO new 138/138 PASS has
+yet been observed**.
+
+If tests pass and a separate
+actual new consent is granted,
+the protected runner re-verifies
+the exact original prior
+A3 point JSON SHA, all three
+historical original A3 points
+bitwise and metadata, exact
+original q25/K10 Phase II
+parity, G3.1 original source
+SHA/approval/runner, A3 original
+source preflight counts,
+original V0-only risk cutoff,
+174 original saved stock price
+files and six old cohort
+signal+target SHAs before any
+new 60d target re-read.
+
+The pure paired bootstrap
+reselects the 3 policies on
+the same entire original
+resampled cluster rows,
+K=floor(.1×resample N)
+and unchanged ranking,
+fixed seeds 20260821
+news-ID and 20260822
+ticker, 10,000 samples
+for each of 3×2 cohort
+cluster schemes (total 60k).
+Original native target float32
+mean semantics preserved.
+
+**Critical non-result gate:**
+on any Top-K-infeasible draw
+in either veto policy, ALL
+six mean/hit difference CIs
+for that cohort/scheme
+are withheld rather than
+selection-conditioned.
+Even complete, nonzero nominal
+bootstrap intervals
+cannot by themselves overcome
+multiple testing, temporal
+dependence of overlapping
+forward-60-day labels,
+already-consulted outcomes,
+or unknown July-5 2026
+price quote vendor acquisition
+and adjustment vintage.
+Prospective validation and
+realized self-financing P&L
+are not established.
+
+This candidate has undergone
+Git repository source readback
+and static contract inspection
+but **neither 138 local tests nor
+60k real original bootstrap
+samples have been executed**.
+The previous A3 operator
+original target point report
+remains the sole empirical A3
+policy performance artifact.
