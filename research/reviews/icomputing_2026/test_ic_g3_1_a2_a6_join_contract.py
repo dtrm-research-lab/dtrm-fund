@@ -101,6 +101,14 @@ class ProtectedOriginalSourceJoinTests(unittest.TestCase):
         sig["p10_pass"]=sig["p10_pass"].map(str)
         with self.assertRaisesRegex(OriginalJoinError,"strict Boolean"):
             source_exact_join(sig,tgt,"V3")
+    def test_original_float32_target_dtype_preserved_after_join(self):
+        sig,tgt=fixture()
+        tgt["target_model"]=tgt["target_model"].astype(np.float32)
+        joined=source_exact_join(sig,tgt,"V3")
+        data=extract_source_arrays(joined)
+        self.assertEqual(data["target"].dtype,np.dtype("float32"))
+        self.assertTrue(np.array_equal(data["target"],
+                                       tgt["target_model"].to_numpy()))
     def test_no_io_or_autorun_in_join_module(self):
         s=Path(__file__).with_name("ic_g3_1_a2_a6_join_contract.py").read_text()
         for forbidden in ("read_pickle","to_pickle","pd.read_csv(","pickle.load",
