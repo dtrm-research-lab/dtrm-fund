@@ -40,6 +40,8 @@ def main():
     p.add_argument("--spec",required=True)
     p.add_argument("--engine",required=True)
     p.add_argument("--tests",required=True)
+    p.add_argument("--g3-0-source",required=True)
+    p.add_argument("--g3-0-tests",required=True)
     p.add_argument("--reviewer-matrix",required=True)
     p.add_argument("--g2-9",required=True)
     p.add_argument("--g2-10",required=True)
@@ -53,9 +55,11 @@ def main():
     sp=Path(a.spec).expanduser()
     eng=Path(a.engine).expanduser()
     tests=Path(a.tests).expanduser()
+    stage0=Path(a.g3_0_source).expanduser()
+    stage0_tests=Path(a.g3_0_tests).expanduser()
     mat=Path(a.reviewer_matrix).expanduser()
-    fail(eng.is_file() and tests.is_file() and
-         not eng.is_symlink() and not tests.is_symlink(),
+    fail(all(x.is_file() and not x.is_symlink()
+             for x in (eng,tests,stage0,stage0_tests)),
          "Missing/symlinked pure Python modules")
     spec=obj(sp);review=obj(mat)
     original={}
@@ -138,13 +142,15 @@ def main():
          "Reviewer trace/action/response anchor incomplete")
 
     # A parser test alone is not sufficient; execute ALL synthetic tests.
-    compile(eng.read_text(encoding="utf-8"),str(eng),"exec")
-    compile(tests.read_text(encoding="utf-8"),str(tests),"exec")
+    for script in (eng,tests,stage0,stage0_tests):
+        compile(script.read_text(encoding="utf-8"),str(script),"exec")
     sys.path.insert(0,str(eng.parent))
-    module=tests.stem
-    test_suite=unittest.defaultTestLoader.loadTestsFromName(module)
-    fail(test_suite.countTestCases()>=19,
-         "Expected at least 19 independent synthetic-only core tests")
+    test_suite=unittest.TestSuite((
+        unittest.defaultTestLoader.loadTestsFromName(tests.stem),
+        unittest.defaultTestLoader.loadTestsFromName(stage0_tests.stem)
+    ))
+    fail(test_suite.countTestCases()>=29,
+         "Expected at least 22 synthetic core and seven G3.0 protection tests")
     sink=io.StringIO()
     result=unittest.TextTestRunner(stream=sink,verbosity=1).run(test_suite)
     fail(result.wasSuccessful(),
@@ -156,6 +162,8 @@ def main():
        "scientific_spec_sha256":sha(sp),
        "pure_core_sha256":sha(eng),
        "synthetic_test_module_sha256":sha(tests),
+       "protected_g3_0_source_sha256":sha(stage0),
+       "protected_g3_0_test_sha256":sha(stage0_tests),
        "reviewer_traceability_sha256":sha(mat),
        "tests_run":result.testsRun,
        "tests_successful":True,
