@@ -1538,3 +1538,39 @@ and corporate-action vintage are unverified;
 original V0 validation and all event/ticker
 pre-event close quality coverage is not yet audited.
 **G2 remains ACTIVE/NOT FROZEN; G3 still BLOCKED.**
+
+## 2026-10-28 G2.11 — OPERATOR-SUPPLIED SHA256 of original G2.9/G2.10 reports
+
+Operator ran `shasum -a 256` on the unchanged local
+JSON output reports from source-only and trusted
+date-schema-only steps. Exact SHA256, now recorded:
+
+- G2.9 `IC_G2_9_A3_original_price_cache_inventory.json`:
+  **`65cb3056fc2fafb8908c11a8329bae96b4e1c798f890defec508b2659043f7fb`**
+- G2.10 `IC_G2_10_A3_price_schema_dates.json`:
+  **`f4b873e10454d3b191b09ec7693111b3b5367bf3e92eb01643d8d785196ab6b3`**
+
+Operator G2.9 result:
+`G2_9_A3_HISTORICAL_PRICE_CACHE_SOURCE_FILENAMES_FOUND_ASOF_OPEN`;
+3,649 named original FMP price-cache files,
+174 original `2026-07-05` files (173 stocks plus SPY).
+
+Operator corrected G2.10 result:
+`G2_10_A3_ORIGINAL_STOCK_PRICE_BAR_DATE_COVERAGE_PASS_PROVIDER_VINTAGE_OPEN`;
+5/5 regression tests PASS; 174/174 original July-5
+frames have original `date` and `close` column
+names and >=61 distinct earlier trading-bar dates
+before the three original **first** V4/V2/V3 dates.
+
+These are **operator-supplied fingerprints of local
+reports**, not independently obtained file bytes
+by GitHub. They bind next preanalysis checks
+without uploading any private quoted prices.
+
+**Scientific guardrails unchanged:** first-event
+bar-date coverage does NOT establish every
+(news_id,ticker) row, original V0 validation
+date availability, actual close-value quality,
+historical provider acquisition time or
+corporate-action price adjustment vintage.
+A3 volatility benchmark and G3 remain BLOCKED.
