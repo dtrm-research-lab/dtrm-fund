@@ -63,7 +63,7 @@ class ProtectedOriginalSourceJoinTests(unittest.TestCase):
             source_exact_join(sig.iloc[:-1],tgt,"V3")
     def test_wrong_cohort_refused(self):
         sig,tgt=fixture()
-        with self.assertRaisesRegex(OriginalJoinError):
+        with self.assertRaises(OriginalJoinError):
             source_exact_join(sig,tgt,"V1")
     def test_mismatched_timestamp_refused(self):
         sig,tgt=fixture()
