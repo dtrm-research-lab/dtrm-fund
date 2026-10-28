@@ -1,6 +1,6 @@
 """Synthetic-only regression tests; no financial inputs, no G3 execution."""
 import unittest
-from datetime import date
+from datetime import date, datetime, timezone, timedelta
 import numpy as np
 from ic_g2_g3_exploratory_core import (
     ScientificGateError,original_weighted_quantile,legacy_news_weights,
@@ -97,6 +97,15 @@ class FrozenExploratoryCoreTests(unittest.TestCase):
         result,reason=trailing_volatility_60(days,prices,date(2025,4,1))
         self.assertIsNone(result)
         self.assertEqual(reason,"INVALID_SELECTED_HISTORIC_CLOSE")
+    def test_timezone_aware_datetime_uses_utc_day(self):
+        days=[date.fromordinal(date(2025,1,1).toordinal()+i) for i in range(61)]
+        prices=[100+i for i in range(61)]
+        # The 2025-03-02 00:30 in UTC+01 is 2025-03-01 UTC.
+        # Its March 1 bar is NOT in the pre-event population.
+        local_event=datetime(2025,3,2,0,30,tzinfo=timezone(timedelta(hours=1)))
+        value,reason=trailing_volatility_60(days,prices,local_event)
+        self.assertIsNone(value)
+        self.assertEqual(reason,"INSUFFICIENT_61_PRIOR_BARS")
     def test_post_event_close_is_not_converted_or_used(self):
         days=[date.fromordinal(date(2025,1,1).toordinal()+i) for i in range(62)]
         prices=[100+i for i in range(61)]+["not a historical close"]
