@@ -109,7 +109,8 @@ def main():
     inventory = g29.get("watched_historical_filenames", {}).get("2026-07-05", [])
     check(len(inventory) == 174, "G2.9 original July-5 source snapshot not complete")
     g210_tickers = {
-        v.get("ticker_from_filename") for v in g210.get("per_symbol_date_metadata_only", [])
+        canonical(str(v.get("ticker_from_filename"))) for v in
+        g210.get("per_symbol_date_metadata_only", [])
     }
     check(len(g210_tickers) == 174, "G2.10 original ticker inventory not 174 unique names")
     source_sha = binding.get("g2_5_historic_old_cohort_input_sha256", {})
