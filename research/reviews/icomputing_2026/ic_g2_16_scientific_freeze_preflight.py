@@ -149,8 +149,8 @@ def main():
         unittest.defaultTestLoader.loadTestsFromName(tests.stem),
         unittest.defaultTestLoader.loadTestsFromName(stage0_tests.stem)
     ))
-    fail(test_suite.countTestCases()>=29,
-         "Expected at least 22 synthetic core and seven G3.0 protection tests")
+    fail(test_suite.countTestCases()>=31,
+         "Expected at least 22 synthetic core and nine hardened G3.0 protection tests")
     sink=io.StringIO()
     result=unittest.TextTestRunner(stream=sink,verbosity=1).run(test_suite)
     fail(result.wasSuccessful(),
