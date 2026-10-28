@@ -3799,3 +3799,101 @@ Original A3 3-arm target
 **NOT YET RUN**; any actual
 A3 policy value/significance
 claims still BLOCKED.
+
+## 2026-10-28 G3.2 A3 ORIGINAL THREE-ARM PAIRED POINT EXECUTED — VOLATILITY OUTSCORES P10 IN ALL COHORTS
+
+Operator reported successful A3 point-only
+**ORIGINAL historical old-outcome** run using
+the previously unit-tested code candidate
+`f093543d809742ebcdc8e70ea0218686a4b99a6f`,
+the original six SHA-audited V2/V3/V4
+signal/target sources, 174 SHA-bound
+price archives and previously calibrated
+original V0-only price-risk cutoff.
+All original q25/K10 Phase II
+effects were rechecked by the runner,
+with matched original N and K,
+same ranking and source sample.
+
+Actual executable status:
+`G3_2_A3_ORIGINAL_3_ARM_PAIRED_POINT_ONLY_POST_OUTCOME_EXPLORATORY`.
+
+Source data/immutable thresholds unchanged:
+P10 original q25
+`-0.16665692627429962`;
+V0-valid only 60 prior return sample
+daily volatility `<=0.020823002555902668`.
+
+Original operator console records:
+
+| Cohort | N | K | Δ P10 minus baseline | Δ risk minus baseline | Δ P10 minus risk | Δ hit rate P10 minus risk |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| V2 | 4,449 | 444 | +0.14429480582475662 | +0.23292389139533043 | **-0.0886290855705738** | **-0.22522522522522526** |
+| V3 | 2,827 | 282 | +0.14943748898804188 | +0.24126996472477913 | **-0.09183247573673725** | **-0.1985815602836879** |
+| V4 | 40,320 | 4,032 | +0.027561593800783157 | +0.07162084616720676 | **-0.04405925236642361** | **-0.12103174603174599** |
+
+All three historical old-cohort paired
+point outcomes favor **conventional
+trailing realized volatility** over
+original q25 P10; both filtered
+policies show positive point effects
+relative to the unchanged baseline.
+The old original q25/K10 effects
+exactly match prior G3.1 point
+report. No cohort reweighting,
+after-outcome threshold changes
+or missing original sample
+exclusions were performed.
+
+**Exact operator-computed local report SHA256:**
+`b5b94f09d57d8bb3336ea01eb469f5ef703743a1217422be7e0f4b98484b4087`.
+Local only:
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_2_A3_ORIGINAL_3ARM_PAIRED_POINT_ONLY.json`.
+
+**Critical inferential limit:**
+No paired news or ticker bootstrap
+confidence intervals computed;
+even consistent signs across
+original historical V2/V3/V4
+do **not** establish statistical
+superiority or fully independent
+replications. All outcomes
+were previously seen in G3.1,
+and historical 60-day forward
+outcomes overlap in calendar
+time. The archived July-5
+price close arrays may include
+unverified ex-event vendor
+acquisition vintage or adjusted
+corporate-action revisions;
+no authenticated point-in-time
+price comparator exists.
+A3's target is beta-adjusted
+60-day forward model target,
+NOT actual tradable P&L.
+
+**Do not select/recalibrate P10
+or risk cutoff after seeing the
+negative P10−risk sign.**
+A scientifically responsible
+manuscript reports the
+negative comparator outcome
+prominently and acknowledges
+conventional volatility can
+explain or exceed the historical
+P10 result.
+
+Next A3 step (NOT YET DONE):
+freshly reviewed paired
+news-ID and ticker-cluster
+10,000 resample CI computation,
+resampling same rows and
+recomputing K across all
+3 policy arms each draw,
+withholding an entire cluster
+interval upon ANY infeasible
+draw. No independent
+future holdout, price-vintage
+provenance or familywise
+significance obtained from
+additional resampling.
