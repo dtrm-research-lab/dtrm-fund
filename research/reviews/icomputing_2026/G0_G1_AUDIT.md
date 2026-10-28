@@ -1783,3 +1783,25 @@ manuscript insertion.
 **No G2 overall freeze commit, no manual scientific
 signoff, no G3 financial tests, no official
 G5/G6/G7 manuscript/editorial submissions yet.**
+
+## 2026-10-28 G2.13 local report SHA256 operator commitment RECORDED
+
+Operator computed `shasum -a 256` for saved
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_13_A3_V0_validation_bar_dates.json`
+and provided exact digest
+`e620944edc840500ff9cc1c7e8e823428a0127f66b90db27dd1b6d9e30cc49c7`.
+
+The preserved result remains:
+`G2_13_A3_V0_VALID_19880_PAIR_BAR_DATES_FULL_COVERAGE_VINTAGE_OPEN`.
+Seven local static regression tests PASS; original V0
+validation 19,880/19,880 source pairs covering 167 tickers
+(2025-12-24 to 2026-01-21) have >=61 prior bar dates;
+G2.12 old V2/V3/V4 test pairs 47,596/47,596 similarly pass.
+
+**Nature of evidence:** user-computed cryptographic
+fingerprint of a saved local report. This assistant has
+not independently downloaded local report bytes.
+G2.13's local SHA confirms an exact report version but
+does not certify provider price vintage or its
+corporate-action adjustment availability as of
+the old event dates. G3 remains blocked.
