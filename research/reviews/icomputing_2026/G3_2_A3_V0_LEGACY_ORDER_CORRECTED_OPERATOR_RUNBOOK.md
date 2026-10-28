@@ -45,7 +45,7 @@ bash <<'BASH'
 set -euo pipefail
 AUDIT="$HOME/dtrm-ic-audit"
 REPO="$HOME/Desktop/DTRM_Lab/dtrm-fund"
-COMMIT="9985f9e14ca3e5b5c5ebc3a2eca0c54158df1c70"
+COMMIT="5309886f3eb3caf2e2c05ebbb6aa3a01730e444b"
 ROOT="research/reviews/icomputing_2026"
 
 git -C "$REPO" fetch origin research/ic-major-revision-2026
