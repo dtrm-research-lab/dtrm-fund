@@ -23,7 +23,7 @@ class G217FreezeBuilderProtection(unittest.TestCase):
             'git(repo,"show",commit+":"+ROOT+base)',
             'digest(contents["freezer"])==sha(Path(__file__).resolve())',
             "result.get(resultkey)",
-            "result.get(\"tests_run\",0)>=31"
+            "result.get(\"tests_run\",0)>=36"
         ):self.assertIn(token,s)
     def test_legacy_full_reviewer_gate_and_22_items(self):
         s=SOURCE.read_text(encoding="utf-8")
