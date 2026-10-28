@@ -98,11 +98,14 @@ claim true prospective preregistration.
 The `G3.1` 18-cell old-outcome runner, by original
 scientific contract, remains OFF.
 
-1. Run ALL **40** current synthetic/static release
-   tests (previously 38 + two float32 regressions)
-   plus **9** current synthetic/static diagnostic
+1. Run ALL **71** synthetic/static checks on one
+   immutable Git commit: the **22** original
+   pure-core regression tests (because its target
+   dtype semantics changed), **40** G3.1 source
+   release tests (previously 38 + two targeted
+   float32 regressions), and **9** bounded diagnostic
    tests (previously 8 + original/protected
-   dtype check) on the latest immutable Git SHA.
+   source dtype check).
 2. Before reading any old historical original
    `target_model` values, the revised
    diagnostic must be consented to
@@ -115,7 +118,7 @@ scientific contract, remains OFF.
    numeric types and pair/source counts.
    No new q15/q35 thresholds, A6 new K
    cells, any bootstrap or A3 prices.
-4. **If 40 or 9 tests fail or the three-cohort
+4. **If any of the 71 tests fail or the three-cohort
    new parity is NOT exact at 1e-12, STOP**.
    Do not relax tolerance or adjust original
    published expected numbers.
