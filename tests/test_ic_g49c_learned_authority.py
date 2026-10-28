@@ -59,7 +59,7 @@ class G49cLearnedHoldoutTests(unittest.TestCase):
         self.assertGreater(len({self.model.choose(w.public) for w in self.eval}),1)
 
     def test_agent_does_not_read_independent_hidden_labels(self):
-        w=self.eval[0]
+        w=next(w for w in self.eval if agent.select_candidate(w.public,self.model.choose(w.public)) is not None)
         p=self.model.choose(w.public)
         q=copy.deepcopy(w.public)
         self.assertEqual(self.model.choose(q),p)
