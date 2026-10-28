@@ -2175,3 +2175,59 @@ This audit update changes only documentation on
 the review branch after the tested candidate;
 the earlier exact frozen candidate source
 commit is still the intended reference.
+
+## 2026-10-28 G3.0 OPERATOR ROW PARITY PASS — V2 and V3, original source, model numeric parity, G3.1 LOCK
+
+Following human-approved immutable G2.17 protocol
+`3d53d2d5c7a4e3345b238b2b045fbd47f6e40de0`,
+the operator executed the exact frozen
+`ic_g3_0_original_model_row_parity.py`
+on original trusted, SHA-anchored V2/V3 signal
+and feature arrays and SHA-anchored reconstructed
+booster candidates.
+
+**Operator console result:**
+`G3_0_V2_V3_ORIGINAL_ROW_PARITY_PASS_G3_1_STILL_BLOCKED`.
+
+- V2 original signals: **4,449** rows, status
+  `ROW_PARITY_PASS` with **zero** numerical
+  baseline-ranker mismatches, **zero** P10
+  original veto-mask disagreements.
+- V3 original signals: **2,827** rows, same
+  `ROW_PARITY_PASS`, **zero** baseline
+  numerical mismatches and **zero** P10
+  veto-mask disagreements.
+- **7,276** combined V2/V3 old row pairs passed.
+- The frozen checker only grants `ROW_PARITY_PASS`
+  if original explicitly named numerical P10
+  reference field(s) are available and also
+  match the reconstructed model to 1e-6.
+  Thus this status implies P10 numeric
+  parity was checked, although the operator
+  did not paste the per-cohort report fields
+  giving exact column name, max P10 delta,
+  or count; **do not invent those specifics**.
+- Local report:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_0_original_v2_v3_model_row_parity.json`.
+  SHA256 of this report **not yet supplied**,
+  so do not claim it is immutable-linked by
+  a supplied report digest.
+
+G3.0 only opened original features, signals
+and reconstructed booster candidates.
+**No old forward-target/return, price-cache
+values, portfolio P&L or G3.1 analysis
+was performed.** The reconstructed booster
+weights are not authenticated historical
+pre-event model serialized binaries.
+The V1/V4 archived original original-row
+parity evidence is from distinct G1/G2
+source checks; this G3.0 result pertains
+specifically to V2 and V3, not a new
+independent matured 60d holdout.
+
+**G2 FULLY FROZEN (OPERATOR-ATTESTED). G3.0
+ROW PARITY PASS. G3.1 still BLOCKED until
+a separately reviewed and approved source
+reader, outcome-safety gate, and G3.0 report
+SHA, with exploratory-only inferential scope.**
