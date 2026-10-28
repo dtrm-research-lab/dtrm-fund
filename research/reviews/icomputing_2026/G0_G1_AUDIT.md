@@ -2124,3 +2124,54 @@ unchanged. See operator instructions:
 NO 36-TEST PASS EXISTS YET. G2 overall remains
 UNFROZEN; G3.0 not authorized yet, G3.1
 FINANCIAL RESULT ACCESS remains BLOCKED.**
+
+## 2026-10-28 G2.17 FINAL 36/36 SOURCE-GATE OPERATOR PASS — science freeze candidate still UNAPPROVED
+
+The local operator executed the exact pinned source-only
+G2.16/G2.17 pre-freeze gate against original G2.9,
+G2.10, G2.12 and G2.13 SHA-recorded local reports,
+the reviewer/editor source crosswalk, synthetic
+mathematical method tests, and protected original
+G3.0 parity and freeze-builder tests.
+
+**Exact operator terminal result:**
+`G2_16_SYNTHETIC_AND_SOURCE_GATE_PASS_G3_0_PARITY_AND_MANUAL_FREEZE_PENDING`.
+
+- **36/36 PASS** under the current version (supersedes
+  the earlier 29/29 pass for older script content).
+- **22/22 editor/reviewer anchors traced**.
+- Printed core code SHA256:
+  `b5dd4de494942b617354ab448c90ec6f9ff32c9ae1861308a4f9bd50a2023090`.
+- Printed canonical G2.16 scientific spec SHA256:
+  `f2d2c11fe41a27d08600d9a71fad29e25a57e8dd9413ec814d5a34775da52ddb`.
+- User confirmed exact fetched and tested Git commit:
+  **`3d53d2d5c7a4e3345b238b2b045fbd47f6e40de0`**.
+- Local operator report:
+  `$HOME/dtrm-ic-audit/g1-reconstruction/IC_G2_17_latest_36_test_science_gate.json`.
+  Its standalone SHA256 is not yet supplied to GitHub.
+  The freeze builder itself will calculate and bind it
+  to the operator's attestation, and refuse older/
+  changed source hashes.
+
+**Hard gate:** this is a synthetic/read-only source
+PASS, not a signed or approved G2 release. The
+original G2.17 `human_scientific_signoff`
+remains `false`, `revision_protocol_freeze_commit`
+remains `null`, and no
+`G2_FULL_PROTOCOL_FROZEN_AUTHORIZE_G3_0_SOURCE_PARITY_ONLY`
+local approval has yet been supplied.
+
+The operator-facing freeze command must refer
+**to the exact tested commit 3d53d2d…**, never
+silently use a later mutable branch HEAD
+that may differ after logging this event.
+G3.0 can only be authorized through the
+explicit bounded attestation and 22-reviewer
+post-attestation checker. G3.1 and all original
+old outcome financial analyses remain
+**BLOCKED** regardless of this test PASS.
+
+This audit update changes only documentation on
+the review branch after the tested candidate;
+the earlier exact frozen candidate source
+commit is still the intended reference.
