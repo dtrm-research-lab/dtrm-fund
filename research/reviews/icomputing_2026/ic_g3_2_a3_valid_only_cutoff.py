@@ -82,31 +82,115 @@ def recheck_all_historical_price_hashes(manifest,price_cache):
          "Expected 174 original stocks/SPY source SHA fingerprints")
     return result
 
-def same_order_valid_and_calibrated_p10(row_news,rebuilt_news,p10_raw,quantiles):
-    """Exact original V0 VALID order alignment and frozen q25 mask."""
+def original_frozen_model_ordered_valid_rows(model_rows, frozen_root, local_data):
+    """Recover exact original (news_id,ticker,date_dt) order of XGB V0 VALID.
+
+    DO NOT sort by news ID or align scores by a nonunique news ID.
+    This uses the original trusted frozen 'order_selected_legacy_rows'
+    algorithm and the original full selected input, as the original
+    original-P10 feature matrix did. NO model retraining or targets.
+    """
+    import pandas as pd
+    import sys
+    root=Path(frozen_root).expanduser()
+    must(root.is_dir() and not root.is_symlink(),
+         "Frozen source root missing/unsafe for original legacy order")
+    fullpath=Path(local_data).expanduser()/"legacy_pairs_enriched_2025-01-01_2026-05-01.pkl"
+    must(fullpath.is_file() and not fullpath.is_symlink(),
+         "Original full legacy row source missing/unsafe")
+    # The source reconstruct_valid_p10_only() already checks original
+    # frozen Git HEAD, clean status, G1 dossier and both model row files.
+    src=str(root/"src")
+    if src not in sys.path:
+        sys.path.insert(0,src)
+    from dtrm.legacy_model_rows import order_selected_legacy_rows
+    full=pd.read_pickle(fullpath)
+    need={"news_id","ticker","date_dt"}
+    must(isinstance(full,pd.DataFrame) and
+         need.issubset(full.columns) and
+         {"split",*need}.issubset(model_rows.columns),
+         "Original saved full/model row schema not replayable")
+    selected=list(zip(model_rows["news_id"],model_rows["ticker"]))
+    prior=list(zip(full["news_id"],full["ticker"]))
+    order=order_selected_legacy_rows(
+        full["ticker"],full["date_dt"],prior,selected)
+    must(len(order)==len(model_rows),
+         "Original frozen V0 selected row ordering incomplete")
+    ordered=model_rows.iloc[order]
+    valid=ordered.loc[ordered["split"].eq("valid"),
+                      ["news_id","ticker","date_dt"]].reset_index(drop=True)
+    must(len(valid)==N_VALID,
+         "Frozen ordered V0 VALID 19880 row count changed")
+    return valid
+
+def align_original_valid_keys_and_calibrated_p10(native,ordered,
+                                                 rebuilt_news,p10_raw,quantiles):
+    """Join original predictions by unique (news_id,ticker), check date.
+
+    'ordered' has exact historical model row ordering; 'native'
+    has exact original V0 archive order used for historic prices.
+    Their order may differ. No duplicate, missing or extra keys,
+    no guess based on news_id alone, no target access.
+    """
     import numpy as np
+    import pandas as pd
     from ic_g2_g3_exploratory_core import (
         original_validation_p10_thresholds,Q25_FROZEN,P10_OFFSET
     )
-    source=np.asarray(row_news,dtype=object)
-    replay=np.asarray(rebuilt_news,dtype=object)
+    columns=("news_id","ticker","date_dt")
+    must(isinstance(native,pd.DataFrame) and
+         isinstance(ordered,pd.DataFrame) and
+         set(columns).issubset(native.columns) and
+         set(columns).issubset(ordered.columns),
+         "Original VALID archive/model keys missing")
+    n=len(native)
     raw=np.asarray(p10_raw,dtype=np.float64)
-    must(len(source)==N_VALID and len(replay)==N_VALID
-         and len(raw)==N_VALID
-         and np.array_equal(source,replay),
-         "Original P10 VALID rows do not match model-row order; no silent join")
-    must(np.isfinite(raw).all() and
-         Q25_FROZEN==ORIGINAL_Q25 and P10_OFFSET==OFFSET,
-         "Nonfinite original scores or P10 constants changed")
-    expected=original_validation_p10_thresholds(raw,replay)
-    must(all(abs(float(expected[str(q)])-
+    ids=np.asarray(rebuilt_news,dtype=object)
+    must(n==N_VALID and len(ordered)==n
+         and len(raw)==n and len(ids)==n,
+         "Original/model V0 VALID 19880 cardinality drift")
+    ordered_ids=ordered["news_id"].to_numpy()
+    must(np.array_equal(ids,ordered_ids) and np.isfinite(raw).all(),
+         "Original model prediction and frozen ordered key vector differ")
+    def pairs(table):
+        return list(zip(table["news_id"],table["ticker"]))
+    native_keys=pairs(native)
+    model_keys=pairs(ordered)
+    must(len(set(native_keys))==n and len(set(model_keys))==n,
+         "Duplicate original (news_id,ticker) in VALID alignment")
+    must(set(native_keys)==set(model_keys),
+         "Original archived/model VALID (news_id,ticker) sets differ")
+    source_days=pd.to_datetime(native["date_dt"],utc=True,errors="coerce")
+    model_days=pd.to_datetime(ordered["date_dt"],utc=True,errors="coerce")
+    must(not source_days.isna().any() and not model_days.isna().any(),
+         "Invalid original event date in original P10 row binding")
+    native_dates=dict(zip(native_keys,source_days.tolist()))
+    model_dates=dict(zip(model_keys,model_days.tolist()))
+    must(native_dates==model_dates,
+         "Original V0 VALID ticker/event dates differ between source and P10 model")
+    calculated=original_validation_p10_thresholds(raw,ids)
+    must(Q25_FROZEN==ORIGINAL_Q25 and P10_OFFSET==OFFSET,
+         "Frozen original P10 constants changed")
+    must(all(abs(float(calculated[str(q)])-
                  float(quantiles[str(q)]))<1e-12
              for q in (.15,.25,.35)),
          "Original G3.1 validation cutoff replay drift")
-    must(abs(expected[str(.25)]-ORIGINAL_Q25)<=1e-12,
+    must(abs(calculated[str(.25)]-ORIGINAL_Q25)<=1e-12,
          "Original q25 fails exact frozen validation reproduction")
-    calibrated=raw+OFFSET
-    return calibrated>=ORIGINAL_Q25
+    index={key:j for j,key in enumerate(model_keys)}
+    remap=np.asarray([index[key] for key in native_keys],dtype=np.int64)
+    must(len(np.unique(remap))==n,
+         "Original P10 VALID identity map not bijective")
+    raw_native=raw[remap]
+    return raw_native+OFFSET>=ORIGINAL_Q25, {
+        "mapping_method":"EXACT_ORIGINAL_MODEL_LEGACY_ORDER_JOIN_ON_NEWS_ID_TICKER",
+        "native_valid_pairs":n,
+        "ordered_model_valid_pairs":n,
+        "identity_pairs_equal":True,
+        "event_utc_dates_equal_for_all_pairs":True,
+        "original_model_order_equals_archive_order":bool(np.array_equal(remap,np.arange(n))),
+        "original_prediction_rows_reassigned_to_correct_native_keys":int(np.count_nonzero(remap!=np.arange(n))),
+    }
 
 def matched_threshold(vol,news,original_mask):
     """Frozen pure method, all V0 validation observations eligible."""
@@ -211,8 +295,10 @@ def main():
         old_outputs=a.legacy_outputs,
         reconstructed_models=a.reconstructed_models,
         g1_dossier_path=a.g1_dossier)
-    p10_admitted=same_order_valid_and_calibrated_p10(
-        ids,model_news,raw,proof["thresholds_validation_only"])
+    model_ordered_valid=original_frozen_model_ordered_valid_rows(
+        original,a.original_frozen_repo,a.original_local_data)
+    p10_admitted,identity_proof=align_original_valid_keys_and_calibrated_p10(
+        rows,model_ordered_valid,model_news,raw,proof["thresholds_validation_only"])
     memo={}
     risks=[]
     for symbol,day in zip(rows["ticker"].tolist(),event.dt.date.tolist()):
@@ -247,6 +333,7 @@ def main():
             "source_p10_calibration_offset":OFFSET,
             "original_validation_p10_source_replay":proof,
         },
+        "original_validation_model_archive_key_alignment":identity_proof,
         "original_p10_admitted_unweighted_pairs":count_p10,
         "risk_admitted_unweighted_pairs":count_vol,
         "original_p10_admitted_weighted_fraction":
