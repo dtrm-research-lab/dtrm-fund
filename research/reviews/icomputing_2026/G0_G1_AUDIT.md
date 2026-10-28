@@ -4006,3 +4006,85 @@ The previous A3 operator
 original target point report
 remains the sole empirical A3
 policy performance artifact.
+
+## 2026-10-28 G3.2 A3 paired bootstrap FIRST 138 dry run: 137 PASS, one imported SHA test assertion FALSE POSITIVE
+
+Operator ran immutable A3 paired news/ticker bootstrap candidate
+`814d2d6e37317cfa17aa9450d8ebf1c32bcd3fad`
+through complete synthetic/source
+`python3 -m unittest ... -v` battery.
+**Observed** `Ran 138 tests in 5.075s`,
+`FAILED (failures=1)`: 137 tests passed,
+including all 8 new pure paired cluster
+bootstrap and 7 other protected
+bootstrap-runner checks.
+
+**Only failed:**
+`test_prior_original_sha_and_all_scientific_source_gates`
+in `test_ic_g3_2_a3_paired_bootstrap_runner.py`,
+line 52. It asserted that exact
+source preflight SHA256
+`9c03f925be0429b9b70407018d59f1df801682a9e7a821a6bb9c6d3ef80fe317`
+must appear as a literal string in the
+new runner's source. The runner **imports**
+`SOURCE_PREFLIGHT_SHA` from previously
+SHA-protected
+`ic_g3_2_a3_three_arm_point_runner.py`
+rather than duplicating the hex literal.
+The actual protected runner calls
+`preflight=evidence(...,SOURCE_PREFLIGHT_SHA)`,
+which checks the digest at execution.
+`VALID_CUTOFF_SHA` is imported and bound
+similarly. Thus this was a false
+negative due to the static
+assertion's scope, **not a detected
+scientific checksum bypass**.
+
+**Test-only correction**, immutable
+commit
+`2e4cce43f59d23ea5758bc7581cf7f42969cec9e`:
+regression test now (1) checks the
+resolved immutable local A3 point,
+G3.2 source-only preflight and
+original VALID-only cutoff SHA
+constants against their exact expected
+64-hex-digit strings, and (2)
+independently asserts the actual
+`evidence()` calls use these
+constants. No protected source runner,
+pure scientific A3 bootstrap,
+original 174 saved prices, 6 original
+signal/target source, q25, V0
+calibrated daily volatility cutoff,
+two cluster seeds, 10k resample
+policy or scientific outcome changed.
+
+Updated G3.2 A3 paired 10k runbook
+pins the corrected source/test commit
+`2e4cce43f59d23ea5758bc7581cf7f42969cec9e`.
+
+**No new operator 138/138 PASS
+has been observed yet.** The
+operator's original command
+was only the source/synthetic
+test stage and did not provide
+authorization for real old
+target Pickle reads; consequently
+NO original 60k paired A3 bootstrap
+outcome/CIs have been computed.
+A3 original paired point negative
+results remain unchanged at local
+report SHA256
+`b5b94f09d57d8bb3336ea01eb469f5ef703743a1217422be7e0f4b98484b4087`.
+
+Next: re-run all 138 tests from a
+single fixed Git code commit; if
+all pass and user separately
+authorizes original trusted old
+target reads, run full 60k
+news/ticker paired-bootstrap
+runner with all-or-none
+K-feasibility interval rule.
+Even then no prospective
+point-in-time price-vintage
+or realized P&L proof.
