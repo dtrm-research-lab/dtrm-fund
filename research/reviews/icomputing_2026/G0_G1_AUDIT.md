@@ -1732,3 +1732,54 @@ and response to Reviewer #1.
 
 **G2.13 = SOURCE-DATE VALIDATION PASS.
 G2 overall still UNFROZEN; G3 BLOCKED.**
+
+## 2026-10-28 G2.14 ADVERSARIAL DESIGN PRE-FREEZE AND REVIEWER RESPONSE PREVIEW
+
+The operator's **G2.13 7/7 code-only regression tests
+and 19,880/19,880 original V0 validation row-date
+source coverage PASS** have been recorded in the
+preceding section, along with original local
+model-row SHA `3b573c4e92dca404a5ab9d649dfa95ddfc58aa9b81ecd8563775cc56ac17b724`
+and G2.12 source report SHA
+`e67cf796975c60fdc674f15d985ce755ca1b862779253f4ef7f82a56d326785f`.
+
+Created `G2_14_PRE_FREEZE_ADVERSARIAL_DISPOSITIONS.json`
+and `G2_14_SCIENTIFIC_PRE_FREEZE_REVIEW.md`:
+explicit scientific limitations (source acquisition
+vintage, retroactively adjusted prices, incomplete
+numeric quality, missing economic transaction
+accounting, overlapping horizons and
+ticker-cluster CIs covering zero), plus finite
+go/no-go decisions per A1–A7 and X1.
+
+Created `G6_REVIEWER_RESPONSE_WORKING_PREVIEW.md`:
+English point-by-point reviewer response **working
+draft**, not official G6 closure or submitted
+manuscript. R1-01…R1-07 are internal audited
+themes decomposed from unnumbered reviewer #1;
+R2-01…R2-08 retain numbered reviewer #2 comments.
+All future G3 calculations or new manuscript
+changes carry explicit `[PENDING G3/G5]`
+rather than fabricated experimental results.
+Reviewer 1's requested independent,
+nonoverlapping 60-calendar-day holdout is
+honestly NOT EXECUTABLE under G1.3 data audits.
+
+Updated G2.11 A3 conditional plan with
+19,880 validation and 47,596 old test pair
+historical bar-date structural availability,
+and precise **numeric close quality,
+adjustment/provider as-of vintage and final
+common-sample rule still OPEN**.
+A2 and A6 can be frozen as transparent
+post-outcome exploratory analysis designs;
+A3 remains conditional on numeric/vintage
+limitation and fixed validator-cutoff/comparator
+spec; A4 cannot claim realized self-financing
+P&L or turnover; A5 lacks certified second
+pre-outcome ranking model; A7 needs eventual
+manuscript insertion.
+
+**No G2 overall freeze commit, no manual scientific
+signoff, no G3 financial tests, no official
+G5/G6/G7 manuscript/editorial submissions yet.**
