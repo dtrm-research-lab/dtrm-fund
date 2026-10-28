@@ -1849,3 +1849,79 @@ another data-source inventory**:
 
 **G2 SOURCE REPORT EVIDENCE SEALED AS USER-COMPUTED
 HASHES; G2 OVERALL NOT FROZEN, G3 NOT AUTHORIZED.**
+
+## 2026-10-28 G2.16 source policy and synthetic test gate prepared
+
+Responding to explicit user instruction to close remaining
+G2 conditions and progress to G3, the following actual
+GitHub artifacts were created in
+`research/ic-major-revision-2026`:
+
+- `ic_g2_g3_exploratory_core.py`: **pure, no-I/O**
+  NumPy implementations of historic weighted
+  P10 quantiles, original `np.argsort(-pred)`
+  Top-K selection, strict full-K, original
+  cluster-resampling mechanics, and trailing
+  numeric stock volatility restricted to
+  the last **61 strictly pre-event daily bars**
+  (exactly **60** positive finite simple
+  returns, ddof=1). Only selected pre-event
+  numeric prices are converted; data at/
+  after event are not used. Price invalidity
+  excludes a pair from all A3 arms.
+- `test_ic_g2_g3_exploratory_core.py`:
+  **21 synthetic regression test cases** for
+  quantiles/weights, old selection semantics,
+  full-K infeasibility, clustered resampling,
+  pre-event chronology, invalid and post-event
+  closes, and validation common-news weights.
+- `G2_16_EXPLORATORY_SCOPE_CANDIDATE.json`:
+  exact conditional G3.0 original model
+  source-row-parity before G3.1 A2/A3/A6,
+  60-return no-fallback A3 convention,
+  q15/q25/q35 and 5/10/15% grids, 10k news/
+  ticker bootstrap and explicit source-vintage
+  and negative original evidence limitations.
+- `ic_g2_16_scientific_freeze_preflight.py`:
+  checks original G2.9/10/12/13 SHA256, 22
+  reviewer/editor IDs, original source pin,
+  candidate specification, and **runs actual
+  synthetic Python unittests**. Produces
+  source-only report if PASS.
+- `G2_16_SYNTHETIC_FREEZE_RUNBOOK.md`:
+  one-operator-command source-and-science
+  synthetic audit. **NOT YET OPERATOR EXECUTED**.
+
+**New explicit A3 primary decision:** reject
+historical draft's minimum 40 daily return
+fallback, require exactly 60 complete
+strictly pre-event simple returns. No
+post-event values, imputation or price
+adjustment, with common sample for all
+A3 arms. The original July-5 archived
+vendor price vintage remains UNVERIFIED;
+do not call retrospective control a
+historically deployable point-in-time
+risk filter.
+
+**New guardrail:** archived historical
+G1.2K reconstructed boosters remain
+UNAPPROVED for new analyses pending
+per-row original baseline/P10 parity.
+The first conditional G3 stage must be
+**G3.0 SOURCE/MODEL PARITY ONLY**,
+with **no old forward targets read**;
+only a separate parity PASS could allow
+G3.1 analysis of old consumed outcomes.
+The old 22-requirement freeze checker
+still has `all_g3_analyses_specified=false`
+and no actual signed freeze commit:
+these cannot be fabricated.
+
+GitHub file contents were inspected but
+local Python unittest execution and
+actual G2.16 synthetic preflight PASS
+remain **UNVERIFIED** until operator output.
+No new financial outcomes, models or
+market values were accessed in these
+G2 artifacts. **G2 not frozen, G3.1 blocked.**
