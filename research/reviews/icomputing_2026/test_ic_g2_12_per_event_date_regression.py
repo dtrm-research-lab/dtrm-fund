@@ -57,7 +57,7 @@ class G212SourceRegressions(unittest.TestCase):
         self.assertIn("bisect_left(d,event_date)",src)
         self.assertIn("count>=61",src)
         self.assertIn("count>=41",src)
-        self.assertIn("strictly before event UTC calendar date",src.lower())
+        self.assertIn("strictly before event utc calendar date",src.lower())
 
     def test_original_v1_v4_pair_agreement_is_required(self):
         src=SCRIPT.read_text(encoding="utf-8")
