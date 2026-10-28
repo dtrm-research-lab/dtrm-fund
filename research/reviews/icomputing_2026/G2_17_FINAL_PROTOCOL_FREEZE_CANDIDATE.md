@@ -199,7 +199,7 @@ body, no independently verified provider MIME.
 ## V. Genuine freeze and approval rules
 
 1. G2.16 synthetic + source gate must pass
-   **CURRENT VERSION 31 source-only tests**.
+   **CURRENT VERSION 36 source-only tests** (22 synthetic method, nine protected G3.0 source and five G2 freeze-builder guards).
    Earlier 29/29 PASS is valid only for
    previous G3.0 script version and cannot
    certify the later stricter P10 reference
