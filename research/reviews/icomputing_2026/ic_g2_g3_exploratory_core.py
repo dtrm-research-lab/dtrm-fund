@@ -99,7 +99,13 @@ class Selection:
 def select_topk(prediction:Sequence,target:Sequence,admitted:Sequence,fraction:float)->Selection:
     """No partial fill; exactly original descending argsort and pass veto."""
     x=_vec(prediction,dtype=np.float64)
-    y=_vec(target,dtype=np.float64)
+    # Historic Phase II uses target_model.to_numpy() with ORIGINAL dtype.
+    # Float32 np.mean returns a float32 aggregate before float(...);
+    # coercing to float64 changes 1e-12 original q25/K10 parity.
+    # Preserve floating target dtype for selection AND bootstrap.
+    y=_vec(target,dtype=None)
+    if y.dtype.kind!="f":
+        y=y.astype(np.float64)
     mask=_vec(admitted,dtype=bool)
     _align(x,y,mask)
     if not np.isfinite(x).all() or not np.isfinite(y).all():
@@ -154,7 +160,13 @@ def cluster_bootstrap(prediction:Sequence,target:Sequence,admitted:Sequence,
     If any replicate is infeasible, its intervals are withheld.
     """
     p=_vec(prediction,dtype=np.float64)
-    y=_vec(target,dtype=np.float64)
+    # Historic Phase II uses target_model.to_numpy() with ORIGINAL dtype.
+    # Float32 np.mean returns a float32 aggregate before float(...);
+    # coercing to float64 changes 1e-12 original q25/K10 parity.
+    # Preserve floating target dtype for selection AND bootstrap.
+    y=_vec(target,dtype=None)
+    if y.dtype.kind!="f":
+        y=y.astype(np.float64)
     ok=_vec(admitted,dtype=bool)
     code,c=_cluster_codes(clusters)
     _align(p,y,ok,code)
