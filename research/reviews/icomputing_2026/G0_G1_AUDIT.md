@@ -2447,3 +2447,42 @@ tests is PENDING. Do not report 28/28 PASS yet.**
 Original G3.1 six-file source SHA gate remains PASS.
 Original target values are still closed, and
 G3.1 outcome analysis remains **NOT AUTHORIZED**.
+
+## 2026-10-28 G3.1 A2/A6 28/28 operator synthetic PASS, six-file source report SHA
+
+Following the correction to the **test-only** `assertRaises`
+call (no scientific code changed), the local operator reran
+the three G3.1 A2/A6 synthetic/static unittest modules.
+
+**Actual terminal result:** `Ran 28 tests in 0.121s — OK`.
+All **15** protected one-to-one keyed/date join cases,
+**8** synthetic 18-cell original-parity/capacity-grid tests,
+and **5** original V0 VALID P10 source protection tests
+returned `ok`. In deliberate invalid-date test,
+pandas issued a non-fatal format-inference warning;
+the test correctly refused the bad timestamp.
+
+Operator calculated SHA256 on original G3.1 A2/A6
+**SOURCE-ONLY** report:
+`3130207406a81417c79f4ae69a0d02c1d0933044381280ec9dd9b99862a4e5a8`
+for
+`$HOME/dtrm-ic-audit/g1-reconstruction/IC_G3_1_A2_A6_original_source_only_gate.json`.
+
+The source-only gate previously reported original
+V2/V3/V4 signals + Phase II model targets **six of six
+SHA PASS**, with V4 properly using its original V1
+model target file. Source verification still excludes
+deserializing old forward targets.
+
+Evidence limits: Synthetic mathematical PASS does not
+prove empirical 18-cell sensitivity results;
+no actual original V0 q15/q35 thresholds have yet
+been computed, and no actual V2/V3/V4 outcome
+target values read in this stage. A2/A6 read-only
+runner requires an exact reviewed code pin and
+**separate explicit scientific operator permission**
+to open historical outcome-consumed targets.
+
+**G2 FROZEN; G3.0 7,276-row original P10/ranker PASS;
+G3.1 source-only 6/6 PASS; G3.1 28/28 synthetic PASS;
+G3.1 old financial outcome access still NOT AUTHORIZED.**
