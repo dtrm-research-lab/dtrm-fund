@@ -63,7 +63,14 @@ def main():
     must(freeze.get("status")=="G2_FULL_PROTOCOL_FROZEN_AUTHORIZE_G3_0_SOURCE_PARITY_ONLY" and
          freeze.get("source_gate_report_sha256")==sha(gate_path) and
          freeze.get("human_scientific_signoff") is True and
+         freeze.get("g3_0_source_parity_only_authorized") is True and
+         freeze.get("reviewed_retrospective_price_vendor_vintage_limitations") is True and
+         freeze.get("reviewed_original_v2_v4_ticker_ci_cross_zero") is True and
+         freeze.get("reviewed_no_independent_nonoverlapping_60d_holdout") is True and
          freeze.get("g3_1_old_outcome_access_authorized") is False and
+         freeze.get("reviewer_editor_items")==22 and
+         freeze.get("protected_g3_0_source_sha256")==sha(Path(__file__).resolve()) and
+         freeze.get("original_code_commit")=="c7502a690162459cdfb3413573e3133c42efb126" and
          isinstance(freeze.get("immutable_freeze_commit"),str) and
          len(freeze["immutable_freeze_commit"])==40,
          "No real operator-hash and human-approved G2 freeze for G3.0; HALT")
