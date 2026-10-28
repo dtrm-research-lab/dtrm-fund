@@ -1,0 +1,53 @@
+name: IC G4.9a Synthetic Authority Mechanism
+
+on:
+  push:
+    branches:
+      - research/ic-g4-9a-mechanism-pilot-20261028
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  g49a-synthetic-mechanism:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout synthetic mechanism and pinned protocol
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run standalone G4.9a no-network standard-library unit tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_ic_g49a_mechanism.py' -v
+      - name: Execute fixed synthetic 12-case smoke test and exact replay audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python research/reviews/icomputing_2026/g49a/g49a_run.py \
+            --out out/G49A_SYNTHETIC_MECHANISM_REPORT.json \
+            2>&1 | tee out/G49A_SYNTHETIC_MECHANISM_SUMMARY.txt
+          grep -qx 'G49A_SYNTHETIC_SOFTWARE_MECHANISM_SMOKE_PASS' \
+            out/G49A_SYNTHETIC_MECHANISM_SUMMARY.txt
+          grep -qx 'NONINFERIORITY=NOT_TESTED' \
+            out/G49A_SYNTHETIC_MECHANISM_SUMMARY.txt
+          sha256sum \
+            research/reviews/icomputing_2026/g49a/G49A_0_PROTOCOL_PREEXECUTION.md \
+            research/reviews/icomputing_2026/g49a/g49a_mechanism.py \
+            research/reviews/icomputing_2026/g49a/g49a_synthetic_cases.json \
+            out/G49A_SYNTHETIC_MECHANISM_REPORT.json \
+            > out/G49A_FILE_HASHES.txt
+          cat out/G49A_FILE_HASHES.txt
+      - name: Upload only synthetic aggregate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: G49A-SYNTHETIC-MECHANISM-NOT-HUMAN-EXPERIMENT
+          path: out/
+          retention-days: 30
