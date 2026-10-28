@@ -3406,3 +3406,47 @@ source-price vendor acquisition
 vintage remains UNVERIFIED.
 No original V2/V3/V4 target
 comparison authorized.
+
+## 2026-10-28 G3.2 A3 V0 first 56 tests: 55 PASS, one static import-scope FALSE POSITIVE
+
+Operator executed 56 synthetic/source regression checks
+for G3.2 A3 V0 original legacy-order correction at
+immutable code version
+`9985f9e14ca3e5b5c5ebc3a2eca0c54158df1c70`.
+Result: `Ran 56 tests in 1.933s`,
+`FAILED (failures=1)`, 55 checks PASS.
+Only failing case:
+`test_price_root_is_sha_verified_before_pandas_pickle`;
+the test used the *first* source-wide
+`import pandas as pd` token to assert it
+came after the price-SHA verification, but
+a non-executing helper function's own import
+appears before `main()`. This test did
+not detect execution of unverified Pickles.
+
+Reviewed the code source main() order directly:
+`prices=recheck_all_historical_price_hashes`
+occurs **before** any main()-path Pandas import,
+`pd.read_pickle`, or invocation of
+the original legacy-row reconstruction helper.
+Thus the reported static source-scope issue
+does not establish unsafe source deserialization.
+
+**Minimal TEST-ONLY repair** in exact Git commit
+`5309886f3eb3caf2e2c05ebbb6aa3a01730e444b`:
+now the regression uses Python AST to inspect
+`main()` and asserts SHA-check execution
+order before original price Pickle reads or
+legacy-order helper invocation. No scientific
+code, old model/data, cutoff, V0 alignment
+algorithm, target source or threshold changed.
+Updated runbook
+`G3_2_A3_V0_LEGACY_ORDER_CORRECTED_OPERATOR_RUNBOOK.md`
+pins this new tested candidate.
+
+No new `56/56 PASS` claimed;
+no original V0 calibrated risk cutoff computed
+and no old V2/V3/V4 outcome input accessed.
+Await operator 56-test retry and only then
+separate explicit V0-only replay, with
+retrospective quote vintage still unverified.
