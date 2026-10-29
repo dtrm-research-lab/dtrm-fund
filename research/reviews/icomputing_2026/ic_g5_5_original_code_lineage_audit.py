@@ -22,6 +22,18 @@ FILES_FROZEN=(
     "src/dtrm/exante_target.py",
     "src/dtrm/legacy_target_preprocessing.py",
 )
+# Verified via GitHub fetch_file(ref=FROZEN) on 2026-10-29; exact frozen
+# Git blob OIDs. Local 'git hash-object' works even in shallow CI checkouts.
+# This is a *pinned remote blob identity* check, not a re-fetch of the
+# historical commit in every CI job.
+FROZEN_BLOB_SHA1={
+    "research/experiments/run_exante_baseline_v0.py":"cecd1a71ffc1526d64f37d0a52b47db4b1e36675",
+    "research/experiments/run_probabilistic_xgb_v0.py":"26f056b767aa17daa7f088153ab09e1fa34dc1e6",
+    "research/experiments/run_phase2_primary_bootstrap.py":"88b2cb9e76cdfc10f9afab982847aa13c16bbe10",
+    "src/dtrm/exante_target.py":"c73ef57fcedfccbbf36aab2bc0cf8974c42377f9",
+    "src/dtrm/legacy_target_preprocessing.py":"45e37c24e0c09675f5a0b9374c48a096bbb72925",
+}
+
 FILES_REVIEW=(
     "research/reviews/icomputing_2026/ic_g3_1_a2_a6_join_contract.py",
     "research/reviews/icomputing_2026/ic_g3_2_a3_original_3arm_source_preflight.py",
@@ -132,18 +144,18 @@ def audit(repo:Path,frozen_ref:str=FROZEN)->dict:
         raise CodeLineageError("No arbitrary alternative original code reference")
     files={}
     frozen_hash={}
+    frozen_blob_oid={}
     for path in FILES_FROZEN:
-        try:
-            blob=subprocess.run(["git","-C",str(repo),"show",frozen_ref+":"+path],
-                  capture_output=True,check=True).stdout
-        except subprocess.CalledProcessError as exc:
-            raise CodeLineageError(f"Missing frozen original Git blob: {path}") from exc
         local=repo/path
         if not local.is_file() or local.is_symlink():
             raise CodeLineageError(f"Missing/unsafe original working source: {path}")
-        if local.read_bytes()!=blob:
-            raise CodeLineageError(f"Working original scientific code drift: {path}")
+        blob=local.read_bytes()
+        actual=subprocess.run(["git","hash-object","--",str(local)],
+                 capture_output=True,check=True,text=True).stdout.strip()
+        if actual!=FROZEN_BLOB_SHA1[path]:
+            raise CodeLineageError(f"Original source differs from source code blob pinned at historical GitHub commit: {path}")
         frozen_hash[path]=_sha(blob)
+        frozen_blob_oid[path]=actual
         files[path]=blob
     review_hash={}
     for path in FILES_REVIEW:
@@ -159,6 +171,9 @@ def audit(repo:Path,frozen_ref:str=FROZEN)->dict:
         "status":STATUS,
         "frozen_original_commit":FROZEN,
         "frozen_original_public_source_sha256":frozen_hash,
+        "frozen_original_public_git_blob_sha1":frozen_blob_oid,
+        "identity_basis":"PINNED_ORIGINAL_COMMIT_GITHUB_BLOB_OIDS_VALIDATED_WITH_LOCAL_GIT_HASH_OBJECT",
+        "historical_git_commit_object_reloaded_in_this_ci":False,
         "existing_review_source_sha256":review_hash,
         "semantic_checks":checks,
         "supported_by_code_only":{
