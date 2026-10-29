@@ -1,4 +1,4 @@
-name: IC G5.3 Information Parity — Pure Source Gate
+name: IC G5.3 Original Source and Attribution — No Market Outcomes
 
 on:
   push:
@@ -17,27 +17,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install original project public dependencies
+      - name: Install source-only public dependencies
         run: python -m pip install -e .
-      - name: Verify matched-information source only and no private outcomes
+      - name: Test original-source lineage, matched information and label decomposition
         shell: bash
         run: |
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_ic_g5_*.py' -v
-          python -m py_compile research/reviews/icomputing_2026/ic_g5_3_matched_information.py research/reviews/icomputing_2026/ic_g5_4_target_decomposition.py
-          sha256sum research/reviews/icomputing_2026/G5_3_PREEXECUTION_INFORMATION_PARITY_AND_ECONOMIC_IDENTIFICATION_20261029.md research/reviews/icomputing_2026/ic_g5_3_matched_information.py tests/test_ic_g5_3_matched_information.py tests/test_ic_g5_3_model_target_semantics.py research/reviews/icomputing_2026/ic_g5_4_target_decomposition.py tests/test_ic_g5_4_target_decomposition.py research/reviews/icomputing_2026/ic_g5_5_original_code_lineage_audit.py tests/test_ic_g5_5_original_code_lineage_audit.py
           mkdir -p out
           python research/reviews/icomputing_2026/ic_g5_5_original_code_lineage_audit.py --repo . --out out/G55_FROZEN_ORIGINAL_SOURCE_LINEAGE.json | tee out/G55_READOUT.txt
-          grep -q '^G55_FROZEN_ORIGINAL_SOURCE_LINEAGE_CONFIRMED_MARKET_DATA_UNREAD
+          grep -qx 'G55_FROZEN_ORIGINAL_SOURCE_LINEAGE_CONFIRMED_MARKET_DATA_UNREAD' out/G55_READOUT.txt
+          grep -qx 'PRIVATE_MARKET_OUTCOME_ACCESS=NONE' out/G55_READOUT.txt
+          sha256sum research/reviews/icomputing_2026/ic_g5_3_matched_information.py research/reviews/icomputing_2026/ic_g5_4_target_decomposition.py research/reviews/icomputing_2026/ic_g5_5_original_code_lineage_audit.py tests/test_ic_g5_5_original_code_lineage_audit.py out/G55_FROZEN_ORIGINAL_SOURCE_LINEAGE.json > out/SOURCE_AND_REPORT_HASHES.txt
+          echo "G53_G54_G55_ORIGINAL_SOURCE_ONLY_PASS"
           echo "OLD_ORIGINAL_OUTCOME_DATA_ACCESS=NOT_AUTHORIZED"
           echo "HISTORICAL_INFORMATION_PARITY_RESULT=NOT_YET_EXECUTED"
           echo "ECONOMIC_PNL=NOT_ESTIMATED"
- out/G55_READOUT.txt
-          echo "G53_SOURCE_ONLY_SYNTHETIC_TEST_PASS"
-          echo "OLD_ORIGINAL_OUTCOME_DATA_ACCESS=NOT_AUTHORIZED"
-          echo "HISTORICAL_INFORMATION_PARITY_RESULT=NOT_YET_EXECUTED"
-          echo "ECONOMIC_PNL=NOT_ESTIMATED"
+      - name: Retain only public source-lineage metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: G55-ORIGINAL-PUBLIC-SOURCE-LINEAGE-NO-MARKET-DATA
+          path: out/
+          retention-days: 30
