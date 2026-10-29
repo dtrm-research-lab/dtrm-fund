@@ -27,7 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_ic_g5_*.py' -v
-          python -m py_compile research/reviews/icomputing_2026/ic_g5_6_train_only_core.py research/reviews/icomputing_2026/ic_g5_6_train_only_protected_runner.py research/reviews/icomputing_2026/ic_g5_6_original_report_readback.py
+          python -m py_compile research/reviews/icomputing_2026/ic_g5_6_train_only_core.py research/reviews/icomputing_2026/ic_g5_6_train_only_protected_runner.py research/reviews/icomputing_2026/ic_g5_6_original_report_readback.py research/reviews/icomputing_2026/ic_g5_7a_target_producer_source_scan.py
           mkdir -p out
           python research/reviews/icomputing_2026/ic_g5_5_original_code_lineage_audit.py --repo . --out out/G55_FROZEN_ORIGINAL_SOURCE_LINEAGE.json | tee out/G55_READOUT.txt
           grep -qx 'G55_FROZEN_ORIGINAL_SOURCE_LINEAGE_CONFIRMED_MARKET_DATA_UNREAD' out/G55_READOUT.txt
@@ -39,6 +39,7 @@ jobs:
           echo "ECONOMIC_PNL=NOT_ESTIMATED"
           echo "G56_PRIVATE_TRAIN_NUMERIC_RECONSTRUCTION=NOT_EXECUTED_IN_CI"
           echo "G57_OLD_COHORT_HISTORICAL_ATTRIBUTION=NOT_AUTHORIZED"
+          echo "G57A_STATIC_TARGET_PRODUCER_LINEAGE=SOURCE_CODE_ONLY_NO_OUTCOME_DATA"
       - name: Retain only public source-lineage metadata
         uses: actions/upload-artifact@v4
         with:
