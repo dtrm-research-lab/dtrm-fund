@@ -219,6 +219,13 @@ def reconstruct_original_train_only(args)->dict:
         "original_174_price_files_sha_checked":EXPECTED_PRICES,
         "original_cohort_files_hashed_not_opened":6,
         **fitted,
+        # Deliberately set the protected-reader status AFTER the numerical core.
+        # G5.6 operator's original 2026-10-29 report used the core status
+        # TRAIN_CENTERS_NUMERIC_PARITY_ONLY because of merge precedence.
+        # Keep its original report and SHA untouched; interpret it through a
+        # separate versioned readback rather than rewriting history.
+        "numeric_core_status":fitted["status"],
+        "status":"G56_TRAIN_ONLY_NUMERIC_PARITY_PASS_FULL_ROW_ARCHIVE_ORIGIN_UNATTESTED",
         "original_heldout_v2_v3_v4_target_labels_accessed":False,
         "validation_or_test_targets_reconstructed":False,
         "original_price_provider_vintage_verified":False,
