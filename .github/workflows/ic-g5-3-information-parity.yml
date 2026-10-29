@@ -1,0 +1,35 @@
+name: IC G5.3 Information Parity — Pure Source Gate
+
+on:
+  push:
+    branches:
+      - research/ic-g5-3-information-parity-20261029
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  g5_3_source_only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install original project public dependencies
+        run: python -m pip install -e .
+      - name: Verify matched-information source only and no private outcomes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_ic_g5_3_matched_information.py' -v
+          python -m py_compile research/reviews/icomputing_2026/ic_g5_3_matched_information.py
+          sha256sum research/reviews/icomputing_2026/G5_3_PREEXECUTION_INFORMATION_PARITY_AND_ECONOMIC_IDENTIFICATION_20261029.md research/reviews/icomputing_2026/ic_g5_3_matched_information.py tests/test_ic_g5_3_matched_information.py
+          echo "G53_SOURCE_ONLY_SYNTHETIC_TEST_PASS"
+          echo "OLD_ORIGINAL_OUTCOME_DATA_ACCESS=NOT_AUTHORIZED"
+          echo "HISTORICAL_INFORMATION_PARITY_RESULT=NOT_YET_EXECUTED"
+          echo "ECONOMIC_PNL=NOT_ESTIMATED"
