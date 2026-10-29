@@ -21,10 +21,14 @@ class OriginalFrozenSourceLineageTests(unittest.TestCase):
         self.assertEqual(r["frozen_original_commit"],g55.FROZEN)
         self.assertEqual(len(r["frozen_original_public_source_sha256"]),5)
         self.assertEqual(len(r["existing_review_source_sha256"]),5)
+        self.assertEqual(r["identity_basis"],"PINNED_ORIGINAL_COMMIT_GITHUB_BLOB_OIDS_VALIDATED_WITH_LOCAL_GIT_HASH_OBJECT")
+        self.assertFalse(r["historical_git_commit_object_reloaded_in_this_ci"])
         for path, recorded in r["frozen_original_public_source_sha256"].items():
-            blob=subprocess.run(["git","-C",str(REPO),"show",g55.FROZEN+":"+path],
-                capture_output=True,check=True).stdout
+            blob=(REPO/path).read_bytes()
             self.assertEqual(hashlib.sha256(blob).hexdigest(),recorded)
+            oid=subprocess.run(["git","hash-object","--",str(REPO/path)],
+                    capture_output=True,check=True,text=True).stdout.strip()
+            self.assertEqual(oid,g55.FROZEN_BLOB_SHA1[path])
 
     def test_source_semantics_pass_without_any_original_market_data(self):
         self.assertTrue(all(self.result["semantic_checks"].values()))
