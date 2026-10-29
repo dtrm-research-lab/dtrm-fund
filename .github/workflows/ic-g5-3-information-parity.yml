@@ -26,9 +26,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m unittest discover -s tests -p 'test_ic_g5_3_*.py' -v
-          python -m py_compile research/reviews/icomputing_2026/ic_g5_3_matched_information.py
-          sha256sum research/reviews/icomputing_2026/G5_3_PREEXECUTION_INFORMATION_PARITY_AND_ECONOMIC_IDENTIFICATION_20261029.md research/reviews/icomputing_2026/ic_g5_3_matched_information.py tests/test_ic_g5_3_matched_information.py tests/test_ic_g5_3_model_target_semantics.py
+          python -m unittest discover -s tests -p 'test_ic_g5_*.py' -v
+          python -m py_compile research/reviews/icomputing_2026/ic_g5_3_matched_information.py research/reviews/icomputing_2026/ic_g5_4_target_decomposition.py
+          sha256sum research/reviews/icomputing_2026/G5_3_PREEXECUTION_INFORMATION_PARITY_AND_ECONOMIC_IDENTIFICATION_20261029.md research/reviews/icomputing_2026/ic_g5_3_matched_information.py tests/test_ic_g5_3_matched_information.py tests/test_ic_g5_3_model_target_semantics.py research/reviews/icomputing_2026/ic_g5_4_target_decomposition.py tests/test_ic_g5_4_target_decomposition.py
           echo "G53_SOURCE_ONLY_SYNTHETIC_TEST_PASS"
           echo "OLD_ORIGINAL_OUTCOME_DATA_ACCESS=NOT_AUTHORIZED"
           echo "HISTORICAL_INFORMATION_PARITY_RESULT=NOT_YET_EXECUTED"
