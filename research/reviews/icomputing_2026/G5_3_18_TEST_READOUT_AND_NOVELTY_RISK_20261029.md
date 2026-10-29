@@ -11,8 +11,8 @@ It is therefore incorrect to claim negative original selected Y_model means impl
 
 ## Document corrections already created privately
 
-- IC_G5_2_TARGET_SEMANTICS_CORRECTED_WORKING_20261029.docx: SHA256 f28625a544502d031b58c7a6894caec5ad0f93336d765d9745d72ce30ed3386d; rendered 19 pages.
-- IC_G6_2_TARGET_SEMANTICS_CORRECTED_WORKING_20261029.docx: SHA256 dbfdf30097f2b40a7fb804a3875901bb7efdcc8c6c96458581145cbbc13b1d8b; rendered 6 pages.
+- IC_G5_2_TARGET_SEMANTICS_CORRECTED_WORKING_20261029.docx: SHA256 3ad21c0bd47bd2c7c75caa0aa650fa65531096581a80f0517818a3029d894f64; rendered 19 pages.
+- IC_G6_2_TARGET_SEMANTICS_CORRECTED_WORKING_20261029.docx: SHA256 a097dd5d73c35167efdbe4ce3429e2d91e60dfcf87be2f3474e7d0d8c1224c59; rendered 6 pages.
 - Corrected original abstract/methods/cohort/limitations/conclusion statements and G6 R1-04/R1-05/R2-05 responses. These are author-held drafts and NOT exact Editorial Manager-verified original source.
 
 ## Source-only PASS; what it does NOT say
@@ -45,3 +45,5 @@ Potential bounded contribution: historical finance-news case of a frozen ranker 
 ## Fixed scoring
 
 G4.12 science 63.53/100, prior G5.1/G6.1 manuscript improvements only provisionally ~67.1/100. A documentation-only conditional ceiling ~74.4/100, authentic economic + information-matched experiment scenario ~80.6/100 and with genuine second ranker ~84.4/100. ALL are diagnostic scenarios, not proof achieved. Newly discovered target semantics removes a prior overclaim but DOES NOT fulfill gross/net P&L reviewer requests. 18 synthetic source tests earn engineering credibility only, not 85 points.
+
+Document provenance update: final distributed DOCX files were re-saved only to strip literal Markdown asterisks/backticks from Word running text, then re-rendered; G5.2 abstract 161 words; G5.2 19 pages, 4 embedded images, 8 tables; G6.2 6 pages. The earlier pre-execution protocol lists the initial pre-cleanup draft hashes as historical references; final user download hashes are the two values above. No original experiment statistics were altered.
